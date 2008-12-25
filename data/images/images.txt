@@ -1,0 +1,3 @@
+pillar.png
+player.png
+tileset.png
