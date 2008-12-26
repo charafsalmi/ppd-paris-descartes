@@ -75,10 +75,10 @@ bool Zone::CanMove(const sf::FloatRect& rect) const
 	EntityList::const_iterator it;
 	/* collision avec les éléments statiques : on regarde pour chaque coin du
 	rectangle si la tile en dessous est walkable */
-	int left = rect.Left / Tile::SIZE;
-	int top = rect.Top / Tile::SIZE;
-	int right = rect.Right / Tile::SIZE;
-	int bottom = rect.Bottom / Tile::SIZE;
+	int left = (int) rect.Left / Tile::SIZE;
+	int top = (int) rect.Top / Tile::SIZE;
+	int right = (int) rect.Right / Tile::SIZE;
+	int bottom = (int) rect.Bottom / Tile::SIZE;
 	
 	if (walkable_[top][left] && walkable_[top][right]
 		&& walkable_[bottom][left] && walkable_[bottom][right])
