@@ -15,4 +15,3 @@ void Entity::Move(float frametime)
 {
 	(void) frametime;
 }
-
