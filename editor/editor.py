@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+#Sur ubuntu :
+#$ sudo apt-get install python-tk python-imaging-tk
+#$ cd $HOME/ppd-paris-descartes/editor/
+#$ python editor.py
+
 import Tkinter as Tk
 import tkFileDialog
 from PIL import Image, ImageTk
