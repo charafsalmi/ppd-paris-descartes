@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "Enemy.hpp"
 
 #define APP_WIDTH  (Tile::SIZE * Zone::WIDTH)
 #define APP_HEIGHT (Tile::SIZE * Zone::HEIGHT)
@@ -19,7 +20,7 @@ Game::Game()
 	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, APP_BPP), APP_TITLE);
 	app_.SetFramerateLimit(APP_FPS);
 	
-	player_ = new Player(sf::Vector2f(200, 200), *this);
+	player_ = new Player(sf::Vector2f(200, 200), app_.GetInput());
 	
 	for (int i = 0; i < GAME_HEIGHT; ++i)
 	{
@@ -38,6 +39,9 @@ Game::Game()
 	zones_[0][0]->PlaceStaticItem(15, 2);
 	zones_[0][0]->PlaceStaticItem(17, 2);
 	zones_[0][0]->PlaceStaticItem(16, 9);
+	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(100, 90)));
+	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(100, 180)));
+	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(320, 350)));
 	
 	zones_[0][1]->Load("data/map/zone2.txt");
 	zones_[0][1]->PlaceStaticItem(9, 5);
@@ -46,9 +50,11 @@ Game::Game()
 	zones_[0][1]->PlaceStaticItem(11, 7);
 	
 	zones_[1][0]->Load("data/map/zone3.txt");
+	zones_[1][0]->AddEntity(new Enemy(sf::Vector2f(200, 200)));
 	
 	zones_[1][1]->Load("data/map/zone4.txt");
 	zones_[1][1]->PlaceStaticItem(10, 11);
+	
 	
 	cds_zone_.x = 0;
 	cds_zone_.y = 0;
@@ -78,7 +84,7 @@ void Game::Run()
 	active_zone_ = zones_[cds_zone_.y][cds_zone_.x];
 	next_zone_ = active_zone_;
 	active_zone_->AddEntity(player_);
-	player_->SetZone(active_zone_);
+	Entity::SetActiveZone(active_zone_);
 	
 	float frametime;
 	while (running)
@@ -101,6 +107,7 @@ void Game::Run()
 			active_zone_->RemoveEntity(player_);
 			active_zone_ = next_zone_;
 			active_zone_->AddEntity(player_);
+			Entity::SetActiveZone(active_zone_);
 		}
 	}
 	app_.Close();
@@ -138,7 +145,6 @@ void Game::ChangeZone(Direction dir)
 	{
 		printf("-> Changement de zone en [%d][%d]\n", y, x);
 		next_zone_ = zones_[y][x];
-		player_->SetZone(next_zone_);	
 		player_->SetPosition(pos);
 		cds_zone_.x = x;
 		cds_zone_.y = y;

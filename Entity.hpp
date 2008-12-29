@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 
+class Zone;
+
 /**
  * Base de toutes les entités
  */
@@ -52,16 +54,23 @@ public:
 		return *a < *b;
 	}
 	
+	/**
+	 * Définit la zone active
+	 */
+	static void SetActiveZone(Zone* zone);
+	
 protected:
 	/**
 	 * Définir les dimensions du rectangle de contact avec le sol (pixels)
 	 */
-	void SetFloor(int w, int h)
+	inline void SetFloor(int w, int h)
 	{
 		floor_width_ = w;
 		floor_height_ = h;
 	}
-
+	
+	static Zone* zone_;
+	
 private:
 	int floor_width_;
 	int floor_height_;

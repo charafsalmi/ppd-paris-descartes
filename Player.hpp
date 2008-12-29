@@ -1,9 +1,7 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include "Zone.hpp"
-
-class Game;
+#include "Entity.hpp"
 
 /**
  * Joueur contrôlable par l'utilisateur
@@ -11,14 +9,9 @@ class Game;
 class Player: public Entity
 {
 public:
-	Player(const sf::Vector2f& pos, Game& game);
+	Player(const sf::Vector2f& pos, const sf::Input& input);
 	
 	void Move(float frametime);
-	
-	/**
-	 * Définir la zone active du joueur
-	 */
-	void SetZone(const Zone* zone);
 	
 private:
 	enum Direction
@@ -28,7 +21,6 @@ private:
 	
 	sf::Key::Code move_keys_[COUNT_DIRECTION];
 	const sf::Input& input_;
-	const Zone* zone_;
 };
 
 #endif /* guard PLAYER_HPP */

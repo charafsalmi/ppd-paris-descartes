@@ -73,6 +73,11 @@ void Zone::Show(const sf::RenderWindow& app) const
 bool Zone::CanMove(const sf::FloatRect& rect) const
 {
 	EntityList::const_iterator it;
+	if (rect.Top < 0 || rect.Left < 0 || rect.Bottom > Tile::SIZE * HEIGHT
+		|| rect.Right > Tile::SIZE * WIDTH)
+	{
+		return false;
+	}
 	/* collision avec les éléments statiques : on regarde pour chaque coin du
 	rectangle si la tile en dessous est walkable */
 	int left = (int) rect.Left / Tile::SIZE;

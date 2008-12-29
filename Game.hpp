@@ -16,11 +16,6 @@ public:
 	 */
 	void Run();
 	
-	const sf::Input& GetInput() const
-	{
-		return app_.GetInput();
-	}
-	
 	enum Direction
 	{
 		UP, DOWN, LEFT, RIGHT

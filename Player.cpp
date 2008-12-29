@@ -5,9 +5,9 @@
 #define SPEED    100
 
 
-Player::Player(const sf::Vector2f& pos, Game& game) :
+Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	Entity(pos, GET_IMG("player")),
-	input_(game.GetInput())
+	input_(input)
 {
 	// valeurs magiques (cf. bas de player.png)
 	SetFloor((int) GetSize().x, 10);
@@ -17,12 +17,6 @@ Player::Player(const sf::Vector2f& pos, Game& game) :
 	move_keys_[DOWN] = sf::Key::Down;
 	move_keys_[LEFT] = sf::Key::Left;
 	move_keys_[RIGHT] = sf::Key::Right;
-}
-
-
-void Player::SetZone(const Zone* zone)
-{
-	zone_ = zone;
 }
 
 

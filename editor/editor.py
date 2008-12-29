@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#Sur ubuntu :
+#Sur debian/ubuntu :
 #$ sudo apt-get install python-tk python-imaging-tk
-#$ cd $HOME/ppd-paris-descartes/editor/
+#$ cd ppd-paris-descartes/editor/
 #$ python editor.py
 
 import Tkinter as Tk
@@ -18,6 +18,7 @@ ZONE_HEIGHT = 16
 
 TILE_SIZE = 24
 TILESET = "../data/images/tileset.png"
+	
 
 class App(Tk.Tk):
 	def __init__(self):
@@ -58,9 +59,6 @@ class App(Tk.Tk):
 		self.can = Tk.Canvas(frame_left, width=ZONE_WIDTH * TILE_SIZE,
 			height=ZONE_HEIGHT * TILE_SIZE)
 		self.can.pack(side=Tk.LEFT)
-		self.can.bind("<ButtonPress-1>", self.put_tile)
-		self.can.bind("<B1-Motion>", self.put_tile)
-		self.bind("<u>", self.undo)
 		
 		# boutons des tiles
 		buttons = []
@@ -79,7 +77,18 @@ class App(Tk.Tk):
 					anchor=Tk.NW, image=self.tiles[self.map[-1]])
 		self.current = 0 # indice de la tile courante
 		self.lab_tile["image"] = self.tiles[self.current]
-	
+		
+		#curseur
+		self.cursor_rect = self.can.create_rectangle(0, 0, TILE_SIZE, TILE_SIZE,
+			outline="red", width=1)
+		self.cursor_tile = self.can.create_image(0, 0, image=self.tiles[0],
+			anchor=Tk.NW)
+		# callbacks
+		self.can.bind("<ButtonPress-1>", self.put_tile)
+		self.can.bind("<B1-Motion>", self.put_tile)
+		self.can.bind("<Motion>", self.place_cursor)
+		self.bind("<u>", self.undo)
+		
 	def open_map(self):
 		"charger une carte dans l'éditeur"
 		
@@ -110,7 +119,9 @@ class App(Tk.Tk):
 		
 		self.current = tile_id
 		self.lab_tile["image"] = self.tiles[tile_id]
-	
+		# le curseur utilise la nouvelle tile courante
+		self.can.itemconfig(self.cursor_tile, image=self.tiles[tile_id])
+		
 	def put_tile(self, event):
 		"placer une tile sur la carte"
 		
@@ -125,6 +136,17 @@ class App(Tk.Tk):
 			# ajout du placement dans la pile de l'historique
 			self.history.append((self.map[indice], indice))
 			self.map[indice] = self.current
+		self.place_cursor(event)
+		
+	def place_cursor(self, event):
+		"positionne le curseur sur la tile sous la souris"
+		
+		x = (event.x / TILE_SIZE) * TILE_SIZE
+		y = (event.y / TILE_SIZE) * TILE_SIZE
+		self.can.coords(self.cursor_rect, x - 1, y - 1, x + TILE_SIZE, y + TILE_SIZE)
+		self.can.lift(self.cursor_rect)
+		self.can.coords(self.cursor_tile, x, y)
+		self.can.lift(self.cursor_tile)
 		
 	def undo(self, event=None):
 		"annuler la dernière action"

@@ -1,4 +1,8 @@
 #include "Entity.hpp"
+#include "Zone.hpp"
+
+
+Zone* Entity::zone_ = NULL;
 
 
 Entity::Entity(const sf::Vector2f& pos, const sf::Image& image)
@@ -15,3 +19,10 @@ void Entity::Move(float frametime)
 {
 	(void) frametime;
 }
+
+
+void Entity::SetActiveZone(Zone* zone)
+{
+	zone_ = zone;
+}
+
