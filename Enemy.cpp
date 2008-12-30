@@ -8,6 +8,7 @@
 Enemy::Enemy(const sf::Vector2f& pos) :
 	Entity(pos, GET_IMG("badguy"))
 {
+	SetFloor(32, 32);
 	speed_ = SPEED;
 }
 

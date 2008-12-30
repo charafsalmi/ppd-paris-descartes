@@ -62,7 +62,15 @@ class Player: public Entity
 		//bool MoveRandomly(float frametime);*/
 
 	private:
+		/**
+		 * Met à jour le subrect du joueur (uniquement si nécessaire)
+		 * @param[in] dir: direction prise
+		 */
+		void UpdateSubRect(Direction dir);
+		
 		sf::Key::Code move_keys_[COUNT_DIRECTION];
+		sf::IntRect subrects_[COUNT_DIRECTION];
+		Direction current_dir_;
 		const sf::Input& input_;
 };
 

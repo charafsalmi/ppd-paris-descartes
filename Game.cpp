@@ -38,16 +38,17 @@ Game::Game()
 	zones_[0][0]->PlaceStaticItem(5, 10);
 	zones_[0][0]->PlaceStaticItem(15, 2);
 	zones_[0][0]->PlaceStaticItem(17, 2);
-	zones_[0][0]->PlaceStaticItem(16, 9);
-	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(100, 90)));
-	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(100, 180)));
+	zones_[0][0]->PlaceStaticItem(16, 8);
+	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(110, 90)));
+	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(110, 200)));
+	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(400, 200)));
 	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(320, 350)));
-
+	
 	zones_[0][1]->Load("data/map/zone2.txt");
-	zones_[0][1]->PlaceStaticItem(9, 5);
-	zones_[0][1]->PlaceStaticItem(11, 5);
-	zones_[0][1]->PlaceStaticItem(9, 7);
-	zones_[0][1]->PlaceStaticItem(11, 7);
+	zones_[0][1]->PlaceStaticItem(12, 7);
+	zones_[0][1]->PlaceStaticItem(14, 7);
+	zones_[0][1]->PlaceStaticItem(12, 9);
+	zones_[0][1]->PlaceStaticItem(14, 9);
 
 	zones_[1][0]->Load("data/map/zone3.txt");
 	zones_[1][0]->AddEntity(new Enemy(sf::Vector2f(200, 200)));

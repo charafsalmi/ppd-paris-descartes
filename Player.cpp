@@ -9,14 +9,25 @@
 Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	Entity(pos, GET_IMG("player")), input_(input)
 {
-	// valeurs magiques (cf. bas de player.png)
-	SetFloor((int) GetSize().x, 10);
+	// valeurs magiques... surface de contact au sol
+	SetFloor(28, 20);
 	zone_ = NULL;
-
+	
+	// découpage du tileset du joueur
+	subrects_[DOWN] = sf::IntRect(0, 0, 32, 48);
+	subrects_[UP] = sf::IntRect(32, 0, 64, 48);
+	subrects_[RIGHT] = sf::IntRect(64, 0, 96, 48);
+	subrects_[LEFT] = sf::IntRect(96, 0, 128, 48);
+	
+	// attribution des touches de déplacement
 	move_keys_[UP] = sf::Key::Up;
 	move_keys_[DOWN] = sf::Key::Down;
 	move_keys_[LEFT] = sf::Key::Left;
 	move_keys_[RIGHT] = sf::Key::Right;
+	
+	// le joueur est de face par défaut
+	current_dir_ = DOWN;
+	SetSubRect(subrects_[DOWN]);
 }
 
 
@@ -57,6 +68,8 @@ void Player::Move(float frametime)
 				default:
 					break;
 			}
+			UpdateSubRect((Direction) dir);
+			
 			sf::Vector2f pos = GetPosition();
 			pos.x += dx * frametime;
 			pos.y += dy * frametime;
@@ -94,6 +107,16 @@ void Player::Move(float frametime)
 				SetPosition(pos);
 			}
 		}
+	}
+}
+
+
+void Player::UpdateSubRect(Direction dir)
+{
+	if (dir != current_dir_)
+	{
+		current_dir_ = dir;
+		SetSubRect(subrects_[dir]);
 	}
 }
 

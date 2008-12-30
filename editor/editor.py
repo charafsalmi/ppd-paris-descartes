@@ -10,13 +10,13 @@ import Tkinter as Tk
 import tkFileDialog
 from PIL import Image, ImageTk
 
-SHEET_WIDTH = 7
-SHEET_HEIGHT = 3
+SHEET_WIDTH = 8
+SHEET_HEIGHT = 8
 
 ZONE_WIDTH = 20
 ZONE_HEIGHT = 16
 
-TILE_SIZE = 24
+TILE_SIZE = 32
 TILESET = "../data/images/tileset.png"
 
 
@@ -40,6 +40,7 @@ class TiledCanvas(Tk.Canvas):
 class App(Tk.Tk):
 	def __init__(self):
 		Tk.Tk.__init__(self)
+		self.title("Editor")
 		
 		# création du menu
 		menubar = Tk.Menu(self)
@@ -122,8 +123,10 @@ class App(Tk.Tk):
 		
 		f = tkFileDialog.asksaveasfile()
 		if f:
-			for i in self.map:
-				f.write("%3d " % i)
+			for i, tile in enumerate(self.map):
+				f.write("%2d " % tile)
+				if (i + 1) % ZONE_WIDTH == 0:
+					f.write("\n")
 			f.close()
 	
 	def set_current(self, event):

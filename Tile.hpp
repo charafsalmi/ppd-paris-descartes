@@ -12,14 +12,14 @@ public:
 	 */
 	enum
 	{
-		SHEET_WIDTH = 7, // nombre de tiles en largeur
-		SHEET_HEIGHT = 3, // en hauteur
+		SHEET_WIDTH = 8, // nombre de tiles en largeur
+		SHEET_HEIGHT = 8, // en hauteur
 		SHEET_COUNT = SHEET_WIDTH * SHEET_HEIGHT // nombre total
 	};
 	
 	enum
 	{
-		SIZE = 24 // taille en pixels d'une tile
+		SIZE = 32 // taille en pixels d'une tile
 	};
 	
 	/**

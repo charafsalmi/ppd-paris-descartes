@@ -16,28 +16,27 @@ void Tile::Build(int id, const sf::Vector2f& pos)
 	rect.Left = (id % SHEET_WIDTH) * SIZE;
 	rect.Right = rect.Left + SIZE;
 	rect.Top = (id / SHEET_WIDTH) * SIZE;
-	rect.Bottom = rect.Right + SIZE;
+	rect.Bottom = rect.Top + SIZE;
 	SetSubRect(rect);
 	
 	SetPosition(pos);
 	
-	/* TODO: comment savoir si la tile est walkable ?
-	solution 1 : on dit que toutes les tiles d'id supérieur à nombre_magique
-	sont des tiles walkables, et les autres ne le sont pas...
-	(il suffit de diviser le tileset en deux)
-	inconvénient : il faut mettre à jour ce nombre magique quand on modifie
-	le tileset
+	/* TODO:
+	il faut charger au préalable un descripteur des tiles (TileManager ?)
+	qui va attribuer les paramètres pour chaque id de tile.
 	
-	solution 2 : on fait deux tilesets, un pour les tiles walkables, et un
-	autre pour les tiles non-walkables.
-	inconvénient : il faut passer le nom du tileset en paramètre pour
-	construire la tile
+	il ne faut pas stocker les paramètres pour chaque tile, mais pour
+	chaque type de tile
+	une tile doit stocker uniquement son id, et demander au descripteur
+	les caractéristiques de cet id :
+	bool Tile::IsWalkable() const
+		return descripteur.IsWalkable(id_);
 	
-	De plus, si on associe un effet d'environnement à la tile (le sable ralentit,
+	on peut aussi associer un effet d'environnement à la tile (le sable ralentit,
 	on peut nager ou se noyer dans l'eau, tomber dans des trous, etc.) il faudra
-	passer ces paramètres supplémentaires.
-	-> Besoin de définir un format de représentation des tiles sur fichier
+	passer ces paramètres supplémentaires au descripteur
 	*/
-	walkable_ = id != 1; // seule la tile 1 (eau) n'est pas walkable (juste pour tester)
+	// en attendant, valeurs magiques de tiles non walkables (eau et poteaux)
+	walkable_ = id != 13 && id != 14 && id != 6; 
 }
 
