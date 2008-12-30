@@ -84,12 +84,13 @@ bool Zone::CanMove(const sf::FloatRect& rect) const
 	int top = (int) rect.Top / Tile::SIZE;
 	int right = (int) rect.Right / Tile::SIZE;
 	int bottom = (int) rect.Bottom / Tile::SIZE;
-	
+
 	if (walkable_[top][left] && walkable_[top][right]
 		&& walkable_[bottom][left] && walkable_[bottom][right])
 	{
 		return true;
 	}
+
 	return false;
 }
 
@@ -109,7 +110,7 @@ void Zone::RemoveEntity(Entity* entity)
 void Zone::PlaceStaticItem(int i, int j)
 {
 	// HACK: ajout d'un pillier
-	
+
 	sf::Vector2f offset(i * Tile::SIZE, (j + 1) * Tile::SIZE);
 	// le rectangle de surface du pillier est de 1 x 1
 	sf::Vector2i floor(1 * Tile::SIZE, 1 * Tile::SIZE);
