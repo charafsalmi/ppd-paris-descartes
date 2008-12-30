@@ -21,7 +21,7 @@ public:
 	Zone();
 
 	~Zone();
-
+	
 	/**
 	 * Charger les éléments de la zone
 	 * @param[in] filename: fichier de la carte
@@ -42,10 +42,11 @@ public:
 
 	/**
 	 * Détermine si un mouvement est possible
+	 * @param[in] emitter: entité qui cherche à se déplacer
 	 * @param[in] rect: rectangle de la position issue du mouvement à tester
 	 * @return true si le mouvement est possible, sinon false
 	 */
-	bool CanMove(const sf::FloatRect& rect) const;
+	bool CanMove(Entity* emitter, const sf::FloatRect& rect) const;
 
 	/**
 	 * Ajouter une entité dans la zone de jeu
@@ -65,6 +66,7 @@ public:
 	 * @param[in] j: position j de la tile
 	 */
 	void PlaceStaticItem(int i, int j);
+	
 private:
 	/**
 	 * Désallouer toutes les entités de la zone

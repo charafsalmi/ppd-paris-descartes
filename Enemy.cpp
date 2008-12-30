@@ -4,24 +4,25 @@
 
 #define SPEED 80
 
+
 Enemy::Enemy(const sf::Vector2f& pos) :
 	Entity(pos, GET_IMG("badguy"))
 {
 	speed_ = SPEED;
 }
 
+
 void Enemy::Move(float frametime)
 {
-	sf::Vector2f pos = GetPosition();
-	pos.x = pos.x + speed_ * frametime;
+	const sf::Vector2f& pos = GetPosition();
 	sf::FloatRect rect;
-	rect.Left = pos.x;
+	rect.Left = pos.x + speed_ * frametime;
 	rect.Bottom = pos.y;
-	rect.Right = pos.x + GetFloorWidth();
-	rect.Top = pos.y - GetFloorHeight();
-	if(zone_->CanMove(rect))
+	rect.Right = rect.Left + GetFloorWidth();
+	rect.Top = rect.Bottom - GetFloorHeight();
+	if(zone_->CanMove(this, rect))
 	{
-		SetX(pos.x);
+		SetX(rect.Left);
 	}
 	else
 	{
@@ -29,34 +30,3 @@ void Enemy::Move(float frametime)
 	}
 }
 
-bool Enemy::Move(CUSINT dir, float frametime)
-{
-	//@TODO : à compléter
-	return false;
-}
-
-bool Enemy::MoveUp(float frametime)
-{
-	return Move(UP, frametime);
-}
-
-bool Enemy::MoveRight(float frametime)
-{
-	return Move(RIGHT, frametime);
-}
-
-bool Enemy::MoveDown(float frametime)
-{
-	return Move(DOWN, frametime);
-}
-
-bool Enemy::MoveLeft(float frametime)
-{
-	return Move(LEFT, frametime);
-}
-
-bool Enemy::MoveRandomly(float frametime)
-{
-	srand(time(NULL));
-	return Move((rand() % COUNT_DIRECTION), frametime);
-}

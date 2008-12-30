@@ -1,8 +1,10 @@
 #include "Player.hpp"
 #include "MediaManager.hpp"
 #include "Game.hpp"
+#include "type_definitions.hpp"
 
 #define SPEED    100
+
 
 Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	Entity(pos, GET_IMG("player")), input_(input)
@@ -17,33 +19,43 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	move_keys_[RIGHT] = sf::Key::Right;
 }
 
+
+void Player::OnEvent(const sf::Event& event)
+{
+	if (event.Type == sf::Event::KeyPressed)
+	{
+		// gérer ici l'appui sur les touches
+	}
+}
+
+
 void Player::Move(float frametime)
 {
 	static Game& game = Game::GetInstance();
 
 	int dx, dy;
 	sf::FloatRect rect;
-	for(int dir = 0; dir < COUNT_DIRECTION; ++dir)
+	for (int dir = 0; dir < COUNT_DIRECTION; ++dir)
 	{
-		if(input_.IsKeyDown(move_keys_[dir]))
+		if (input_.IsKeyDown(move_keys_[dir]))
 		{
 			dx = dy = 0;
-			switch(dir)
+			switch (dir)
 			{
 				case UP:
 					dy = -SPEED;
-				break;
+					break;
 				case DOWN:
 					dy = SPEED;
-				break;
+					break;
 				case LEFT:
 					dx = -SPEED;
-				break;
+					break;
 				case RIGHT:
 					dx = SPEED;
-				break;
+					break;
 				default:
-				break;
+					break;
 			}
 			sf::Vector2f pos = GetPosition();
 			pos.x += dx * frametime;
@@ -56,31 +68,28 @@ void Player::Move(float frametime)
 
 			// on vérifie si on doit changer de zone
 			bool out_zone = false;
-			if(rect.Left < 0)
+			if (rect.Left < 0)
 			{
 				game.ChangeZone(Game::LEFT);
 				out_zone = true;
 			}
-			else
-				if(rect.Top < 0)
-				{
-					game.ChangeZone(Game::UP);
-					out_zone = true;
-				}
-				else
-					if(rect.Right > Zone::WIDTH * Tile::SIZE)
-					{
-						game.ChangeZone(Game::RIGHT);
-						out_zone = true;
-					}
-					else
-						if(rect.Bottom > Zone::HEIGHT * Tile::SIZE)
-						{
-							game.ChangeZone(Game::DOWN);
-							out_zone = true;
-						}
+			else if (rect.Top < 0)
+			{
+				game.ChangeZone(Game::UP);
+				out_zone = true;
+			}
+			else if (rect.Right > Zone::WIDTH * Tile::SIZE)
+			{
+				game.ChangeZone(Game::RIGHT);
+				out_zone = true;
+			}
+			else if (rect.Bottom > Zone::HEIGHT * Tile::SIZE)
+			{
+				game.ChangeZone(Game::DOWN);
+				out_zone = true;
+			}
 
-			if(!out_zone && zone_->CanMove(rect))
+			if (!out_zone && zone_->CanMove(this, rect))
 			{
 				SetPosition(pos);
 			}
@@ -88,7 +97,8 @@ void Player::Move(float frametime)
 	}
 }
 
-bool Player::Move(CUSINT dir, float frametime)
+
+bool Player::Move(Direction dir, float frametime)
 {
 	static Game& game = Game::GetInstance();
 
@@ -151,7 +161,7 @@ bool Player::Move(CUSINT dir, float frametime)
 					out_zone = true;
 				}
 
-	if(!out_zone && zone_->CanMove(rect))
+	if(!out_zone && zone_->CanMove(this, rect))
 	{
 		SetPosition(pos);
 		return true;
@@ -159,28 +169,3 @@ bool Player::Move(CUSINT dir, float frametime)
 	return false;
 }
 
-bool Player::MoveUp(float frametime)
-{
-	return Move(UP, frametime);
-}
-
-bool Player::MoveRight(float frametime)
-{
-	return Move(RIGHT, frametime);
-}
-
-bool Player::MoveDown(float frametime)
-{
-	return Move(DOWN, frametime);
-}
-
-bool Player::MoveLeft(float frametime)
-{
-	return Move(LEFT, frametime);
-}
-
-bool Player::MoveRandomly(float frametime)
-{
-	srand(time(NULL));
-	return Move((rand() % COUNT_DIRECTION), frametime);
-}

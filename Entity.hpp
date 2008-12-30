@@ -2,8 +2,6 @@
 #define ENTITY_HPP
 
 #include <SFML/Graphics.hpp>
-#include "type_definitions.hpp"
-#include <ctime>
 
 class Zone;
 
@@ -13,6 +11,11 @@ class Zone;
 class Entity: public sf::Sprite
 {
 	public:
+		enum Direction
+		{
+			UP, DOWN, LEFT, RIGHT, COUNT_DIRECTION
+		};
+		
 		/**
 		 * @param[in] pos: position de l'entité (pixels)
 		 * @param[in] image: image du sprite
@@ -30,7 +33,7 @@ class Entity: public sf::Sprite
 		 * @param[in] frametime
 		 * @return true si le déplacement a été effectué
 		 */
-		virtual bool Move(CUSINT direction, float frametime);
+		virtual bool Move(Direction dir, float frametime);
 
 		/**
 		 * @brief Déplace l'entité vers le haut, si possible
@@ -77,7 +80,20 @@ class Entity: public sf::Sprite
 		{
 			return floor_height_;
 		}
-
+		
+		/**
+		 * Obtenir le rectangle de contact avec le sol
+		 * @param[out] rect: rectangle à définir
+		 */
+		inline void GetFloorRect(sf::FloatRect& rect) const
+		{
+			const sf::Vector2f& pos = GetPosition();
+			rect.Left = pos.x;
+			rect.Bottom = pos.y;
+			rect.Right = pos.x + floor_width_;
+			rect.Top = pos.y - floor_height_;
+		}
+		
 		/**
 		 * @brief Comparaison de la profondeur de deux entités (axe y)
 		 */
@@ -100,10 +116,6 @@ class Entity: public sf::Sprite
 		static void SetActiveZone(Zone* zone);
 
 	protected:
-		enum Direction
-		{
-			UP, DOWN, LEFT, RIGHT, COUNT_DIRECTION
-		};
 		/**
 		 * @brief Définir les dimensions du rectangle de contact avec le sol (pixels)
 		 */

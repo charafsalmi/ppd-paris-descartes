@@ -95,12 +95,15 @@ void Game::Run()
 			{
 				running = false;
 			}
+			else
+			{
+				player_->OnEvent(event);
+			}
 		}
 		frametime = app_.GetFrameTime();
 		active_zone_->Update(frametime);
 		active_zone_->Show(app_);
 		app_.Display();
-
 
 		// si demande de changement de zone
 		if (next_zone_ != active_zone_)
@@ -117,7 +120,6 @@ void Game::Run()
 
 void Game::ChangeZone(Direction dir)
 {
-
 	int x = cds_zone_.x;
 	int y = cds_zone_.y;
 	sf::Vector2f pos = player_->GetPosition();
@@ -149,10 +151,6 @@ void Game::ChangeZone(Direction dir)
 		player_->SetPosition(pos);
 		cds_zone_.x = x;
 		cds_zone_.y = y;
-	}
-	else
-	{
-		puts("-> Ici s'arrête l'univers connu !");
 	}
 }
 

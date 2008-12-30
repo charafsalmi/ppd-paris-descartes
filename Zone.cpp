@@ -70,28 +70,44 @@ void Zone::Show(const sf::RenderWindow& app) const
 }
 
 
-bool Zone::CanMove(const sf::FloatRect& rect) const
+bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect) const
 {
-	EntityList::const_iterator it;
+	// si hors de la zone
 	if (rect.Top < 0 || rect.Left < 0 || rect.Bottom > Tile::SIZE * HEIGHT
 		|| rect.Right > Tile::SIZE * WIDTH)
 	{
 		return false;
 	}
-	/* collision avec les éléments statiques : on regarde pour chaque coin du
-	rectangle si la tile en dessous est walkable */
+	// on regarde pour chaque coin du rectangle
+	// si la tile en dessous est walkable
 	int left = (int) rect.Left / Tile::SIZE;
 	int top = (int) rect.Top / Tile::SIZE;
 	int right = (int) rect.Right / Tile::SIZE;
 	int bottom = (int) rect.Bottom / Tile::SIZE;
-
-	if (walkable_[top][left] && walkable_[top][right]
-		&& walkable_[bottom][left] && walkable_[bottom][right])
+	
+	// si collision avec un élément statique
+	if (!walkable_[top][left] || !walkable_[top][right]
+		|| !walkable_[bottom][left] || !walkable_[bottom][right])
 	{
-		return true;
+		return false;
 	}
-
-	return false;
+	
+	// collision avec une autre unité
+	EntityList::const_iterator it;
+	sf::FloatRect other_rect;
+	for (it = entities_.begin(); it != entities_.end(); ++it)
+	{
+		if (*it != emitter)
+		{
+			(**it).GetFloorRect(other_rect);
+			if (rect.Intersects(other_rect))
+			{
+				return false;
+			}
+		}
+	}
+	// ok, emitter a le droit de se déplacer
+	return true;
 }
 
 

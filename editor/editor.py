@@ -18,8 +18,25 @@ ZONE_HEIGHT = 16
 
 TILE_SIZE = 24
 TILESET = "../data/images/tileset.png"
-	
 
+
+class TiledCanvas(Tk.Canvas):
+	def __init__(self, master, **kwargs):
+		Tk.Canvas.__init__(self, master, **kwargs)
+		
+		#curseur
+		self.cursor = self.create_rectangle(0, 0, TILE_SIZE, TILE_SIZE,
+			outline="red", width=1)
+		self.bind("<Motion>", self.place_cursor)
+		
+	def place_cursor(self, event):
+		"positionne le curseur sur la tile sous la souris"
+		
+		x = (event.x / TILE_SIZE) * TILE_SIZE
+		y = (event.y / TILE_SIZE) * TILE_SIZE
+		self.coords(self.cursor, x - 1, y - 1, x + TILE_SIZE, y + TILE_SIZE)
+		self.lift(self.cursor)
+	
 class App(Tk.Tk):
 	def __init__(self):
 		Tk.Tk.__init__(self)
@@ -35,6 +52,7 @@ class App(Tk.Tk):
 		
 		m_edit = Tk.Menu(menubar, tearoff=False)
 		m_edit.add_command(label="Annuler (U)", command=self.undo)
+		self.bind("<u>", self.undo)
 		menubar.add_cascade(label="Édition", menu=m_edit)
 		self.config(menu=menubar)
 		
@@ -49,24 +67,29 @@ class App(Tk.Tk):
 			# conversion en PhotoImage
 			self.tiles.append(ImageTk.PhotoImage(tile))
 		
-		# canevas de la zone d'édition
+		# canevas de la zone de sélection
 		frame_left = Tk.Frame(self)
 		frame_left.pack(side=Tk.LEFT)
-		Tk.Label(frame_left, text="tile courante : ").pack()
+		self.can_select = TiledCanvas(frame_left, width=SHEET_WIDTH * TILE_SIZE,
+			height=SHEET_HEIGHT * TILE_SIZE)
+		self.can_select.pack()
+		self.can_select.bind("<ButtonPress-1>", self.set_current)
+		
+		self.img = ImageTk.PhotoImage(tilesheet)
+		self.can_select.create_image(0, 0, image=self.img, anchor=Tk.NW)
+		Tk.Label(frame_left, text="tile courante : ").pack(side=Tk.LEFT)
 		self.lab_tile = Tk.Label(frame_left)
 		self.lab_tile.pack()
 		
-		self.can = Tk.Canvas(frame_left, width=ZONE_WIDTH * TILE_SIZE,
+		# canevas de la zone d'édition
+		frame_right = Tk.Frame(self)
+		frame_right.pack()
+		self.can = TiledCanvas(frame_right, width=ZONE_WIDTH * TILE_SIZE,
 			height=ZONE_HEIGHT * TILE_SIZE)
-		self.can.pack(side=Tk.LEFT)
+		self.can.pack()
+		self.can.bind("<ButtonPress-1>", self.put_tile)
+		self.can.bind("<B1-Motion>", self.put_tile)
 		
-		# boutons des tiles
-		buttons = []
-		for i, tile in enumerate(self.tiles):
-			buttons.append(Tk.Button(self, image=tile,
-				command=lambda _i = i: self.set_current(_i)))
-			buttons[-1].pack()
-	
 		# création d'une carte par défaut
 		self.history = [] # pile de l'historique
 		self.map = []
@@ -77,17 +100,6 @@ class App(Tk.Tk):
 					anchor=Tk.NW, image=self.tiles[self.map[-1]])
 		self.current = 0 # indice de la tile courante
 		self.lab_tile["image"] = self.tiles[self.current]
-		
-		#curseur
-		self.cursor_rect = self.can.create_rectangle(0, 0, TILE_SIZE, TILE_SIZE,
-			outline="red", width=1)
-		self.cursor_tile = self.can.create_image(0, 0, image=self.tiles[0],
-			anchor=Tk.NW)
-		# callbacks
-		self.can.bind("<ButtonPress-1>", self.put_tile)
-		self.can.bind("<B1-Motion>", self.put_tile)
-		self.can.bind("<Motion>", self.place_cursor)
-		self.bind("<u>", self.undo)
 		
 	def open_map(self):
 		"charger une carte dans l'éditeur"
@@ -114,13 +126,14 @@ class App(Tk.Tk):
 				f.write("%3d " % i)
 			f.close()
 	
-	def set_current(self, tile_id):
+	def set_current(self, event):
 		"définir la tile courante"
 		
+		x = event.x / TILE_SIZE
+		y = event.y / TILE_SIZE
+		tile_id = y * SHEET_WIDTH + x
 		self.current = tile_id
 		self.lab_tile["image"] = self.tiles[tile_id]
-		# le curseur utilise la nouvelle tile courante
-		self.can.itemconfig(self.cursor_tile, image=self.tiles[tile_id])
 		
 	def put_tile(self, event):
 		"placer une tile sur la carte"
@@ -136,17 +149,7 @@ class App(Tk.Tk):
 			# ajout du placement dans la pile de l'historique
 			self.history.append((self.map[indice], indice))
 			self.map[indice] = self.current
-		self.place_cursor(event)
-		
-	def place_cursor(self, event):
-		"positionne le curseur sur la tile sous la souris"
-		
-		x = (event.x / TILE_SIZE) * TILE_SIZE
-		y = (event.y / TILE_SIZE) * TILE_SIZE
-		self.can.coords(self.cursor_rect, x - 1, y - 1, x + TILE_SIZE, y + TILE_SIZE)
-		self.can.lift(self.cursor_rect)
-		self.can.coords(self.cursor_tile, x, y)
-		self.can.lift(self.cursor_tile)
+		self.can.place_cursor(event)
 		
 	def undo(self, event=None):
 		"annuler la dernière action"
