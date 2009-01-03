@@ -5,6 +5,9 @@ EXEC=ppd
 SRC= $(wildcard *.cpp)
 OBJ= $(SRC:.cpp=.o)
 
+# tinyxml
+TINYXML_OBJ= tinyxml/tinyxml.o tinyxml/tinyxmlparser.o tinyxml/tinyxmlerror.o
+
 # debug/release mode
 DEBUG=yes
 ifeq ($(DEBUG), yes)
@@ -20,17 +23,26 @@ ifeq ($(LINK), dynamic)
 endif
 
 
-$(EXEC): $(OBJ)
+$(EXEC): $(OBJ) $(TINYXML_OBJ)
 	$(CC) $^ -o $(EXEC) $(LDFLAGS)
 
 %.o: %.cpp
+	$(CC) $< -c -o $@ $(CFLAGS)
+
+tinyxml/tinyxml.o: tinyxml/tinyxml.cpp
+	$(CC) $< -c -o $@ $(CFLAGS)
+	
+tinyxml/tinyxmlparser.o: tinyxml/tinyxmlparser.cpp
+	$(CC) $< -c -o $@ $(CFLAGS)
+	
+tinyxml/tinyxmlerror.o: tinyxml/tinyxmlerror.cpp
 	$(CC) $< -c -o $@ $(CFLAGS)
 
 .PHONY: clean mrproper
 
 clean:
 	-rm *.o
-
+	
 mrproper: clean
 	-rm $(EXEC)
 

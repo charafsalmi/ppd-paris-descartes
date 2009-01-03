@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<tiles>
+	<tile id="6" walkable="0" />
+	<tile id="13" walkable="0" />
+	<tile id="14" walkable="0" />
+</tiles>
+

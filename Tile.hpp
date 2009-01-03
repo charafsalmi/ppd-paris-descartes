@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "TileManager.hpp"
+
 
 class Tile: public sf::Sprite
 {
@@ -14,12 +16,14 @@ public:
 	{
 		SHEET_WIDTH = 8, // nombre de tiles en largeur
 		SHEET_HEIGHT = 8, // en hauteur
-		SHEET_COUNT = SHEET_WIDTH * SHEET_HEIGHT // nombre total
+		SHEET_COUNT = SHEET_WIDTH * SHEET_HEIGHT, // nombre total
+		
+		SIZE = 32 // taille en pixels d'une tile
 	};
 	
-	enum
+	enum Effect
 	{
-		SIZE = 32 // taille en pixels d'une tile
+		NONE, WATER, HOLE
 	};
 	
 	/**
@@ -39,7 +43,9 @@ public:
 	}
 	
 private:
+	static TileManager& manager_;
 	bool walkable_;
+	//Effect effet_;
 };
 
 #endif /* guard TILE_HPP */

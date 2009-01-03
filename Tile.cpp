@@ -4,6 +4,9 @@
 #include "MediaManager.hpp"
 
 
+TileManager& Tile::manager_ = TileManager::GetInstance();
+
+
 void Tile::Build(int id, const sf::Vector2f& pos)
 {
 	static MediaManager& media = MediaManager::GetInstance();
@@ -37,6 +40,8 @@ void Tile::Build(int id, const sf::Vector2f& pos)
 	passer ces paramètres supplémentaires au descripteur
 	*/
 	// en attendant, valeurs magiques de tiles non walkables (eau et poteaux)
-	walkable_ = id != 13 && id != 14 && id != 6; 
+	walkable_ = manager_.IsWalkable(id);
+	
+	//walkable_ = id != 13 && id != 14 && id != 6; 
 }
 
