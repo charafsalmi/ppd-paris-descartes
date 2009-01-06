@@ -27,6 +27,10 @@ class Game
 		 * @param[in] dir: direction souhaitée
 		 */
 		void ChangeZone(Direction dir);
+		
+		inline sf::RenderWindow& GetWind() {
+			return app_;
+		}
 
 	private:
 		Game();

@@ -67,6 +67,7 @@ void Zone::Show(const sf::RenderWindow& app) const
 	{
 		app.Draw(**it);
 	}
+	
 }
 
 

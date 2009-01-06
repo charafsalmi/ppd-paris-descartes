@@ -1,5 +1,9 @@
 #include "Game.hpp"
 #include "Enemy.hpp"
+#ifdef DUMB_MUSIC
+#include "MediaManager.hpp"
+#include "Music.hpp"
+#endif
 
 #define APP_WIDTH  (Tile::SIZE * Zone::WIDTH)
 #define APP_HEIGHT (Tile::SIZE * Zone::HEIGHT)
@@ -88,6 +92,12 @@ void Game::Run()
 	Entity::SetActiveZone(active_zone_);
 
 	float frametime;
+	
+#ifdef DUMB_MUSIC
+	Music* music = GET_MUSIC("zelda-tavern");
+	music->Play();
+#endif
+
 	while (running)
 	{
 		while (app_.GetEvent(event))
@@ -116,6 +126,11 @@ void Game::Run()
 		}
 	}
 	app_.Close();
+	
+#ifdef DUMB_MUSIC
+	music->Stop();
+	delete music;
+#endif
 }
 
 

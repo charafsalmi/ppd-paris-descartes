@@ -9,6 +9,9 @@
 #define SOUND_LIST "data/sound/sound.txt"
 #define SOUND_PATH "data/sound/"
 
+#define MUSIC_LIST "data/music/music.txt"
+#define MUSIC_PATH "data/music/"
+
 
 // charger une image
 static void load_or_die(sf::Image& image, const char* filename)
@@ -30,6 +33,14 @@ static void load_or_die(sf::Image& image, const char* filename)
 		abort();
 	}
 }*/
+
+#ifdef DUMB_MUSIC
+// charger un buffer lié a une instance de la lib dumb
+static void load_or_die(std::string& music_name, const char* filename)
+{
+	music_name = filename;
+}
+#endif
 
 // charger une liste de ressources depuis un fichier
 template <typename Ressource>
@@ -100,6 +111,43 @@ const sf::SoundBuffer& MediaManager::GetSoundBuf(const char* key) const
 	return it->second;
 }
 
+#ifdef DUMB_MUSIC
+Music* MediaManager::GetMusic(const char* key) const
+{
+	std::map<std::string, std::string>::const_iterator it;
+	it = musics_.find(key);
+	if (it == musics_.end())
+	{
+		std::cerr << "can't give you music file " << key << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	
+	std::string path(MUSIC_PATH);
+	Music* mus = new Music((path + it->second).c_str());
+#ifdef DEBUG
+	std::cout << path << it->second << " made." <<  std::endl;
+#endif
+	return mus;
+}
+#endif
+
+const sf::Font& MediaManager::GetFont() const
+{
+	return font_;
+}
+
+
+const Animation& MediaManager::GetAnimation(const char* key) const
+{
+	std::map<std::string, Animation>::const_iterator it;
+	it = animations_.find(key);
+	if (it == animations_.end())
+	{
+		std::cerr << "can't give you animation " << key << std::endl;
+	}
+	return it->second;
+}
+
 
 MediaManager::MediaManager()
 {
@@ -116,5 +164,36 @@ MediaManager::MediaManager()
 		std::cerr << "can't open sound list: " << SOUND_LIST << std::endl;
 		abort();
 	}*/
+	
+#ifdef DUMB_MUSIC	
+	// chargement des musiques
+	if (!load_from_list(MUSIC_LIST, musics_))
+	{
+		std::cerr << "can't open music list: " << MUSIC_LIST << std::endl;
+		exit(EXIT_FAILURE);
+	}
+#endif
+//  void Animation::AddFrame(int left, int top, int width, int height)
+	BuildAnimation("player_walk_top",		32, 48, 8, 0.125f, 32,   0);
+	BuildAnimation("player_walk_right",		32, 48, 8, 0.125f, 32,  48);
+	BuildAnimation("player_walk_bottom",	32, 48, 8, 0.125f, 32,  96);
+	BuildAnimation("player_walk_left",		32, 48, 8, 0.125f, 32, 144);
 }
+
+void MediaManager::BuildAnimation(const char* name, int width, int height,
+	int count, float delay, int x_offset, int y_offset)
+{
+	Animation* p = &animations_[name];
+	for (int i = 0; i < count; ++i)
+	{
+		p->AddFrame(x_offset + i * width, y_offset, width, height);
+	}
+	p->SetDelay(delay);
+	
+#ifdef DEBUG
+	std::cout << "building anim:" << name << std::endl;
+#endif
+}
+
+
 
