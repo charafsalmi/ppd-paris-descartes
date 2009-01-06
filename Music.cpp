@@ -1,4 +1,4 @@
-#ifndef NO_AUDIO
+#ifdef DUMB_MUSIC
 
 #include <cstdio>
 
@@ -23,7 +23,7 @@ Music::Music(const char* name)
 				module_ = dumb_load_mod(name);
 				if (!module_)
 				{
-		    		printf("Failed to load %s!\n", name);
+					printf("Failed to load %s!\n", name);
 				}
 				else
 				{
@@ -62,4 +62,5 @@ bool Music::OnGetData(Chunk& data)
 	return true;
 }
 
-#endif /* NO_AUDIO */
+#endif /* DUMB_MUSIC */
+

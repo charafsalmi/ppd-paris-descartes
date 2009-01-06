@@ -185,6 +185,7 @@ MediaManager::MediaManager()
 	BuildAnimation("stalfos_walk_right",	32, 52, 2, 0.15f,  0,  156);
 }
 
+
 void MediaManager::BuildAnimation(const char* name, int width, int height,
 	int count, float delay, int x_offset, int y_offset)
 {

@@ -1,7 +1,7 @@
 #ifndef MUSIC_HPP
 #define MUSIC_HPP
 
-#ifndef NO_AUDIO
+#ifdef DUMB_MUSIC
 
 #include <dumb.h>
 #include <SFML/System.hpp>
@@ -19,8 +19,8 @@
 class Music : public sf::SoundStream
 {
 public:
-    Music(const char* name);
-    ~Music();
+	Music(const char* name);
+	~Music();
 	
 	virtual bool OnStart();
 
@@ -33,7 +33,7 @@ private:
 	DUH_SIGRENDERER* player_;
 };
 
-#endif /* NO_AUDIO */
+#endif /* DUMB_MUSIC */
 
 #endif /* guard MUSIC_HPP */
 

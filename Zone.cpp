@@ -45,7 +45,7 @@ void Zone::Update(float frametime)
 	EntityList::iterator it;
 	for (it = entities_.begin(); it != entities_.end(); ++it)
 	{
-		(**it).Move(frametime);
+		(**it).Update(frametime);
 	}
 }
 
@@ -67,7 +67,6 @@ void Zone::Show(const sf::RenderWindow& app) const
 	{
 		app.Draw(**it);
 	}
-	
 }
 
 

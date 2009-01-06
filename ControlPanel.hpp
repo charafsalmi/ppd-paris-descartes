@@ -3,7 +3,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#define CONTROL_PANEL_HEIGHT 56
 
 class ControlPanel
 {
@@ -27,30 +26,29 @@ public:
 
 */
 
-    static ControlPanel& GetInstance();
+	static ControlPanel& GetInstance();
 
-	void SetLives(const int value);
+	void SetLives(int value);
 	
-	void SetRupees(const int value);
-    /*
+	void SetRupees(int value);
+	/*
 	void SetSlot(const char slot, const int value);
 	*/
-    void Show(sf::RenderWindow& app, float frametime);
-    
+	void Show(const sf::RenderWindow& app, float frametime);
+	
 private:
-    ControlPanel();
-    ControlPanel(const ControlPanel& other);
-    
+	ControlPanel();
+	ControlPanel(const ControlPanel& other);
+	
 	int lives_count_;
-
-
-    sf::String rupees_text_;
-    sf::Sprite rupees_;
-    sf::Sprite lives_;
-    sf::Sprite background_;
-    sf::Font font_;
-    float blink_timer_;
-    bool blink_frame_;
+	
+	sf::String rupees_text_;
+	sf::Sprite rupees_;
+	sf::Sprite lives_;
+	sf::Sprite background_;
+	sf::Font font_;
+	float blink_timer_;
+	bool blink_frame_;
 };
 
 #endif /* guard CONTROLPANEL_HPP */

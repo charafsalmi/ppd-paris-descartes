@@ -29,9 +29,10 @@ class Game
 		 */
 		void ChangeZone(Direction dir);
 		
-		inline sf::RenderWindow& GetWind() {
+		/*inline sf::RenderWindow& GetApp() const
+		{
 			return app_;
-		}
+		}*/
 
 	private:
 		Game();

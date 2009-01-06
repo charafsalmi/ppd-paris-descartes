@@ -12,19 +12,17 @@ Enemy::Enemy(const sf::Vector2f& pos) :
 	SetFloor(32, 32);
 	speed_ = SPEED;
 	
-	walk_anims_[UP]		= const_cast<Animation*>(&GET_ANIM("stalfos_walk_top"));
-	walk_anims_[DOWN]	= const_cast<Animation*>(&GET_ANIM("stalfos_walk_bottom"));
-	walk_anims_[LEFT]	= const_cast<Animation*>(&GET_ANIM("stalfos_walk_left"));
-	walk_anims_[RIGHT]	= const_cast<Animation*>(&GET_ANIM("stalfos_walk_right"));
+	walk_anims_[UP]		= &GET_ANIM("stalfos_walk_top");
+	walk_anims_[DOWN]	= &GET_ANIM("stalfos_walk_bottom");
+	walk_anims_[LEFT]	= &GET_ANIM("stalfos_walk_left");
+	walk_anims_[RIGHT]	= &GET_ANIM("stalfos_walk_right");
 	
 	current_dir_ = RIGHT;
-	
-	
+	SetCenter(0, walk_anims_[UP]->GetFrame(0).GetHeight());
 }
 
 
-
-void Enemy::Move(float frametime)
+void Enemy::Update(float frametime)
 {
 	const sf::Vector2f& pos = GetPosition();
 	sf::FloatRect rect;

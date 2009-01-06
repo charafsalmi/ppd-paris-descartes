@@ -1,8 +1,9 @@
 #include "Animated.hpp"
 
+
 Animated::Animated(const Animation* animation, sf::Sprite& sprite)
 {
-	animation_ = const_cast<Animation*>(animation);
+	animation_ = animation;
 	timer_ = animation_->GetDelay();
 	frame_ = 0;
 	loop_ = true;
@@ -13,12 +14,13 @@ Animated::Animated(const Animation* animation, sf::Sprite& sprite)
 
 void Animated::Change(const Animation* animation, sf::Sprite& sprite)
 {
-	animation_ = const_cast<Animation*>(animation);
+	animation_ = animation;
 	timer_ = animation_->GetDelay();
 	frame_ = 0;
 	
 	sprite.SetSubRect(animation_->GetFrame(0));
 }
+
 
 void Animated::Update(float frametime, sf::Sprite& sprite)
 {

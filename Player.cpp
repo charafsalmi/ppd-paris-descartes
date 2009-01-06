@@ -3,10 +3,10 @@
 #include "Game.hpp"
 #include "type_definitions.hpp"
 
-
 #define SPEED    100
 #define PL_WIDTH  32 
 #define PL_HEIGHT 48
+
 
 Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	Entity(pos, GET_IMG("player")),
@@ -15,17 +15,13 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 {
 	// valeurs magiques... surface de contact au sol
 	SetFloor(28, 20);
-// <HACK>
-	SetCenter(PL_WIDTH / 2, PL_HEIGHT / 2);
-// </HACK>
 	zone_ = NULL;
 	
-
 	// Animations de marche
-	walk_anims_[UP]		= const_cast<Animation*>(&GET_ANIM("player_walk_top"));
-	walk_anims_[DOWN]	= const_cast<Animation*>(&GET_ANIM("player_walk_bottom"));
-	walk_anims_[LEFT]	= const_cast<Animation*>(&GET_ANIM("player_walk_left"));
-	walk_anims_[RIGHT]	= const_cast<Animation*>(&GET_ANIM("player_walk_right"));
+	walk_anims_[UP]		= &GET_ANIM("player_walk_top");
+	walk_anims_[DOWN]	= &GET_ANIM("player_walk_bottom");
+	walk_anims_[LEFT]	= &GET_ANIM("player_walk_left");
+	walk_anims_[RIGHT]	= &GET_ANIM("player_walk_right");
 	
 	// Subrects d'immobilité
 	subrects_not_moving_[UP]	= sf::IntRect(0,   0, 32,  48);
@@ -42,6 +38,8 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	// le joueur est de face par défaut
 	current_dir_ = DOWN;
 	SetSubRect(subrects_not_moving_[DOWN]);
+	
+	SetCenter(0, walk_anims_[UP]->GetFrame(0).GetHeight());
 }
 
 
@@ -53,13 +51,13 @@ void Player::OnEvent(const sf::Event& event)
 		if (event.Key.Code == sf::Key::Space)
 		{
 			std::cerr << " -- DEBUG -- \n";
-			std::cout << "GetPosition: " << GetPosition().x << ", " << GetPosition().y << "; GetCenter: " << GetCenter().x << ", " << GetCenter().y << "\n"; 
+			std::cout << "GetPosition: " << GetPosition().x << ", " << GetPosition().y << ";\n"; 
 		}
 	}
 }
 
 
-void Player::Move(float frametime)
+void Player::Update(float frametime)
 {
 	static Game& game = Game::GetInstance();
 	bool moving = false;
@@ -96,25 +94,20 @@ void Player::Move(float frametime)
 			sf::Vector2f pos = GetPosition();
 			pos.x += dx * frametime;
 			pos.y += dy * frametime;
-// <HACK>
-			rect.Left = pos.x - 14;  // Magiques, pour que ça coinçide.
-			rect.Bottom = pos.y + 18;
-			rect.Right = pos.x - 14 + GetFloorWidth();
-			rect.Top = pos.y + 18 - GetFloorHeight();
-// </HACK>
+			
+			rect.Left = pos.x;
+			rect.Bottom = pos.y;
+			rect.Right = pos.x + GetFloorWidth();
+			rect.Top = pos.y - GetFloorHeight();
+			
 			// on vérifie si on doit changer de zone
 			bool out_zone = false;
-// <HACK>
-			if (rect.Left < -0.5)
-// </HACK>
+			if (rect.Left < 0)
 			{
-				std::cerr << rect.Left << "\n";
 				game.ChangeZone(Game::LEFT);
 				out_zone = true;
 			}
-// <HACK>
-			else if (rect.Top < -0.5) 
-// </HACK>
+			else if (rect.Top < 0) 
 			{
 				game.ChangeZone(Game::UP);
 				out_zone = true;
@@ -132,16 +125,7 @@ void Player::Move(float frametime)
 			if (!out_zone && zone_->CanMove(this, rect))
 			{
 				SetPosition(pos);
-			}
-// <HACK> <- 'répare' sur gauche-droite, casse sur haut-bas :)
-			else if (out_zone)
-			{
-				if (GetPosition().x < 12)
-					SetPosition(GetPosition().x + 20, GetPosition().y);
-				else
-					SetPosition(GetPosition().x + 10, GetPosition().y);
-			}
-// </HACK>			
+			}		
 		}
 	}
 	
@@ -264,6 +248,7 @@ bool Player::Move(Direction dir, float frametime)
 	}
 	return false;
 }
+
 
 bool Player::IsDiag(Direction dir1, Direction dir2)
 {

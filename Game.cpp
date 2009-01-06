@@ -67,6 +67,8 @@ Game::Game() :
 
 	active_zone_ = NULL;
 	next_zone_ = NULL;
+	
+	panel_.SetRupees(42);
 }
 
 
@@ -114,11 +116,12 @@ void Game::Run()
 		}
 		frametime = app_.GetFrameTime();
 		active_zone_->Update(frametime);
+		
 		active_zone_->Show(app_);
 		panel_.Show(app_, frametime); // On pourrait faire un Update, mais a priori
 									  // "Anim" seulement quand ne reste qu'une vie
 		app_.Display();
-
+		
 		// si demande de changement de zone
 		if (next_zone_ != active_zone_)
 		{

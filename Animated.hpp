@@ -50,7 +50,7 @@ public:
 	
 	
 private:
-	Animation* animation_;
+	const Animation* animation_;
 	int frame_;
 	float timer_;
 	bool stopped_, loop_;
