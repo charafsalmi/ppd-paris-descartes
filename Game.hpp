@@ -5,6 +5,7 @@
 
 #include "Zone.hpp"
 #include "Player.hpp"
+#include "ControlPanel.hpp"
 
 
 class Game
@@ -45,9 +46,13 @@ class Game
 
 		Zone* zones_[GAME_HEIGHT][GAME_WIDTH];
 		sf::Vector2i cds_zone_; // coordonnées de la zone courante
+		
 		Zone* active_zone_;
 		Zone* next_zone_;
 		Player* player_;
+		
+		ControlPanel& panel_;
+		
 		sf::RenderWindow app_;
 };
 

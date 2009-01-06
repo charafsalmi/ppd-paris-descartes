@@ -6,10 +6,10 @@ EXEC=ppd
 #OBJ= $(SRC:.cpp=.o)
 
 SRC =  Animated.cpp Animation.cpp Enemy.cpp Entity.cpp Game.cpp Main.cpp MediaManager.cpp 
-SRC += Player.cpp StaticItem.cpp Tile.cpp TileManager.cpp Zone.cpp
+SRC += Player.cpp StaticItem.cpp Tile.cpp TileManager.cpp Zone.cpp ControlPanel.cpp
 	
 OBJ = Animated.o Animation.o Enemy.o Entity.o Game.o Main.o MediaManager.o
-OBJ  +=	Player.o StaticItem.o Tile.o TileManager.o Zone.o
+OBJ +=	Player.o StaticItem.o Tile.o TileManager.o Zone.o ControlPanel.o 
 
 # tinyxml
 TINYXML_OBJ= tinyxml/tinyxml.o tinyxml/tinyxmlparser.o tinyxml/tinyxmlerror.o

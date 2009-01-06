@@ -2,3 +2,5 @@ pillar.png
 player.png
 tileset.png
 badguy.png
+objects.png
+ui-background.png

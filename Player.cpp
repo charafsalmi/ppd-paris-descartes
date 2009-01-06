@@ -133,7 +133,7 @@ void Player::Move(float frametime)
 			{
 				SetPosition(pos);
 			}
-// <HACK>
+// <HACK> <- 'répare' sur gauche-droite, casse sur haut-bas :)
 			else if (out_zone)
 			{
 				if (GetPosition().x < 12)

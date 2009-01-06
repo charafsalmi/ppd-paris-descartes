@@ -178,6 +178,11 @@ MediaManager::MediaManager()
 	BuildAnimation("player_walk_right",		32, 48, 8, 0.125f, 32,  48);
 	BuildAnimation("player_walk_bottom",	32, 48, 8, 0.125f, 32,  96);
 	BuildAnimation("player_walk_left",		32, 48, 8, 0.125f, 32, 144);
+	
+	BuildAnimation("stalfos_walk_top",		32, 52, 2, 0.15f,  0,    0);
+	BuildAnimation("stalfos_walk_bottom",	32, 52, 2, 0.15f,  0,   52);
+	BuildAnimation("stalfos_walk_left",		32, 52, 2, 0.15f,  0,  104);
+	BuildAnimation("stalfos_walk_right",	32, 52, 2, 0.15f,  0,  156);
 }
 
 void MediaManager::BuildAnimation(const char* name, int width, int height,
@@ -191,7 +196,7 @@ void MediaManager::BuildAnimation(const char* name, int width, int height,
 	p->SetDelay(delay);
 	
 #ifdef DEBUG
-	std::cout << "building anim:" << name << std::endl;
+	std::cout << "building anim: " << name << std::endl;
 #endif
 }
 

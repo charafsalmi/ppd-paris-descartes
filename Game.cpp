@@ -19,7 +19,8 @@ Game& Game::GetInstance()
 }
 
 
-Game::Game()
+Game::Game() :
+	panel_		(ControlPanel::GetInstance())
 {
 	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, APP_BPP), APP_TITLE);
 	app_.SetFramerateLimit(APP_FPS);
@@ -114,6 +115,8 @@ void Game::Run()
 		frametime = app_.GetFrameTime();
 		active_zone_->Update(frametime);
 		active_zone_->Show(app_);
+		panel_.Show(app_, frametime); // On pourrait faire un Update, mais a priori
+									  // "Anim" seulement quand ne reste qu'une vie
 		app_.Display();
 
 		// si demande de changement de zone

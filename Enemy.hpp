@@ -2,8 +2,9 @@
 #define ENEMY_HPP
 
 #include "Entity.hpp"
+#include "Animated.hpp"
 
-class Enemy: public Entity
+class Enemy: public Entity, public Animated
 {
 	public:
 		Enemy(const sf::Vector2f& pos);
@@ -55,6 +56,9 @@ class Enemy: public Entity
 
 	private:
 		int speed_;
+		Direction current_dir_;
+		// Animations de déplacement
+		Animation* walk_anims_[COUNT_DIRECTION];
 };
 
 #endif /* ENEMY_HPP */
