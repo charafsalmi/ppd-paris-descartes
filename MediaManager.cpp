@@ -25,14 +25,14 @@ static void load_or_die(sf::Image& image, const char* filename)
 }
 
 // charger un buffer audio
-/*static void load_or_die(sf::SoundBuffer& buffer, const char* filename)
+static void load_or_die(sf::SoundBuffer& buffer, const char* filename)
 {
 	std::string path(SOUND_PATH);
 	if (!buffer.LoadFromFile(path + filename))
 	{
 		abort();
 	}
-}*/
+}
 
 #ifdef DUMB_MUSIC
 // charger un buffer lié a une instance de la lib dumb
@@ -159,11 +159,11 @@ MediaManager::MediaManager()
 	}
 	
 	// chargement des buffers audio
-	/*if (!load_from_list(SOUND_LIST, sounds_))
+	if (!load_from_list(SOUND_LIST, sounds_))
 	{
 		std::cerr << "can't open sound list: " << SOUND_LIST << std::endl;
 		abort();
-	}*/
+	}
 	
 #ifdef DUMB_MUSIC	
 	// chargement des musiques

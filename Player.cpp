@@ -139,6 +139,7 @@ void Player::Update(float frametime)
 		if (Animated::Halted())
 		{
 			std::cerr << "Restarting anim\n";
+			UpdateSubRect(current_dir_, moving);
 			Animated::Start();
 		}
 		Animated::Update(frametime, *this);
@@ -171,7 +172,11 @@ void Player::UpdateSubRect(Direction dir, bool moving)
 			Animated::Halt();
 			SetSubRect(subrects_not_moving_[dir]);
 		}
-	current_dir_ = dir;
+		if (Animated::Halted())
+		{
+			Animated::Change(walk_anims_[current_dir_], *this);
+		}
+		current_dir_ = dir;
 	}
 }
 

@@ -1,6 +1,7 @@
 #ifndef CONTROLPANEL_HPP
 #define CONTROLPANEL_HPP
 
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
 
@@ -49,6 +50,7 @@ private:
 	sf::Font font_;
 	float blink_timer_;
 	bool blink_frame_;
+	sf::Sound blink_sound_;
 };
 
 #endif /* guard CONTROLPANEL_HPP */

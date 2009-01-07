@@ -28,9 +28,6 @@ void ControlPanel::SetRupees(int value)
 	rupees_text_.SetText(str_sprintf("%d\n", value));
 }
 
-#include <iostream>
-
-
 void ControlPanel::Show(const sf::RenderWindow& app, float frametime)
 {
 	app.Draw(background_);
@@ -42,7 +39,6 @@ void ControlPanel::Show(const sf::RenderWindow& app, float frametime)
 	if (lives_count_ == 1)	// Clignottement s'il ne reste qu'une vie.
 	{
 		blink_timer_ -= frametime;	
-		//std::cerr << blink_timer_ << "\n";
 		if (blink_timer_ <= 0)
 		{
 			blink_timer_ = 0.12f;
@@ -50,7 +46,13 @@ void ControlPanel::Show(const sf::RenderWindow& app, float frametime)
 			if (!blink_frame_)
 				lives_.SetSubRect(sf::IntRect(32, 0, 64, 32));
 			else
+			{
 				lives_.SetSubRect(sf::IntRect(0, 0, 32, 32));
+				if (blink_sound_.GetStatus() != sf::Sound::Playing)
+				{
+					blink_sound_.Play();
+				}
+			}
 			blink_frame_ ^= 1;
 		}
 	}
@@ -84,5 +86,7 @@ ControlPanel::ControlPanel()
 	
 	blink_timer_ = 0.f;
 	blink_frame_ = true;
+	blink_sound_.SetBuffer(GET_SOUNDBUF("danger-beep"));
+	
 }
 
