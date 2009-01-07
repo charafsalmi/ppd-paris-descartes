@@ -45,6 +45,8 @@ public:
 	 * @return pointeur sur la musique
 	 */
 	Music* GetMusic(const char* key) const;
+	
+	Music* GetMusic(unsigned short id) const;
 #endif
 
 	const std::string& GetPostFX(const char* key) const;
@@ -110,6 +112,11 @@ inline const sf::SoundBuffer& GET_SOUNDBUF(const char* key)
 inline Music* GET_MUSIC(const char* key)
 {
 	return MediaManager::GetInstance().GetMusic(key);
+}
+
+inline Music* GET_MUSIC(unsigned short id)
+{	// Plus compact, pour utilisation dans les zones. Premier index: 1.
+	return MediaManager::GetInstance().GetMusic(id);
 }
 #endif
 

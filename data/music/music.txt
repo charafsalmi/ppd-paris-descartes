@@ -1,1 +1,2 @@
+zelda-chiptune.mod
 zelda-tavern.xm

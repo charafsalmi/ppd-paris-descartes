@@ -48,7 +48,12 @@ public:
 		return loop_;
 	}
 	
-	
+	bool operator==(const Animation& other);
+
+	inline bool IsEqual(const Animation& other)
+	{
+		return operator==(other);
+	}
 private:
 	const Animation* animation_;
 	int frame_;

@@ -9,6 +9,8 @@ class Animation
 {
 public:
 	Animation();
+	friend bool operator==(const Animation& my, const Animation& other);
+	friend bool operator!=(const Animation& my, const Animation& other);
 	
 	/**
 	 * Définir le temps d'attente entre chaque frame
@@ -50,10 +52,17 @@ public:
 		return subrects_.size();
 	}
 	
+
 private:
 	std::vector<sf::IntRect> subrects_;
 	float delay_;
 };
+
+//bool operator==(Animation& my, Animation& other);
+//bool operator!=(Animation& my, Animation& other);
+bool operator==(const Animation* my, const Animation& other);
+bool operator!=(const Animation* my, const Animation& other);
+
 
 #endif /* ANIMATION_HPP */
 

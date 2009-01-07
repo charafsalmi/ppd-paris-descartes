@@ -2,6 +2,7 @@
 #define PLAYER_HPP
 
 #include "Animated.hpp"
+#include "ControlPanel.hpp"
 #include "Entity.hpp"
 
 /**
@@ -54,6 +55,8 @@ private:
 	
 	Direction current_dir_;
 	const sf::Input& input_;
+	
+	int lives_, rupees_;
 };
 
 #endif /* guard PLAYER_HPP */

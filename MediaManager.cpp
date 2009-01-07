@@ -128,6 +128,29 @@ Music* MediaManager::GetMusic(const char* key) const
 	Music* mus = new Music((path + it->second).c_str());
 	return mus;
 }
+
+Music* MediaManager::GetMusic(unsigned short id) const
+{
+
+	if(id > musics_.size())
+	{
+		puts("Music: off-bounded index");
+		abort();
+	}
+	
+	std::map<std::string, std::string>::const_iterator it;
+	for (it = musics_.begin(); it != musics_.end() && --id; ++it) ;
+	if (it == musics_.end())
+	{
+		puts ("Whoops");
+		abort();
+	}
+	
+	std::string path(MUSIC_PATH);
+	Music* mus = new Music((path + it->second).c_str());
+	return mus;
+}
+
 #endif
 
 const std::string& MediaManager::GetPostFX(const char* key) const

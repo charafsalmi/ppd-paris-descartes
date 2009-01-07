@@ -6,6 +6,10 @@
 #include "Tile.hpp"
 #include "Entity.hpp"
 
+#ifdef DUMB_MUSIC
+#include "Music.hpp"
+#endif
+
 /**
  * Une zone de jeu
  */
@@ -67,6 +71,11 @@ public:
 	 */
 	void PlaceStaticItem(int i, int j);
 	
+	inline short GetMusic()
+	{
+		return zone_music_index_;
+	}
+	
 private:
 	/**
 	 * Désallouer toutes les entités de la zone
@@ -78,6 +87,9 @@ private:
 
 	bool walkable_[HEIGHT][WIDTH];
 	Tile tiles_[HEIGHT][WIDTH]; // tiles de la zone
+#ifdef DUMB_MUSIC
+	short zone_music_index_;
+#endif
 };
 
 #endif /* guard ZONE_HPP */

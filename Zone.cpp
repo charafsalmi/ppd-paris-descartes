@@ -20,6 +20,9 @@ Zone::~Zone()
 
 void Zone::Load(const char* filename)
 {
+#ifdef DUMB_MUSIC
+	short int t_music = -1;
+#endif
 	std::ifstream f(filename);
 	assert(f); // TODO: lecture robuste et utiliser XML
 	for (int i = 0; i < HEIGHT; ++i)
@@ -36,6 +39,10 @@ void Zone::Load(const char* filename)
 			walkable_[i][j] = tiles_[i][j].Walkable();
 		}
 	}
+#ifdef DUMB_MUSIC	
+	f >> t_music;
+	zone_music_index_ = t_music;
+#endif
 	f.close();
 }
 

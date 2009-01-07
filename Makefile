@@ -11,7 +11,8 @@ TINYXML_OBJ= tinyxml/tinyxml.o tinyxml/tinyxmlparser.o tinyxml/tinyxmlerror.o
 # debug/release mode
 DEBUG=yes
 ifeq ($(DEBUG), yes)
-	CFLAGS += -g -DDEBUG
+	CFLAGS += -g -DDEBUG 
+#	CFLAGS += -DNO_SPLASH
 else
 	CFLAGS += -O2
 endif

@@ -127,6 +127,8 @@ protected:
 
 	static Zone* zone_;
 
+protected:
+	bool dead_;
 private:
 	int floor_width_;
 	int floor_height_;

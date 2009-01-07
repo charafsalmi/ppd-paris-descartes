@@ -14,6 +14,7 @@ Entity::Entity(const sf::Vector2f& pos, const sf::Image& image)
 	SetPosition(pos);
 	floor_width_ = image.GetWidth();
 	floor_height_ = image.GetHeight();
+	dead_ = false;
 }
 
 

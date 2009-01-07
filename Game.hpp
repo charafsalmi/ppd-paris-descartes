@@ -39,6 +39,8 @@ class Game
 		Game(const Game&);
 		~Game();
 
+		void SetMusic(short val);
+
 		enum
 		{
 			// dimensions du jeu en nombre de zones

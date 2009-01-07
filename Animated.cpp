@@ -43,3 +43,7 @@ void Animated::Update(float frametime, sf::Sprite& sprite)
 	}
 }
 
+bool Animated::operator==(const Animation& other)
+{
+	return ((this->animation_) == other);
+}

@@ -1,10 +1,6 @@
 #include "Game.hpp"
 
 #include "Enemy.hpp"
-#ifdef DUMB_MUSIC
-#include "MediaManager.hpp"
-#include "Music.hpp"
-#endif
 #include "Splash.hpp"
 
 #define APP_WIDTH  (Tile::SIZE * Zone::WIDTH)
@@ -83,6 +79,8 @@ Game::~Game()
 			delete zones_[i][j];
 		}
 	}
+	SetMusic(-1);	// What about a shared Defines.h file which would
+					// state, say, "#define UNDEF" -1 ?
 }
 
 
@@ -98,18 +96,19 @@ void Game::Run()
 
 	float frametime;
 	
-	
+#ifndef NO_SPLASH
 	if (sf::PostFX::CanUsePostFX())
 	{
 		Splash s(app_);
 		s.Run();
 	}
-	
-#ifdef DUMB_MUSIC
-	Music* music = GET_MUSIC("zelda-tavern");
-	music->Play();
 #endif
 
+#ifdef DUMB_MUSIC
+	SetMusic(active_zone_->GetMusic());
+#endif
+
+	
 	while (running)
 	{
 		while (app_.GetEvent(event))
@@ -142,10 +141,6 @@ void Game::Run()
 	}
 	app_.Close();
 	
-#ifdef DUMB_MUSIC
-	music->Stop();
-	delete music;
-#endif
 }
 
 
@@ -182,6 +177,40 @@ void Game::ChangeZone(Direction dir)
 		player_->SetPosition(pos);
 		cds_zone_.x = x;
 		cds_zone_.y = y;
+#ifdef DUMB_MUSIC
+		SetMusic(next_zone_->GetMusic());
+#endif
 	}
 }
+
+#ifdef DUMB_MUSIC
+void Game::SetMusic(short val)
+{
+
+	static Music* music_ = NULL;
+	static short current_music_index_ = -1;
+
+std::cerr << "SetMusic\n\tCur: " << current_music_index_ << "\t New: " << val << "\n";
+	
+	if (val > 0 && val != current_music_index_)
+	{
+		if (music_ != NULL)
+		{
+			music_->Stop();
+			delete music_;
+			music_ = NULL;
+		}
+		music_ = GET_MUSIC(val);
+		music_->Play();
+		current_music_index_ = val;
+	}
+	else if (val == -1 && music_ != NULL)	// -1 <=> NO_MUSIC.
+	{
+		music_->Stop();
+		delete music_;
+		music_ = NULL;
+	}
+	current_music_index_ = val;
+}
+#endif
 

@@ -24,3 +24,44 @@ void Animation::SetDelay(float delay)
 	delay_ = delay;
 }
 
+bool operator==(const Animation& my, const Animation& other)
+{
+	unsigned short i, j;
+	for (i = 0, j = 0;
+		i < my.subrects_.size() && j != other.subrects_.size();
+		++ i, ++ j)
+	{
+		if (my.subrects_[i].Left != other.subrects_[i].Left)
+			return false;
+		if (my.subrects_[i].Right != other.subrects_[i].Right)
+			return false;
+		if (my.subrects_[i].Top != other.subrects_[i].Top)
+			return false;
+		if (my.subrects_[i].Bottom != other.subrects_[i].Bottom)
+			return false;
+	}
+	if (i == j)
+	{
+		return true;
+	}
+	return false;
+}
+
+
+bool operator!=(const Animation& my, const Animation& other)
+{
+	return (!(my == other));
+}
+
+
+bool operator==(const Animation* my, const Animation& other)
+{
+	return ((*my) == other);
+}
+
+
+bool operator!=(Animation* my, const Animation& other)
+{
+	return (!((*my) == other));
+}
+

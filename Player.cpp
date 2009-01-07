@@ -1,6 +1,7 @@
 #include "Player.hpp"
-#include "MediaManager.hpp"
+
 #include "Game.hpp"
+#include "MediaManager.hpp"
 #include "type_definitions.hpp"
 
 #define SPEED    100
@@ -40,6 +41,11 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	SetSubRect(subrects_not_moving_[DOWN]);
 	
 	SetCenter(0, walk_anims_[UP]->GetFrame(0).GetHeight());
+	
+	lives_ = 3; rupees_ = 42;
+	puts("blah");
+	ControlPanel::GetInstance().SetLives(lives_);
+	ControlPanel::GetInstance().SetRupees(rupees_);
 }
 
 
@@ -53,6 +59,25 @@ void Player::OnEvent(const sf::Event& event)
 			std::cerr << " -- DEBUG -- \n";
 			std::cout << "GetPosition: " << GetPosition().x << ", " << GetPosition().y << ";\n"; 
 		}
+		if (event.Key.Code == sf::Key::A)
+		{
+			lives_ += 1;
+			ControlPanel::GetInstance().SetLives(lives_);
+			std::cerr << "Added life to panel.\n";
+		}
+		if (event.Key.Code == sf::Key::D)
+		{
+			lives_ -= 1;
+			ControlPanel::GetInstance().SetLives(lives_);
+			std::cerr << "Took away life from panel.\n";
+			if (lives_ == 0)
+			{
+				puts("you're dead, bastard!");
+				abort();
+				dead_ = true;
+			}
+		}
+			
 	}
 }
 
@@ -127,28 +152,32 @@ void Player::Update(float frametime)
 				SetPosition(pos);
 			}		
 		}
-	}
-	
-	if (!moving)
+	}	
+	if (moving)
 	{
-		Animated::Halt();
-		SetSubRect(subrects_not_moving_[current_dir_]);
-	}
-	else
-	{
-		if (Animated::Halted())
-		{
-			std::cerr << "Restarting anim\n";
-			UpdateSubRect(current_dir_, moving);
-			Animated::Start();
-		}
 		Animated::Update(frametime, *this);
-	}
+	}	
+	UpdateSubRect(current_dir_, moving);
+	
 }
 
+/*
+
+	Note: les 2 booléens étaient censé réduire les mises à jour inutiles de
+	subrects à chaque frame.
+	Cependant, avec ce code, on peut se retrouver à aller vers le haut, avec
+	le sprite de déplacement vers le bas. Pour l'instant donc...
+
+*/
 
 void Player::UpdateSubRect(Direction dir, bool moving)
 {
+	/*
+	static bool fixed = false;
+	static bool was_moving = false;
+	
+	fixed = moving == was_moving;
+	*/
 	if (dir != current_dir_)
 	{	// Non remise à zero des animations sur mouvement diagonal.
 		if (moving)
@@ -161,23 +190,31 @@ void Player::UpdateSubRect(Direction dir, bool moving)
 			if (!(input_.IsKeyDown(move_keys_[current_dir_]) && IsDiag(dir, current_dir_)))
 			{
 				Animated::Change(walk_anims_[dir], *this);
-				if (Animated::Halted())
-				{
-					Animated::Start();
-				}
 			}
 		}
-		else
+	}
+	
+	if (!moving)
+	{	// Dès qu'on s'arrète, on fix subrects et anims.
+		/*was_moving = false;
+		if (!fixed)
 		{
+			puts("Whe do it.");*/
 			Animated::Halt();
 			SetSubRect(subrects_not_moving_[dir]);
-		}
+			Animated::Change(walk_anims_[current_dir_], *this);
+		//}
+		
+	}
+	else
+	{
 		if (Animated::Halted())
 		{
-			Animated::Change(walk_anims_[current_dir_], *this);
+			Animated::Start();
 		}
-		current_dir_ = dir;
+	//	was_moving |= 1;
 	}
+	current_dir_ = dir;
 }
 
 
