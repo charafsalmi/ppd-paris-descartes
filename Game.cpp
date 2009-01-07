@@ -1,9 +1,11 @@
 #include "Game.hpp"
+
 #include "Enemy.hpp"
 #ifdef DUMB_MUSIC
 #include "MediaManager.hpp"
 #include "Music.hpp"
 #endif
+#include "Splash.hpp"
 
 #define APP_WIDTH  (Tile::SIZE * Zone::WIDTH)
 #define APP_HEIGHT (Tile::SIZE * Zone::HEIGHT)
@@ -95,6 +97,13 @@ void Game::Run()
 	Entity::SetActiveZone(active_zone_);
 
 	float frametime;
+	
+	
+	if (sf::PostFX::CanUsePostFX())
+	{
+		Splash s(app_);
+		s.Run();
+	}
 	
 #ifdef DUMB_MUSIC
 	Music* music = GET_MUSIC("zelda-tavern");

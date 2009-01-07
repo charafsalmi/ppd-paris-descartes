@@ -1,3 +1,4 @@
+splash.png
 pillar.png
 player.png
 tileset.png

@@ -12,6 +12,8 @@
 #define MUSIC_LIST "data/music/music.txt"
 #define MUSIC_PATH "data/music/"
 
+#define FX_LIST "data/postfx/postfx.txt"
+#define FX_PATH "data/postfx/"
 
 // charger une image
 static void load_or_die(sf::Image& image, const char* filename)
@@ -34,13 +36,13 @@ static void load_or_die(sf::SoundBuffer& buffer, const char* filename)
 	}
 }
 
-#ifdef DUMB_MUSIC
-// charger un buffer lié a une instance de la lib dumb
-static void load_or_die(std::string& music_name, const char* filename)
+
+// charger un buffer lié a une instance de la lib dumb ou un postfx
+static void load_or_die(std::string& out_name, const char* filename)
 {
-	music_name = filename;
+	out_name = filename;
 }
-#endif
+
 
 // charger une liste de ressources depuis un fichier
 template <typename Ressource>
@@ -92,7 +94,7 @@ const sf::Image& MediaManager::GetImage(const char* image) const
 	it = images_.find(image);
 	if (it == images_.end())
 	{
-		std::cerr << "can't give you image " << image << std::endl;
+		std::cerr << "can't give you image " << image;
 		abort();
 	}
 	return it->second;
@@ -105,7 +107,7 @@ const sf::SoundBuffer& MediaManager::GetSoundBuf(const char* key) const
 	it = sounds_.find(key);
 	if (it == sounds_.end())
 	{
-		std::cerr << "can't give you sound buffer " << key << std::endl;
+		std::cerr << "can't give you sound buffer " << key;
 		abort();
 	}
 	return it->second;
@@ -118,18 +120,30 @@ Music* MediaManager::GetMusic(const char* key) const
 	it = musics_.find(key);
 	if (it == musics_.end())
 	{
-		std::cerr << "can't give you music file " << key << std::endl;
-		exit(EXIT_FAILURE);
+		std::cerr << "can't give you music file " << key;
+		abort();
 	}
 	
 	std::string path(MUSIC_PATH);
 	Music* mus = new Music((path + it->second).c_str());
-#ifdef DEBUG
-	std::cout << path << it->second << " made." <<  std::endl;
-#endif
 	return mus;
 }
 #endif
+
+const std::string& MediaManager::GetPostFX(const char* key) const
+{
+	static std::string return_value;
+	std::map<std::string, std::string>::const_iterator it;
+	it = post_fx_.find(key);
+	if (it == post_fx_.end())
+	{
+		std::cerr << "can't give you PostFX file " << key;
+		abort();
+	}
+	return_value = FX_PATH;
+	return_value += it->second;
+	return return_value;
+}
 
 const sf::Font& MediaManager::GetFont() const
 {
@@ -143,7 +157,8 @@ const Animation& MediaManager::GetAnimation(const char* key) const
 	it = animations_.find(key);
 	if (it == animations_.end())
 	{
-		std::cerr << "can't give you animation " << key << std::endl;
+		std::cerr << "can't give you animation " << key;
+		abort();
 	}
 	return it->second;
 }
@@ -154,14 +169,14 @@ MediaManager::MediaManager()
 	// chargement des images
 	if (!load_from_list(IMG_LIST, images_))
 	{
-		std::cerr << "can't open image list: " << IMG_LIST << std::endl;
+		std::cerr << "can't open image list: " << IMG_LIST;
 		abort();
 	}
 	
 	// chargement des buffers audio
 	if (!load_from_list(SOUND_LIST, sounds_))
 	{
-		std::cerr << "can't open sound list: " << SOUND_LIST << std::endl;
+		std::cerr << "can't open sound list: " << SOUND_LIST;
 		abort();
 	}
 	
@@ -170,9 +185,15 @@ MediaManager::MediaManager()
 	if (!load_from_list(MUSIC_LIST, musics_))
 	{
 		std::cerr << "can't open music list: " << MUSIC_LIST << std::endl;
-		exit(EXIT_FAILURE);
+		abort();
 	}
 #endif
+	// chargement des postfx
+	if (!load_from_list(FX_LIST, post_fx_))
+	{
+		std::cerr << "can't open PostFX list: " << FX_LIST << std::endl;
+		abort();
+	}
 //  void Animation::AddFrame(int left, int top, int width, int height)
 	BuildAnimation("player_walk_top",		32, 48, 8, 0.125f, 32,   0);
 	BuildAnimation("player_walk_right",		32, 48, 8, 0.125f, 32,  48);

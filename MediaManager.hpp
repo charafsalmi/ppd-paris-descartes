@@ -47,6 +47,7 @@ public:
 	Music* GetMusic(const char* key) const;
 #endif
 
+	const std::string& GetPostFX(const char* key) const;
 	/**
 	 * Obtenir la police de caractères
 	 * @return référence sur la police
@@ -87,6 +88,7 @@ private:
 #ifdef DUMB_MUSIC
 	std::map<std::string, std::string> musics_;
 #endif
+	std::map<std::string, std::string> post_fx_;
 	std::map<std::string, Animation> animations_;
 	sf::Font font_;
 };
@@ -120,6 +122,11 @@ inline const sf::Font& GET_FONT()
 inline const Animation& GET_ANIM(const char* key)
 {
 	return MediaManager::GetInstance().GetAnimation(key);
+}
+
+inline const std::string& GET_FX(const char* key)
+{
+	return MediaManager::GetInstance().GetPostFX(key);
 }
 
 #endif /* guard MEDIAMANAGER_HPP */
