@@ -1,36 +1,44 @@
 #ifdef DUMB_MUSIC
 
-#include <cstdio>
+#include <cstring>
 
 #include "Music.hpp"
-#include "MediaManager.hpp"
+
+#define DELTA          65536.0f / SAMPLING_RATE
 
 
-Music::Music(const char* name)
+Music::Music(const char* filename)
 {
 	dumb_register_stdfiles();
 	Initialize(N_CHANNELS, SAMPLING_RATE);
 	
-	module_ = dumb_load_it(name);
-	if (!module_)
+	const char* ext = strrchr(filename, '.');
+	module_ = NULL;
+	
+	if (strcmp(ext, ".mod") == 0)
 	{
-		module_ = dumb_load_xm(name);
-		if (!module_)
-		{
-			module_ = dumb_load_s3m(name);
-			if (!module_)
-			{
-				module_ = dumb_load_mod(name);
-				if (!module_)
-				{
-					printf("Failed to load %s!\n", name);
-				}
-				else
-				{
-					printf("Loading %s\n", name);
-				}
-			}
-		}
+		module_ = dumb_load_mod_quick(filename);
+	}
+	else if (strcmp(ext, ".xm") == 0)
+	{
+		module_ = dumb_load_xm_quick(filename);
+	}
+	else if (strcmp(ext, ".s3m") == 0)
+	{
+		module_ = dumb_load_s3m_quick(filename);
+	}
+	else if (strcmp(ext, ".it") == 0)
+	{
+		module_ = dumb_load_it_quick(filename);
+	}
+	
+	if (module_ == NULL)
+	{
+		printf("[Music] failed to load %s!\n", filename);
+	}
+	else
+	{
+		printf("[Music] loading %s\n", filename);
 	}
 }
 
@@ -54,8 +62,8 @@ bool Music::OnStart()
 
 bool Music::OnGetData(Chunk& data)
 {
-	duh_render(player_, 16, 0, 1.0f, DELTA, BUFFER_SIZE / 2, samples_); // FIXME: le /2 est magique [sans lui, skipping]
-
+	// FIXME: le /2 est magique [sans lui, skipping]
+	duh_render(player_, 16, 0, 1.0f, DELTA, BUFFER_SIZE / 2, samples_);
 	data.Samples = samples_;
 	data.NbSamples = BUFFER_SIZE; // nombre de samples
 	
