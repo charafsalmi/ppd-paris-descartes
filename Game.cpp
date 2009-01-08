@@ -1,5 +1,7 @@
-#include "Game.hpp"
+#include <iostream>
 
+#include "Game.hpp"
+#include "Tileset.hpp"
 #include "Enemy.hpp"
 #include "Splash.hpp"
 
@@ -32,7 +34,7 @@ Game::Game() :
 			zones_[i][j] = new Zone();
 		}
 	}
-
+	
 	// chargement des zones (avec ajout de quelques items)
 	zones_[0][0]->Load("data/map/zone1.txt", app_);
 	zones_[0][0]->PlaceStaticItem(10, 2);
@@ -117,9 +119,14 @@ void Game::Run()
 			{
 				running = false;
 			}
-			else
+			else if (event.Type == sf::Event::KeyPressed)
 			{
-				player_->OnEvent(event);
+				if (event.Key.Code == sf::Key::F1)
+				{
+					puts("screen !");
+					app_.Capture().SaveToFile("screenshot.png");
+				}
+				player_->OnEvent(event.Key.Code);
 			}
 		}
 		frametime = app_.GetFrameTime();
@@ -190,7 +197,7 @@ void Game::SetMusic(short val)
 	static Music* music_ = NULL;
 	static short current_music_index_ = -1;
 
-std::cerr << "SetMusic\n\tCur: " << current_music_index_ << "\t New: " << val << "\n";
+	std::cerr << "SetMusic\n\tCur: " << current_music_index_ << "\t New: " << val << "\n";
 	
 	if (val > 0 && val != current_music_index_)
 	{

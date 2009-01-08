@@ -3,7 +3,6 @@
 
 #include <list>
 
-#include "Tile.hpp"
 #include "Entity.hpp"
 
 #ifdef DUMB_MUSIC
@@ -71,7 +70,7 @@ public:
 	 */
 	void PlaceStaticItem(int i, int j);
 	
-	inline short GetMusic()
+	inline short GetMusic() const
 	{
 		return zone_music_index_;
 	}
@@ -84,13 +83,12 @@ private:
 
 	typedef std::list<Entity*> EntityList;
 	mutable EntityList entities_;
-
+	
 	bool walkable_[HEIGHT][WIDTH];
-	Tile tiles_[HEIGHT][WIDTH]; // tiles de la zone
+	sf::Image tiles_; // tiles de la zone
 #ifdef DUMB_MUSIC
 	short zone_music_index_;
 #endif
-	sf::Image tile_image_;
 };
 
 #endif /* guard ZONE_HPP */

@@ -14,9 +14,10 @@ public:
 	Player(const sf::Vector2f& pos, const sf::Input& input);
 	
 	/**
-	 * Gérer un évènement
+	 * Gérer un évènement clavier
+	 * @param[in] key: touche pressée
 	 */
-	void OnEvent(const sf::Event& event);
+	void OnEvent(sf::Key::Code key);
 
 	void Update(float frametime);
 

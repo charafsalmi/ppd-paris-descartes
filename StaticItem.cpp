@@ -1,5 +1,4 @@
 #include "StaticItem.hpp"
-#include "Tile.hpp"
 
 
 StaticItem::StaticItem(const sf::Vector2f& pos, const sf::Image& image,

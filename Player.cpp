@@ -1,5 +1,7 @@
-#include "Player.hpp"
+#include <iostream>
 
+#include "Player.hpp"
+#include "Tileset.hpp"
 #include "Game.hpp"
 #include "MediaManager.hpp"
 #include "type_definitions.hpp"
@@ -49,35 +51,30 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 }
 
 
-void Player::OnEvent(const sf::Event& event)
+void Player::OnEvent(sf::Key::Code key)
 {
-	if (event.Type == sf::Event::KeyPressed)
+	if (key == sf::Key::Space)
 	{
-		// gérer ici l'appui sur les touches
-		if (event.Key.Code == sf::Key::Space)
+		std::cerr << " -- DEBUG -- \n";
+		std::cout << "GetPosition: " << GetPosition().x << ", " << GetPosition().y << ";\n"; 
+	}
+	else if (key == sf::Key::A)
+	{
+		lives_ += 1;
+		ControlPanel::GetInstance().SetLives(lives_);
+		std::cerr << "Added life to panel.\n";
+	}
+	else if (key == sf::Key::D)
+	{
+		lives_ -= 1;
+		ControlPanel::GetInstance().SetLives(lives_);
+		std::cerr << "Took away life from panel.\n";
+		if (lives_ == 0)
 		{
-			std::cerr << " -- DEBUG -- \n";
-			std::cout << "GetPosition: " << GetPosition().x << ", " << GetPosition().y << ";\n"; 
+			puts("you're dead, bastard!");
+			abort();
+			dead_ = true;
 		}
-		if (event.Key.Code == sf::Key::A)
-		{
-			lives_ += 1;
-			ControlPanel::GetInstance().SetLives(lives_);
-			std::cerr << "Added life to panel.\n";
-		}
-		if (event.Key.Code == sf::Key::D)
-		{
-			lives_ -= 1;
-			ControlPanel::GetInstance().SetLives(lives_);
-			std::cerr << "Took away life from panel.\n";
-			if (lives_ == 0)
-			{
-				puts("you're dead, bastard!");
-				abort();
-				dead_ = true;
-			}
-		}
-			
 	}
 }
 
@@ -163,7 +160,7 @@ void Player::Update(float frametime)
 
 /*
 
-	Note: les 2 booléens étaient censé réduire les mises à jour inutiles de
+	Note: les 2 booléens étaient censés réduire les mises à jour inutiles de
 	subrects à chaque frame.
 	Cependant, avec ce code, on peut se retrouver à aller vers le haut, avec
 	le sprite de déplacement vers le bas. Pour l'instant donc...
@@ -220,7 +217,7 @@ void Player::UpdateSubRect(Direction dir, bool moving)
 
 bool Player::Move(Direction dir, float frametime)
 {
-	static Game& game = Game::GetInstance();
+	/*static Game& game = Game::GetInstance();
 
 	SINT dx, dy;
 	sf::FloatRect rect;
@@ -244,8 +241,6 @@ bool Player::Move(Direction dir, float frametime)
 		default:
 		break;
 	}
-	
-	
 
 	sf::Vector2f pos = GetPosition();
 	pos.x += dx * frametime;
@@ -255,8 +250,6 @@ bool Player::Move(Direction dir, float frametime)
 	rect.Bottom = pos.y;
 	rect.Right = pos.x + GetFloorWidth();
 	rect.Top = pos.y - GetFloorHeight();
-
-
 
 	// on vérifie si on doit changer de zone
 	bool out_zone = false;
@@ -287,7 +280,7 @@ bool Player::Move(Direction dir, float frametime)
 		SetPosition(pos);
 		
 		return true;
-	}
+	}*/
 	return false;
 }
 

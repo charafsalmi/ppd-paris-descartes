@@ -4,6 +4,7 @@
 
 #include "Zone.hpp"
 #include "StaticItem.hpp"
+#include "Tileset.hpp"
 #include "MediaManager.hpp"
 
 
@@ -20,6 +21,7 @@ Zone::~Zone()
 
 void Zone::Load(const char* filename, sf::RenderWindow& app)
 {
+	static const Tileset& tileset = Tileset::GetInstance();
 #ifdef DUMB_MUSIC
 	short int t_music = -1;
 #endif
@@ -29,14 +31,19 @@ void Zone::Load(const char* filename, sf::RenderWindow& app)
 	{
 		for (int j = 0; j < WIDTH; ++j)
 		{
-			int tile;
-			assert(!f.eof());
-			f >> tile;
-			tiles_[i][j].Build(tile, sf::Vector2f(j * Tile::SIZE, i * Tile::SIZE));
-			// on duplique les valeurs walkables, car certaines tiles "walkable"
-			// peuvent être obstruées par une entité statique, ce qui amènera
-			// à modifier la matrice walkable_ au chargement des entités
-			walkable_[i][j] = tiles_[i][j].Walkable();
+			assert(!f.eof()); // TODO: lecture robuste
+			
+			int tile_id;
+			f >> tile_id;
+			walkable_[i][j] = tileset.IsWalkable(tile_id);
+			
+			// création et dessin du sprite
+			sf::Sprite tile;
+			tileset.MakeSprite(tile_id, tile);
+			sf::Vector2f pos(j * Tile::SIZE, i * Tile::SIZE);
+			tile.SetPosition(pos);
+			
+			app.Draw(tile);
 		}
 	}
 #ifdef DUMB_MUSIC	
@@ -44,16 +51,7 @@ void Zone::Load(const char* filename, sf::RenderWindow& app)
 	zone_music_index_ = t_music;
 #endif
 	f.close();
-	app.Clear();
-	// blittage des tiles sur image pas faisable directement, hack :/
-	for (int i = 0; i < HEIGHT; ++i)
-	{
-		for (int j = 0; j < WIDTH; ++j)
-		{
-			app.Draw(tiles_[i][j]);
-		}
-	}
-	tile_image_ = app.Capture();
+	tiles_ = app.Capture();
 	app.Clear();
 }
 
@@ -70,8 +68,10 @@ void Zone::Update(float frametime)
 
 void Zone::Show(sf::RenderWindow& app) const
 {
-	static sf::Sprite tiles_(tile_image_);
-	app.Draw(tiles_);
+	// affichage des tiles
+	sf::Sprite s_tiles(tiles_);
+	app.Draw(s_tiles);
+	
 	// affichage des entités
 	entities_.sort(Entity::PtrComp);
 	EntityList::const_iterator it;

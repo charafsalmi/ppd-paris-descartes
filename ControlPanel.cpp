@@ -30,7 +30,7 @@ void ControlPanel::SetRupees(int value)
 
 void ControlPanel::Show(sf::RenderWindow& app, float frametime)
 {
-	app.Draw(static_cast<const sf::Drawable&>(background_));
+	app.Draw(background_);
 	app.Draw(rupees_);
 	app.Draw(rupees_text_);
 	app.Draw(lives_);

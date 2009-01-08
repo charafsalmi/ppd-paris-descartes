@@ -24,7 +24,7 @@ void Splash::Run()
 	if (!fx_.LoadFromFile(GET_FX("colorize")))
 	{
 		puts("Cant load postfx");
-		abort(); // We're not Jesus, so that's it with the bloody, messy user.
+		return; // We're not Jesus, so that's it with the bloody, messy user.
 	}
 
 	sp_.SetImage(GET_IMG("splash"));
@@ -39,8 +39,14 @@ void Splash::Run()
 	fx_.SetParameter("color", I_C);				// I_C vaut noir.
 	fx_.SetParameter("intensity", 0.f);			// intensité de l'image normalement blittée.
 												// -> on commence à noir
+	sf::Event event;
 	while (running)
 	{
+		while (win_.GetEvent(event))
+		{
+			if (event.Type == sf::Event::KeyPressed && event.Key.Code == sf::Key::Escape)
+				return;
+		}
 		running = Update(win_.GetFrameTime());
 		Draw();
 		win_.Display();
