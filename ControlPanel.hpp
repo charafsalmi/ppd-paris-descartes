@@ -35,7 +35,7 @@ public:
 	/*
 	void SetSlot(const char slot, const int value);
 	*/
-	void Show(const sf::RenderWindow& app, float frametime);
+	void Show(sf::RenderWindow& app, float frametime);
 	
 private:
 	ControlPanel();

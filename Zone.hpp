@@ -30,7 +30,7 @@ public:
 	 * Charger les éléments de la zone
 	 * @param[in] filename: fichier de la carte
 	 */
-	void Load(const char* filename);
+	void Load(const char* filename, sf::RenderWindow& app);
 
 	/**
 	 * Mettre à jour la zone
@@ -42,7 +42,7 @@ public:
 	 * Afficher la zone de jeu
 	 * @param[in] app: fenêtre de rendu
 	 */
-	void Show(const sf::RenderWindow& app) const;
+	void Show(sf::RenderWindow& app) const;
 
 	/**
 	 * Détermine si un mouvement est possible
@@ -90,6 +90,7 @@ private:
 #ifdef DUMB_MUSIC
 	short zone_music_index_;
 #endif
+	sf::Image tile_image_;
 };
 
 #endif /* guard ZONE_HPP */

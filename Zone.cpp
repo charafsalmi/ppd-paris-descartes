@@ -18,7 +18,7 @@ Zone::~Zone()
 }
 
 
-void Zone::Load(const char* filename)
+void Zone::Load(const char* filename, sf::RenderWindow& app)
 {
 #ifdef DUMB_MUSIC
 	short int t_music = -1;
@@ -44,6 +44,17 @@ void Zone::Load(const char* filename)
 	zone_music_index_ = t_music;
 #endif
 	f.close();
+	app.Clear();
+	// blittage des tiles sur image pas faisable directement, hack :/
+	for (int i = 0; i < HEIGHT; ++i)
+	{
+		for (int j = 0; j < WIDTH; ++j)
+		{
+			app.Draw(tiles_[i][j]);
+		}
+	}
+	tile_image_ = app.Capture();
+	app.Clear();
 }
 
 
@@ -57,16 +68,10 @@ void Zone::Update(float frametime)
 }
 
 
-void Zone::Show(const sf::RenderWindow& app) const
+void Zone::Show(sf::RenderWindow& app) const
 {
-	// affichage des tiles
-	for (int i = 0; i < HEIGHT; ++i)
-	{
-		for (int j = 0; j < WIDTH; ++j)
-		{
-			app.Draw(tiles_[i][j]);
-		}
-	}
+	static sf::Sprite tiles_(tile_image_);
+	app.Draw(tiles_);
 	// affichage des entités
 	entities_.sort(Entity::PtrComp);
 	EntityList::const_iterator it;

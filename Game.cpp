@@ -34,7 +34,7 @@ Game::Game() :
 	}
 
 	// chargement des zones (avec ajout de quelques items)
-	zones_[0][0]->Load("data/map/zone1.txt");
+	zones_[0][0]->Load("data/map/zone1.txt", app_);
 	zones_[0][0]->PlaceStaticItem(10, 2);
 	zones_[0][0]->PlaceStaticItem(10, 4);
 	zones_[0][0]->PlaceStaticItem(5, 11);
@@ -47,16 +47,16 @@ Game::Game() :
 	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(400, 200)));
 	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(320, 350)));
 	
-	zones_[0][1]->Load("data/map/zone2.txt");
+	zones_[0][1]->Load("data/map/zone2.txt", app_);
 	zones_[0][1]->PlaceStaticItem(12, 7);
 	zones_[0][1]->PlaceStaticItem(14, 7);
 	zones_[0][1]->PlaceStaticItem(12, 9);
 	zones_[0][1]->PlaceStaticItem(14, 9);
 
-	zones_[1][0]->Load("data/map/zone3.txt");
+	zones_[1][0]->Load("data/map/zone3.txt", app_);
 	zones_[1][0]->AddEntity(new Enemy(sf::Vector2f(200, 200)));
 
-	zones_[1][1]->Load("data/map/zone4.txt");
+	zones_[1][1]->Load("data/map/zone4.txt", app_);
 	zones_[1][1]->PlaceStaticItem(10, 11);
 
 

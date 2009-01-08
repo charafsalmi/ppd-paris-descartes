@@ -28,9 +28,9 @@ void ControlPanel::SetRupees(int value)
 	rupees_text_.SetText(str_sprintf("%d\n", value));
 }
 
-void ControlPanel::Show(const sf::RenderWindow& app, float frametime)
+void ControlPanel::Show(sf::RenderWindow& app, float frametime)
 {
-	app.Draw(background_);
+	app.Draw(static_cast<const sf::Drawable&>(background_));
 	app.Draw(rupees_);
 	app.Draw(rupees_text_);
 	app.Draw(lives_);
