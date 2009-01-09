@@ -59,7 +59,11 @@ private:
 	sf::Sprite background_;
 
 	sf::Sound blink_sound_;
+	
+#ifdef DEBUG
 	bool dbg_;
+#endif
+	
 };
 
 #endif /* guard CONTROLPANEL_HPP */
