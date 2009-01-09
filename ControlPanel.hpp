@@ -14,16 +14,11 @@ public:
 /*
 
 	TODO :
-			- Plus joli, prenant ses coordonnées de base à la construction
-			- Plus joli, un vrai background
-			- Plus joli, blitter N coeurs vides si N conteneurs de coeurs trouvés
-			- Jouer un son sur clignottement de la vie
+			- Quand on aura du rendu sur image: blitter tout sur image, scalée 
+				pour prendre toute la largeur de l'app.
+				but-> préserver l'aspect en permettant de changer de résolution.
 			- Quand un Inventaire sera codé: dans les N slots, blitter l'icone de 
 				l'item équipé dans chaque slot, s'il existe.
-				
-	IDEE :
-			- Classe AnimatedSprite? 
-
 
 */
 

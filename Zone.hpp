@@ -4,6 +4,7 @@
 #include <list>
 
 #include "Entity.hpp"
+#include "Item.hpp"
 
 #ifdef DUMB_MUSIC
 #include "Music.hpp"
@@ -19,6 +20,13 @@ public:
 	{
 		// Dimensions de la zone en nombre de tiles
 		WIDTH = 20, HEIGHT = 16
+	};
+
+	enum TileContent
+	{
+		EMPTY,
+		STATIC_NO,
+		DYNAMIC_NO
 	};
 
 	Zone();
@@ -49,7 +57,7 @@ public:
 	 * @param[in] rect: rectangle de la position issue du mouvement à tester
 	 * @return true si le mouvement est possible, sinon false
 	 */
-	bool CanMove(Entity* emitter, const sf::FloatRect& rect) const;
+	TileContent CanMove(Entity* emitter, const sf::FloatRect& rect, Item*& other);
 
 	/**
 	 * Ajouter une entité dans la zone de jeu
@@ -70,6 +78,8 @@ public:
 	 */
 	void PlaceStaticItem(int i, int j);
 	
+	void PlaceItem(char u, int i, int j);
+	
 	inline short GetMusic() const
 	{
 		return zone_music_index_;
@@ -79,10 +89,13 @@ private:
 	/**
 	 * Désallouer toutes les entités de la zone
 	 */
+	typedef std::list<Entity*> EntityList;
+	typedef std::list<Item*> ItemList;
+
 	void Purge();
 
-	typedef std::list<Entity*> EntityList;
 	mutable EntityList entities_;
+	mutable ItemList interactives_;
 	
 	bool walkable_[HEIGHT][WIDTH];
 	sf::Image tiles_; // tiles de la zone

@@ -44,7 +44,7 @@ class Game
 		enum
 		{
 			// dimensions du jeu en nombre de zones
-			GAME_WIDTH = 2, GAME_HEIGHT = 2
+			GAME_WIDTH = 3, GAME_HEIGHT = 2
 		};
 
 		Zone* zones_[GAME_HEIGHT][GAME_WIDTH];
@@ -57,6 +57,13 @@ class Game
 		ControlPanel& panel_;
 		
 		sf::RenderWindow app_;
+		
+#ifdef FULLSCREEN_HACK
+
+		sf::VideoMode DesktopMode;
+		
+#endif
+		
 };
 
 #endif /* guard GAME_HPP */

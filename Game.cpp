@@ -25,7 +25,18 @@ Game& Game::GetInstance()
 Game::Game() :
 	panel_		(ControlPanel::GetInstance())
 {
+
+#ifdef FULLSCREEN_HACK
+
+	DesktopMode = sf::VideoMode::GetDesktopMode();
+	app_.Create(DesktopMode, APP_TITLE, sf::Style::Fullscreen);
+
+#else
+
 	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, APP_BPP), APP_TITLE);
+
+#endif
+
 	app_.SetFramerateLimit(APP_FPS);
 
 	{
@@ -60,6 +71,7 @@ Game::Game() :
 	zones_[0][0]->PlaceStaticItem(15, 2);
 	zones_[0][0]->PlaceStaticItem(17, 2);
 	zones_[0][0]->PlaceStaticItem(16, 8);
+	zones_[0][0]->PlaceItem('H', 10, 6);
 	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(110, 90)));
 	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(110, 200)));
 	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(400, 200)));
@@ -70,6 +82,9 @@ Game::Game() :
 	zones_[0][1]->PlaceStaticItem(14, 7);
 	zones_[0][1]->PlaceStaticItem(12, 9);
 	zones_[0][1]->PlaceStaticItem(14, 9);
+	zones_[0][1]->PlaceItem('R', 15, 11);
+
+	zones_[0][2]->Load("data/map/zone5.txt", app_);
 
 	zones_[1][0]->Load("data/map/zone3.txt", app_);
 	zones_[1][0]->AddEntity(new Enemy(sf::Vector2f(200, 200)));
@@ -77,7 +92,7 @@ Game::Game() :
 	zones_[1][1]->Load("data/map/zone4.txt", app_);
 	zones_[1][1]->PlaceStaticItem(10, 11);
 
-
+	zones_[1][2]->Load("data/map/zone6.txt", app_);
 	cds_zone_.x = 0;
 	cds_zone_.y = 0;
 
@@ -150,8 +165,21 @@ void Game::Run()
 		active_zone_->Show(app_);
 		panel_.Show(app_, frametime); // On pourrait faire un Update, mais a priori
 									  // "Anim" seulement quand ne reste qu'une vie
-		app_.Display();
 		
+#ifndef FULLSCREEN_HACK		
+		app_.Display();
+
+#else
+		static sf::Vector2f scal_;
+		scal_.x = scal_.y = (DesktopMode.Width / 640);
+		sf::Image img_(app_.Capture());
+		img_.SetSmooth(true);
+		sf::Sprite spr_(img_);
+		spr_.SetScale(scal_);
+		app_.Draw(spr_);
+		app_.Display();
+#endif
+
 		// si demande de changement de zone
 		if (next_zone_ != active_zone_)
 		{

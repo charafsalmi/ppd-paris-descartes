@@ -1,7 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <tiles>
 	<tile id="6" walkable="0" />
-	<tile id="13" walkable="0" />
-	<tile id="14" walkable="0" />
+	<tile id="8" walkable="0" />
+	<tile id="9" walkable="0" />
+	<tile id="10" walkable="0" />
+	<tile id="21" walkable="0" />
+	<tile id="22" walkable="0" />
+	<tile id="24" walkable="0" />
+	<tile id="25" walkable="0" />
+	<tile id="26" walkable="0" />
+	<tile id="40" walkable="0" />
+	<tile id="41" walkable="0" />
+	<tile id="56" walkable="0" />
+	<tile id="57" walkable="0" />
+	<tile id="72" walkable="0" />
+	<tile id="73" walkable="0" />
+	<tile id="88" walkable="0" />
+	<tile id="89" walkable="0" />
+	<tile id="176" walkable="0" />
+	<tile id="177" walkable="0" />
+	<tile id="178" walkable="0" />
+	<tile id="179" walkable="0" />
+	<tile id="180" walkable="0" />
+	<tile id="192" walkable="0" />
+	<tile id="193" walkable="0" />
+	<tile id="194" walkable="0" />
+	<tile id="195" walkable="0" />
+	<tile id="196" walkable="0" />
+	<tile id="197" walkable="0" />
+	<tile id="208" walkable="0" />
+	<tile id="209" walkable="0" />
+	<tile id="210" walkable="0" />
+	<tile id="211" walkable="0" />
+	<tile id="212" walkable="0" />
+	<tile id="213" walkable="0" />
 </tiles>
+
 

@@ -12,7 +12,7 @@ TINYXML_OBJ= tinyxml/tinyxml.o tinyxml/tinyxmlparser.o tinyxml/tinyxmlerror.o
 DEBUG=yes
 ifeq ($(DEBUG), yes)
 	CFLAGS += -g -DDEBUG 
-	CFLAGS += -DNO_SPLASH
+
 else
 	CFLAGS += -O2
 endif
@@ -30,6 +30,14 @@ ifeq ($(LINK), dynamic)
 	CFLAGS += -DSFML_DYNAMIC
 endif
 
+# fullscreen - splash
+FULLSCREEN=no
+ifeq ($(FULLSCREEN), yes)
+	CFLAGS += -DFULLSCREEN_HACK
+else
+	CFLAGS += -DNO_SPLASH
+endif
+	
 
 $(EXEC): $(OBJ) $(TINYXML_OBJ)
 	$(CC) $^ -o $(EXEC) $(LDFLAGS)

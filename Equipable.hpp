@@ -2,7 +2,7 @@
 #define _GUARD_EQUIPABLE_HPP_
 
 
-#include "MediaManager.hpp"
+
 
 #include "Item.hpp"
 
@@ -17,7 +17,7 @@ class Equipable: public Item
 {
 	public:
 
-		Equipable(ItemData& data);
+		Equipable(sf::Vector2f& offset, ItemData& data);
 
 
 	private:

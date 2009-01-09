@@ -114,6 +114,16 @@ public:
 	 * @brief Définit la zone active
 	 */
 	static void SetActiveZone(Zone* zone);
+	
+	inline void Kill()
+	{
+		dead_ = true;
+	}
+	
+	inline bool IsDead() const
+	{
+		return dead_;
+	}
 
 protected:
 	/**

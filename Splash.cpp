@@ -31,8 +31,21 @@ void Splash::Run()
 	sp_.SetSubRect(sf::IntRect(0, 0, 800, 600));
 	
 //<HACK>
+#ifndef FULLSCREEN_HACK
+
 	sp_.SetScale(0.8f, 0.8f);	// Ratio pour passer de 800*600 à 640*480
+	
+#else
+
+	sf::VideoMode DesktopMode = sf::VideoMode::GetDesktopMode();
+	sf::Vector2f scale_;
+	scale_.x = scale_.y = 1.6 * (DesktopMode.Width / 1280);
+	sp_.SetScale(scale_);
+	
+#endif
+
 	const_cast<sf::Image&>(GET_IMG("splash")).SetSmooth(true); // Sinon moche.
+	
 //</HACK>	
 
 	fx_.SetTexture("framebuffer", NULL);		// Agit sur le contexte de rendu courant.

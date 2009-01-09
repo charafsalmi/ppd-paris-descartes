@@ -61,7 +61,14 @@ void ControlPanel::AddLifeSlot()
 
 void ControlPanel::SetRupees(int value)
 {
-	rupees_count_ = value;
+	if (value <= MAX_RUPEES)
+	{
+		rupees_count_ = value;
+	}
+	else
+	{
+		rupees_count_ = MAX_RUPEES;
+	}
 }
 
 void ControlPanel::Show(sf::RenderTarget& app, float frametime)
@@ -101,7 +108,7 @@ ControlPanel::ControlPanel()
 
 ControlPanel::~ControlPanel()
 {
-
+	blink_sound_.Stop();
 }
 
 void ControlPanel::DrawLives(sf::RenderTarget& app, const float& frametime)

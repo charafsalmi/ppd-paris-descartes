@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 
 #include "Player.hpp"
 #include "Tileset.hpp"
@@ -14,7 +15,8 @@
 Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	Entity(pos, GET_IMG("player")),
 	Animated(&GET_ANIM("player_walk_bottom"), *this),
-	input_(input)
+	input_(input),
+	panel_(ControlPanel::GetInstance())
 {
 	// valeurs magiques... surface de contact au sol
 	SetFloor(28, 20);
@@ -47,8 +49,8 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	lives_ = 1;
 	rupees_ = 42;
 
-	ControlPanel::GetInstance().SetLives(lives_);
-	ControlPanel::GetInstance().SetRupees(rupees_);
+	panel_.SetLives(lives_);
+	panel_.SetRupees(rupees_);
 }
 
 
@@ -88,6 +90,16 @@ void Player::OnEvent(sf::Key::Code key)
 
 void Player::Update(float frametime)
 {
+// <HACK>
+	static ItemData i_d;
+	static sf::Vector2f offset(0, 0);
+	i_d.img_world_ = new char[8];
+	i_d.name_ = "FAKE";
+	strcpy(i_d.img_world_, "objects");
+	static Item other(offset, i_d);
+// </HACK>
+	static Item* ptr = NULL;
+
 	static Game& game = Game::GetInstance();
 	bool moving = false;
 	int dx, dy;
@@ -151,9 +163,28 @@ void Player::Update(float frametime)
 				game.ChangeZone(Game::DOWN);
 				out_zone = true;
 			}
-			if (!out_zone && zone_->CanMove(this, rect))
+			
+			Zone::TileContent tc = zone_->CanMove(this, rect, ptr);
+			
+			if (!out_zone && tc == Zone::EMPTY )
 			{
 				SetPosition(pos);
+			}
+			else if (tc == Zone::DYNAMIC_NO)
+			{
+				puts("Item interactif overlappant!");
+				std::cout << "\t" << ptr->name_ << "\n";
+				if (ptr->name_ == "Rupee")
+				{
+					rupees_ += ptr->Take();
+					panel_.SetRupees(rupees_);
+				}
+				else if (ptr->name_ == "Heart")
+				{
+					lives_ += ptr->Take();
+					panel_.SetLives(lives_);
+				}
+				
 			}		
 		}
 	}	
@@ -176,6 +207,8 @@ void Player::Update(float frametime)
 
 void Player::UpdateSubRect(Direction dir, bool moving)
 {
+	static bool diag = false;
+	static Direction diag_dir;
 	/*
 	static bool fixed = false;
 	static bool was_moving = false;
@@ -191,9 +224,28 @@ void Player::UpdateSubRect(Direction dir, bool moving)
 			Ou que celle-ci et la nouvellement appuyée ne forment
 			pas une diagonale, pas de changement d'anim.
 		 */
+		 
+		 	if (diag && !input_.IsKeyDown(move_keys_[diag_dir]))
+		 	{
+					diag = false;
+					Animated::Change(walk_anims_[dir], *this);		 	
+		 	}
 			if (!(input_.IsKeyDown(move_keys_[current_dir_]) && IsDiag(dir, current_dir_)))
 			{
 				Animated::Change(walk_anims_[dir], *this);
+			}
+			else if (diag)
+			{
+				if (diag_dir != current_dir_)
+				{
+					diag = false;
+					Animated::Change(walk_anims_[dir], *this);
+				}
+			}
+			else
+			{
+				diag = true;
+				diag_dir = current_dir_;
 			}
 		}
 	}

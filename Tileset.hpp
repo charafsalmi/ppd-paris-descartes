@@ -26,8 +26,8 @@ public:
 	 */
 	enum
 	{
-		WIDTH = 8, // nombre de tile en larger
-		HEIGHT = 8, // en hauteur
+		WIDTH = 16, // nombre de tile en larger
+		HEIGHT = 16, // en hauteur
 		COUNT = WIDTH * HEIGHT // nombre total
 	};
 	

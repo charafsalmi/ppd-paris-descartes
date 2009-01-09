@@ -2,6 +2,8 @@
 #include <cassert>
 #include <algorithm>
 
+#include <cstring>
+#include <iostream>
 #include "Zone.hpp"
 #include "StaticItem.hpp"
 #include "Tileset.hpp"
@@ -46,7 +48,7 @@ void Zone::Load(const char* filename, sf::RenderWindow& app)
 			app.Draw(tile);
 		}
 	}
-#ifdef DUMB_MUSIC	
+#ifdef DUMB_MUSIC
 	f >> t_music;
 	zone_music_index_ = t_music;
 #endif
@@ -62,6 +64,21 @@ void Zone::Update(float frametime)
 	for (it = entities_.begin(); it != entities_.end(); ++it)
 	{
 		(**it).Update(frametime);
+	}
+	ItemList::iterator ti;
+	for (ti = interactives_.begin(); ti != interactives_.end(); ++ti)
+	{
+		if ((**ti).IsDead())
+		{
+			puts("interactif détruit");
+			delete *ti;
+			ti = interactives_.erase(ti);
+		}
+		else
+		{
+//			puts("interactif pas détruit");
+//			std::cerr << (**ti).value_;
+		}
 	}
 }
 
@@ -79,16 +96,23 @@ void Zone::Show(sf::RenderWindow& app) const
 	{
 		app.Draw(**it);
 	}
+	
+	interactives_.sort(Item::PtrComp);
+	ItemList::const_iterator ti;
+	for (ti = interactives_.begin(); ti != interactives_.end(); ++ti)
+	{
+		(**ti).Blit_World(app);
+	}
 }
 
 
-bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect) const
+Zone::TileContent Zone::CanMove(Entity* emitter, const sf::FloatRect& rect, Item*& present)
 {
 	// si hors de la zone
 	if (rect.Top < 0 || rect.Left < 0 || rect.Bottom > Tile::SIZE * HEIGHT
 		|| rect.Right > Tile::SIZE * WIDTH)
 	{
-		return false;
+		return STATIC_NO;
 	}
 	// on regarde pour chaque coin du rectangle
 	// si la tile en dessous est walkable
@@ -101,7 +125,7 @@ bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect) const
 	if (!walkable_[top][left] || !walkable_[top][right]
 		|| !walkable_[bottom][left] || !walkable_[bottom][right])
 	{
-		return false;
+		return STATIC_NO;
 	}
 	
 	// collision avec une autre unité
@@ -114,12 +138,24 @@ bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect) const
 			(**it).GetFloorRect(other_rect);
 			if (rect.Intersects(other_rect))
 			{
-				return false;
+				return STATIC_NO;
 			}
 		}
 	}
+	
+	ItemList::iterator ti;
+	for (ti = interactives_.begin(); ti != interactives_.end(); ++ti)
+	{
+		(**ti).GetFloorRect(other_rect);
+		if (rect.Intersects(other_rect))
+		{
+			present = &(**ti);
+			return DYNAMIC_NO;
+		}
+	}
+	
 	// ok, emitter a le droit de se déplacer
-	return true;
+	return EMPTY;
 }
 
 
@@ -146,6 +182,38 @@ void Zone::PlaceStaticItem(int i, int j)
 	walkable_[j][i] = false;
 }
 
+void Zone::PlaceItem(char u, int i, int j)
+{
+	// HACK: ajout d'items qui ne bloquent pas
+	
+	sf::Vector2f offset(i * Tile::SIZE, (j + 1) * Tile::SIZE);
+	sf::Vector2i floor(1 * Tile::SIZE, 1 * Tile::SIZE);
+	
+	ItemData* id = new ItemData;
+	id->img_world_ = new char[8];
+	strcpy(id->img_world_, "objects");
+
+	
+	Item* it = new Item (offset, *id);
+	sf::IntRect i_r;
+	switch (u)
+	{
+		case 'H':
+		// Health
+			it->name_ = "Heart";
+			i_r = sf::IntRect(0, 0, 32, 32);			
+			break;
+		case 'R':
+		// Rupee
+			it->name_ = "Rupee";
+			i_r = sf::IntRect(0, 32, 32, 64);
+			break;
+	}
+	it->SetSubRect('w', i_r);
+	it->SetPosition('w', offset);
+	interactives_.push_back(it);
+		
+}
 
 void Zone::Purge()
 {
@@ -155,6 +223,12 @@ void Zone::Purge()
 		delete *it;
 	}
 	entities_.clear();
+	
+	ItemList::iterator ti;
+	for (ti = interactives_.begin(); ti != interactives_.end(); ++ti)
+	{
+		delete *ti;
+	}
 }
 
 

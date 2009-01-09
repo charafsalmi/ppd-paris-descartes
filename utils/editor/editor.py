@@ -10,14 +10,14 @@ import Tkinter as Tk
 import tkFileDialog
 from PIL import Image, ImageTk
 
-SHEET_WIDTH = 8
-SHEET_HEIGHT = 8
+SHEET_WIDTH = 16
+SHEET_HEIGHT = 16
 
 ZONE_WIDTH = 20
 ZONE_HEIGHT = 16
 
 TILE_SIZE = 32
-TILESET = "../data/images/tileset.png"
+TILESET = "../../data/images/tileset.png"
 
 
 class TiledCanvas(Tk.Canvas):
@@ -136,6 +136,7 @@ class App(Tk.Tk):
 		y = event.y / TILE_SIZE
 		tile_id = y * SHEET_WIDTH + x
 		self.current = tile_id
+		#print self.current
 		self.lab_tile["image"] = self.tiles[tile_id]
 		
 	def put_tile(self, event):
@@ -145,6 +146,7 @@ class App(Tk.Tk):
 		y = event.y / TILE_SIZE
 		# si la nouvelle tile est différente de l'ancienne
 		indice = y * ZONE_WIDTH + x
+
 		if x < ZONE_WIDTH and y < ZONE_HEIGHT and self.map[indice] != self.current:
 			self.can.create_image(x * TILE_SIZE,
 				y * TILE_SIZE, image=self.tiles[self.current], anchor=Tk.NW)

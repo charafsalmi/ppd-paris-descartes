@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "Enemy.hpp"
 #include "MediaManager.hpp"
 #include "Zone.hpp"
@@ -24,13 +26,21 @@ Enemy::Enemy(const sf::Vector2f& pos) :
 
 void Enemy::Update(float frametime)
 {
+// <HACK>
+	static ItemData i_d;
+	i_d.img_world_ = new char[8];
+	strcpy(i_d.img_world_, "objects");
+	static sf::Vector2f offset(0, 0);
+	static Item other(offset, i_d);
+// </HACK>
+	static Item* ptr = NULL;
 	const sf::Vector2f& pos = GetPosition();
 	sf::FloatRect rect;
 	rect.Left = pos.x + speed_ * frametime;
 	rect.Bottom = pos.y;
 	rect.Right = rect.Left + GetFloorWidth();
 	rect.Top = rect.Bottom - GetFloorHeight();
-	if(zone_->CanMove(this, rect))
+	if(zone_->CanMove(this, rect, ptr) == Zone::EMPTY)
 	{
 		Animated::Update(frametime, *this);
 		SetX(rect.Left);

@@ -56,6 +56,7 @@ private:
 	
 	Direction current_dir_;
 	const sf::Input& input_;
+	ControlPanel& panel_;
 	
 	int lives_, rupees_;
 };

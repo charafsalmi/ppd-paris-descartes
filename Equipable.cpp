@@ -1,7 +1,7 @@
 #include "Equipable.hpp"
 
-Equipable::Equipable(ItemData& data) :
-	Item(data)
+Equipable::Equipable(sf::Vector2f& offset, ItemData& data) :
+	Item(offset, data)
 {
-	equipable_ = true;
+	Item::equipable_ = true;
 }
