@@ -44,8 +44,9 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	
 	SetCenter(0, walk_anims_[UP]->GetFrame(0).GetHeight());
 	
-	lives_ = 3; rupees_ = 42;
-	puts("blah");
+	lives_ = 1;
+	rupees_ = 42;
+
 	ControlPanel::GetInstance().SetLives(lives_);
 	ControlPanel::GetInstance().SetRupees(rupees_);
 }
@@ -57,6 +58,12 @@ void Player::OnEvent(sf::Key::Code key)
 	{
 		std::cerr << " -- DEBUG -- \n";
 		std::cout << "GetPosition: " << GetPosition().x << ", " << GetPosition().y << ";\n"; 
+	}
+	
+	else if (key == sf::Key::S)
+	{
+		ControlPanel::GetInstance().AddLifeSlot();
+		std::cerr << "Added life slot to panel.\n";
 	}
 	else if (key == sf::Key::A)
 	{

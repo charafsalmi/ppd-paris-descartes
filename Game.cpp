@@ -1,9 +1,12 @@
 #include <iostream>
 
 #include "Game.hpp"
-#include "Tileset.hpp"
+
 #include "Enemy.hpp"
+#include "Item.hpp"
 #include "Splash.hpp"
+#include "Tileset.hpp"
+
 
 #define APP_WIDTH  (Tile::SIZE * Zone::WIDTH)
 #define APP_HEIGHT (Tile::SIZE * Zone::HEIGHT)
@@ -25,6 +28,12 @@ Game::Game() :
 	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, APP_BPP), APP_TITLE);
 	app_.SetFramerateLimit(APP_FPS);
 
+	{
+		sf::Image icon = GET_IMG("icon");
+		std::cerr << icon.GetWidth() << ", " << icon.GetHeight() << "\n";
+		app_.SetIcon(icon.GetWidth(), icon.GetHeight(), icon.GetPixelsPtr());
+	}
+
 	player_ = new Player(sf::Vector2f(200, 200), app_.GetInput());
 
 	for (int i = 0; i < GAME_HEIGHT; ++i)
@@ -36,6 +45,13 @@ Game::Game() :
 	}
 	
 	// chargement des zones (avec ajout de quelques items)
+	//	-> Ce sont plus des décors que des items, non?
+	//		La nouvelle classe Item caractérise ce qui permet une interaction
+	//			Ex: Panneau, livre, rupee...
+	//		et la classe Equipable, en héritant, 
+	//		caractérise les Item (au sens de la classe Item)
+	//		utilisable dans l'equipement
+	//			Ex: Arc. palmes...
 	zones_[0][0]->Load("data/map/zone1.txt", app_);
 	zones_[0][0]->PlaceStaticItem(10, 2);
 	zones_[0][0]->PlaceStaticItem(10, 4);
@@ -68,7 +84,6 @@ Game::Game() :
 	active_zone_ = NULL;
 	next_zone_ = NULL;
 	
-	panel_.SetRupees(42);
 }
 
 

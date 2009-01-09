@@ -1,7 +1,10 @@
+icon.bmp
 splash.png
 pillar.png
 player.png
 tileset.png
 badguy.png
 objects.png
-ui-background.png
+panel-background.png
+panel-hearth.png
+panel-digits.png

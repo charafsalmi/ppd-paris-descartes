@@ -29,28 +29,37 @@ public:
 
 	static ControlPanel& GetInstance();
 
+	void Show(sf::RenderTarget& app, float frametime);
+	
 	void SetLives(int value);
 	
 	void SetRupees(int value);
-	/*
-	void SetSlot(const char slot, const int value);
-	*/
-	void Show(sf::RenderWindow& app, float frametime);
+
+	void AddLifeSlot();
+
 	
 private:
 	ControlPanel();
 	ControlPanel(const ControlPanel& other);
 	
-	int lives_count_;
+	~ControlPanel();
 	
-	sf::String rupees_text_;
-	sf::Sprite rupees_;
-	sf::Sprite lives_;
-	sf::Sprite background_;
-	sf::Font font_;
+	void DrawLives(sf::RenderTarget& app, const float& frametime);
+	void DrawDigits(sf::RenderTarget& app);
+	
+	sf::IntRect& GetDigitRect(int digit);
+	
+	int lives_count_, lives_max_, rupees_count_, bombs_count_, arrows_count_;
 	float blink_timer_;
-	bool blink_frame_;
+	bool blink_frame_;	
+
+	
+	sf::Sprite lives_;
+	sf::Sprite digits_;
+	sf::Sprite background_;
+
 	sf::Sound blink_sound_;
+	bool dbg_;
 };
 
 #endif /* guard CONTROLPANEL_HPP */
