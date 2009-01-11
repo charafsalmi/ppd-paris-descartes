@@ -42,9 +42,10 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	
 	// le joueur est de face par défaut
 	current_dir_ = DOWN;
+	was_moving_ = false;
 	SetSubRect(subrects_not_moving_[DOWN]);
 	
-	SetCenter(0, walk_anims_[UP]->GetFrame(0).GetHeight());
+	SetCenter(0, subrects_not_moving_[DOWN].GetHeight());
 	
 	lives_ = 1;
 	rupees_ = 42;
@@ -101,37 +102,39 @@ void Player::Update(float frametime)
 	static Item* ptr = NULL;
 
 	static Game& game = Game::GetInstance();
-	bool moving = false;
+	bool moved = false;
 	int dx, dy;
 	sf::FloatRect rect;
-
+	
+	Direction new_dir;
 	for (int dir = 0; dir < COUNT_DIRECTION; ++dir)
 	{
 		if (input_.IsKeyDown(move_keys_[dir]))
 		{
+			moved = true;
+			new_dir = (Direction) dir;
 			dx = dy = 0;
 			switch (dir)
 			{
 				case UP:
 					dy = -SPEED;
-					moving |= 1;
+					//moving |= 1;
 					break;
 				case DOWN:
 					dy = SPEED;
-					moving |= 1;
+					//moving |= 1;
 					break;
 				case LEFT:
 					dx = -SPEED;
-					moving |= 1;
+					//moving |= 1;
 					break;
 				case RIGHT:
 					dx = SPEED;
-					moving |= 1;
+					//moving |= 1;
 					break;
 				default:
 					break;
 			}
-			UpdateSubRect((Direction) dir, moving);
 			sf::Vector2f pos = GetPosition();
 			pos.x += dx * frametime;
 			pos.y += dy * frametime;
@@ -187,177 +190,26 @@ void Player::Update(float frametime)
 				
 			}		
 		}
-	}	
-	if (moving)
+	}
+	// si on a bougé
+	if (moved)
 	{
+		if (new_dir != current_dir_)
+		{
+			current_dir_ = new_dir;
+			Animated::Change(walk_anims_[new_dir], *this);
+		}
 		Animated::Update(frametime, *this);
-	}	
-	UpdateSubRect(current_dir_, moving);
-	
+		was_moving_ = true;
+	}
+	else if (was_moving_)
+	{
+		was_moving_ = false;
+		SetSubRect(subrects_not_moving_[current_dir_]);
+#ifdef DEBUG
+		puts("[Player] animation stoped");
+#endif
+	}
 }
 
-/*
-
-	Note: les 2 booléens étaient censés réduire les mises à jour inutiles de
-	subrects à chaque frame.
-	Cependant, avec ce code, on peut se retrouver à aller vers le haut, avec
-	le sprite de déplacement vers le bas. Pour l'instant donc...
-
-*/
-
-void Player::UpdateSubRect(Direction dir, bool moving)
-{
-	static bool diag = false;
-	static Direction diag_dir;
-	/*
-	static bool fixed = false;
-	static bool was_moving = false;
-	
-	fixed = moving == was_moving;
-	*/
-	if (dir != current_dir_)
-	{	// Non remise à zero des animations sur mouvement diagonal.
-		if (moving)
-		{
-		/*
-			Si la touche précédemment appuyée ne l'est plus
-			Ou que celle-ci et la nouvellement appuyée ne forment
-			pas une diagonale, pas de changement d'anim.
-		 */
-		 
-		 	if (diag && !input_.IsKeyDown(move_keys_[diag_dir]))
-		 	{
-					diag = false;
-					Animated::Change(walk_anims_[dir], *this);		 	
-		 	}
-			if (!(input_.IsKeyDown(move_keys_[current_dir_]) && IsDiag(dir, current_dir_)))
-			{
-				Animated::Change(walk_anims_[dir], *this);
-			}
-			else if (diag)
-			{
-				if (diag_dir != current_dir_)
-				{
-					diag = false;
-					Animated::Change(walk_anims_[dir], *this);
-				}
-			}
-			else
-			{
-				diag = true;
-				diag_dir = current_dir_;
-			}
-		}
-	}
-	
-	if (!moving)
-	{	// Dès qu'on s'arrète, on fix subrects et anims.
-		/*was_moving = false;
-		if (!fixed)
-		{
-			puts("Whe do it.");*/
-			Animated::Halt();
-			SetSubRect(subrects_not_moving_[dir]);
-			Animated::Change(walk_anims_[current_dir_], *this);
-		//}
-		
-	}
-	else
-	{
-		if (Animated::Halted())
-		{
-			Animated::Start();
-		}
-	//	was_moving |= 1;
-	}
-	current_dir_ = dir;
-}
-
-
-bool Player::Move(Direction dir, float frametime)
-{
-	/*static Game& game = Game::GetInstance();
-
-	SINT dx, dy;
-	sf::FloatRect rect;
-
-	dx = dy = 0;
-
-	switch(dir)
-	{
-		case UP:
-			dy = -SPEED;
-		break;
-		case DOWN:
-			dy = SPEED;
-		break;
-		case LEFT:
-			dx = -SPEED;
-		break;
-		case RIGHT:
-			dx = SPEED;
-		break;
-		default:
-		break;
-	}
-
-	sf::Vector2f pos = GetPosition();
-	pos.x += dx * frametime;
-	pos.y += dy * frametime;
-
-	rect.Left = pos.x;
-	rect.Bottom = pos.y;
-	rect.Right = pos.x + GetFloorWidth();
-	rect.Top = pos.y - GetFloorHeight();
-
-	// on vérifie si on doit changer de zone
-	bool out_zone = false;
-
-	if(rect.Left < 0)
-	{
-		game.ChangeZone(Game::LEFT);
-		out_zone = true;
-	}
-	else if(rect.Top < 0)
-	{
-		game.ChangeZone(Game::UP);
-		out_zone = true;
-	}
-	else if(rect.Right > Zone::WIDTH * Tile::SIZE)
-	{
-		game.ChangeZone(Game::RIGHT);
-		out_zone = true;
-	}
-	else if(rect.Bottom > Zone::HEIGHT * Tile::SIZE)
-	{
-		game.ChangeZone(Game::DOWN);
-		out_zone = true;
-	}
-
-	if(!out_zone && zone_->CanMove(this, rect))
-	{
-		SetPosition(pos);
-		
-		return true;
-	}*/
-	return false;
-}
-
-
-bool Player::IsDiag(Direction dir1, Direction dir2)
-{
-	bool res = true;
-	
-	if (dir1 == UP && dir2 == DOWN)
-		res = false;
-	else if (dir1 == LEFT && dir2 == RIGHT)
-		res = false;
-	else if (dir1 == DOWN && dir2 == UP)
-		res = false;
-	else if (dir1 == RIGHT && dir2 == LEFT)
-		res = false;
-	else if (dir1 == dir2)
-		res = false;
-	return res;
-}
 

@@ -127,11 +127,6 @@ void ControlPanel::DrawLives(sf::RenderTarget& app, const float& frametime)
 		if (blink_timer_ <= 0)
 		{
 			blink_timer_ = 0.12f;
-			
-#ifdef DEBUG
-			puts("Blinking");
-#endif
-
 			if (!blink_frame_)
 				lives_.SetSubRect(sf::IntRect(28, 0, 42, 14));
 			else

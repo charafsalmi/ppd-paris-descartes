@@ -27,7 +27,7 @@ public:
 	 * @param[in] frametime
 	 * @return true si le déplacement a été effectué
 	 */
-	bool Move(Direction dir, float frametime);
+	//bool Move(Direction dir, float frametime);
 	
 private:
 	/**
@@ -35,7 +35,7 @@ private:
 	 * @param[in] dir: direction prise
 	 * @param[in] moving: true si le joueur bouge
 	 */
-	void UpdateSubRect(Direction dir, bool moving = true);
+	void UpdateSubRect(Direction dir, bool moved, float frametime);
 		
 	/**
 	 * Détermine si deux directions forment une diagonale valide
@@ -53,8 +53,8 @@ private:
 	
 	// Subrects du sprite immobile
 	sf::IntRect subrects_not_moving_[COUNT_DIRECTION];
-	
 	Direction current_dir_;
+	bool was_moving_;
 	const sf::Input& input_;
 	ControlPanel& panel_;
 	

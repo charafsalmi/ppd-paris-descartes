@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+#author: alexandre
+
 #Sur debian/ubuntu :
-#$ sudo apt-get install python-tk python-imaging-tk
+#$ apt-get install python-tk python-imaging-tk
 #$ cd ppd-paris-descartes/editor/
 #$ python editor.py
 
@@ -18,6 +20,8 @@ ZONE_HEIGHT = 16
 
 TILE_SIZE = 32
 TILESET = "../../data/images/tileset.png"
+
+DEFAULT_PATH = "../../data/map/"
 
 
 class TiledCanvas(Tk.Canvas):
@@ -36,24 +40,30 @@ class TiledCanvas(Tk.Canvas):
 		y = (event.y / TILE_SIZE) * TILE_SIZE
 		self.coords(self.cursor, x - 1, y - 1, x + TILE_SIZE, y + TILE_SIZE)
 		self.lift(self.cursor)
-	
+
+
 class App(Tk.Tk):
 	def __init__(self):
 		Tk.Tk.__init__(self)
 		self.title("Editor")
 		
-		# création du menu
+		# création de la barre de menu
 		menubar = Tk.Menu(self)
+		
+		# menu fichier
 		m_file = Tk.Menu(menubar, tearoff=False)
 		m_file.add_command(label="Ouvrir une carte", command=self.open_map)
-		m_file.add_command(label="Enregistrer la carte", command=self.save_map)
+		m_file.add_command(label="Enregistrer", command=self.save_map)
+		m_file.add_command(label="Enregistrer sous ...", command=self.save_map_as)
 		m_file.add_separator()
 		m_file.add_command(label="Quitter", command=self.destroy)
 		menubar.add_cascade(label="Fichier", menu=m_file)
 		
+		# menu édition
 		m_edit = Tk.Menu(menubar, tearoff=False)
 		m_edit.add_command(label="Annuler (U)", command=self.undo)
 		self.bind("<u>", self.undo)
+		m_edit.add_command(label="Peindre avec la tile courante", command=self.paint_all)
 		menubar.add_cascade(label="Édition", menu=m_edit)
 		self.config(menu=menubar)
 		
@@ -94,18 +104,17 @@ class App(Tk.Tk):
 		# création d'une carte par défaut
 		self.history = [] # pile de l'historique
 		self.map = []
-		for i in xrange(ZONE_WIDTH * ZONE_HEIGHT):
-			self.map.append(0)
-			self.can.create_image((i % ZONE_WIDTH) * TILE_SIZE,
-					(i / ZONE_WIDTH) * TILE_SIZE,
-					anchor=Tk.NW, image=self.tiles[self.map[-1]])
 		self.current = 0 # indice de la tile courante
+		self.paint_all()
 		self.lab_tile["image"] = self.tiles[self.current]
+		
+		# filename de la carte
+		self.filename = None
 		
 	def open_map(self):
 		"charger une carte dans l'éditeur"
 		
-		filename = tkFileDialog.askopenfilename(initialdir="../data/map")
+		filename = tkFileDialog.askopenfilename(initialdir=DEFAULT_PATH)
 		if filename:
 			self.history = []
 			self.map = []
@@ -117,17 +126,34 @@ class App(Tk.Tk):
 				self.can.create_image((i % ZONE_WIDTH) * TILE_SIZE,
 					(i / ZONE_WIDTH) * TILE_SIZE,
 					anchor=Tk.NW, image=self.tiles[self.map[-1]])
-	
+			
+			self.title("Editor - " + filename)
+			self.filename = filename
+			print "> map", filename, "ouverte"
+			
 	def save_map(self):
-		"sauvegarder la carte de l'éditeur dans un fichier"
+		"sauvegarder la carte de l'éditeur"
 		
-		f = tkFileDialog.asksaveasfile()
-		if f:
+		if not self.filename:
+			self.save_map_as()
+		else:
+			f = open(self.filename, "w")
 			for i, tile in enumerate(self.map):
-				f.write("%2d " % tile)
+				f.write("%3d " % tile)
 				if (i + 1) % ZONE_WIDTH == 0:
 					f.write("\n")
 			f.close()
+			print "> map", self.filename, "enregistrée"
+			
+	def save_map_as(self):
+		"demander où sauvegarder la carte"
+		
+		f = tkFileDialog.asksaveasfilename()
+		if f:
+			self.filename = f
+			self.save_map()
+		else:
+			self.filename = None # car f est un tuple vide
 	
 	def set_current(self, event):
 		"définir la tile courante"
@@ -144,9 +170,9 @@ class App(Tk.Tk):
 		
 		x = event.x / TILE_SIZE
 		y = event.y / TILE_SIZE
-		# si la nouvelle tile est différente de l'ancienne
 		indice = y * ZONE_WIDTH + x
-
+		
+		# si la nouvelle tile est différente de l'ancienne
 		if x < ZONE_WIDTH and y < ZONE_HEIGHT and self.map[indice] != self.current:
 			self.can.create_image(x * TILE_SIZE,
 				y * TILE_SIZE, image=self.tiles[self.current], anchor=Tk.NW)
@@ -166,9 +192,22 @@ class App(Tk.Tk):
 				anchor=Tk.NW, image=self.tiles[tile])
 			self.map[indice] = tile
 		else:
-			print "l'historique est vide !"
+			print "> l'historique est vide !"
 	
-app = App()
-app.mainloop()
+	def paint_all(self):
+		"peindre tout la carte avec la tile courante"
+		
+		del self.map[:]
+		self.can.delete(Tk.ALL)
+		for i in xrange(ZONE_WIDTH * ZONE_HEIGHT):
+			self.map.append(self.current)
+			self.can.create_image((i % ZONE_WIDTH) * TILE_SIZE,
+					(i / ZONE_WIDTH) * TILE_SIZE,
+					anchor=Tk.NW, image=self.tiles[self.current])
+		
+		
+if __name__ == "__main__":
+	app = App()
+	app.mainloop()
 
 
