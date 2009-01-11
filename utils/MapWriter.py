@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Filename  : MapWriter.py
 # Authors   : Bjorn Lindeijer and Georg Muntingh
 # Version   : 1.1

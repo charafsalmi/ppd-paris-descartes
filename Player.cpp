@@ -30,9 +30,9 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	
 	// Subrects d'immobilité
 	subrects_not_moving_[UP]	= sf::IntRect(0,   0, 32,  48);
-	subrects_not_moving_[DOWN]	= sf::IntRect(0,  96, 32, 144);
-	subrects_not_moving_[RIGHT]	= sf::IntRect(0,  48, 32,  96);
-	subrects_not_moving_[LEFT]	= sf::IntRect(0, 144, 32, 196);
+	subrects_not_moving_[DOWN]	= sf::IntRect(0,  48, 32,  96);
+	subrects_not_moving_[LEFT]	= sf::IntRect(0,  96, 32, 144);
+	subrects_not_moving_[RIGHT]	= sf::IntRect(0, 144, 32, 196);
 	
 	// attribution des touches de déplacement
 	move_keys_[UP] = sf::Key::Up;
@@ -49,7 +49,8 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	
 	lives_ = 1;
 	rupees_ = 42;
-
+	locked_ = false;
+	
 	panel_.SetLives(lives_);
 	panel_.SetRupees(rupees_);
 }
@@ -91,6 +92,9 @@ void Player::OnEvent(sf::Key::Code key)
 
 void Player::Update(float frametime)
 {
+	if (locked_)
+		return;
+	
 // <HACK>
 	static ItemData i_d;
 	static sf::Vector2f offset(0, 0);
@@ -118,19 +122,15 @@ void Player::Update(float frametime)
 			{
 				case UP:
 					dy = -SPEED;
-					//moving |= 1;
 					break;
 				case DOWN:
 					dy = SPEED;
-					//moving |= 1;
 					break;
 				case LEFT:
 					dx = -SPEED;
-					//moving |= 1;
 					break;
 				case RIGHT:
 					dx = SPEED;
-					//moving |= 1;
 					break;
 				default:
 					break;
@@ -187,8 +187,7 @@ void Player::Update(float frametime)
 					lives_ += ptr->Take();
 					panel_.SetLives(lives_);
 				}
-				
-			}		
+			}
 		}
 	}
 	// si on a bougé
@@ -206,10 +205,18 @@ void Player::Update(float frametime)
 	{
 		was_moving_ = false;
 		SetSubRect(subrects_not_moving_[current_dir_]);
-#ifdef DEBUG
-		puts("[Player] animation stoped");
-#endif
 	}
 }
 
+
+void Player::Lock()
+{
+	locked_ = true;
+}
+
+
+void Player::Unlock()
+{
+	locked_ = false;
+}
 

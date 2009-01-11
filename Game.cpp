@@ -99,6 +99,9 @@ Game::Game() :
 	active_zone_ = NULL;
 	next_zone_ = NULL;
 	
+	// InGame
+	on_event_meth_ = &Game::InGameOnEvent;
+	show_meth_ = &Game::InGameShow;
 }
 
 
@@ -143,6 +146,7 @@ void Game::Run()
 	
 	while (running)
 	{
+		// POLLING
 		while (app_.GetEvent(event))
 		{
 			if (event.Type == sf::Event::Closed)
@@ -156,19 +160,19 @@ void Game::Run()
 					puts("screen !");
 					app_.Capture().SaveToFile("screenshot.png");
 				}
-				player_->OnEvent(event.Key.Code);
+				(this->*on_event_meth_)(event.Key.Code);
 			}
 		}
+		// UPDATE
 		frametime = app_.GetFrameTime();
+		panel_.Update(frametime);
 		active_zone_->Update(frametime);
 		
-		active_zone_->Show(app_);
-		panel_.Show(app_, frametime); // On pourrait faire un Update, mais a priori
-									  // "Anim" seulement quand ne reste qu'une vie
+		// RENDER
+		(this->*show_meth_)();
 		
 #ifndef FULLSCREEN_HACK		
 		app_.Display();
-
 #else
 		static sf::Vector2f scal_;
 		scal_.x = scal_.y = (DesktopMode.Width / 640);
@@ -263,4 +267,48 @@ void Game::SetMusic(short val)
 	current_music_index_ = val;
 }
 #endif
+
+
+// méthodes de spécialisation du comportement
+
+void Game::InGameOnEvent(sf::Key::Code key)
+{
+	if (key == sf::Key::Return)
+	{
+		puts("mode inventory");
+		// bascule en mode Inventory
+		on_event_meth_ = &Game::InventoryOnEvent;
+		show_meth_ = &Game::InventoryShow;
+		player_->Lock();
+	}
+	player_->OnEvent(key);
+}
+
+
+void Game::InGameShow()
+{
+	active_zone_->Show(app_);
+	panel_.Show(app_);
+}
+
+
+void Game::InventoryOnEvent(sf::Key::Code key)
+{
+	if (key == sf::Key::Return)
+	{
+		puts("mode ingame");
+		// bascule en mode InGame
+		on_event_meth_ = &Game::InGameOnEvent;
+		show_meth_ = &Game::InGameShow;
+		player_->Unlock();
+	}
+	panel_.GetInventory()->OnEvent(key);
+}
+
+
+void Game::InventoryShow()
+{
+	active_zone_->Show(app_);
+	panel_.GetInventory()->Show(app_);
+}
 

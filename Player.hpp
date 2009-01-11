@@ -20,7 +20,17 @@ public:
 	void OnEvent(sf::Key::Code key);
 
 	void Update(float frametime);
-
+	
+	/**
+	 * Verrouiller le joueur (plus de mises à jour possibles)
+	 */
+	void Lock();
+	
+	/**
+	 * Déverrouiller le joueur
+	 */
+	void Unlock();
+	
 	/**
 	 * @brief Déplacer l'entité, si possible et en gérant le changement de zone
 	 * @param[in] direction
@@ -55,6 +65,7 @@ private:
 	sf::IntRect subrects_not_moving_[COUNT_DIRECTION];
 	Direction current_dir_;
 	bool was_moving_;
+	bool locked_;
 	const sf::Input& input_;
 	ControlPanel& panel_;
 	

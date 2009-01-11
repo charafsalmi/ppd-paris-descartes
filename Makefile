@@ -12,7 +12,6 @@ TINYXML_OBJ= tinyxml/tinyxml.o tinyxml/tinyxmlparser.o tinyxml/tinyxmlerror.o
 DEBUG=yes
 ifeq ($(DEBUG), yes)
 	CFLAGS += -g -DDEBUG 
-
 else
 	CFLAGS += -O2
 endif
@@ -37,7 +36,7 @@ ifeq ($(FULLSCREEN), yes)
 else
 	CFLAGS += -DNO_SPLASH
 endif
-	
+
 
 $(EXEC): $(OBJ) $(TINYXML_OBJ)
 	$(CC) $^ -o $(EXEC) $(LDFLAGS)

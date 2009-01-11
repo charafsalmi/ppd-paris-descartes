@@ -4,6 +4,8 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
+#include "Inventory.hpp"
+
 
 class ControlPanel
 {
@@ -23,23 +25,28 @@ public:
 */
 
 	static ControlPanel& GetInstance();
-
-	void Show(sf::RenderTarget& app, float frametime);
+	
+	void Update(float frametime);
+	
+	void Show(sf::RenderTarget& app);
 	
 	void SetLives(int value);
 	
 	void SetRupees(int value);
 
 	void AddLifeSlot();
-
+	
+	inline Inventory* GetInventory()
+	{
+		return inventory_;
+	}
 	
 private:
 	ControlPanel();
 	ControlPanel(const ControlPanel& other);
-	
 	~ControlPanel();
 	
-	void DrawLives(sf::RenderTarget& app, const float& frametime);
+	void DrawLives(sf::RenderTarget& app);
 	void DrawDigits(sf::RenderTarget& app);
 	
 	sf::IntRect& GetDigitRect(int digit);
@@ -58,7 +65,7 @@ private:
 #ifdef DEBUG
 	bool dbg_;
 #endif
-	
+	Inventory* inventory_;
 };
 
 #endif /* guard CONTROLPANEL_HPP */

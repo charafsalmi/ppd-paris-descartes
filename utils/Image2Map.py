@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Filename  : Image2Map.py
 # Authors   : Georg Muntingh and Bjorn Lindeijer
 # Version   : 1.1

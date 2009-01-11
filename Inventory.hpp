@@ -1,0 +1,33 @@
+#ifndef INVENTORY_HPP
+#define INVENTORY_HPP
+
+#include <SFML/Graphics.hpp>
+
+class Inventory
+{
+public:
+	Inventory();
+	
+	void OnEvent(sf::Key::Code code);
+	
+	void Show(sf::RenderWindow& app) const;
+	
+private:
+	enum
+	{
+		WIDTH = 6, HEIGHT = 4, SLOT_SIZE = 60
+	};
+	
+	// TODO: remplacer les sprites par des InventoryObject
+	sf::Sprite slots_[HEIGHT][WIDTH];
+	struct Cursor
+	{
+		sf::Sprite sprite;
+		sf::Vector2i coords;
+	};
+	Cursor cursor_;
+};
+
+
+#endif /* INVENTORY_HPP */
+

@@ -8,3 +8,5 @@ objects.png
 panel-background.png
 panel-hearth.png
 panel-digits.png
+inventory-cursor.png
+inventory-slot.png

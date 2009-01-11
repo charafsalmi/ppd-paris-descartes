@@ -14,7 +14,7 @@ Tileset::Tileset()
 	// chargement des propriétés
 	if (!doc.LoadFile(TILES_DEFINITION))
 	{
-		std::cerr << "[TileManager] erreur lors du chargement de "
+		std::cerr << " [Tileset] erreur lors du chargement de "
 			<< TILES_DEFINITION << " (" << doc.ErrorDesc() << ")" << std::endl;
 		abort();
 	}
@@ -24,7 +24,7 @@ Tileset::Tileset()
 	
 	if (elem == NULL)
 	{
-		std::cerr << "[TileManager] impossible d'atteindre le noeud"
+		std::cerr << " [Tileset] impossible d'atteindre le noeud"
 			<< std::endl;
 		abort();
 	}
@@ -50,7 +50,7 @@ Tileset::Tileset()
 		}
 		else
 		{
-			std::cerr << "[TileManager] tile id manquant" << std::endl;
+			std::cerr << " [Tileset] tile id manquant" << std::endl;
 		}
 		
 		elem = elem->NextSiblingElement();

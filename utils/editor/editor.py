@@ -90,7 +90,9 @@ class App(Tk.Tk):
 		self.can_select.create_image(0, 0, image=self.img, anchor=Tk.NW)
 		Tk.Label(frame_left, text="tile courante : ").pack(side=Tk.LEFT)
 		self.lab_tile = Tk.Label(frame_left)
-		self.lab_tile.pack()
+		self.lab_tile.pack(side=Tk.LEFT)
+		self.ent_tile_id = Tk.Entry(frame_left, state=Tk.DISABLED)
+		self.ent_tile_id.pack(expand=1, anchor=Tk.W)
 		
 		# canevas de la zone d'édition
 		frame_right = Tk.Frame(self)
@@ -161,10 +163,13 @@ class App(Tk.Tk):
 		x = event.x / TILE_SIZE
 		y = event.y / TILE_SIZE
 		tile_id = y * SHEET_WIDTH + x
-		self.current = tile_id
-		#print self.current
-		self.lab_tile["image"] = self.tiles[tile_id]
-		
+		if tile_id != self.current:
+			self.current = tile_id
+			self.lab_tile["image"] = self.tiles[tile_id]
+			self.ent_tile_id["state"] = Tk.NORMAL
+			self.ent_tile_id.delete(0, Tk.END)
+			self.ent_tile_id.insert(0, str(tile_id))
+			self.ent_tile_id["state"] = "readonly"
 	def put_tile(self, event):
 		"placer une tile sur la carte"
 		

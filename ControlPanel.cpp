@@ -50,6 +50,7 @@ void ControlPanel::SetLives(int value)
 #endif
 }
 
+
 void ControlPanel::AddLifeSlot()
 {
 	if (lives_max_ < MAX_LIVES)
@@ -71,10 +72,20 @@ void ControlPanel::SetRupees(int value)
 	}
 }
 
-void ControlPanel::Show(sf::RenderTarget& app, float frametime)
+
+void ControlPanel::Update(float frametime)
+{
+	if (lives_count_ == 1)
+	{
+		blink_timer_ -= frametime;
+	}
+}
+
+
+void ControlPanel::Show(sf::RenderTarget& app)
 {
 	app.Draw(background_);
-	DrawLives(app, frametime);
+	DrawLives(app);
 	DrawDigits(app);
 }
 
@@ -103,15 +114,18 @@ ControlPanel::ControlPanel()
 #ifdef DEBUG
 	dbg_ = false;
 #endif
-		
+	inventory_ = new Inventory();
 }
+
 
 ControlPanel::~ControlPanel()
 {
 	blink_sound_.Stop();
+	delete inventory_;
 }
 
-void ControlPanel::DrawLives(sf::RenderTarget& app, const float& frametime)
+
+void ControlPanel::DrawLives(sf::RenderTarget& app)
 {
 	sf::Vector2f lives_pos_ = HEARTH_ORIGIN;
 	int to_draw;
@@ -123,7 +137,6 @@ void ControlPanel::DrawLives(sf::RenderTarget& app, const float& frametime)
 #ifdef DEBUG
 		if (dbg_) std::cerr << "\t derniere vie\n";
 #endif
-		blink_timer_ -= frametime;	
 		if (blink_timer_ <= 0)
 		{
 			blink_timer_ = 0.12f;
@@ -219,6 +232,7 @@ void ControlPanel::DrawLives(sf::RenderTarget& app, const float& frametime)
 
 }
 
+
 void ControlPanel::DrawDigits(sf::RenderTarget& app)
 {
 	sf::Vector2f draw_pos = RUPEES_ORIGIN;
@@ -275,6 +289,7 @@ void ControlPanel::DrawDigits(sf::RenderTarget& app)
 	app.Draw(digits_);
 
 }
+
 
 sf::IntRect& ControlPanel::GetDigitRect(int digit)
 {
