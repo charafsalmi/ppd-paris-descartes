@@ -6,12 +6,12 @@
 #include <iostream>
 #include "Zone.hpp"
 #include "StaticItem.hpp"
-#include "Tileset.hpp"
 #include "MediaManager.hpp"
 
 
 Zone::Zone()
 {
+	entities_qt_ = new QuadTreeNode(sf::Vector2i(0, 640), sf::Vector2i(640, 480));
 }
 
 
@@ -38,12 +38,30 @@ void Zone::Load(const char* filename, sf::RenderWindow& app)
 			int tile_id;
 			f >> tile_id;
 			walkable_[i][j] = tileset.IsWalkable(tile_id);
+			tiles_[i][j] = tile_id;
 			
 			// création et dessin du sprite
 			sf::Sprite tile;
 			tileset.MakeSprite(tile_id, tile);
 			sf::Vector2f pos(j * Tile::SIZE, i * Tile::SIZE);
 			tile.SetPosition(pos);
+			
+			Tile::Effect effect = tileset.GetEffect(tile_id);
+			if (effect == Tile::HOLE)
+			{
+					// Etendre le format du fichier de niveau
+					// -> Spécifier les arguments des trous de la zone
+					// genre [i, j ] -> 8000
+					// Default: -1 <-> Tomber dans le trou fait perdre une vie
+					// C'est Game qui reliera 8000 à une Zone et a une Position.
+					// En attendant:
+				// <HACK>
+				if (!strcmp(filename, "data/map/zone5.txt"))
+				{
+					puts("passage ajouté");
+					special_args_[tile_id] = 42;
+				}
+			}
 			
 			app.Draw(tile);
 		}
@@ -53,7 +71,7 @@ void Zone::Load(const char* filename, sf::RenderWindow& app)
 	zone_music_index_ = t_music;
 #endif
 	f.close();
-	tiles_ = app.Capture();
+	tiles_img_ = app.Capture();
 	app.Clear();
 }
 
@@ -65,6 +83,8 @@ void Zone::Update(float frametime)
 	{
 		(**it).Update(frametime);
 	}
+
+	
 	ItemList::iterator ti;
 	for (ti = interactives_.begin(); ti != interactives_.end(); ++ti)
 	{
@@ -86,7 +106,7 @@ void Zone::Update(float frametime)
 void Zone::Show(sf::RenderWindow& app) const
 {
 	// affichage des tiles
-	sf::Sprite s_tiles(tiles_);
+	sf::Sprite s_tiles(tiles_img_);
 	app.Draw(s_tiles);
 	
 	// affichage des entités
@@ -129,9 +149,16 @@ Zone::TileContent Zone::CanMove(Entity* emitter, const sf::FloatRect& rect, Item
 	}
 	
 	// collision avec une autre unité
-	EntityList::const_iterator it;
+	static Entity* fake = NULL;
+
+	std::set<Entity*> them;
+	std::set<Entity*>::const_iterator it;
+		
+	entities_qt_->GetEntities(fake, them);
+
+
 	sf::FloatRect other_rect;
-	for (it = entities_.begin(); it != entities_.end(); ++it)
+	for (it = them.begin(); it != them.end(); ++it)
 	{
 		if (*it != emitter)
 		{
@@ -162,12 +189,16 @@ Zone::TileContent Zone::CanMove(Entity* emitter, const sf::FloatRect& rect, Item
 void Zone::AddEntity(Entity* entity)
 {
 	entities_.push_front(entity);
+	puts("About to add entity");
+	entities_qt_->AddEntity(entity);
+	puts("\tAdded.");
 }
 
 
 void Zone::RemoveEntity(Entity* entity)
 {
 	entities_.remove(entity);
+	entities_qt_->RemoveEntity(entity);
 }
 
 

@@ -1,3 +1,4 @@
+#include <cstring>
 #include <iostream>
 
 #include "Game.hpp"
@@ -93,6 +94,13 @@ Game::Game() :
 	zones_[1][1]->PlaceStaticItem(10, 11);
 
 	zones_[1][2]->Load("data/map/zone6.txt", app_);
+	
+	cave_.Load("data/map/cave1.txt", app_);
+	
+	for (int i = 4; i <= 10; i += 2)
+		for (int j = 3; j <= 9; j +=2)
+			cave_.PlaceItem('R', i, j);
+	
 	cds_zone_.x = 0;
 	cds_zone_.y = 0;
 
@@ -237,6 +245,31 @@ void Game::ChangeZone(Direction dir)
 	}
 }
 
+
+void Game::ChangeZone (const char* zone)
+{
+	int x = cds_zone_.x;
+	int y = cds_zone_.y;
+	sf::Vector2f pos = player_->GetPosition();
+
+	if (!strcmp(zone, "cave1"))
+	{
+		next_zone_ = &cave_;
+	
+	}
+	// est-ce qu'une zone existe aux nouvelles coordonnées ?
+	if (x >= 0 && x < GAME_WIDTH && y >= 0 && y < GAME_HEIGHT)
+	{
+		printf("-> Changement de zone en cave\n");
+		next_zone_ = &cave_;
+		player_->SetPosition(pos);
+		cds_zone_.x = x;
+		cds_zone_.y = y;
+#ifdef DUMB_MUSIC
+		SetMusic(cave_.GetMusic());
+#endif
+	}
+}
 #ifdef DUMB_MUSIC
 void Game::SetMusic(short val)
 {

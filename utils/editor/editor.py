@@ -13,7 +13,7 @@ import tkFileDialog
 from PIL import Image, ImageTk
 
 SHEET_WIDTH = 16
-SHEET_HEIGHT = 16
+SHEET_HEIGHT = 20
 
 ZONE_WIDTH = 20
 ZONE_HEIGHT = 16

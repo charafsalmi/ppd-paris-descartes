@@ -60,12 +60,13 @@ private:
 	
 	// Animations de déplacement
 	const Animation* walk_anims_[COUNT_DIRECTION];
+	const Animation* fall_anim_;
 	
 	// Subrects du sprite immobile
 	sf::IntRect subrects_not_moving_[COUNT_DIRECTION];
 	Direction current_dir_;
 	bool was_moving_;
-	bool locked_;
+	bool locked_, falling_;
 	const sf::Input& input_;
 	ControlPanel& panel_;
 	

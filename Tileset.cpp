@@ -41,6 +41,10 @@ Tileset::Tileset()
 			{
 				effect = flag ? Tile::DEFAULT : Tile::BLOCK;
 			}
+			else if (elem->QueryIntAttribute("hole", &flag) == TIXML_SUCCESS)
+			{
+				effect = flag ? Tile::HOLE : Tile::DEFAULT;
+			}
 			
 			// ajout de la nouvelle tile spéciale
 			specials_[tile_id] = effect;

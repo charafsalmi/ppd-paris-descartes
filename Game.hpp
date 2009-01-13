@@ -33,6 +33,13 @@ public:
 	{
 		return app_;
 	}*/
+	
+	void ChangeZone(const char* zone);
+	
+	inline Zone* GetZone()
+	{
+		return active_zone_;
+	}
 
 private:
 	Game();
@@ -60,6 +67,7 @@ private:
 	
 	Zone* active_zone_;
 	Zone* next_zone_;
+	Zone cave_;
 	Player* player_;
 	
 	ControlPanel& panel_;

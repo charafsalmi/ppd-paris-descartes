@@ -2,15 +2,18 @@
 #include <cstring>
 
 #include "Player.hpp"
-#include "Tileset.hpp"
+
 #include "Game.hpp"
 #include "MediaManager.hpp"
+#include "Tileset.hpp"
+#include "Zone.hpp"
+
 #include "type_definitions.hpp"
 
-#define SPEED    100
-#define PL_WIDTH  32 
-#define PL_HEIGHT 48
-
+#define SPEED      100
+#define PL_WIDTH    32 
+#define PL_HEIGHT   48
+#define FALL_DELAY   1
 
 Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	Entity(pos, GET_IMG("player")),
@@ -27,6 +30,8 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	walk_anims_[DOWN]	= &GET_ANIM("player_walk_bottom");
 	walk_anims_[LEFT]	= &GET_ANIM("player_walk_left");
 	walk_anims_[RIGHT]	= &GET_ANIM("player_walk_right");
+	
+	fall_anim_ = &GET_ANIM("player_fall");
 	
 	// Subrects d'immobilité
 	subrects_not_moving_[UP]	= sf::IntRect(0,   0, 32,  48);
@@ -50,6 +55,7 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	lives_ = 1;
 	rupees_ = 42;
 	locked_ = false;
+	falling_ = false;
 	
 	panel_.SetLives(lives_);
 	panel_.SetRupees(rupees_);
@@ -87,6 +93,35 @@ void Player::OnEvent(sf::Key::Code key)
 			dead_ = true;
 		}
 	}
+	else if (key == sf::Key::T)
+	{
+		int i = (int)GetPosition().x +  GetFloorWidth()  / 2;
+		int j = (int)GetPosition().y +  GetFloorHeight() / 2;
+	
+		i /= Tile::SIZE;
+		j /= Tile::SIZE;
+		
+		Zone* zone = Game::GetInstance().GetZone();
+		int tile = zone->GetTileAt(i, j);
+		Tile::Effect effect = Tileset::GetInstance().GetEffect(tile);
+		std::cerr << "A la tile [" << tile << "]" << i << ", " << j << ", on a:\t";
+		if (effect == Tile::HOLE)
+		{
+			puts("Trou >_>");
+		}
+		else if (effect == Tile::WATER)
+		{
+			puts("Eau");
+		}
+		else if (effect == Tile::DEFAULT)
+		{
+			puts("Default");
+		}
+		else
+		{
+			puts("Bloc");
+		}
+	}
 }
 
 
@@ -106,105 +141,159 @@ void Player::Update(float frametime)
 	static Item* ptr = NULL;
 
 	static Game& game = Game::GetInstance();
-	bool moved = false;
-	int dx, dy;
-	sf::FloatRect rect;
 	
-	Direction new_dir;
-	for (int dir = 0; dir < COUNT_DIRECTION; ++dir)
+	static int tile;
+	
+	static float fall_timer;
+	
+	if (! falling_)
 	{
-		if (input_.IsKeyDown(move_keys_[dir]))
+		bool moved = false;
+		int dx, dy;
+		sf::FloatRect rect;
+	
+		// Chûte-t'on ?
+	
+		int i = (int)GetPosition().x +  GetFloorWidth()  / 2;
+		int j = (int)GetPosition().y +  GetFloorHeight() / 2;
+	
+		i /= Tile::SIZE;
+		j /= Tile::SIZE;
+	
+		Zone* zone = game.GetZone();
+		tile = zone->GetTileAt(i, j);
+		Tile::Effect effect = Tileset::GetInstance().GetEffect(tile);
+
+		if (effect == Tile::HOLE)
 		{
-			moved = true;
-			new_dir = (Direction) dir;
-			dx = dy = 0;
-			switch (dir)
+			puts("Trou >_>");
+			falling_ = true;
+			Animated::Change(fall_anim_, *this);
+			fall_timer = FALL_DELAY;
+			return;
+		}
+	
+		//
+	
+		Direction new_dir;
+		for (int dir = 0; dir < COUNT_DIRECTION; ++dir)
+		{
+			if (input_.IsKeyDown(move_keys_[dir]))
 			{
-				case UP:
-					dy = -SPEED;
-					break;
-				case DOWN:
-					dy = SPEED;
-					break;
-				case LEFT:
-					dx = -SPEED;
-					break;
-				case RIGHT:
-					dx = SPEED;
-					break;
-				default:
-					break;
-			}
-			sf::Vector2f pos = GetPosition();
-			pos.x += dx * frametime;
-			pos.y += dy * frametime;
-			
-			rect.Left = pos.x;
-			rect.Bottom = pos.y;
-			rect.Right = pos.x + GetFloorWidth();
-			rect.Top = pos.y - GetFloorHeight();
-			
-			// on vérifie si on doit changer de zone
-			bool out_zone = false;
-			if (rect.Left < 0)
-			{
-				game.ChangeZone(Game::LEFT);
-				out_zone = true;
-			}
-			else if (rect.Top < 0) 
-			{
-				game.ChangeZone(Game::UP);
-				out_zone = true;
-			}
-			else if (rect.Right > Zone::WIDTH * Tile::SIZE)
-			{
-				game.ChangeZone(Game::RIGHT);
-				out_zone = true;
-			}
-			else if (rect.Bottom > Zone::HEIGHT * Tile::SIZE)
-			{
-				game.ChangeZone(Game::DOWN);
-				out_zone = true;
-			}
-			
-			Zone::TileContent tc = zone_->CanMove(this, rect, ptr);
-			
-			if (!out_zone && tc == Zone::EMPTY )
-			{
-				SetPosition(pos);
-			}
-			else if (tc == Zone::DYNAMIC_NO)
-			{
-				puts("Item interactif overlappant!");
-				std::cout << "\t" << ptr->name_ << "\n";
-				if (ptr->name_ == "Rupee")
+				moved = true;
+				new_dir = (Direction) dir;
+				dx = dy = 0;
+				switch (dir)
 				{
-					rupees_ += ptr->Take();
-					panel_.SetRupees(rupees_);
+					case UP:
+						dy = -SPEED;
+						break;
+					case DOWN:
+						dy = SPEED;
+						break;
+					case LEFT:
+						dx = -SPEED;
+						break;
+					case RIGHT:
+						dx = SPEED;
+						break;
+					default:
+						break;
 				}
-				else if (ptr->name_ == "Heart")
+				sf::Vector2f pos = GetPosition();
+				pos.x += dx * frametime;
+				pos.y += dy * frametime;
+			
+				rect.Left = pos.x;
+				rect.Bottom = pos.y;
+				rect.Right = pos.x + GetFloorWidth();
+				rect.Top = pos.y - GetFloorHeight();
+			
+				// on vérifie si on doit changer de zone
+				bool out_zone = false;
+				if (rect.Left < 0)
 				{
-					lives_ += ptr->Take();
-					panel_.SetLives(lives_);
+					game.ChangeZone(Game::LEFT);
+					out_zone = true;
+				}
+				else if (rect.Top < 0) 
+				{
+					game.ChangeZone(Game::UP);
+					out_zone = true;
+				}
+				else if (rect.Right > Zone::WIDTH * Tile::SIZE)
+				{
+					game.ChangeZone(Game::RIGHT);
+					out_zone = true;
+				}
+				else if (rect.Bottom > Zone::HEIGHT * Tile::SIZE)
+				{
+					game.ChangeZone(Game::DOWN);
+					out_zone = true;
+				}
+			
+				Zone::TileContent tc = zone_->CanMove(this, rect, ptr);
+			
+				if (!out_zone && tc == Zone::EMPTY )
+				{
+					SetPosition(pos);
+				}
+				else if (tc == Zone::DYNAMIC_NO)
+				{
+					puts("Item interactif overlappant!");
+					std::cout << "\t" << ptr->name_ << "\n";
+					if (ptr->name_ == "Rupee")
+					{
+						rupees_ += ptr->Take();
+						panel_.SetRupees(rupees_);
+					}
+					else if (ptr->name_ == "Heart")
+					{
+						lives_ += ptr->Take();
+						panel_.SetLives(lives_);
+					}
 				}
 			}
+		}
+		// si on a bougé
+		if (moved)
+		{
+			if (new_dir != current_dir_)
+			{
+				current_dir_ = new_dir;
+				Animated::Change(walk_anims_[new_dir], *this);
+			}
+			Animated::Update(frametime, *this);
+			was_moving_ = true;
+		}
+		else if (was_moving_)
+		{
+			was_moving_ = false;
+			SetSubRect(subrects_not_moving_[current_dir_]);
 		}
 	}
-	// si on a bougé
-	if (moved)
-	{
-		if (new_dir != current_dir_)
-		{
-			current_dir_ = new_dir;
-			Animated::Change(walk_anims_[new_dir], *this);
-		}
+	else
+	{	// En cours de chûte...
+
+		fall_timer -= frametime;
 		Animated::Update(frametime, *this);
-		was_moving_ = true;
-	}
-	else if (was_moving_)
-	{
-		was_moving_ = false;
-		SetSubRect(subrects_not_moving_[current_dir_]);
+		if (fall_timer <= 0)
+		{
+			Zone* zone = game.GetZone();
+			std::cerr << "EffectArg:" << zone->GetEffectArg(tile) << "\n";
+			if (zone->GetEffectArg(tile) == 42)
+			{
+				game.ChangeZone("cave1");
+			}
+			else
+			{
+				lives_ -= 1;
+				panel_.SetLives(lives_);
+				SetPosition(Tile::SIZE, 8 * Tile::SIZE);
+			}
+			Animated::Change(walk_anims_[UP], *this);
+			falling_ = false;
+		}
 	}
 }
 

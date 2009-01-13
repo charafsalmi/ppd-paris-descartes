@@ -32,8 +32,60 @@
 	<tile id="209" walkable="0" />
 	<tile id="210" walkable="0" />
 	<tile id="211" walkable="0" />
-	<tile id="212" walkable="0" />
-	<tile id="213" walkable="0" />
+	<tile id="279" walkable="0" />
+	<tile id="295" walkable="0" />
+	<tile id="224" walkable="0" />
+	<tile id="225" walkable="0" />
+	<tile id="226" walkable="0" />
+	<tile id="227" walkable="0" />
+	<tile id="228" walkable="0" />
+	<tile id="229" walkable="0" />
+	<tile id="230" walkable="0" />
+	<tile id="231" walkable="0" />
+	<tile id="232" walkable="0" />
+	<tile id="233" walkable="0" />
+	<tile id="234" walkable="0" />
+	<tile id="240" walkable="0" />
+	<tile id="241" walkable="0" />
+	<tile id="242" walkable="0" />
+	<tile id="243" walkable="0" />
+	<tile id="244" walkable="0" />
+	<tile id="245" walkable="0" />
+	<tile id="246" walkable="0" />
+	<tile id="247" walkable="0" />
+	<tile id="248" walkable="0" />
+	<tile id="249" walkable="0" />
+	<tile id="250" walkable="0" />
+	<tile id="256" walkable="0" />
+	<tile id="257" walkable="0" />
+	<tile id="272" walkable="0" />
+	<tile id="273" walkable="0" />
+	<tile id="288" walkable="0" />
+	<tile id="289" walkable="0" />
+	<tile id="304" walkable="0" />
+	<tile id="305" walkable="0" />
+	<tile id="262" walkable="0" />
+	<tile id="263" walkable="0" />
+	<tile id="266" walkable="0" />
+	<tile id="267" walkable="0" />
+	<tile id="268" walkable="0" />
+	<tile id="269" walkable="0" />
+	<tile id="270" walkable="0" />
+	<tile id="271" walkable="0" />
+	<tile id="282" walkable="0" />
+	<tile id="283" walkable="0" />
+	<tile id="284" walkable="0" />
+	<tile id="285" walkable="0" />
+	<tile id="286" walkable="0" />
+	<tile id="298" walkable="0" />
+	<tile id="299" walkable="0" />
+	<tile id="300" walkable="0" />
+	<tile id="301" walkable="0" />
+	<tile id="302" walkable="0" />
+
+	
+	<tile id= "42" hole="1" />
+	<tile id="287" hole="1" />
 </tiles>
 
 

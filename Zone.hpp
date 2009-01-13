@@ -5,6 +5,8 @@
 
 #include "Entity.hpp"
 #include "Item.hpp"
+#include "QuadTreeNode.hpp"
+#include "Tileset.hpp"
 
 #ifdef DUMB_MUSIC
 #include "Music.hpp"
@@ -16,6 +18,14 @@
 class Zone
 {
 public:
+
+	// Les tiles n'ont pas le meme format dans les dongeons.
+	enum Mode
+	{
+		OUTSIDE,
+		INSIDE
+	};
+	
 	enum
 	{
 		// Dimensions de la zone en nombre de tiles
@@ -85,6 +95,21 @@ public:
 		return zone_music_index_;
 	}
 	
+	inline int GetTileAt(unsigned x, unsigned y)
+	{
+		return tiles_[y][x];
+	}
+	
+	int GetEffectArg(int tile_id)
+	{
+		Tileset::EffectIter it = special_args_.find(tile_id);
+		if (it != special_args_.end())
+		{
+			return special_args_[tile_id];
+		}
+		return -1;
+	}
+	
 private:
 	/**
 	 * Désallouer toutes les entités de la zone
@@ -95,10 +120,14 @@ private:
 	void Purge();
 
 	mutable EntityList entities_;
+	mutable QuadTreeNode* entities_qt_;
 	mutable ItemList interactives_;
 	
+	mutable Tileset::EffectArgs special_args_;	// arguments des tiles speciales de la zone
+	
+	int tiles_[HEIGHT][WIDTH];
 	bool walkable_[HEIGHT][WIDTH];
-	sf::Image tiles_; // tiles de la zone
+	sf::Image tiles_img_; // tiles de la zone
 #ifdef DUMB_MUSIC
 	short zone_music_index_;
 #endif

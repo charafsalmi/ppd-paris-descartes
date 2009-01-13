@@ -14,7 +14,8 @@ namespace Tile
 	{
 		DEFAULT, // aucun effet
 		BLOCK,
-		WATER
+		WATER, 
+		HOLE
 	};
 }
 
@@ -27,7 +28,7 @@ public:
 	enum
 	{
 		WIDTH = 16, // nombre de tile en larger
-		HEIGHT = 16, // en hauteur
+		HEIGHT = 20, // en hauteur
 		COUNT = WIDTH * HEIGHT // nombre total
 	};
 	
@@ -48,14 +49,28 @@ public:
 	 */
 	bool IsWalkable(int tile_id) const;
 	
+	Tile::Effect GetEffect(const int tile_id) const
+	{
+		ConstTileIter it = specials_.find(tile_id);
+		if (it != specials_.end())
+		{
+			return (*it).second;
+		}
+		return Tile::DEFAULT;
+	}
+
+	typedef std::map<int, int> EffectArgs;
+	typedef EffectArgs::iterator EffectIter;	
 private:
 	Tileset();
 	Tileset(const Tileset& other);
 	Tileset& operator=(const Tileset& other);
 	
 	typedef std::map<int, Tile::Effect> TileIndexer;
-	
+	typedef TileIndexer::iterator TileIter;
+	typedef TileIndexer::const_iterator ConstTileIter;
 	TileIndexer specials_;
+
 };
 
 
