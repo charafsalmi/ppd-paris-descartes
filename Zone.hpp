@@ -31,16 +31,9 @@ public:
 		// Dimensions de la zone en nombre de tiles
 		WIDTH = 20, HEIGHT = 16
 	};
-
-	enum TileContent
-	{
-		EMPTY,
-		STATIC_NO,
-		DYNAMIC_NO
-	};
-
+	
 	Zone();
-
+	
 	~Zone();
 	
 	/**
@@ -48,39 +41,39 @@ public:
 	 * @param[in] filename: fichier de la carte
 	 */
 	void Load(const char* filename, sf::RenderWindow& app);
-
+	
 	/**
 	 * Mettre à jour la zone
 	 * @param[in] frametime: temps de la frame courante
 	 */
 	void Update(float frametime);
-
+	
 	/**
 	 * Afficher la zone de jeu
 	 * @param[in] app: fenêtre de rendu
 	 */
 	void Show(sf::RenderWindow& app) const;
-
+	
 	/**
 	 * Détermine si un mouvement est possible
 	 * @param[in] emitter: entité qui cherche à se déplacer
 	 * @param[in] rect: rectangle de la position issue du mouvement à tester
 	 * @return true si le mouvement est possible, sinon false
 	 */
-	TileContent CanMove(Entity* emitter, const sf::FloatRect& rect, Item*& other);
-
+	bool CanMove(Entity* emitter, const sf::FloatRect& rect);
+	
 	/**
 	 * Ajouter une entité dans la zone de jeu
 	 * @param[in, out] entity: entité ajoutée
 	 */
 	void AddEntity(Entity* entity);
-
+	
 	/**
 	 * Retirer une entité de la zone de jeu
 	 * @param[in] entity: entité a enlever
 	 */
 	void RemoveEntity(Entity* entity);
-
+	
 	/**
 	 * Ajouter un objet statique dans la zone
 	 * @param[in] i: position i de la tile
@@ -88,7 +81,10 @@ public:
 	 */
 	void PlaceStaticItem(int i, int j);
 	
-	void PlaceItem(char u, int i, int j);
+	/**
+	 * Ajouter un objet
+	 */
+	void AddItem(char id, int x, int y);
 	
 	inline short GetMusic() const
 	{
@@ -117,18 +113,18 @@ public:
 	
 private:
 	/**
-	 * Désallouer toutes les entités de la zone
+	 * Désallouer toutes les entités et tous les items de la zone
 	 */
+	void Purge();
+	
 	typedef std::list<Entity*> EntityList;
 	typedef std::list<Item*> ItemList;
-
-	void Purge();
-
-	mutable EntityList entities_;
-	mutable QuadTreeNode* entities_qt_;
-	mutable ItemList interactives_;
 	
-	mutable Tileset::EffectArgs special_args_;	// arguments des tiles speciales de la zone
+	mutable EntityList entities_;
+	ItemList items_;
+	QuadTreeNode* entities_qt_;
+	
+	Tileset::EffectArgs special_args_;	// arguments des tiles speciales de la zone
 	
 	int tiles_[HEIGHT][WIDTH];
 	bool walkable_[HEIGHT][WIDTH];

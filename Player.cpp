@@ -124,23 +124,11 @@ void Player::Update(float frametime)
 	if (locked_)
 		return;
 	
-// <HACK>
-	static ItemData i_d;
-	static sf::Vector2f offset(0, 0);
-	i_d.img_world_ = new char[8]; // FIXME: fuite mémoire
-	i_d.name_ = "FAKE";
-	strcpy(i_d.img_world_, "objects");
-	static Item other(offset, i_d);
-// </HACK>
-	static Item* ptr = NULL;
-
 	static Game& game = Game::GetInstance();
-	
 	static int tile;
-	
 	static float fall_timer;
 	
-	if (! falling_)
+	if (!falling_)
 	{
 		bool moved = false;
 		int dx, dy;
@@ -223,25 +211,9 @@ void Player::Update(float frametime)
 					break;
 				}
 				
-				Zone::TileContent tc = zone_->CanMove(this, rect, ptr);
-				if (tc == Zone::EMPTY )
+				if (zone_->CanMove(this, rect))
 				{
 					SetPosition(pos);
-				}
-				else if (tc == Zone::DYNAMIC_NO)
-				{
-					puts("Item interactif overlappant!");
-					std::cout << "\t" << ptr->name_ << "\n";
-					if (ptr->name_ == "Rupee")
-					{
-						rupees_ += ptr->Take();
-						panel_.SetRupees(rupees_);
-					}
-					else if (ptr->name_ == "Heart")
-					{
-						lives_ += ptr->Take();
-						panel_.SetLives(lives_);
-					}
 				}
 			}
 		}
@@ -296,5 +268,19 @@ void Player::Lock()
 void Player::Unlock()
 {
 	locked_ = false;
+}
+
+
+void Player::AddLife()
+{
+	++lives_;
+	panel_.SetLives(lives_);
+}
+
+
+void Player::AddMoney()
+{
+	++rupees_;
+	panel_.SetRupees(rupees_);
 }
 

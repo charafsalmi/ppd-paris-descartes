@@ -1,73 +1,62 @@
-#include <iostream>
-
 #include "Item.hpp"
-
 #include "MediaManager.hpp"
+#include "Player.hpp"
 
 
-Item::Item(sf::Vector2f& offset, ItemData& data) :
-	ItemData(data)	
+Item::Item(const sf::Vector2f& pos, const char* name)
 {
+	SetPosition(pos);
+	name_ = name;
 	dead_ = false;
-	equipable_ = false;
-	value_ = 1;
-	obj_world_.SetImage(GET_IMG("objects"));
-	obj_world_.SetCenter(0, obj_world_.GetImage()->GetHeight()); // coin bas-gauche
-	//obj_inventory_.SetImage(GET_IMG(img_inventory_));
-
-	floor_width_ = obj_world_.GetImage()->GetWidth();
-	floor_height_ = obj_world_.GetImage()->GetHeight();
+	SetImage(GET_IMG("items"));
 }
 
 
-void Item::OnInterract_World()
+void Item::GetRect(sf::FloatRect& rect) const
 {
-	puts("Interract_World");
-	std::cout << "\t" << dead_ << "\n";
+	rect.Left = GetPosition().x;
+	rect.Top = GetPosition().y;
+	rect.Right = rect.Left + GetSize().x;
+	rect.Bottom = rect.Top + GetSize().y;
 }
 
-void Item::Blit_World(sf::RenderTarget& screen)
+
+const std::string& Item::GetName() const
 {
-	screen.Draw(obj_world_);
+	return name_;
 }
 
-void Item::Blit_Inventory(sf::RenderTarget& screen, const sf::Vector2f& pos)
-{
-	obj_inventory_.SetPosition(pos);
-	screen.Draw(obj_inventory_);
-}	
 
-int Item::Take()
+void Item::Kill()
 {
-
-	if (!dead_)
-	{
-		dead_ = true;
-		return value_;
-	}
-	else
-	{
-		puts("Take sur un mort. Shouldn't happen");
-		return 0;
-	}
+	dead_ = true;
 }
 
-void Item::SetSubRect(char sprite, sf::IntRect& ir)
-{
-	if (sprite == 'w')
-	{
-		obj_world_.SetSubRect(ir);
-	}
 
+Money::Money(const sf::Vector2f& pos):
+	Item(pos, "Rupee")
+{
+	SetSubRect(sf::IntRect(20, 0, 20 + 14, 0 + 28));
 }
 
-void Item::SetPosition(char sprite, sf::Vector2f& offset)
-{
-	if (sprite == 'w')
-	{
-		obj_world_.SetPosition(offset);
-	}
 
+void Money::OnCollide(Player& player)
+{
+	player.AddMoney();
+	Kill();
 }
 
+
+Heart::Heart(const sf::Vector2f& pos):
+	Item(pos, "Coeur")
+{
+	SetSubRect(sf::IntRect(2, 4, 2 + 14, 4 + 14));
+}
+
+
+void Heart::OnCollide(Player& player)
+{
+	player.AddLife();
+	Kill();
+}
 

@@ -67,7 +67,6 @@ private:
 	 * Initialisation (chargement des images)
 	 */
 	MediaManager();
-	
 	MediaManager(const MediaManager& other);
 	MediaManager& operator=(const MediaManager& other);
 	
@@ -82,8 +81,6 @@ private:
 	 */
 	void BuildAnimation(const char* name, int width, int height, int count,
 		float delay, int x_offset=0, int y_offset=0);
-	
-
 	
 	std::map<std::string, sf::Image> images_;
 	std::map<std::string, sf::SoundBuffer> sounds_;

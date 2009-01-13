@@ -4,7 +4,7 @@ pillar.png
 player.png
 tileset.png
 badguy.png
-objects.png
+items.png
 panel-background.png
 panel-hearth.png
 panel-digits.png

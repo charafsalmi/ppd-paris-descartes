@@ -4,10 +4,8 @@
 #include "Game.hpp"
 
 #include "Enemy.hpp"
-#include "Item.hpp"
 #include "Splash.hpp"
 #include "Tileset.hpp"
-
 
 #define APP_WIDTH  (Tile::SIZE * Zone::WIDTH)
 #define APP_HEIGHT (Tile::SIZE * Zone::HEIGHT)
@@ -27,7 +25,7 @@ Game& Game::GetInstance()
 
 
 Game::Game() :
-	panel_		(ControlPanel::GetInstance())
+	panel_(ControlPanel::GetInstance())
 {
 
 #ifdef FULLSCREEN_HACK
@@ -72,7 +70,8 @@ Game::Game() :
 	zones_[0][0]->PlaceStaticItem(15, 2);
 	zones_[0][0]->PlaceStaticItem(17, 2);
 	zones_[0][0]->PlaceStaticItem(16, 8);
-	zones_[0][0]->PlaceItem('H', 10, 6);
+	zones_[0][0]->AddItem('H', 320, 192);
+	zones_[0][0]->AddItem('R', 240, 200);
 	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(110, 90)));
 	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(110, 200)));
 	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(400, 200)));
@@ -83,7 +82,7 @@ Game::Game() :
 	zones_[0][1]->PlaceStaticItem(14, 7);
 	zones_[0][1]->PlaceStaticItem(12, 9);
 	zones_[0][1]->PlaceStaticItem(14, 9);
-	zones_[0][1]->PlaceItem('R', 15, 11);
+	zones_[0][1]->AddItem('H', 480, 352);
 	zones_[0][1]->AddEntity(new Enemy(sf::Vector2f(200, 200)));
 	
 	zones_[0][2]->Load("data/map/zone5.txt", app_);
@@ -100,7 +99,7 @@ Game::Game() :
 	
 	for (int i = 4; i <= 10; i += 2)
 		for (int j = 3; j <= 9; j +=2)
-			cave_.PlaceItem('R', i, j);
+			cave_.AddItem('R', i * Tile::SIZE, j * Tile::SIZE);
 	
 	cds_zone_.x = 0;
 	cds_zone_.y = 0;

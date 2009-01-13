@@ -52,6 +52,3 @@ if __name__ == "__main__":
 		main(*(sys.argv[1:3] + map(int, sys.argv[3:6])))
 		print "done."
 
-new = [list(obj[1]) + [obj[-1][:-1]] for obj in old]
-new.sort(cmp=lambda a, b: len(a[0]) < len(b[0])) 
-

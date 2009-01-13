@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 
 import os, sys, Image
@@ -58,8 +57,8 @@ else:
         for tile2 in map2.TileDict:
             if map1.TileDict[tile1] == map2.TileDict[tile2]:
                 if map1.IDDict[tile1] != map2.IDDict[tile2]:
-                    print( map1.IDDict[tile1] , " >> " , map2.IDDict[tile2] )
-                    out.write(str (map1.IDDict[tile1]) + " >> " + str (map2.IDDict[tile2]) + "\n")
+                    print map1.IDDict[tile1] , " >> " , map2.IDDict[tile2]
+                    out.write("%s >> %s\n" % (map1.IDDict[tile1], map2.IDDict[tile2]))
     out.close()
     out = open("diff.txt_")
     lines = out.readlines()

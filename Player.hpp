@@ -31,6 +31,16 @@ public:
 	 */
 	void Unlock();
 	
+	/**
+	 * Ajouter une vie
+	 */
+	void AddLife();
+	
+	/**
+	 * Augmenter l'argent d'une unité
+	 */
+	void AddMoney();
+	
 private:
 	// Keycodes des mouvements
 	sf::Key::Code move_keys_[COUNT_DIRECTION];
@@ -47,7 +57,8 @@ private:
 	const sf::Input& input_;
 	ControlPanel& panel_;
 	
-	int lives_, rupees_;
+	int lives_;
+	int rupees_;
 };
 
 #endif /* guard PLAYER_HPP */

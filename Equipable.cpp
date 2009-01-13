@@ -1,7 +1,10 @@
 #include "Equipable.hpp"
 
-Equipable::Equipable(sf::Vector2f& offset, ItemData& data) :
-	Item(offset, data)
+
+Equipable::Equipable(const sf::Vector2f& pos):
+	Item(pos, "<None>")
 {
-	Item::equipable_ = true;
 }
+
+
+void Equipable::OnCollide(Player& player) { (void) player; }

@@ -1,25 +1,19 @@
-
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-import os, sys
+import os
+import sys
+
 
 if len(sys.argv) < 2:
-	print "Error  : You specified too few arguments!\n"
+	print "Error: You specified too few arguments!\n"
 else:
-	in_ = file(sys.argv[1])
-	diff = file(sys.argv[2])
-	strings= str(sys.argv[2]).partition(".")
-	outfile = strings[0] + "_old_.xml"
-	out = open (outfile, "w")
-
-	maps = diff.readlines()
-	maps = [item.partition(" >> ") for item in maps]
-	# supprime le \n du 3me lm et supprime le 2me lm (">>") pour chaque bloc de 3 dans old:
-	maps = [[obj[0]] + [obj[-1][:-1]] for obj in maps]
-	
-	maps.sort(cmp=lambda a, b: len(a[0]) < len(b[0])) 
-
-	print maps
+	infile = open(sys.argv[1])
+	outfile = open(os.path.splitext(sys.argv[2])[0] + "_old_.xml", "w")
+	diff = open(sys.argv[2])
+	maps = sorted([map(int, item.split(" >> ")) for item in diff.readlines()])
+	for pair in maps:
+		print  pair
 
 #TODO:
 #	Ouvrir IN

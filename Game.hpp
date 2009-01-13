@@ -36,6 +36,11 @@ public:
 	
 	void Teleport(const char* zone);
 	
+	inline Player* GetPlayer() const
+	{
+		return player_;
+	}
+	
 	inline Zone* GetZone()
 	{
 		return active_zone_;

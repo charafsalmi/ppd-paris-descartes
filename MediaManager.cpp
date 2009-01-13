@@ -94,7 +94,7 @@ const sf::Image& MediaManager::GetImage(const char* image) const
 	it = images_.find(image);
 	if (it == images_.end())
 	{
-		std::cerr << "can't give you image " << image;
+		std::cerr << "can't give you image " << image << std::endl;
 		abort();
 	}
 	return it->second;
@@ -107,7 +107,7 @@ const sf::SoundBuffer& MediaManager::GetSoundBuf(const char* key) const
 	it = sounds_.find(key);
 	if (it == sounds_.end())
 	{
-		std::cerr << "can't give you sound buffer " << key;
+		std::cerr << "can't give you sound buffer " << key << std::endl;
 		abort();
 	}
 	return it->second;
@@ -120,7 +120,7 @@ Music* MediaManager::GetMusic(const char* key) const
 	it = musics_.find(key);
 	if (it == musics_.end())
 	{
-		std::cerr << "can't give you music file " << key;
+		std::cerr << "can't give you music file " << key << std::endl;
 		abort();
 	}
 	
@@ -128,6 +128,7 @@ Music* MediaManager::GetMusic(const char* key) const
 	Music* mus = new Music((path + it->second).c_str());
 	return mus;
 }
+
 
 Music* MediaManager::GetMusic(unsigned short id) const
 {
@@ -150,7 +151,6 @@ Music* MediaManager::GetMusic(unsigned short id) const
 	Music* mus = new Music((path + it->second).c_str());
 	return mus;
 }
-
 #endif
 
 const std::string& MediaManager::GetPostFX(const char* key) const
@@ -160,13 +160,14 @@ const std::string& MediaManager::GetPostFX(const char* key) const
 	it = post_fx_.find(key);
 	if (it == post_fx_.end())
 	{
-		std::cerr << "can't give you PostFX file " << key;
+		std::cerr << "can't give you PostFX file " << key << std::endl;
 		abort();
 	}
 	return_value = FX_PATH;
 	return_value += it->second;
 	return return_value;
 }
+
 
 const sf::Font& MediaManager::GetFont() const
 {
@@ -180,7 +181,7 @@ const Animation& MediaManager::GetAnimation(const char* key) const
 	it = animations_.find(key);
 	if (it == animations_.end())
 	{
-		std::cerr << "can't give you animation " << key;
+		std::cerr << "can't give you animation " << key << std::endl;
 		abort();
 	}
 	return it->second;
@@ -192,14 +193,14 @@ MediaManager::MediaManager()
 	// chargement des images
 	if (!load_from_list(IMG_LIST, images_))
 	{
-		std::cerr << "can't open image list: " << IMG_LIST;
+		std::cerr << "can't open image list: " << IMG_LIST << std::endl;
 		abort();
 	}
 	
 	// chargement des buffers audio
 	if (!load_from_list(SOUND_LIST, sounds_))
 	{
-		std::cerr << "can't open sound list: " << SOUND_LIST;
+		std::cerr << "can't open sound list: " << SOUND_LIST << std::endl;
 		abort();
 	}
 	
@@ -240,11 +241,5 @@ void MediaManager::BuildAnimation(const char* name, int width, int height,
 		p->AddFrame(x_offset + i * width, y_offset, width, height);
 	}
 	p->SetDelay(delay);
-	
-#ifdef DEBUG
-	std::cout << "building anim: " << name << std::endl;
-#endif
 }
-
-
 

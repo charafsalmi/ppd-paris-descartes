@@ -4,9 +4,11 @@
 
 #include <cstring>
 #include <iostream>
+
 #include "Zone.hpp"
 #include "StaticItem.hpp"
 #include "MediaManager.hpp"
+#include "Game.hpp"
 
 
 Zone::Zone()
@@ -78,26 +80,38 @@ void Zone::Load(const char* filename, sf::RenderWindow& app)
 
 void Zone::Update(float frametime)
 {
+	// collisions avec les entités
 	EntityList::iterator it;
 	for (it = entities_.begin(); it != entities_.end(); ++it)
 	{
 		(**it).Update(frametime);
 	}
 
-	
-	ItemList::iterator ti;
-	for (ti = interactives_.begin(); ti != interactives_.end(); ++ti)
+	// collisions avec les items
+	ItemList::iterator it2;
+	Player* player = Game::GetInstance().GetPlayer();
+	sf::FloatRect player_rect;
+	player->GetFloorRect(player_rect);
+	sf::FloatRect item_rect;
+	for (it2 = items_.begin(); it2 != items_.end();)
 	{
-		if ((**ti).IsDead())
+		if ((**it2).IsDead())
 		{
-			puts("interactif détruit");
-			delete *ti;
-			ti = interactives_.erase(ti);
+#ifdef DEBUG
+			printf(" [Zone] %s supprimé\n", (**it2).GetName().c_str());
+#endif
+			delete *it2;
+			it2 = items_.erase(it2);
 		}
 		else
 		{
-//			puts("interactif pas détruit");
-//			std::cerr << (**ti).value_;
+			(**it2).GetRect(item_rect);
+			if (item_rect.Intersects(player_rect))
+			{
+				(**it2).OnCollide(*player);
+				break;
+			}
+			++it2;
 		}
 	}
 }
@@ -109,6 +123,13 @@ void Zone::Show(sf::RenderWindow& app) const
 	sf::Sprite s_tiles(tiles_img_);
 	app.Draw(s_tiles);
 	
+	// affichage des items
+	ItemList::const_iterator it2;
+	for (it2 = items_.begin(); it2 != items_.end(); ++it2)
+	{
+		app.Draw(**it2);
+	}
+	
 	// affichage des entités
 	entities_.sort(Entity::PtrComp);
 	EntityList::const_iterator it;
@@ -116,23 +137,16 @@ void Zone::Show(sf::RenderWindow& app) const
 	{
 		app.Draw(**it);
 	}
-	
-	interactives_.sort(Item::PtrComp);
-	ItemList::const_iterator ti;
-	for (ti = interactives_.begin(); ti != interactives_.end(); ++ti)
-	{
-		(**ti).Blit_World(app);
-	}
 }
 
 
-Zone::TileContent Zone::CanMove(Entity* emitter, const sf::FloatRect& rect, Item*& present)
+bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect)
 {
 	// si hors de la zone
 	if (rect.Top < 0 || rect.Left < 0 || rect.Bottom > Tile::SIZE * HEIGHT
 		|| rect.Right > Tile::SIZE * WIDTH)
 	{
-		return STATIC_NO;
+		return false;
 	}
 	// on regarde pour chaque coin du rectangle
 	// si la tile en dessous est walkable
@@ -145,17 +159,15 @@ Zone::TileContent Zone::CanMove(Entity* emitter, const sf::FloatRect& rect, Item
 	if (!walkable_[top][left] || !walkable_[top][right]
 		|| !walkable_[bottom][left] || !walkable_[bottom][right])
 	{
-		return STATIC_NO;
+		return false;
 	}
 	
 	// collision avec une autre unité
 	static Entity* fake = NULL;
-
 	std::set<Entity*> them;
 	std::set<Entity*>::const_iterator it;
-		
+	
 	entities_qt_->GetEntities(fake, them);
-
 
 	sf::FloatRect other_rect;
 	for (it = them.begin(); it != them.end(); ++it)
@@ -165,33 +177,22 @@ Zone::TileContent Zone::CanMove(Entity* emitter, const sf::FloatRect& rect, Item
 			(**it).GetFloorRect(other_rect);
 			if (rect.Intersects(other_rect))
 			{
-				return STATIC_NO;
+				return false;
 			}
 		}
 	}
 	
-	ItemList::iterator ti;
-	for (ti = interactives_.begin(); ti != interactives_.end(); ++ti)
-	{
-		(**ti).GetFloorRect(other_rect);
-		if (rect.Intersects(other_rect))
-		{
-			present = &(**ti);
-			return DYNAMIC_NO;
-		}
-	}
-	
 	// ok, emitter a le droit de se déplacer
-	return EMPTY;
+	return true;
 }
 
 
 void Zone::AddEntity(Entity* entity)
 {
 	entities_.push_front(entity);
-	puts("About to add entity");
+	printf("About to add entity");
 	entities_qt_->AddEntity(entity);
-	puts("\tAdded.");
+	puts("\t...added.");
 }
 
 
@@ -214,37 +215,22 @@ void Zone::PlaceStaticItem(int i, int j)
 }
 
 
-void Zone::PlaceItem(char u, int i, int j)
+void Zone::AddItem(char id, int x, int y)
 {
-	// HACK: ajout d'items qui ne bloquent pas
-	
-	sf::Vector2f offset(i * Tile::SIZE, (j + 1) * Tile::SIZE);
-	sf::Vector2i floor(1 * Tile::SIZE, 1 * Tile::SIZE);
-	
-	ItemData* id = new ItemData;
-	id->img_world_ = new char[8];
-	strcpy(id->img_world_, "objects");
-
-	
-	Item* it = new Item (offset, *id);
-	sf::IntRect i_r;
-	switch (u)
+	Item* item = NULL;
+	sf::Vector2f pos(x, y);
+	switch (id)
 	{
 		case 'H':
-		// Health
-			it->name_ = "Heart";
-			i_r = sf::IntRect(0, 0, 32, 32);			
+			// Heart (coeur de vie)
+			item = new Heart(pos);
 			break;
 		case 'R':
-		// Rupee
-			it->name_ = "Rupee";
-			i_r = sf::IntRect(0, 32, 32, 64);
+			// Rupee (argent)
+			item = new Money(pos);
 			break;
 	}
-	it->SetSubRect('w', i_r);
-	it->SetPosition('w', offset);
-	interactives_.push_back(it);
-		
+	items_.push_front(item);	
 }
 
 
@@ -263,11 +249,12 @@ void Zone::Purge()
 	}
 	entities_.clear();
 	
-	ItemList::iterator ti;
-	for (ti = interactives_.begin(); ti != interactives_.end(); ++ti)
+	ItemList::iterator it2;
+	for (it2 = items_.begin(); it2 != items_.end(); ++it2)
 	{
-		delete *ti;
+		delete *it2;
 	}
+	items_.clear();
 }
 
 
