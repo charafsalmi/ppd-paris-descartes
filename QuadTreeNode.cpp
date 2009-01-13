@@ -117,7 +117,7 @@ int QuadTreeNode::AddEntity(Entity* entity)
 
 		lowerLeftX = r_pos.x - width;
 		lowerLeftY = r_pos.y - height;
-;
+
 		sf::Vector2i ll, size;
 		for (int i = 0; i < 4; i++)
 		{
@@ -202,7 +202,7 @@ int QuadTreeNode::GetEntities(Entity* entity, std::set<Entity*>& collidables)
 			{
 				// exclude the actual object they are passing in, since they want objects
 				// other than this object in the area.
-				if ( (entity != NULL &&*it != entity) || entity == NULL)
+				if ( (entity != NULL && *it != entity) || entity == NULL)
 				{
 					collidables.insert(*it);
 				}
@@ -423,3 +423,4 @@ int QuadTreeNode::UpdateEntity(Entity* entity)
 	}
 	return result;
 }
+

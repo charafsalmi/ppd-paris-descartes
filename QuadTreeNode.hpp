@@ -1,14 +1,15 @@
+#ifndef QUADTREENODE_HPP
+#define QUADTREENODE_HPP
+
 // QuadTreeNode.h: interface for the CQuadTreeNode class.
 //
 //////////////////////////////////////////////////////////////////////
 #include <set>
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
+
 #include "Entity.hpp"
 
-
-#if !defined _QUADTREENODE_H_
-#define _QUADTREENODE_H_
 
 class QuadTreeNode  
 {
@@ -21,7 +22,7 @@ public:
 	};
 	
 	QuadTreeNode(sf::Vector2i LowerLeft, sf::Vector2i Size);
-	virtual ~QuadTreeNode();
+	~QuadTreeNode();
 
 	int Subdivide();
 	
@@ -45,4 +46,5 @@ private:
 	EntitySet entities_;
 };
 
-#endif // _QUADTREENODE_H_	
+#endif /* guard QUADTREENODE_HPP */
+

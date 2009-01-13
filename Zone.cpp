@@ -213,6 +213,7 @@ void Zone::PlaceStaticItem(int i, int j)
 	walkable_[j][i] = false;
 }
 
+
 void Zone::PlaceItem(char u, int i, int j)
 {
 	// HACK: ajout d'items qui ne bloquent pas
@@ -245,6 +246,13 @@ void Zone::PlaceItem(char u, int i, int j)
 	interactives_.push_back(it);
 		
 }
+
+
+const sf::Image* Zone::GetBackground() const
+{
+	return &tiles_img_;
+}
+
 
 void Zone::Purge()
 {

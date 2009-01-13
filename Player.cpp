@@ -2,18 +2,14 @@
 #include <cstring>
 
 #include "Player.hpp"
-
 #include "Game.hpp"
 #include "MediaManager.hpp"
 #include "Tileset.hpp"
 #include "Zone.hpp"
 
-#include "type_definitions.hpp"
-
 #define SPEED      100
-#define PL_WIDTH    32 
-#define PL_HEIGHT   48
 #define FALL_DELAY   1
+
 
 Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	Entity(pos, GET_IMG("player")),
@@ -23,7 +19,6 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 {
 	// valeurs magiques... surface de contact au sol
 	SetFloor(28, 20);
-	zone_ = NULL;
 	
 	// Animations de marche
 	walk_anims_[UP]		= &GET_ANIM("player_walk_top");
@@ -95,14 +90,13 @@ void Player::OnEvent(sf::Key::Code key)
 	}
 	else if (key == sf::Key::T)
 	{
-		int i = (int)GetPosition().x +  GetFloorWidth()  / 2;
-		int j = (int)GetPosition().y +  GetFloorHeight() / 2;
+		int i = (int)GetPosition().x + GetFloorWidth() / 2;
+		int j = (int) GetPosition().y - GetFloorHeight() / 2;
 	
 		i /= Tile::SIZE;
 		j /= Tile::SIZE;
 		
-		Zone* zone = Game::GetInstance().GetZone();
-		int tile = zone->GetTileAt(i, j);
+		int tile = zone_->GetTileAt(i, j);
 		Tile::Effect effect = Tileset::GetInstance().GetEffect(tile);
 		std::cerr << "A la tile [" << tile << "]" << i << ", " << j << ", on a:\t";
 		if (effect == Tile::HOLE)
@@ -133,7 +127,7 @@ void Player::Update(float frametime)
 // <HACK>
 	static ItemData i_d;
 	static sf::Vector2f offset(0, 0);
-	i_d.img_world_ = new char[8];
+	i_d.img_world_ = new char[8]; // FIXME: fuite mémoire
 	i_d.name_ = "FAKE";
 	strcpy(i_d.img_world_, "objects");
 	static Item other(offset, i_d);
@@ -153,15 +147,13 @@ void Player::Update(float frametime)
 		sf::FloatRect rect;
 	
 		// Chûte-t'on ?
-	
-		int i = (int)GetPosition().x +  GetFloorWidth()  / 2;
-		int j = (int)GetPosition().y +  GetFloorHeight() / 2;
-	
+		int i = (int) GetPosition().x + GetFloorWidth() / 2;
+		int j = (int) GetPosition().y - GetFloorHeight() / 2;
+		
 		i /= Tile::SIZE;
 		j /= Tile::SIZE;
-	
-		Zone* zone = game.GetZone();
-		tile = zone->GetTileAt(i, j);
+		
+		tile = zone_->GetTileAt(i, j);
 		Tile::Effect effect = Tileset::GetInstance().GetEffect(tile);
 
 		if (effect == Tile::HOLE)
@@ -210,31 +202,29 @@ void Player::Update(float frametime)
 				rect.Top = pos.y - GetFloorHeight();
 			
 				// on vérifie si on doit changer de zone
-				bool out_zone = false;
 				if (rect.Left < 0)
 				{
 					game.ChangeZone(Game::LEFT);
-					out_zone = true;
+					break;
 				}
 				else if (rect.Top < 0) 
 				{
 					game.ChangeZone(Game::UP);
-					out_zone = true;
+					break;
 				}
 				else if (rect.Right > Zone::WIDTH * Tile::SIZE)
 				{
 					game.ChangeZone(Game::RIGHT);
-					out_zone = true;
+					break;
 				}
 				else if (rect.Bottom > Zone::HEIGHT * Tile::SIZE)
 				{
 					game.ChangeZone(Game::DOWN);
-					out_zone = true;
+					break;
 				}
-			
+				
 				Zone::TileContent tc = zone_->CanMove(this, rect, ptr);
-			
-				if (!out_zone && tc == Zone::EMPTY )
+				if (tc == Zone::EMPTY )
 				{
 					SetPosition(pos);
 				}
@@ -279,11 +269,10 @@ void Player::Update(float frametime)
 		Animated::Update(frametime, *this);
 		if (fall_timer <= 0)
 		{
-			Zone* zone = game.GetZone();
-			std::cerr << "EffectArg:" << zone->GetEffectArg(tile) << "\n";
-			if (zone->GetEffectArg(tile) == 42)
+			std::cerr << "EffectArg:" << zone_->GetEffectArg(tile) << "\n";
+			if (zone_->GetEffectArg(tile) == 42)
 			{
-				game.ChangeZone("cave1");
+				game.Teleport("cave1");
 			}
 			else
 			{

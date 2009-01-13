@@ -45,20 +45,15 @@ public:
 	static void MakeSprite(int tile_id, sf::Sprite& sprite);
 	
 	/**
+	 * Obtenir l'effet d'un type de tile
+	 */
+	Tile::Effect GetEffect(int tile_id) const;
+	
+	/**
 	 * Déterminer si l'on peut marcher sur un type tile
 	 */
 	bool IsWalkable(int tile_id) const;
 	
-	Tile::Effect GetEffect(const int tile_id) const
-	{
-		ConstTileIter it = specials_.find(tile_id);
-		if (it != specials_.end())
-		{
-			return (*it).second;
-		}
-		return Tile::DEFAULT;
-	}
-
 	typedef std::map<int, int> EffectArgs;
 	typedef EffectArgs::iterator EffectIter;	
 private:

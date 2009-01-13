@@ -34,7 +34,7 @@ public:
 		return app_;
 	}*/
 	
-	void ChangeZone(const char* zone);
+	void Teleport(const char* zone);
 	
 	inline Zone* GetZone()
 	{
@@ -62,6 +62,11 @@ private:
 	void InventoryOnEvent(sf::Key::Code key);
 	void InventoryShow();
 	
+	// méthodes Scrolling
+	void ScrollingOnEvent(sf::Key::Code key);
+	void ScrollingUpdate(float frametime);
+	void ScrollingShow();
+	
 	Zone* zones_[GAME_HEIGHT][GAME_WIDTH];
 	sf::Vector2i cds_zone_; // coordonnées de la zone courante
 	
@@ -74,8 +79,20 @@ private:
 	
 	// pointeur de la méthode de gestion des évènements
 	void (Game::*on_event_meth_)(sf::Key::Code code);
+	// pointeur de la méthode de mise à jour
+	void (Game::*update_meth_)(float frametime);
 	// pointeur de la méthode d'affichage'
 	void (Game::*show_meth_)();
+	
+	struct ScrollZone
+	{
+		sf::Sprite current;
+		sf::Sprite next;
+		Direction dir;
+		float timer;
+		bool need_scrolling;
+	};
+	ScrollZone scroll_;
 	
 	sf::RenderWindow app_;
 	

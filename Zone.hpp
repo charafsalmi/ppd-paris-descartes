@@ -110,6 +110,11 @@ public:
 		return -1;
 	}
 	
+	/**
+	 * Obtenir l'image des tiles du décor
+	 */
+	const sf::Image* GetBackground() const;
+	
 private:
 	/**
 	 * Désallouer toutes les entités de la zone

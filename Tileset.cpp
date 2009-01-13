@@ -37,9 +37,9 @@ Tileset::Tileset()
 			// parsing des propriétés de la tile
 			Tile::Effect effect = Tile::DEFAULT;
 			int flag;
-			if (elem->QueryIntAttribute("walkable", &flag) == TIXML_SUCCESS)
+			if (elem->QueryIntAttribute("block", &flag) == TIXML_SUCCESS)
 			{
-				effect = flag ? Tile::DEFAULT : Tile::BLOCK;
+				effect = flag ? Tile::BLOCK : Tile::DEFAULT;
 			}
 			else if (elem->QueryIntAttribute("hole", &flag) == TIXML_SUCCESS)
 			{
@@ -85,15 +85,21 @@ void Tileset::MakeSprite(int tile_id, sf::Sprite& sprite)
 }
 
 
-bool Tileset::IsWalkable(int tile_id) const
+Tile::Effect Tileset::GetEffect(int tile_id) const
 {
 	TileIndexer::const_iterator it = specials_.find(tile_id);
 	// la tile est-elle spéciale ?
 	if (it != specials_.end())
 	{
-		return it->second != Tile::BLOCK;
+		return it->second;
 	}
 	// comportement d'une tile normale
-	return true;
+	return Tile::DEFAULT;
+}
+
+
+bool Tileset::IsWalkable(int tile_id) const
+{
+	return GetEffect(tile_id) != Tile::BLOCK;
 }
 

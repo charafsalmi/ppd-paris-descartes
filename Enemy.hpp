@@ -18,5 +18,5 @@ private:
 	const Animation* walk_anims_[COUNT_DIRECTION];
 };
 
-#endif /* ENEMY_HPP */
+#endif /* guard ENEMY_HPP */
 

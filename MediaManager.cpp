@@ -217,12 +217,12 @@ MediaManager::MediaManager()
 		std::cerr << "can't open PostFX list: " << FX_LIST << std::endl;
 		abort();
 	}
-//  void Animation::AddFrame(int left, int top, int width, int height)
+	
 	BuildAnimation("player_walk_top",     32, 48, 8, 0.125f, 32,   0);
 	BuildAnimation("player_walk_bottom",  32, 48, 8, 0.125f, 32,  48);
 	BuildAnimation("player_walk_left",    32, 48, 8, 0.125f, 32,  96);
 	BuildAnimation("player_walk_right",   32, 48, 8, 0.125f, 32, 144);
-	BuildAnimation("player_fall",		  46, 46, 5, 0.2f,    0, 192);
+	BuildAnimation("player_fall",         46, 46, 5, 0.2f,    0, 192);
 	
 	BuildAnimation("stalfos_walk_top",    32, 52, 2, 0.15f,  0,    0);
 	BuildAnimation("stalfos_walk_bottom", 32, 52, 2, 0.15f,  0,   52);

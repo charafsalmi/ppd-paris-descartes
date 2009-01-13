@@ -15,6 +15,9 @@
 #define APP_FPS    60
 #define APP_TITLE  "PPD"
 
+// durée du scrolling lors d'un changement de zone
+#define SCROLL_TIME .6f
+
 
 Game& Game::GetInstance()
 {
@@ -31,11 +34,8 @@ Game::Game() :
 
 	DesktopMode = sf::VideoMode::GetDesktopMode();
 	app_.Create(DesktopMode, APP_TITLE, sf::Style::Fullscreen);
-
 #else
-
 	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, APP_BPP), APP_TITLE);
-
 #endif
 
 	app_.SetFramerateLimit(APP_FPS);
@@ -84,7 +84,8 @@ Game::Game() :
 	zones_[0][1]->PlaceStaticItem(12, 9);
 	zones_[0][1]->PlaceStaticItem(14, 9);
 	zones_[0][1]->PlaceItem('R', 15, 11);
-
+	zones_[0][1]->AddEntity(new Enemy(sf::Vector2f(200, 200)));
+	
 	zones_[0][2]->Load("data/map/zone5.txt", app_);
 
 	zones_[1][0]->Load("data/map/zone3.txt", app_);
@@ -110,11 +111,13 @@ Game::Game() :
 	// InGame
 	on_event_meth_ = &Game::InGameOnEvent;
 	show_meth_ = &Game::InGameShow;
+	update_meth_ = NULL;
 }
 
 
 Game::~Game()
 {
+	app_.Close();
 	for (int i = 0; i < GAME_HEIGHT; ++i)
 	{
 		for (int j = 0; j < GAME_WIDTH; ++j)
@@ -173,8 +176,15 @@ void Game::Run()
 		}
 		// UPDATE
 		frametime = app_.GetFrameTime();
-		panel_.Update(frametime);
-		active_zone_->Update(frametime);
+		if (update_meth_ == NULL)
+		{
+			panel_.Update(frametime);
+			active_zone_->Update(frametime);
+		}
+		else
+		{
+			(this->*update_meth_)(frametime);
+		}
 		
 		// RENDER
 		(this->*show_meth_)();
@@ -196,13 +206,19 @@ void Game::Run()
 		if (next_zone_ != active_zone_)
 		{
 			active_zone_->RemoveEntity(player_);
+			
+			if (scroll_.need_scrolling)
+			{
+				// bascule en mode Scrolling
+				on_event_meth_ = &Game::ScrollingOnEvent;
+				update_meth_ = &Game::ScrollingUpdate;
+				show_meth_ = &Game::ScrollingShow;
+			}
 			active_zone_ = next_zone_;
 			active_zone_->AddEntity(player_);
 			Entity::SetActiveZone(active_zone_);
 		}
 	}
-	app_.Close();
-	
 }
 
 
@@ -210,35 +226,38 @@ void Game::ChangeZone(Direction dir)
 {
 	int x = cds_zone_.x;
 	int y = cds_zone_.y;
-	sf::Vector2f pos = player_->GetPosition();
-
+	
 	switch (dir)
 	{
 		case UP:
 			--y;
-			pos.y = Zone::HEIGHT * Tile::SIZE;
 			break;
 		case DOWN:
 			++y;
-			pos.y = 0 + player_->GetFloorHeight();
 			break;
 		case LEFT:
 			--x;
-			pos.x = (Zone::WIDTH * Tile::SIZE) - player_->GetFloorWidth();
 			break;
 		case RIGHT:
 			++x;
-			pos.x = 0;
 			break;
 	}
 	// est-ce qu'une zone existe aux nouvelles coordonnées ?
 	if (x >= 0 && x < GAME_WIDTH && y >= 0 && y < GAME_HEIGHT)
 	{
-		printf("-> Changement de zone en [%d][%d]\n", y, x);
+		printf(" [Game] changement de zone en [%d][%d]\n", y, x);
 		next_zone_ = zones_[y][x];
-		player_->SetPosition(pos);
 		cds_zone_.x = x;
 		cds_zone_.y = y;
+		
+		scroll_.dir = dir;
+		scroll_.timer = SCROLL_TIME;
+		scroll_.current.SetImage(*active_zone_->GetBackground());
+		scroll_.current.SetPosition(0, 0);
+		scroll_.next.SetImage(*next_zone_->GetBackground());
+		scroll_.next.SetPosition(0, 0);
+		scroll_.need_scrolling = true;
+		player_->Lock();
 #ifdef DUMB_MUSIC
 		SetMusic(next_zone_->GetMusic());
 #endif
@@ -246,38 +265,27 @@ void Game::ChangeZone(Direction dir)
 }
 
 
-void Game::ChangeZone (const char* zone)
+void Game::Teleport(const char* zone)
 {
-	int x = cds_zone_.x;
-	int y = cds_zone_.y;
-	sf::Vector2f pos = player_->GetPosition();
-
 	if (!strcmp(zone, "cave1"))
 	{
+		puts(" [Game] bienvenue dans la cave \\o/");
 		next_zone_ = &cave_;
-	
-	}
-	// est-ce qu'une zone existe aux nouvelles coordonnées ?
-	if (x >= 0 && x < GAME_WIDTH && y >= 0 && y < GAME_HEIGHT)
-	{
-		printf("-> Changement de zone en cave\n");
-		next_zone_ = &cave_;
-		player_->SetPosition(pos);
-		cds_zone_.x = x;
-		cds_zone_.y = y;
+		scroll_.need_scrolling = false;
 #ifdef DUMB_MUSIC
 		SetMusic(cave_.GetMusic());
 #endif
 	}
 }
+
+
 #ifdef DUMB_MUSIC
 void Game::SetMusic(short val)
 {
-
 	static Music* music_ = NULL;
 	static short current_music_index_ = -1;
 
-	std::cerr << "SetMusic\n\tCur: " << current_music_index_ << "\t New: " << val << "\n";
+	std::cerr << " [Game] SetMusic\tCur: " << current_music_index_ << "\t New: " << val << "\n";
 	
 	if (val > 0 && val != current_music_index_)
 	{
@@ -344,4 +352,81 @@ void Game::InventoryShow()
 	active_zone_->Show(app_);
 	panel_.GetInventory()->Show(app_);
 }
+
+
+void Game::ScrollingOnEvent(sf::Key::Code key)
+{
+	(void) key;
+}
+
+
+void Game::ScrollingUpdate(float frametime)
+{
+	if (scroll_.timer <= 0)
+	{
+		// bascule en mode InGame
+		on_event_meth_ = &Game::InGameOnEvent;
+		update_meth_ = NULL;
+		show_meth_ = &Game::InGameShow;
+		
+		switch (scroll_.dir)
+		{
+			case UP:
+				player_->SetY(APP_HEIGHT - 1);
+				break;
+			case DOWN:
+				player_->SetY(player_->GetFloorHeight());
+				break;
+			case LEFT:
+				player_->SetX(APP_WIDTH - player_->GetFloorWidth() - 1);
+				break;
+			case RIGHT:
+				player_->SetX(0);
+				break;
+		}
+		player_->Unlock();
+	}
+	else
+	{
+		scroll_.timer -= frametime;
+		int coord;
+		switch (scroll_.dir)
+		{
+			case UP:
+				coord = APP_HEIGHT - (APP_HEIGHT * scroll_.timer / SCROLL_TIME);
+				scroll_.current.SetY(coord);
+				scroll_.next.SetY(-APP_HEIGHT + coord);
+				player_->SetY(coord);
+				break;
+			case DOWN:
+				coord = APP_HEIGHT * scroll_.timer / SCROLL_TIME;
+				scroll_.current.SetY(coord - APP_HEIGHT);
+				scroll_.next.SetY(coord);
+				player_->SetY(coord);
+				break;
+			case LEFT:
+				coord = APP_WIDTH - (APP_WIDTH * scroll_.timer / SCROLL_TIME);
+				scroll_.current.SetX(coord);
+				scroll_.next.SetX(-APP_WIDTH + coord);
+				player_->SetX(coord);
+				break;
+			case RIGHT:
+				coord = APP_WIDTH * scroll_.timer / SCROLL_TIME;
+				scroll_.current.SetX(coord - APP_WIDTH);
+				scroll_.next.SetX(coord);
+				player_->SetX(coord);
+				break;
+		}
+	}
+}
+
+
+void Game::ScrollingShow()
+{
+	app_.Draw(scroll_.current);
+	app_.Draw(scroll_.next);
+	app_.Draw(*player_);
+	panel_.Show(app_);
+}
+
 

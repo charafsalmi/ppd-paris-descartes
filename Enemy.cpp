@@ -28,7 +28,7 @@ void Enemy::Update(float frametime)
 {
 // <HACK>
 	static ItemData i_d;
-	i_d.img_world_ = new char[8];
+	i_d.img_world_ = new char[8]; // FIXME: fuite mémoire
 	strcpy(i_d.img_world_, "objects");
 	static sf::Vector2f offset(0, 0);
 	static Item other(offset, i_d);
