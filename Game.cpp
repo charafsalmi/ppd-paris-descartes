@@ -2,8 +2,6 @@
 #include <iostream>
 
 #include "Game.hpp"
-
-#include "Enemy.hpp"
 #include "Splash.hpp"
 #include "Tileset.hpp"
 
@@ -54,48 +52,29 @@ Game::Game() :
 		}
 	}
 	
-	// chargement des zones (avec ajout de quelques items)
-	//	-> Ce sont plus des décors que des items, non?
-	//		La nouvelle classe Item caractérise ce qui permet une interaction
+	// chargement des zones
+	//		La classe Item caractérise ce qui permet une interaction
 	//			Ex: Panneau, livre, rupee...
 	//		et la classe Equipable, en héritant, 
 	//		caractérise les Item (au sens de la classe Item)
 	//		utilisable dans l'equipement
 	//			Ex: Arc. palmes...
-	zones_[0][0]->Load("data/map/zone1.txt", app_);
-	zones_[0][0]->PlaceStaticItem(10, 2);
-	zones_[0][0]->PlaceStaticItem(10, 4);
-	zones_[0][0]->PlaceStaticItem(5, 11);
-	zones_[0][0]->PlaceStaticItem(5, 10);
-	zones_[0][0]->PlaceStaticItem(15, 2);
-	zones_[0][0]->PlaceStaticItem(17, 2);
-	zones_[0][0]->PlaceStaticItem(16, 8);
+	zones_[0][0]->Load("data/map/zone1.xml", app_);
 	zones_[0][0]->AddItem('H', 320, 192);
 	zones_[0][0]->AddItem('R', 240, 200);
-	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(110, 90)));
-	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(110, 200)));
-	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(400, 200)));
-	zones_[0][0]->AddEntity(new Enemy(sf::Vector2f(320, 350)));
 	
-	zones_[0][1]->Load("data/map/zone2.txt", app_);
-	zones_[0][1]->PlaceStaticItem(12, 7);
-	zones_[0][1]->PlaceStaticItem(14, 7);
-	zones_[0][1]->PlaceStaticItem(12, 9);
-	zones_[0][1]->PlaceStaticItem(14, 9);
+	zones_[0][1]->Load("data/map/zone2.xml", app_);
 	zones_[0][1]->AddItem('H', 480, 352);
-	zones_[0][1]->AddEntity(new Enemy(sf::Vector2f(200, 200)));
 	
-	zones_[0][2]->Load("data/map/zone5.txt", app_);
+	zones_[0][2]->Load("data/map/zone5.xml", app_);
 
-	zones_[1][0]->Load("data/map/zone3.txt", app_);
-	zones_[1][0]->AddEntity(new Enemy(sf::Vector2f(200, 200)));
+	zones_[1][0]->Load("data/map/zone3.xml", app_);
 
-	zones_[1][1]->Load("data/map/zone4.txt", app_);
-	zones_[1][1]->PlaceStaticItem(10, 11);
+	zones_[1][1]->Load("data/map/zone4.xml", app_);
 
-	zones_[1][2]->Load("data/map/zone6.txt", app_);
+	zones_[1][2]->Load("data/map/zone6.xml", app_);
 	
-	cave_.Load("data/map/cave1.txt", app_);
+	cave_.Load("data/map/cave1.xml", app_);
 	
 	for (int i = 4; i <= 10; i += 2)
 		for (int j = 3; j <= 9; j +=2)

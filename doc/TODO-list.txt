@@ -1,0 +1,27 @@
+* Core
+	- multijoueurs en mode client/serveur
+	- items utilisables dans l'inventaire
+	- système d'attaque (collision item / entité ?)
+	- collisions plus élaborées
+		+ la complexité du QuadTreeNode est quadratique !
+		+ pouvoir interagir avec des items
+
+* Format des cartes
+	- étendre le format : support des items, de la musique, etc.
+	- plusieurs zones par fichier
+	- interface pour l'édition des entités dans editor
+	- visualisation des entités dans editor
+	- utilisation d'un double layer ?
+
+* IA
+	- création de pattern
+	- entités scriptés
+
+* Graphisme
+	- plus de tiles
+	- plus d'unités
+	- ne pas tout repomper sur zelda :)
+
+* Interface
+	- GUI pour les dialogues
+

@@ -55,14 +55,6 @@ public:
 	void Show(sf::RenderWindow& app) const;
 	
 	/**
-	 * Détermine si un mouvement est possible
-	 * @param[in] emitter: entité qui cherche à se déplacer
-	 * @param[in] rect: rectangle de la position issue du mouvement à tester
-	 * @return true si le mouvement est possible, sinon false
-	 */
-	bool CanMove(Entity* emitter, const sf::FloatRect& rect);
-	
-	/**
 	 * Ajouter une entité dans la zone de jeu
 	 * @param[in, out] entity: entité ajoutée
 	 */
@@ -70,16 +62,17 @@ public:
 	
 	/**
 	 * Retirer une entité de la zone de jeu
-	 * @param[in] entity: entité a enlever
+	 * @param[in] entity: entité à enlever
 	 */
 	void RemoveEntity(Entity* entity);
 	
 	/**
-	 * Ajouter un objet statique dans la zone
-	 * @param[in] i: position i de la tile
-	 * @param[in] j: position j de la tile
+	 * Détermine si un mouvement est possible
+	 * @param[in] emitter: entité qui cherche à se déplacer
+	 * @param[in] rect: rectangle de la position issue du mouvement à tester
+	 * @return true si le mouvement est possible, sinon false
 	 */
-	void PlaceStaticItem(int i, int j);
+	bool CanMove(Entity* emitter, const sf::FloatRect& rect);
 	
 	/**
 	 * Ajouter un objet
@@ -112,6 +105,14 @@ public:
 	const sf::Image* GetBackground() const;
 	
 private:
+	/**
+	 * Ajouter une entité dans la zone de jeu
+	 * @param[in] name: identifiant
+	 * @param[in] x: tile x
+	 * @param[in] y: tile y
+	 */
+	void AddEntity(const char* name, int x, int y);
+	
 	/**
 	 * Désallouer toutes les entités et tous les items de la zone
 	 */

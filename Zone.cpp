@@ -1,14 +1,15 @@
-#include <fstream>
-#include <cassert>
 #include <algorithm>
-
-#include <cstring>
 #include <iostream>
+#include <sstream>
+#include <cassert>
+#include <cstring>
 
 #include "Zone.hpp"
+#include "Enemy.hpp"
 #include "StaticItem.hpp"
 #include "MediaManager.hpp"
 #include "Game.hpp"
+#include "tinyxml/tinyxml.h"
 
 
 Zone::Zone()
@@ -19,6 +20,7 @@ Zone::Zone()
 
 Zone::~Zone()
 {
+	delete entities_qt_;
 	Purge();
 }
 
@@ -26,19 +28,26 @@ Zone::~Zone()
 void Zone::Load(const char* filename, sf::RenderWindow& app)
 {
 	static const Tileset& tileset = Tileset::GetInstance();
-#ifdef DUMB_MUSIC
-	short int t_music = -1;
-#endif
-	std::ifstream f(filename);
-	assert(f); // TODO: lecture robuste et utiliser XML
+	TiXmlDocument doc;
+	// ouverture du fichier de la zone
+	if (!doc.LoadFile(filename))
+	{
+		printf(" [Zone] échec de l'ouverture de %s\n", filename);
+		abort();
+	}
+	
+	TiXmlHandle handle(&doc);
+	// chargement des tiles
+	TiXmlElement* elem = handle.FirstChildElement().FirstChildElement().Element();
+	std::istringstream all_tiles(elem->GetText());
 	for (int i = 0; i < HEIGHT; ++i)
 	{
 		for (int j = 0; j < WIDTH; ++j)
 		{
-			assert(!f.eof()); // TODO: lecture robuste
+			assert(!all_tiles.eof()); // TODO: lecture robuste
 			
 			int tile_id;
-			f >> tile_id;
+			all_tiles >> tile_id;
 			walkable_[i][j] = tileset.IsWalkable(tile_id);
 			tiles_[i][j] = tile_id;
 			
@@ -51,28 +60,46 @@ void Zone::Load(const char* filename, sf::RenderWindow& app)
 			Tile::Effect effect = tileset.GetEffect(tile_id);
 			if (effect == Tile::HOLE)
 			{
-					// Etendre le format du fichier de niveau
-					// -> Spécifier les arguments des trous de la zone
-					// genre [i, j ] -> 8000
-					// Default: -1 <-> Tomber dans le trou fait perdre une vie
-					// C'est Game qui reliera 8000 à une Zone et a une Position.
-					// En attendant:
+				// Etendre le format du fichier de niveau
+				// -> Spécifier les arguments des trous de la zone
+				// genre [i, j ] -> 8000
+				// Default: -1 <-> Tomber dans le trou fait perdre une vie
+				// C'est Game qui reliera 8000 à une Zone et a une Position.
+				// En attendant:
 				// <HACK>
-				if (!strcmp(filename, "data/map/zone5.txt"))
+				if (!strcmp(filename, "data/map/zone5.xml"))
 				{
 					puts("passage ajouté");
 					special_args_[tile_id] = 42;
 				}
 			}
-			
 			app.Draw(tile);
 		}
 	}
+	// chargement des entités
+	elem = handle.FirstChildElement().FirstChildElement("entities").FirstChildElement().Element();
+	while (elem != NULL)
+	{
+		bool ok = true;
+		
+		const char* name = elem->Attribute("name");
+		int x, y;
+		ok &= (elem->QueryIntAttribute("x", &x) == TIXML_SUCCESS);
+		ok &= (elem->QueryIntAttribute("y", &y) == TIXML_SUCCESS);
+		if (ok)
+		{
+			AddEntity(name, x, y);
+		}
+		else
+		{
+			std::cerr << " [Zone] attributs invalides" << std::endl;
+		}
+		elem = elem->NextSiblingElement();
+	}
 #ifdef DUMB_MUSIC
-	f >> t_music;
+	int t_music = -1;
 	zone_music_index_ = t_music;
 #endif
-	f.close();
 	tiles_img_ = app.Capture();
 	app.Clear();
 }
@@ -187,10 +214,37 @@ bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect)
 }
 
 
+void Zone::AddEntity(const char* name, int x, int y)
+{
+	sf::Vector2f position(x * Tile::SIZE, (y + 1) * Tile::SIZE);
+	Entity* p = NULL;
+	if (strcmp(name, "enemy") == 0)
+	{
+		p = new Enemy(position);
+	}
+	else if (strcmp(name, "pillar") == 0)
+	{
+		// le rectangle de surface du pillier est de 1 x 1
+		sf::Vector2i floor(1 * Tile::SIZE, 1 * Tile::SIZE);
+		p = new StaticItem(position, GET_IMG("pillar"), &floor);
+		walkable_[y][x] = false;
+	}
+	
+	if (p != NULL)
+	{
+		AddEntity(p);
+	}
+	else
+	{
+		puts(" [Zone] bad entity name");
+	}
+}
+
+
 void Zone::AddEntity(Entity* entity)
 {
 	entities_.push_front(entity);
-	printf("About to add entity");
+	printf(" [Zone] About to add entity");
 	entities_qt_->AddEntity(entity);
 	puts("\t...added.");
 }
@@ -200,18 +254,6 @@ void Zone::RemoveEntity(Entity* entity)
 {
 	entities_.remove(entity);
 	entities_qt_->RemoveEntity(entity);
-}
-
-
-void Zone::PlaceStaticItem(int i, int j)
-{
-	// HACK: ajout d'un pillier
-
-	sf::Vector2f offset(i * Tile::SIZE, (j + 1) * Tile::SIZE);
-	// le rectangle de surface du pillier est de 1 x 1
-	sf::Vector2i floor(1 * Tile::SIZE, 1 * Tile::SIZE);
-	entities_.push_back(new StaticItem(offset, GET_IMG("pillar"), &floor));
-	walkable_[j][i] = false;
 }
 
 

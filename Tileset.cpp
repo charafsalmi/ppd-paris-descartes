@@ -20,7 +20,7 @@ Tileset::Tileset()
 	}
 	
 	TiXmlHandle handle(&doc);
-	TiXmlElement *elem = handle.FirstChildElement().FirstChildElement().Element();
+	TiXmlElement* elem = handle.FirstChildElement().FirstChildElement().Element();
 	
 	if (elem == NULL)
 	{
@@ -48,9 +48,6 @@ Tileset::Tileset()
 			
 			// ajout de la nouvelle tile spéciale
 			specials_[tile_id] = effect;
-#ifdef DEBUG
-			printf("tile spéciale %d indexée\n", tile_id);
-#endif
 		}
 		else
 		{
