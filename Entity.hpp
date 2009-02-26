@@ -23,7 +23,7 @@ public:
 	Entity(const sf::Vector2f& pos, const sf::Image& image);
 	
 	/**
-	 * @brief Mettre à jour l'entité
+	 * Mettre à jour l'entité
 	 */
 	virtual void Update(float frametime);
 
@@ -33,37 +33,13 @@ public:
 	 * @param[in] frametime
 	 * @return true si le déplacement a été effectué
 	 */
-	virtual bool Move(Direction dir, float frametime);
-
-	/**
-	 * @brief Déplace l'entité vers le haut, si possible
-	 * @return true si déplacement est effectué
-	 */
-	virtual bool MoveUp(float frametime);
-
-	/**
-	 * @brief Déplace l'entité vers la droite, si possible
-	 * @return true si déplacement est effectué
-	 */
-	virtual bool MoveRight(float frametime);
-
-	/**
-	 * @brief Déplace l'entité vers le bas, si possible
-	 * @return true si déplacement est effectué
-	 */
-	virtual bool MoveDown(float frametime);
-
-	/**
-	 * @brief Déplace l'entité vers la gauche, si possible
-	 * @return true si déplacement est effectué
-	 */
-	virtual bool MoveLeft(float frametime);
+	//virtual bool Move(Direction dir, float frametime);
 
 	/**
 	 * @brief Déplace l'entité au hasard, si possible
 	 * @return true si déplacement est effectué
 	 */
-	virtual bool MoveRandomly(float frametime);
+	//virtual bool MoveRandomly(float frametime);
 
 	/**
 	 * @brief Largeur du rectangle de contact avec le sol
@@ -74,7 +50,7 @@ public:
 	}
 
 	/**
-	 * @brief Hauteur du rectangle de contact avec le sol
+	 * Hauteur du rectangle de contact avec le sol
 	 */
 	inline int GetFloorHeight() const
 	{
@@ -95,7 +71,7 @@ public:
 	}
 	
 	/**
-	 * @brief Comparaison de la profondeur de deux entités (axe y)
+	 * Comparer la profondeur de deux entités (axe y)
 	 */
 	inline bool operator<(const Entity& other) const
 	{
@@ -103,7 +79,7 @@ public:
 	}
 
 	/**
-	 * @brief Comparaison de deux entités via des pointeurs
+	 * Comparer deux entités via des pointeurs
 	 */
 	inline static bool PtrComp(const Entity* a, const Entity* b)
 	{
@@ -111,14 +87,14 @@ public:
 	}
 
 	/**
-	 * @brief Définit la zone active
+	 * Définir la zone active
 	 */
 	static void SetActiveZone(Zone* zone);
 	
-	inline void Kill()
-	{
-		dead_ = true;
-	}
+	/**
+	 * Tuer l'objet entité (sera supprimé à frame n + 1)
+	 */
+	void Kill();
 	
 	inline bool IsDead() const
 	{
@@ -127,22 +103,20 @@ public:
 
 protected:
 	/**
-	 * @brief Définir les dimensions du rectangle de contact avec le sol (pixels)
+	 * Définir les dimensions du rectangle de contact avec le sol
+	 * @param[in] width: largeur en pixels
+	 * @param[in] height: hauteur en pixels
 	 */
-	inline void SetFloor(int w, int h)
-	{
-		floor_width_ = w;
-		floor_height_ = h;
-	}
-
+	void SetFloor(int width, int height);
+	
+	// pour accéder rapidement à la zone active
 	static Zone* zone_;
 
-protected:
-	bool dead_;
 private:
+	bool dead_;
 	int floor_width_;
 	int floor_height_;
 };
 
-#endif /* guard ENTITY_HPP */
+#endif /* ENTITY_HPP */
 

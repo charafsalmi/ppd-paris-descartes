@@ -7,8 +7,9 @@
 #include "Tileset.hpp"
 #include "Zone.hpp"
 
-#define SPEED      100
-#define FALL_DELAY   1
+#define SPEED         100
+#define FALL_DELAY    1
+#define DEFAULT_LIVES 3
 
 
 Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
@@ -47,75 +48,88 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	
 	SetCenter(0, subrects_not_moving_[DOWN].GetHeight());
 	
-	lives_ = 1;
-	rupees_ = 42;
+	lives_ = DEFAULT_LIVES;
+	max_lives_ = DEFAULT_LIVES;
+	money_ = 42;
 	locked_ = false;
 	falling_ = false;
 	
 	panel_.SetLives(lives_);
-	panel_.SetRupees(rupees_);
+	panel_.SetRupees(money_);
 }
 
 
 void Player::OnEvent(sf::Key::Code key)
 {
-	if (key == sf::Key::Space)
+	// <DEBUG HACK>
+	switch (key)
 	{
-		std::cerr << " -- DEBUG -- \n";
-		std::cout << "GetPosition: " << GetPosition().x << ", " << GetPosition().y << ";\n"; 
-	}
-	
-	else if (key == sf::Key::S)
-	{
-		ControlPanel::GetInstance().AddLifeSlot();
-		std::cerr << "Added life slot to panel.\n";
-	}
-	else if (key == sf::Key::A)
-	{
-		lives_ += 1;
-		ControlPanel::GetInstance().SetLives(lives_);
-		std::cerr << "Added life to panel.\n";
-	}
-	else if (key == sf::Key::D)
-	{
-		lives_ -= 1;
-		ControlPanel::GetInstance().SetLives(lives_);
-		std::cerr << "Took away life from panel.\n";
-		if (lives_ == 0)
+		// position
+		case sf::Key::Space:
+			std::cout << " [Player] position: " << GetPosition().x << ", " << GetPosition().y << ";\n"; 
+			break;
+		// + 1 slot
+		case sf::Key::S:
+			++max_lives_;
+			ControlPanel::GetInstance().AddLifeSlot();
+			std::cout << " [Player] added life slot to panel.\n";
+			break;
+		// +1 vie
+		case sf::Key::L:
+			if (lives_ < max_lives_)
+			{
+				++lives_;
+				ControlPanel::GetInstance().SetLives(lives_);
+				std::cout << " [Player] Added life to panel.\n";
+			}
+			break;
+		// -1 vie (Z comme Ziane :D)
+		case sf::Key::Z:
+			--lives_;
+			ControlPanel::GetInstance().SetLives(lives_);
+			std::cout << " [Player] Took away life from panel.\n";
+			if (lives_ == 0)
+			{
+				puts("you're dead, bastard!");
+				Kill();
+			}
+			break;
+		// afficher la tile sous nos pieds
+		case sf::Key::T:
 		{
-			puts("you're dead, bastard!");
-			abort();
-			dead_ = true;
-		}
-	}
-	else if (key == sf::Key::T)
-	{
-		int i = (int)GetPosition().x + GetFloorWidth() / 2;
-		int j = (int) GetPosition().y - GetFloorHeight() / 2;
+			int i = (int)GetPosition().x + GetFloorWidth() / 2;
+			int j = (int) GetPosition().y - GetFloorHeight() / 2;
 	
-		i /= Tile::SIZE;
-		j /= Tile::SIZE;
+			i /= Tile::SIZE;
+			j /= Tile::SIZE;
 		
-		int tile = zone_->GetTileAt(i, j);
-		Tile::Effect effect = Tileset::GetInstance().GetEffect(tile);
-		std::cerr << "A la tile [" << tile << "]" << i << ", " << j << ", on a:\t";
-		if (effect == Tile::HOLE)
-		{
-			puts("Trou >_>");
+			int tile = zone_->GetTileAt(i, j);
+			Tile::Effect effect = Tileset::GetInstance().GetEffect(tile);
+			std::cout << " [Player] à la tile id: " << tile
+				<< ", pos: (" << i << ", " << j << "), label: ";
+			if (effect == Tile::HOLE)
+			{
+				puts("Trou");
+			}
+			else if (effect == Tile::WATER)
+			{
+				puts("Eau");
+			}
+			else if (effect == Tile::DEFAULT)
+			{
+				puts("Default");
+			}
+			else
+			{
+				puts("Bloc");
+			}
 		}
-		else if (effect == Tile::WATER)
-		{
-			puts("Eau");
-		}
-		else if (effect == Tile::DEFAULT)
-		{
-			puts("Default");
-		}
-		else
-		{
-			puts("Bloc");
-		}
+			break;
+		default:
+			break;
+			
 	}
+	// </DEBUG HACK>
 }
 
 
@@ -133,7 +147,7 @@ void Player::Update(float frametime)
 		bool moved = false;
 		int dx, dy;
 		sf::FloatRect rect;
-	
+		
 		// Chûte-t'on ?
 		int i = (int) GetPosition().x + GetFloorWidth() / 2;
 		int j = (int) GetPosition().y - GetFloorHeight() / 2;
@@ -188,7 +202,7 @@ void Player::Update(float frametime)
 				rect.Bottom = pos.y;
 				rect.Right = pos.x + GetFloorWidth();
 				rect.Top = pos.y - GetFloorHeight();
-			
+				
 				// on vérifie si on doit changer de zone
 				if (rect.Left < 0)
 				{
@@ -252,7 +266,7 @@ void Player::Update(float frametime)
 				panel_.SetLives(lives_);
 				SetPosition(Tile::SIZE, 8 * Tile::SIZE);
 			}
-			Animated::Change(walk_anims_[UP], *this);
+			Animated::Change(walk_anims_[current_dir_], *this);
 			falling_ = false;
 		}
 	}
@@ -280,7 +294,7 @@ void Player::AddLife()
 
 void Player::AddMoney()
 {
-	++rupees_;
-	panel_.SetRupees(rupees_);
+	++money_;
+	panel_.SetRupees(money_);
 }
 

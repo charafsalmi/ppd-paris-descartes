@@ -5,7 +5,6 @@
 
 #include "Entity.hpp"
 #include "Item.hpp"
-#include "QuadTreeNode.hpp"
 #include "Tileset.hpp"
 
 #ifdef DUMB_MUSIC
@@ -18,14 +17,6 @@
 class Zone
 {
 public:
-
-	// Les tiles n'ont pas le meme format dans les dongeons.
-	enum Mode
-	{
-		OUTSIDE,
-		INSIDE
-	};
-	
 	enum
 	{
 		// Dimensions de la zone en nombre de tiles
@@ -78,13 +69,15 @@ public:
 	 * Ajouter un objet
 	 */
 	void AddItem(char id, int x, int y);
-	
-	inline short GetMusic() const
+
+#ifdef DUMB_MUSIC
+	inline int GetMusic() const
 	{
 		return zone_music_index_;
 	}
-	
-	inline int GetTileAt(unsigned x, unsigned y)
+#endif
+
+	inline int GetTileAt(int x, int y)
 	{
 		return tiles_[y][x];
 	}
@@ -123,17 +116,17 @@ private:
 	
 	mutable EntityList entities_;
 	ItemList items_;
-	QuadTreeNode* entities_qt_;
 	
 	Tileset::EffectArgs special_args_;	// arguments des tiles speciales de la zone
 	
 	int tiles_[HEIGHT][WIDTH];
 	bool walkable_[HEIGHT][WIDTH];
-	sf::Image tiles_img_; // tiles de la zone
+	sf::Image tiles_img_; // image des tiles de la zone
+	sf::Sprite tiles_sprite_; // sprite associé aux tiles
 #ifdef DUMB_MUSIC
-	short zone_music_index_;
+	int zone_music_index_;
 #endif
 };
 
-#endif /* guard ZONE_HPP */
+#endif /* ZONE_HPP */
 

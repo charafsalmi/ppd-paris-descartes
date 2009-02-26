@@ -55,7 +55,8 @@ public:
 	bool IsWalkable(int tile_id) const;
 	
 	typedef std::map<int, int> EffectArgs;
-	typedef EffectArgs::iterator EffectIter;	
+	typedef EffectArgs::iterator EffectIter;
+	
 private:
 	Tileset();
 	Tileset(const Tileset& other);
@@ -65,7 +66,6 @@ private:
 	typedef TileIndexer::iterator TileIter;
 	typedef TileIndexer::const_iterator ConstTileIter;
 	TileIndexer specials_;
-
 };
 
 

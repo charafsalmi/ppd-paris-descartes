@@ -11,15 +11,14 @@
  * @return string formée
  */
 std::string str_sprintf(const char format[], ...);
-
 std::wstring str_sprintf(const wchar_t format[], ...);
 
 /**
  * Remplacer un motif par un autre
- * @param[in|out] target: chaîne cible
+ * @param[in, out] target: chaîne cible
  * @param[in] look_for: sous-chaîne recherchée
  * @param[in] replace_by: sous-chaîne à caser
- * @return
+ * @return nombre d'occurences remplacées
  */
 int find_replace(std::string& target, const std::string& look_for,
 	const std::string& replace_by);
@@ -40,5 +39,5 @@ void trim(std::string& str);
  */
 std::string extract(const std::string& str, int from, int to);
 
-#endif /* guard MISC_HPP */
+#endif /* MISC_HPP */
 

@@ -51,7 +51,9 @@ private:
 	Game(const Game&);
 	~Game();
 
-	void SetMusic(short val);
+#ifdef DUMB_MUSIC
+	void SetMusic(int value);
+#endif
 
 	enum
 	{
@@ -100,11 +102,7 @@ private:
 	ScrollZone scroll_;
 	
 	sf::RenderWindow app_;
-	
-#ifdef FULLSCREEN_HACK
-	sf::VideoMode DesktopMode;
-#endif
 };
 
-#endif /* guard GAME_HPP */
+#endif /* GAME_HPP */
 

@@ -58,7 +58,8 @@ private:
 	ControlPanel& panel_;
 	
 	int lives_;
-	int rupees_;
+	int max_lives_;
+	int money_;
 };
 
 #endif /* guard PLAYER_HPP */

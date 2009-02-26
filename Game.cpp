@@ -25,22 +25,12 @@ Game& Game::GetInstance()
 Game::Game() :
 	panel_(ControlPanel::GetInstance())
 {
-
-#ifdef FULLSCREEN_HACK
-
-	DesktopMode = sf::VideoMode::GetDesktopMode();
-	app_.Create(DesktopMode, APP_TITLE, sf::Style::Fullscreen);
-#else
 	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, APP_BPP), APP_TITLE);
-#endif
-
 	app_.SetFramerateLimit(APP_FPS);
 
-	{
-		sf::Image icon = GET_IMG("icon");
-		std::cerr << icon.GetWidth() << ", " << icon.GetHeight() << "\n";
-		app_.SetIcon(icon.GetWidth(), icon.GetHeight(), icon.GetPixelsPtr());
-	}
+	const sf::Image& icon = GET_IMG("icon");
+	std::cerr << icon.GetWidth() << ", " << icon.GetHeight() << "\n";
+	app_.SetIcon(icon.GetWidth(), icon.GetHeight(), icon.GetPixelsPtr());
 
 	player_ = new Player(sf::Vector2f(200, 200), app_.GetInput());
 
@@ -103,8 +93,10 @@ Game::~Game()
 			delete zones_[i][j];
 		}
 	}
+#ifdef DUMB_MUSIC
 	SetMusic(-1);	// What about a shared Defines.h file which would
 					// state, say, "#define UNDEF" -1 ?
+#endif
 }
 
 
@@ -166,20 +158,8 @@ void Game::Run()
 		
 		// RENDER
 		(this->*show_meth_)();
+		app_.Display();
 		
-#ifndef FULLSCREEN_HACK		
-		app_.Display();
-#else
-		static sf::Vector2f scal_;
-		scal_.x = scal_.y = (DesktopMode.Width / 640);
-		sf::Image img_(app_.Capture());
-		img_.SetSmooth(true);
-		sf::Sprite spr_(img_);
-		spr_.SetScale(scal_);
-		app_.Draw(spr_);
-		app_.Display();
-#endif
-
 		// si demande de changement de zone
 		if (next_zone_ != active_zone_)
 		{
@@ -258,7 +238,7 @@ void Game::Teleport(const char* zone)
 
 
 #ifdef DUMB_MUSIC
-void Game::SetMusic(short val)
+void Game::SetMusic(int value)
 {
 	static Music* music_ = NULL;
 	static short current_music_index_ = -1;

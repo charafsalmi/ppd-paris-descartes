@@ -14,13 +14,11 @@
 
 Zone::Zone()
 {
-	entities_qt_ = new QuadTreeNode(sf::Vector2i(0, 640), sf::Vector2i(640, 480));
 }
 
 
 Zone::~Zone()
 {
-	delete entities_qt_;
 	Purge();
 }
 
@@ -101,6 +99,7 @@ void Zone::Load(const char* filename, sf::RenderWindow& app)
 	zone_music_index_ = t_music;
 #endif
 	tiles_img_ = app.Capture();
+	tiles_sprite_.SetImage(tiles_img_);
 	app.Clear();
 }
 
@@ -147,8 +146,7 @@ void Zone::Update(float frametime)
 void Zone::Show(sf::RenderWindow& app) const
 {
 	// affichage des tiles
-	sf::Sprite s_tiles(tiles_img_);
-	app.Draw(s_tiles);
+	app.Draw(tiles_sprite_);
 	
 	// affichage des items
 	ItemList::const_iterator it2;
@@ -190,15 +188,11 @@ bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect)
 	}
 	
 	// collision avec une autre unité
-	static Entity* fake = NULL;
-	std::set<Entity*> them;
-	std::set<Entity*>::const_iterator it;
-	
-	entities_qt_->GetEntities(fake, them);
-
+	EntityList::iterator it;
 	sf::FloatRect other_rect;
-	for (it = them.begin(); it != them.end(); ++it)
+	for (it = entities_.begin(); it != entities_.end(); ++it)
 	{
+		// pas de collision avec soi même
 		if (*it != emitter)
 		{
 			(**it).GetFloorRect(other_rect);
@@ -244,16 +238,12 @@ void Zone::AddEntity(const char* name, int x, int y)
 void Zone::AddEntity(Entity* entity)
 {
 	entities_.push_front(entity);
-	printf(" [Zone] About to add entity");
-	entities_qt_->AddEntity(entity);
-	puts("\t...added.");
 }
 
 
 void Zone::RemoveEntity(Entity* entity)
 {
 	entities_.remove(entity);
-	entities_qt_->RemoveEntity(entity);
 }
 
 

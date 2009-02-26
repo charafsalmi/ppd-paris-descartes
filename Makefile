@@ -17,7 +17,7 @@ else
 endif
 
 # DUMBlib used?
-USE_DUMB=yes
+USE_DUMB=no
 ifeq ($(USE_DUMB), yes)
 	CFLAGS += -DDUMB_MUSIC
 	LDFLAGS += -ldumb
@@ -29,11 +29,9 @@ ifeq ($(LINK), dynamic)
 	CFLAGS += -DSFML_DYNAMIC
 endif
 
-# fullscreen - splash
-FULLSCREEN=no
-ifeq ($(FULLSCREEN), yes)
-	CFLAGS += -DFULLSCREEN_HACK
-else
+# disable splash screen
+NO_SPLASH=yes
+ifeq ($(NO_SPLASH), yes)
 	CFLAGS += -DNO_SPLASH
 endif
 
@@ -42,16 +40,16 @@ $(EXEC): $(OBJ) $(TINYXML_OBJ)
 	$(CC) $^ -o $(EXEC) $(LDFLAGS)
 
 %.o: %.cpp
-	$(CC) $< -c -o $@ $(CFLAGS)
+	$(CC) $< -c $(CFLAGS)
 
 tinyxml/tinyxml.o: tinyxml/tinyxml.cpp
-	$(CC) $< -c -o $@ $(CFLAGS)
+	$(CC) $< -c $(CFLAGS)
 	
 tinyxml/tinyxmlparser.o: tinyxml/tinyxmlparser.cpp
-	$(CC) $< -c -o $@ $(CFLAGS)
+	$(CC) $< -c $(CFLAGS)
 	
 tinyxml/tinyxmlerror.o: tinyxml/tinyxmlerror.cpp
-	$(CC) $< -c -o $@ $(CFLAGS)
+	$(CC) $< -c $(CFLAGS)
 
 .PHONY: clean cleanxml mrproper
 

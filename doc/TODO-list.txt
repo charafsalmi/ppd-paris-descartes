@@ -3,7 +3,6 @@
 	- items utilisables dans l'inventaire
 	- système d'attaque (collision item / entité ?)
 	- collisions plus élaborées
-		+ la complexité du QuadTreeNode est quadratique !
 		+ pouvoir interagir avec des items
 
 * Format des cartes

@@ -30,42 +30,46 @@ void Entity::SetActiveZone(Zone* zone)
 }
 
 
-bool Entity::Move(Direction dir, float frametime)
+/*bool Entity::Move(Direction dir, float frametime)
 {
-	//@TODO : à compléter
-	(void) dir;
-	(void) frametime;
+	static const int MAGIC = 42;// vitesse
+	int dx, dy;
+	switch (dir)
+	{
+		case UP:
+			dy = -MAGIC * frametime;
+			break;
+		case DOWN:
+			dy = MAGIC * frametime;
+			break;
+		case LEFT:
+			dx = -MAGIC * frametime;
+			break;
+		case RIGHT:
+			dx = MAGIC * frametime;
+			break;
+	}
+	Move(dx, dy);
 	return false;
-}
+}*/
 
 
-bool Entity::MoveUp(float frametime)
+/*bool Entity::MoveRandomly(float frametime)
 {
-	return Move(UP, frametime);
-}
+	return Move((Direction) sf::Randomizer::Random(0, COUNT_DIRECTION),
+		frametime);
+}*/
 
 
-bool Entity::MoveRight(float frametime)
+void Entity::Kill()
 {
-	return Move(RIGHT, frametime);
+	dead_ = true;
 }
 
 
-bool Entity::MoveDown(float frametime)
+void Entity::SetFloor(int width, int height)
 {
-	return Move(DOWN, frametime);
+	floor_width_ = width;
+	floor_height_ = height;
 }
-
-
-bool Entity::MoveLeft(float frametime)
-{
-	return Move(LEFT, frametime);
-}
-
-
-bool Entity::MoveRandomly(float frametime)
-{
-	return Move((Direction) sf::Randomizer::Random(0, COUNT_DIRECTION), frametime);
-}
-
 

@@ -68,5 +68,5 @@ private:
 	Inventory* inventory_;
 };
 
-#endif /* guard CONTROLPANEL_HPP */
+#endif /* CONTROLPANEL_HPP */
 
