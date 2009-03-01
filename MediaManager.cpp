@@ -130,9 +130,8 @@ Music* MediaManager::GetMusic(const char* key) const
 }
 
 
-Music* MediaManager::GetMusic(unsigned short id) const
+Music* MediaManager::GetMusic(int id) const
 {
-
 	if(id > musics_.size())
 	{
 		puts("Music: off-bounded index");

@@ -9,7 +9,7 @@
 #include "StaticItem.hpp"
 #include "MediaManager.hpp"
 #include "Game.hpp"
-#include "tinyxml/tinyxml.h"
+#include "ZoneContainer.hpp"
 
 
 Zone::Zone()
@@ -23,20 +23,12 @@ Zone::~Zone()
 }
 
 
-void Zone::Load(const char* filename, sf::RenderWindow& app)
+void Zone::Load(const TiXmlHandle& handle, sf::RenderWindow& app)
 {
-	static const Tileset& tileset = Tileset::GetInstance();
-	TiXmlDocument doc;
-	// ouverture du fichier de la zone
-	if (!doc.LoadFile(filename))
-	{
-		printf(" [Zone] échec de l'ouverture de %s\n", filename);
-		abort();
-	}
-	
-	TiXmlHandle handle(&doc);
 	// chargement des tiles
-	TiXmlElement* elem = handle.FirstChildElement().FirstChildElement().Element();
+	static const Tileset& tileset = Tileset::GetInstance();
+	const TiXmlElement* elem = handle.FirstChildElement("tiles").Element();
+	
 	std::istringstream all_tiles(elem->GetText());
 	for (int i = 0; i < HEIGHT; ++i)
 	{
@@ -55,27 +47,12 @@ void Zone::Load(const char* filename, sf::RenderWindow& app)
 			sf::Vector2f pos(j * Tile::SIZE, i * Tile::SIZE);
 			tile.SetPosition(pos);
 			
-			Tile::Effect effect = tileset.GetEffect(tile_id);
-			if (effect == Tile::HOLE)
-			{
-				// Etendre le format du fichier de niveau
-				// -> Spécifier les arguments des trous de la zone
-				// genre [i, j ] -> 8000
-				// Default: -1 <-> Tomber dans le trou fait perdre une vie
-				// C'est Game qui reliera 8000 à une Zone et a une Position.
-				// En attendant:
-				// <HACK>
-				if (!strcmp(filename, "data/map/zone5.xml"))
-				{
-					puts("passage ajouté");
-					special_args_[tile_id] = 42;
-				}
-			}
 			app.Draw(tile);
 		}
 	}
+	
 	// chargement des entités
-	elem = handle.FirstChildElement().FirstChildElement("entities").FirstChildElement().Element();
+	elem = handle.FirstChildElement("entities").FirstChildElement().Element();
 	while (elem != NULL)
 	{
 		bool ok = true;
@@ -94,10 +71,44 @@ void Zone::Load(const char* filename, sf::RenderWindow& app)
 		}
 		elem = elem->NextSiblingElement();
 	}
-#ifdef DUMB_MUSIC
-	int t_music = -1;
-	zone_music_index_ = t_music;
-#endif
+	
+	// chargement des téléporteurs
+	elem = handle.FirstChildElement("teleporters").FirstChildElement().Element();
+	while (elem != NULL)
+	{
+		bool ok = true;
+		int x, y, zone_x, zone_y, tile_x, tile_y, zc_id;
+		// coordonnées tile du téléporteur
+		ok &= (elem->QueryIntAttribute("x", &x) == TIXML_SUCCESS);
+		ok &= (elem->QueryIntAttribute("y", &y) == TIXML_SUCCESS);
+		// zone container cible
+		ok &= (elem->QueryIntAttribute("container", &zc_id) == TIXML_SUCCESS);
+		// coordonnées de la zone cible
+		ok &= (elem->QueryIntAttribute("zone_x", &zone_x) == TIXML_SUCCESS);
+		ok &= (elem->QueryIntAttribute("zone_y", &zone_y) == TIXML_SUCCESS);
+		// coordonées de la tile cible
+		ok &= (elem->QueryIntAttribute("tile_x", &tile_x) == TIXML_SUCCESS);
+		ok &= (elem->QueryIntAttribute("tile_y", &tile_y) == TIXML_SUCCESS);
+		
+		if (!ok)
+		{
+			std::cerr << " [Zone] teleporteur invalide ignoré" << std::endl;
+		}
+		else
+		{
+			Teleporter tp;
+			tp.zone_container = zc_id;
+			tp.zone_coords = sf::Vector2i(zone_x, zone_y);
+			tp.tile_coords = sf::Vector2i(tile_x, tile_y);
+			int key = y * WIDTH + x;
+			teleporters_[key] = tp;
+			puts("tp ajouté");
+		}
+		elem = elem->NextSiblingElement();
+	}
+	
+	// création de l'image des tiles
+	// TODO: ne pas faire pour toutes les zones... la zone courante suffit
 	tiles_img_ = app.Capture();
 	tiles_sprite_.SetImage(tiles_img_);
 	app.Clear();
@@ -263,6 +274,19 @@ void Zone::AddItem(char id, int x, int y)
 			break;
 	}
 	items_.push_front(item);	
+}
+
+
+bool Zone::GetTeleport(int x, int y, Teleporter& tp)
+{
+	int key = y * WIDTH + x;
+	std::map<int, Teleporter>::const_iterator it = teleporters_.find(key);
+	if (it != teleporters_.end())
+	{
+		tp = teleporters_[key];
+		return true;
+	}
+	return false;
 }
 
 

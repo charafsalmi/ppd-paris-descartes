@@ -14,8 +14,9 @@ namespace Tile
 	{
 		DEFAULT, // aucun effet
 		BLOCK,
-		WATER, 
-		HOLE
+		WATER,
+		HOLE,
+		TELEPORT
 	};
 }
 
@@ -54,17 +55,13 @@ public:
 	 */
 	bool IsWalkable(int tile_id) const;
 	
-	typedef std::map<int, int> EffectArgs;
-	typedef EffectArgs::iterator EffectIter;
-	
 private:
 	Tileset();
 	Tileset(const Tileset& other);
 	Tileset& operator=(const Tileset& other);
 	
 	typedef std::map<int, Tile::Effect> TileIndexer;
-	typedef TileIndexer::iterator TileIter;
-	typedef TileIndexer::const_iterator ConstTileIter;
+	
 	TileIndexer specials_;
 };
 

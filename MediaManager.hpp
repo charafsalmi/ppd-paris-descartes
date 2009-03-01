@@ -46,7 +46,7 @@ public:
 	 */
 	Music* GetMusic(const char* key) const;
 	
-	Music* GetMusic(unsigned short id) const;
+	Music* GetMusic(int id) const;
 #endif
 
 	const std::string& GetPostFX(const char* key) const;
@@ -111,7 +111,7 @@ inline Music* GET_MUSIC(const char* key)
 	return MediaManager::GetInstance().GetMusic(key);
 }
 
-inline Music* GET_MUSIC(unsigned short id)
+inline Music* GET_MUSIC(int id)
 {	// Plus compact, pour utilisation dans les zones. Premier index: 1.
 	return MediaManager::GetInstance().GetMusic(id);
 }
@@ -133,5 +133,5 @@ inline const std::string& GET_FX(const char* key)
 	return MediaManager::GetInstance().GetPostFX(key);
 }
 
-#endif /* guard MEDIAMANAGER_HPP */
+#endif /* MEDIAMANAGER_HPP */
 

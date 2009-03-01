@@ -92,11 +92,6 @@ void ControlPanel::Show(sf::RenderTarget& app)
 
 ControlPanel::ControlPanel()
 {
-#ifdef DEBUG
-	puts("\t [ControlPanel] Attention, <iostream> n'est inclut qu'en debug.");
-	puts("\t\tIl ne devrait pas être utile à la classe ;)");
-#endif
-
 	background_.SetPosition(ORIGIN);  
 	background_.SetImage(GET_IMG("panel-background"));
 

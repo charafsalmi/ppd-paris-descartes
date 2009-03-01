@@ -7,7 +7,7 @@
 #include "Tileset.hpp"
 #include "Zone.hpp"
 
-#define SPEED         100
+#define SPEED         120
 #define FALL_DELAY    1
 #define DEFAULT_LIVES 3
 
@@ -119,9 +119,9 @@ void Player::OnEvent(sf::Key::Code key)
 			{
 				puts("Default");
 			}
-			else
+			else if (effect == Tile::TELEPORT)
 			{
-				puts("Bloc");
+				puts("Téléport");
 			}
 		}
 			break;
@@ -142,6 +142,12 @@ void Player::Update(float frametime)
 	static int tile;
 	static float fall_timer;
 	
+	int i = (int) GetPosition().x + GetFloorWidth() / 2;
+	int j = (int) GetPosition().y - GetFloorHeight() / 2;
+		
+	i /= Tile::SIZE;
+	j /= Tile::SIZE;
+	
 	if (!falling_)
 	{
 		bool moved = false;
@@ -149,26 +155,31 @@ void Player::Update(float frametime)
 		sf::FloatRect rect;
 		
 		// Chûte-t'on ?
-		int i = (int) GetPosition().x + GetFloorWidth() / 2;
-		int j = (int) GetPosition().y - GetFloorHeight() / 2;
-		
-		i /= Tile::SIZE;
-		j /= Tile::SIZE;
-		
 		tile = zone_->GetTileAt(i, j);
 		Tile::Effect effect = Tileset::GetInstance().GetEffect(tile);
 
 		if (effect == Tile::HOLE)
 		{
-			puts("Trou >_>");
+			puts(" [Player] falling...");
 			falling_ = true;
 			Animated::Change(fall_anim_, *this);
 			fall_timer = FALL_DELAY;
 			return;
 		}
-	
-		//
-	
+		
+		if (effect == Tile::TELEPORT)
+		{
+			Zone::Teleporter tp;
+			if (zone_->GetTeleport(i, j, tp))
+			{
+				puts(" [Player] a activé un téléporteur !");
+				game.Teleport((ZoneContainer::MapName) tp.zone_container,
+					tp.zone_coords, tp.tile_coords);
+				return;
+			}
+		}
+		
+		// déplacement
 		Direction new_dir;
 		for (int dir = 0; dir < COUNT_DIRECTION; ++dir)
 		{
@@ -206,22 +217,22 @@ void Player::Update(float frametime)
 				// on vérifie si on doit changer de zone
 				if (rect.Left < 0)
 				{
-					game.ChangeZone(Game::LEFT);
+					game.ChangeZone(ZoneContainer::LEFT);
 					break;
 				}
 				else if (rect.Top < 0) 
 				{
-					game.ChangeZone(Game::UP);
+					game.ChangeZone(ZoneContainer::UP);
 					break;
 				}
 				else if (rect.Right > Zone::WIDTH * Tile::SIZE)
 				{
-					game.ChangeZone(Game::RIGHT);
+					game.ChangeZone(ZoneContainer::RIGHT);
 					break;
 				}
 				else if (rect.Bottom > Zone::HEIGHT * Tile::SIZE)
 				{
-					game.ChangeZone(Game::DOWN);
+					game.ChangeZone(ZoneContainer::DOWN);
 					break;
 				}
 				
@@ -255,14 +266,15 @@ void Player::Update(float frametime)
 		Animated::Update(frametime, *this);
 		if (fall_timer <= 0)
 		{
-			std::cerr << "EffectArg:" << zone_->GetEffectArg(tile) << "\n";
-			if (zone_->GetEffectArg(tile) == 42)
+			Zone::Teleporter tp;
+			if (zone_->GetTeleport(i, j, tp))
 			{
-				game.Teleport("cave1");
+				game.Teleport((ZoneContainer::MapName) tp.zone_container,
+					tp.zone_coords, tp.tile_coords);
 			}
 			else
 			{
-				lives_ -= 1;
+				--lives_;
 				panel_.SetLives(lives_);
 				SetPosition(Tile::SIZE, 8 * Tile::SIZE);
 			}

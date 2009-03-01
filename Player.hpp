@@ -62,5 +62,5 @@ private:
 	int money_;
 };
 
-#endif /* guard PLAYER_HPP */
+#endif /* PLAYER_HPP */
 

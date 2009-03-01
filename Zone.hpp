@@ -6,6 +6,7 @@
 #include "Entity.hpp"
 #include "Item.hpp"
 #include "Tileset.hpp"
+#include "tinyxml/tinyxml.h"
 
 #ifdef DUMB_MUSIC
 #include "Music.hpp"
@@ -28,10 +29,10 @@ public:
 	~Zone();
 	
 	/**
-	 * Charger les éléments de la zone
-	 * @param[in] filename: fichier de la carte
+	 * Charger le contenu de la zone
+	 * @param[in] handle: nœud XML décrivant la zone
 	 */
-	void Load(const char* filename, sf::RenderWindow& app);
+	void Load(const TiXmlHandle& handle, sf::RenderWindow& app);
 	
 	/**
 	 * Mettre à jour la zone
@@ -70,34 +71,36 @@ public:
 	 */
 	void AddItem(char id, int x, int y);
 
-#ifdef DUMB_MUSIC
-	inline int GetMusic() const
-	{
-		return zone_music_index_;
-	}
-#endif
-
 	inline int GetTileAt(int x, int y)
 	{
 		return tiles_[y][x];
 	}
 	
-	int GetEffectArg(int tile_id)
+
+	/**
+	 * Un téléporteur permet d'aller à un point donné, dans une zone donnée,
+	 * dans un conteneur de zone donné
+	 */
+	struct Teleporter
 	{
-		Tileset::EffectIter it = special_args_.find(tile_id);
-		if (it != special_args_.end())
-		{
-			return special_args_[tile_id];
-		}
-		return -1;
-	}
+		int zone_container;
+		sf::Vector2i zone_coords;
+		sf::Vector2i tile_coords;
+	};
+	
+	bool GetTeleport(int x, int y, Teleporter& tp);
 	
 	/**
 	 * Obtenir l'image des tiles du décor
 	 */
 	const sf::Image* GetBackground() const;
 	
+
+	
 private:
+	
+	
+	
 	/**
 	 * Ajouter une entité dans la zone de jeu
 	 * @param[in] name: identifiant
@@ -117,7 +120,7 @@ private:
 	mutable EntityList entities_;
 	ItemList items_;
 	
-	Tileset::EffectArgs special_args_;	// arguments des tiles speciales de la zone
+	std::map<int, Teleporter> teleporters_;
 	
 	int tiles_[HEIGHT][WIDTH];
 	bool walkable_[HEIGHT][WIDTH];

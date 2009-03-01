@@ -4,6 +4,7 @@
 #include "Game.hpp"
 #include "Splash.hpp"
 #include "Tileset.hpp"
+#include "tinyxml/tinyxml.h"
 
 #define APP_WIDTH  (Tile::SIZE * Zone::WIDTH)
 #define APP_HEIGHT (Tile::SIZE * Zone::HEIGHT)
@@ -11,8 +12,6 @@
 #define APP_FPS    60
 #define APP_TITLE  "PPD"
 
-// durée du scrolling lors d'un changement de zone
-#define SCROLL_TIME .6f
 
 
 Game& Game::GetInstance()
@@ -31,71 +30,22 @@ Game::Game() :
 	const sf::Image& icon = GET_IMG("icon");
 	std::cerr << icon.GetWidth() << ", " << icon.GetHeight() << "\n";
 	app_.SetIcon(icon.GetWidth(), icon.GetHeight(), icon.GetPixelsPtr());
-
-	player_ = new Player(sf::Vector2f(200, 200), app_.GetInput());
-
-	for (int i = 0; i < GAME_HEIGHT; ++i)
-	{
-		for (int j = 0; j < GAME_WIDTH; ++j)
-		{
-			zones_[i][j] = new Zone();
-		}
-	}
 	
-	// chargement des zones
-	//		La classe Item caractérise ce qui permet une interaction
-	//			Ex: Panneau, livre, rupee...
-	//		et la classe Equipable, en héritant, 
-	//		caractérise les Item (au sens de la classe Item)
-	//		utilisable dans l'equipement
-	//			Ex: Arc. palmes...
-	zones_[0][0]->Load("data/map/zone1.xml", app_);
-	zones_[0][0]->AddItem('H', 320, 192);
-	zones_[0][0]->AddItem('R', 240, 200);
+	player_ = new Player(sf::Vector2f(300, 300), app_.GetInput());
 	
-	zones_[0][1]->Load("data/map/zone2.xml", app_);
-	zones_[0][1]->AddItem('H', 480, 352);
-	
-	zones_[0][2]->Load("data/map/zone5.xml", app_);
-
-	zones_[1][0]->Load("data/map/zone3.xml", app_);
-
-	zones_[1][1]->Load("data/map/zone4.xml", app_);
-
-	zones_[1][2]->Load("data/map/zone6.xml", app_);
-	
-	cave_.Load("data/map/cave1.xml", app_);
-	
-	for (int i = 4; i <= 10; i += 2)
-		for (int j = 3; j <= 9; j +=2)
-			cave_.AddItem('R', i * Tile::SIZE, j * Tile::SIZE);
-	
-	cds_zone_.x = 0;
-	cds_zone_.y = 0;
-
-	active_zone_ = NULL;
-	next_zone_ = NULL;
-	
+	// chargement du conteneur de zones
+	zone_container_.Load(ZoneContainer::WORLD, app_);
 	// InGame
-	on_event_meth_ = &Game::InGameOnEvent;
-	show_meth_ = &Game::InGameShow;
-	update_meth_ = NULL;
+	SetMode(IN_GAME);
 }
 
 
 Game::~Game()
 {
 	app_.Close();
-	for (int i = 0; i < GAME_HEIGHT; ++i)
-	{
-		for (int j = 0; j < GAME_WIDTH; ++j)
-		{
-			delete zones_[i][j];
-		}
-	}
+
 #ifdef DUMB_MUSIC
-	SetMusic(-1);	// What about a shared Defines.h file which would
-					// state, say, "#define UNDEF" -1 ?
+	SetMusic(-1);
 #endif
 }
 
@@ -104,13 +54,8 @@ void Game::Run()
 {
 	sf::Event event;
 	bool running = true;
-
-	active_zone_ = zones_[cds_zone_.y][cds_zone_.x];
-	next_zone_ = active_zone_;
-	active_zone_->AddEntity(player_);
-	Entity::SetActiveZone(active_zone_);
-
 	float frametime;
+	zone_container_.GetActiveZone()->AddEntity(player_);
 	
 #ifndef NO_SPLASH
 	if (sf::PostFX::CanUsePostFX())
@@ -146,94 +91,70 @@ void Game::Run()
 		}
 		// UPDATE
 		frametime = app_.GetFrameTime();
-		if (update_meth_ == NULL)
-		{
-			panel_.Update(frametime);
-			active_zone_->Update(frametime);
-		}
-		else
-		{
-			(this->*update_meth_)(frametime);
-		}
-		
+		(this->*update_meth_)(frametime);
+	
 		// RENDER
-		(this->*show_meth_)();
+		(this->*render_meth_)();
 		app_.Display();
 		
-		// si demande de changement de zone
-		if (next_zone_ != active_zone_)
+		if (zone_container_.GetName() != next_zone_name_)
 		{
-			active_zone_->RemoveEntity(player_);
-			
-			if (scroll_.need_scrolling)
-			{
-				// bascule en mode Scrolling
-				on_event_meth_ = &Game::ScrollingOnEvent;
-				update_meth_ = &Game::ScrollingUpdate;
-				show_meth_ = &Game::ScrollingShow;
-			}
-			active_zone_ = next_zone_;
-			active_zone_->AddEntity(player_);
-			Entity::SetActiveZone(active_zone_);
+			ChangeZoneContainer(next_zone_name_);
 		}
 	}
 }
 
 
-void Game::ChangeZone(Direction dir)
+void Game::ChangeZone(ZoneContainer::Direction direction)
 {
-	int x = cds_zone_.x;
-	int y = cds_zone_.y;
-	
-	switch (dir)
-	{
-		case UP:
-			--y;
-			break;
-		case DOWN:
-			++y;
-			break;
-		case LEFT:
-			--x;
-			break;
-		case RIGHT:
-			++x;
-			break;
-	}
-	// est-ce qu'une zone existe aux nouvelles coordonnées ?
-	if (x >= 0 && x < GAME_WIDTH && y >= 0 && y < GAME_HEIGHT)
-	{
-		printf(" [Game] changement de zone en [%d][%d]\n", y, x);
-		next_zone_ = zones_[y][x];
-		cds_zone_.x = x;
-		cds_zone_.y = y;
-		
-		scroll_.dir = dir;
-		scroll_.timer = SCROLL_TIME;
-		scroll_.current.SetImage(*active_zone_->GetBackground());
-		scroll_.current.SetPosition(0, 0);
-		scroll_.next.SetImage(*next_zone_->GetBackground());
-		scroll_.next.SetPosition(0, 0);
-		scroll_.need_scrolling = true;
-		player_->Lock();
-#ifdef DUMB_MUSIC
-		SetMusic(next_zone_->GetMusic());
-#endif
-	}
+	zone_container_.ChangeZone(direction);
 }
 
 
-void Game::Teleport(const char* zone)
+void Game::ChangeZoneContainer(ZoneContainer::MapName zone_name)
 {
-	if (!strcmp(zone, "cave1"))
+	puts(" exécution de la demande de changement de conteneur");
+	// on retire le joueur de la zone de l'ancien conteneur
+	Zone* active = zone_container_.GetActiveZone();
+	active->RemoveEntity(player_);
+	zone_container_.Unload();
+	zone_container_.Load(zone_name, app_);
+	if (!zone_container_.SetActiveZone(next_zone_cds_.x, next_zone_cds_.y, false))
 	{
-		puts(" [Game] bienvenue dans la cave \\o/");
-		next_zone_ = &cave_;
-		scroll_.need_scrolling = false;
-#ifdef DUMB_MUSIC
-		SetMusic(cave_.GetMusic());
-#endif
+		puts(" impossible d'activer la zone du conteneur cible");
+		abort();
 	}
+	// insertion du joueur dans le nouveau conteneur
+	active = zone_container_.GetActiveZone();
+	active->AddEntity(player_);
+	
+	next_zone_name_ = zone_name;
+}
+
+
+void Game::Teleport(ZoneContainer::MapName zone_name, const sf::Vector2i& zone_cds,
+	const sf::Vector2i& tile_cds)
+{
+	if (zone_name != zone_container_.GetName())
+	{
+		puts(" [Game] téléportation inter-conteneurs");
+		next_zone_name_ = zone_name;
+		next_zone_cds_ = zone_cds;
+	}
+	else
+	{
+		puts(" [Game] téléportation intra-conteneur");
+		// on informe le conteneur que la zone active doit changer à la prochaine itération
+		if (!zone_container_.SetActiveZone(zone_cds.x, zone_cds.y))
+		{
+			puts("bad coords");
+			abort();
+		}
+	}
+	
+	int x = tile_cds.x * Tile::SIZE;
+	int y = tile_cds.y * Tile::SIZE;
+	player_->SetPosition(x, y);
 }
 
 
@@ -267,18 +188,46 @@ void Game::SetMusic(int value)
 }
 #endif
 
+void Game::SetMode(Mode mode)
+{
+	// initialisation des callbacks
+	switch (mode)
+	{
+		case IN_GAME:
+			puts("mode ingame");
+			on_event_meth_ = &Game::InGameOnEvent;
+			update_meth_ = &Game::DefaultUpdate;
+			render_meth_ = &Game::InGameShow;
+			player_->Unlock();
+			break;
+		case INVENTORY:
+			puts("mode inventory");
+			on_event_meth_ = &Game::InventoryOnEvent;
+			update_meth_ = &Game::DefaultUpdate;
+			render_meth_ = &Game::InventoryShow;
+			player_->Lock();
+			break;
+	}
+}
 
-// méthodes de spécialisation du comportement
+// méthodes callbacks
+
+void Game::DefaultUpdate(float frametime)
+{
+	panel_.Update(frametime);
+	zone_container_.Update(frametime);
+}
+
 
 void Game::InGameOnEvent(sf::Key::Code key)
 {
+	if (zone_container_.Scrolling())
+	{
+		return;
+	}
 	if (key == sf::Key::Return)
 	{
-		puts("mode inventory");
-		// bascule en mode Inventory
-		on_event_meth_ = &Game::InventoryOnEvent;
-		show_meth_ = &Game::InventoryShow;
-		player_->Lock();
+		SetMode(INVENTORY);
 	}
 	player_->OnEvent(key);
 }
@@ -286,7 +235,7 @@ void Game::InGameOnEvent(sf::Key::Code key)
 
 void Game::InGameShow()
 {
-	active_zone_->Show(app_);
+	zone_container_.Show(app_);
 	panel_.Show(app_);
 }
 
@@ -295,11 +244,7 @@ void Game::InventoryOnEvent(sf::Key::Code key)
 {
 	if (key == sf::Key::Return)
 	{
-		puts("mode ingame");
-		// bascule en mode InGame
-		on_event_meth_ = &Game::InGameOnEvent;
-		show_meth_ = &Game::InGameShow;
-		player_->Unlock();
+		SetMode(IN_GAME);
 	}
 	panel_.GetInventory()->OnEvent(key);
 }
@@ -307,84 +252,7 @@ void Game::InventoryOnEvent(sf::Key::Code key)
 
 void Game::InventoryShow()
 {
-	active_zone_->Show(app_);
+	zone_container_.Show(app_);
 	panel_.GetInventory()->Show(app_);
 }
-
-
-void Game::ScrollingOnEvent(sf::Key::Code key)
-{
-	(void) key;
-}
-
-
-void Game::ScrollingUpdate(float frametime)
-{
-	if (scroll_.timer <= 0)
-	{
-		// bascule en mode InGame
-		on_event_meth_ = &Game::InGameOnEvent;
-		update_meth_ = NULL;
-		show_meth_ = &Game::InGameShow;
-		
-		switch (scroll_.dir)
-		{
-			case UP:
-				player_->SetY(APP_HEIGHT - 1);
-				break;
-			case DOWN:
-				player_->SetY(player_->GetFloorHeight());
-				break;
-			case LEFT:
-				player_->SetX(APP_WIDTH - player_->GetFloorWidth() - 1);
-				break;
-			case RIGHT:
-				player_->SetX(0);
-				break;
-		}
-		player_->Unlock();
-	}
-	else
-	{
-		scroll_.timer -= frametime;
-		int coord;
-		switch (scroll_.dir)
-		{
-			case UP:
-				coord = APP_HEIGHT - (APP_HEIGHT * scroll_.timer / SCROLL_TIME);
-				scroll_.current.SetY(coord);
-				scroll_.next.SetY(-APP_HEIGHT + coord);
-				player_->SetY(coord);
-				break;
-			case DOWN:
-				coord = APP_HEIGHT * scroll_.timer / SCROLL_TIME;
-				scroll_.current.SetY(coord - APP_HEIGHT);
-				scroll_.next.SetY(coord);
-				player_->SetY(coord);
-				break;
-			case LEFT:
-				coord = APP_WIDTH - (APP_WIDTH * scroll_.timer / SCROLL_TIME);
-				scroll_.current.SetX(coord);
-				scroll_.next.SetX(-APP_WIDTH + coord);
-				player_->SetX(coord);
-				break;
-			case RIGHT:
-				coord = APP_WIDTH * scroll_.timer / SCROLL_TIME;
-				scroll_.current.SetX(coord - APP_WIDTH);
-				scroll_.next.SetX(coord);
-				player_->SetX(coord);
-				break;
-		}
-	}
-}
-
-
-void Game::ScrollingShow()
-{
-	app_.Draw(scroll_.current);
-	app_.Draw(scroll_.next);
-	app_.Draw(*player_);
-	panel_.Show(app_);
-}
-
 
