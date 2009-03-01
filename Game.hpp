@@ -33,11 +33,9 @@ public:
 	
 	/**
 	 * Téléporter le joueur
-	 * @param[in] zone_name: zone container cible
-	 * @param[in] zone_cds: coordonnées de la zone dans le conteneur
+	 * @param[in] teleporter: cible de la téléportation
 	 */
-	void Teleport(ZoneContainer::MapName zone_name, const sf::Vector2i& zone_cds,
-		const sf::Vector2i& tile_cds);
+	void Teleport(const Zone::Teleporter& tp);
 	
 private:
 	Game();

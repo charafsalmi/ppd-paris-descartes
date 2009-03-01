@@ -108,7 +108,6 @@ void Zone::Load(const TiXmlHandle& handle, sf::RenderWindow& app)
 	}
 	
 	// création de l'image des tiles
-	// TODO: ne pas faire pour toutes les zones... la zone courante suffit
 	tiles_img_ = app.Capture();
 	tiles_sprite_.SetImage(tiles_img_);
 	app.Clear();
@@ -176,7 +175,7 @@ void Zone::Show(sf::RenderWindow& app) const
 }
 
 
-bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect)
+bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect) const
 {
 	// si hors de la zone
 	if (rect.Top < 0 || rect.Left < 0 || rect.Bottom > Tile::SIZE * HEIGHT
@@ -199,7 +198,7 @@ bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect)
 	}
 	
 	// collision avec une autre unité
-	EntityList::iterator it;
+	EntityList::const_iterator it;
 	sf::FloatRect other_rect;
 	for (it = entities_.begin(); it != entities_.end(); ++it)
 	{
@@ -234,15 +233,12 @@ void Zone::AddEntity(const char* name, int x, int y)
 		p = new StaticItem(position, GET_IMG("pillar"), &floor);
 		walkable_[y][x] = false;
 	}
-	
-	if (p != NULL)
-	{
-		AddEntity(p);
-	}
 	else
 	{
-		puts(" [Zone] bad entity name");
+		puts(" [Zone] ajout annulé : bad entity name");
 	}
+
+	AddEntity(p);
 }
 
 
@@ -277,13 +273,13 @@ void Zone::AddItem(char id, int x, int y)
 }
 
 
-bool Zone::GetTeleport(int x, int y, Teleporter& tp)
+bool Zone::GetTeleport(int x, int y, Teleporter& tp) const
 {
 	int key = y * WIDTH + x;
-	std::map<int, Teleporter>::const_iterator it = teleporters_.find(key);
+	TeleportIndexer::const_iterator it = teleporters_.find(key);
 	if (it != teleporters_.end())
 	{
-		tp = teleporters_[key];
+		tp = it->second;
 		return true;
 	}
 	return false;
@@ -312,5 +308,4 @@ void Zone::Purge()
 	}
 	items_.clear();
 }
-
 

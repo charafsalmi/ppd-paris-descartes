@@ -26,5 +26,5 @@ private:
 	sf::Sprite inventory_item_;
 };
 
-#endif /* guard EQUIPABLE */
+#endif /* EQUIPABLE */
 

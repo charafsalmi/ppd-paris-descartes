@@ -33,16 +33,6 @@ Game n'est pas le seul singleton du jeu, je rappelle brièvement comment on
 récupère une référence sur un objet singleton :
 NomClasse& ma_reference = NomClasse::GetInstance();
 
-Le jeu est divisé en zones, chaque zone fait la taille de l'écran.
-Game contient une matrice de zones, ainsi qu'un pointeur sur la zone courante.
-(l'attribut active_zone_).
-Quand on doit changer de zone, on passe par Game avec la méthode :
-ChangeZone(Direction)
-
-Game s'occupe de vérifier si le changement de zone est autorisé, fait un effet
-de scrolling et change la zone courante.
-Le joueur est supprimé de l'ancienne zone et inséré dans la nouvelle.
-
 La méthode principale de Game est Run(), c'est la boucle principale du jeu.
 La boucle de jeu se déroule en 3 étapes :
 1) POLLING, c'est la récupération des évènements.
@@ -55,7 +45,8 @@ les déplacements).
 
 Un tour de boucle constitue une frame.
 La constante APP_FPS (APPlication Frame Per Second) définit à 60 le nombre
-maximum de frames par seconde.
+maximum de frames par seconde (ce nombre est seulement un plafond, on ne peut
+pas garantir que la machine pourra atteindre ce taux).
 
 La séquence Polling / Update / Render peut être très différente selon l'état
 du jeu. Par exemple, si on ouvre l'inventaire, la gestion des flèches doit
@@ -63,26 +54,64 @@ naviguer dans l'inventaire, et non diriger le joueur.
 
 Pour modifier le comportement de la boucle de jeu, Game dispose de 3 pointeurs
 de méthodes :
-on_event_meth_, update_meth_, et show_meth
+on_event_meth_, update_meth_, et render_meth_
 qui correspondent chacun à une partie des 3 étapes.
 Ces pointeurs de méthodes contiennent l'adresse des méthodes à exécuter à chaque
 tour de boucle.
 L'intérêt est de ne pas avoir plein de if dans le code de la boucle principale,
 on découpe chaque partie du code dans une méthode particulière.
 
+L'énumération Game::Mode définit les modes de jeu, c'est à dire les combinaisons
+de ces 3 pointeurs de méthodes.
+Ainsi, pour basculer en mode Inventaire, un simple
+SetMode(INVENTORY);
+suffit (les pointeurs de méthodes seront mis à jour).
+
+Les éléments du jeu sont encapsulés dans un objet ZoneContainer.
+
+
+ZoneContainer
+-------------
+
+Le jeu est divisé en zones, chaque zone fait la taille de l'écran.
+ZoneContainer contient une matrice de zones, ainsi qu'un pointeur sur la zone
+courante (l'attribut active_zone_).
+Quand on doit changer de zone en passant par une frontière (haut, bas, gauche,
+droite), on utilise la méthode :
+ChangeZone(Direction)
+
+Il est également possible d'aller dans n'importe quelle zone directement avec
+la méthode SetActiveZone (on passe les coordonnées de la zone cible dans la
+matrice de ZoneContainer).
+
+ZoneContainer s'occupe de vérifier si le changement de zone est autorisé, fait
+un effet de scrolling et change la zone courante.
+Le joueur est supprimé de l'ancienne zone et inséré dans la nouvelle, car chaque
+zone contient la liste de ses entités.
+
+Les groupes de zones d'un ZoneContainer sont déjà prédéfinis dans des fichiers
+XML (dans data/map/), et à chaque fichier XML correspond un identifiant
+(énumération ZoneContainer::MapName)
+
+ZoneContainer::Load permet de charger un de ces groupes de zones en passant une
+des valeurs MapName en paramètre.
+
+
 Zone
 ----
 
-Zone est un écran de jeu. Chaque zone contient sa liste d'entités (entities_) et
-sa liste d'objets (items_).
+Zone est un écran de jeu. Chaque zone contient sa liste d'entités (entities_),
+sa liste d'objets (items_) et ses téléporteurs (teleporters_).
 Avant d'utiliser une zone, il faut la construire avec la méthode Load().
-Cette méthode prend en paramètre un fichier carte écrit en XML (contenu dans
-data/map/), et à partir des indications qui s'y trouvent, constituer le décor de
-la carte et insérer les entités.
+Cette méthode prend en paramètre un nœud XML de type TiXmlHandle.
+Ce nœud doit correspondre à une entrée <zone> dans le fichier XML d'une carte,
+et à partir des indications qui s'y trouvent, constituer le décor, insérer les
+entités et les téléporteurs, etc.
 Le décor est représenté par une suite de numéro (des id), chacun d'entre eux est
 associé à petit carré de la carte, appelé "Tile".
 Cet id permet de déterminer l'image de la tile, si on a le droit de marcher
 dessus, etc.
+
 
 Tileset
 -------
@@ -92,6 +121,7 @@ C'est cette classe qui permet, à partir d'un id, de définir tous les attributs
 d'une tile.
 Les attributs des tiles ne sont pas codés en dur dans Tileset, ils se trouvent
 dans le fichier data/xml/tiles.xml.
+
 
 MediaManager
 ------------
@@ -117,7 +147,8 @@ sf::Sprite.
 Une entité est mise à jour avec Update.
 Comme une entité est un sprite, on peut directement l'afficher, la déplacer,
 obtenir sa position, etc. (voir les méthodes de sf::Sprite dans la documentation
-SFLM)
+SFML).
+
 
 Les animations sur les entités
 ------------------------------
@@ -140,12 +171,14 @@ Cette classe est un singleton et définit l'interface visuel de l'utilisateur.
 ControlPanel sert donc à afficher toutes les informations à l'écran, comme le
 nombre de vie, l'argent, etc.
 
+
 Music
 -----
 
 La SFML ne gère par certains formats musicaux, comme le .xm ou le .mod.
 Cette classe permet de charger et de jouer des fichiers de ces formats, grâce
 à la bibliothèque DUMB.
+
 
 Misc
 ----
@@ -155,4 +188,63 @@ ne sont pas directement liées au projet.
 str_sprintf permet notamment de construire des std::string avec la syntaxe de
 la vénérable fonction printf :
 std::string ma_string = str_sprintf("J'ai %d ans", 42);
+
+
+Format d'une carte XML
+======================
+
+Les cartes sont encodés en XML.
+Voici un exemple :
+
+<?xml version="1.0" encoding="utf-8" ?>
+<map width="2" height="2">
+	<zone>
+		<tiles>...</tiles>
+		<entities>
+			<entity name="blah" x="2" y="5" />
+			...
+		</entities>
+		<teleporters>
+			<tp x="9" y="1" container="1" zone_x="0" zone_y="0" tile_x="8" tile_y="4" />
+		</teleporters>
+	</zone>
+	<zone>
+		...
+	</zone>
+</map>
+
+"map" est l'élément racine. Les attributs "width" et "height" indiquent combien
+il y a de zones en largeur et en hauteur.
+Chaque zone correspond à une entrée <zone> (il doit y avoir width * height
+entrées <zone>).
+Dans chaque zone, on trouve :
+
+* les tiles : tous les id à la suite en plein texte, entre les tags <tiles> et
+</tiles>.
+	
+* les entités : une entrée <entity /> par entité, entre les tags <entities> et
+</entities>.
+Les attributs de <entity /> :
+	- name: l'identifiant
+	- x: la position x en tiles
+	- y: la position y en tiles
+
+S'il n'y a pas d'entités, l'entrée <entities> est optionnelle.
+
+* les téléporteurs : une entrée <tp /> par téléporteur, entre les tags
+<teleporters> et </teleporters>
+Les attribut de <tp /> :
+Le téléporteur est localisé dans la zone avec :
+	- x: position x en tiles
+	- y: position y en tiles
+La destination est localisée avec :
+	- container: valeur énumérée ZoneContainer::MapName (identifie le conteneur
+	de zones cible)
+	- zone_x: position x de la zone cible
+	- zone_y: position y de la zone cible
+	- tile_x: position x en tiles dans la zone cible
+	- tile_y: position y en tiles dans la zone cible
+
+S'il n'y a pas de téléporteurs, l'entrée <teleporters> est optionnelle.
+
 

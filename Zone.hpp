@@ -2,6 +2,7 @@
 #define ZONE_HPP
 
 #include <list>
+#include <map>
 
 #include "Entity.hpp"
 #include "Item.hpp"
@@ -13,7 +14,7 @@
 #endif
 
 /**
- * Une zone de jeu
+ * Une zone de jeu, de la taille de l'écran
  */
 class Zone
 {
@@ -31,6 +32,7 @@ public:
 	/**
 	 * Charger le contenu de la zone
 	 * @param[in] handle: nœud XML décrivant la zone
+	 * @param[in, out] app: fenêtre de rendu
 	 */
 	void Load(const TiXmlHandle& handle, sf::RenderWindow& app);
 	
@@ -42,19 +44,19 @@ public:
 	
 	/**
 	 * Afficher la zone de jeu
-	 * @param[in] app: fenêtre de rendu
+	 * @param[in, out] app: fenêtre de rendu
 	 */
 	void Show(sf::RenderWindow& app) const;
 	
 	/**
 	 * Ajouter une entité dans la zone de jeu
-	 * @param[in, out] entity: entité ajoutée
+	 * @param[in, out] entity: entité à ajouter
 	 */
 	void AddEntity(Entity* entity);
 	
 	/**
 	 * Retirer une entité de la zone de jeu
-	 * @param[in] entity: entité à enlever
+	 * @param[in] entity: entité à retirer
 	 */
 	void RemoveEntity(Entity* entity);
 	
@@ -64,43 +66,53 @@ public:
 	 * @param[in] rect: rectangle de la position issue du mouvement à tester
 	 * @return true si le mouvement est possible, sinon false
 	 */
-	bool CanMove(Entity* emitter, const sf::FloatRect& rect);
+	bool CanMove(Entity* emitter, const sf::FloatRect& rect) const;
 	
 	/**
 	 * Ajouter un objet
+	 * @param[in] id: type de l'objet
+	 * @param[in] x: position x en pixels
+	 * @param[in] y: position y en pixels
 	 */
 	void AddItem(char id, int x, int y);
-
-	inline int GetTileAt(int x, int y)
+	
+	/**
+	 * Obtenir le type d'une tile
+	 * @param[in] x: position x en tiles
+	 * @param[in] y: position y en tiles
+	 */
+	inline int GetTileAt(int x, int y) const
 	{
 		return tiles_[y][x];
 	}
 	
-
 	/**
 	 * Un téléporteur permet d'aller à un point donné, dans une zone donnée,
 	 * dans un conteneur de zone donné
 	 */
 	struct Teleporter
 	{
-		int zone_container;
-		sf::Vector2i zone_coords;
-		sf::Vector2i tile_coords;
+		int zone_container; // conteneur cible
+		sf::Vector2i zone_coords; // position de la zone cible (en tiles)
+		sf::Vector2i tile_coords; // position cible dans la zone (en pixels)
 	};
 	
-	bool GetTeleport(int x, int y, Teleporter& tp);
+	/**
+	 * Obtenir un téléporteur placé sur la zone
+	 * @param[in] x: position x en tiles
+	 * @param[in] y: position y en tiles
+	 * @param[out] tp: téléporteur à récupérer
+	 * @return si téléporteur trouvé, sinon false
+	 */
+	bool GetTeleport(int x, int y, Teleporter& tp) const;
 	
 	/**
-	 * Obtenir l'image des tiles du décor
+	 * Obtenir l'image des tiles en arrière-plan
+	 * @return image de toutes les tiles de la zone
 	 */
 	const sf::Image* GetBackground() const;
 	
-
-	
 private:
-	
-	
-	
 	/**
 	 * Ajouter une entité dans la zone de jeu
 	 * @param[in] name: identifiant
@@ -114,20 +126,25 @@ private:
 	 */
 	void Purge();
 	
+	// listes des entités
 	typedef std::list<Entity*> EntityList;
-	typedef std::list<Item*> ItemList;
-	
 	mutable EntityList entities_;
+	
+	// listes des items
+	typedef std::list<Item*> ItemList;
 	ItemList items_;
 	
-	std::map<int, Teleporter> teleporters_;
+	// dictionnaire des téléporteurs
+	typedef std::map<int, Teleporter> TeleportIndexer;
+	TeleportIndexer teleporters_;
 	
 	int tiles_[HEIGHT][WIDTH];
+	// indique là on l'on peut marcher (pour ne pas le recalculer)
 	bool walkable_[HEIGHT][WIDTH];
 	sf::Image tiles_img_; // image des tiles de la zone
 	sf::Sprite tiles_sprite_; // sprite associé aux tiles
 #ifdef DUMB_MUSIC
-	int zone_music_index_;
+	int music_index_;
 #endif
 };
 

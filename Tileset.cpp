@@ -76,7 +76,7 @@ void Tileset::MakeSprite(int tile_id, sf::Sprite& sprite)
 	sprite.SetImage(GET_IMG("tileset"));
 	
 	// on calcule le subrect de la tile grâce à son id
-	// (la tile haut-gauche du tileset a l'id 0)
+	// (la tile première tile haut-gauche du tileset a l'id 0)
 	sf::IntRect rect;
 	rect.Left = (tile_id % WIDTH) * Tile::SIZE;
 	rect.Right = rect.Left + Tile::SIZE;

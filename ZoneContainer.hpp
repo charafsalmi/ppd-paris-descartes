@@ -3,17 +3,16 @@
 
 #include "Zone.hpp"
 
+/**
+ * Ensemble de zones
+ */
 class ZoneContainer
 {
 public:
 	enum MapName
 	{
+		// noms des conteneurs possibles
 		WORLD, CAVES
-	};
-	
-	enum Direction
-	{
-		UP, DOWN, LEFT, RIGHT
 	};
 	
 	ZoneContainer();
@@ -21,7 +20,9 @@ public:
 	~ZoneContainer();
 	
 	/**
-	 * Charger les zones du conteneur depuis un fichier XML
+	 * Charger les zones du conteneur
+	 * @param[in] name: identifiant du conteneur à charger
+	 * @param[in, out] app: fenêtre de rendu
 	 */
 	void Load(MapName name, sf::RenderWindow& app);
 	
@@ -29,6 +30,17 @@ public:
 	 * Désallouer toutes les zones du conteneur
 	 */
 	void Unload();
+	
+	enum Direction
+	{
+		UP, DOWN, LEFT, RIGHT
+	};
+	
+	/**
+	 * Demander un changement de zone
+	 * @param[in] dir: direction souhaitée
+	 */
+	void ChangeZone(Direction dir);
 	
 	/**
 	 * Obtenir la zone active
@@ -49,22 +61,32 @@ public:
 	 */
 	bool SetActiveZone(int x, int y, bool wait=true);
 	
+	/**
+	 * Nom du conteneur
+	 * @return nom-identifiant
+	 */
 	MapName GetName() const;
 	
-	bool Scrolling() const
+	/**
+	 * Indique si le conteneur est en train de procéder à un scrolling
+	 * @return true si scrolling, sinon false
+	 */
+	inline bool Scrolling() const
 	{
 		return scrolling_;
 	}
 	
+	/**
+	 * Mise à jour du conteneur
+	 * @param[in] frametime: temps de la frame courante
+	 */
 	void Update(float frametime);
 	
-	void Show(sf::RenderWindow& app);
-	
 	/**
-	 * Demander un changement de zone
-	 * @param[in] dir: direction souhaitée
+	 * Affichage
+	 * @param[in, out] app: fenêtre de rendu
 	 */
-	void ChangeZone(Direction dir);
+	void Show(sf::RenderWindow& app);
 	
 private:	
 	/**
@@ -87,10 +109,10 @@ private:
 	Zone* next_zone_;
 	
 	MapName name_;
-	
-	int width_;
-	int height_;
+	int width_; // largeur en nombre de zones
+	int height_; // hauteur en nombre de zones
 	Zone** zones_;
 };
 
 #endif /* ZONECONTAINER_HPP */
+

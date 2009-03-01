@@ -34,5 +34,5 @@ private:
 
 #endif /* DUMB_MUSIC */
 
-#endif /* guard MUSIC_HPP */
+#endif /* MUSIC_HPP */
 

@@ -14,10 +14,14 @@ public:
 	Item(const sf::Vector2f& pos, const char* name);
 	
 	/**
-	 * Appliquer un modificateur au joueur
+	 * Méthode callback en cas de collision avec le joueur
+	 * @param[in, out] player: joueur à modifier
 	 */
 	virtual void OnCollide(Player& player) = 0;
-
+	
+	/**
+	 * Obtenir le rectangle de la surface de collision
+	 */
 	void GetRect(sf::FloatRect& rect) const;
 	
 	/**
@@ -56,5 +60,5 @@ public:
 	void OnCollide(Player& player);
 };
 
-#endif /* guard ITEM */
+#endif /* ITEM */
 

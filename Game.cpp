@@ -13,7 +13,6 @@
 #define APP_TITLE  "PPD"
 
 
-
 Game& Game::GetInstance()
 {
 	static Game self;
@@ -132,28 +131,28 @@ void Game::ChangeZoneContainer(ZoneContainer::MapName zone_name)
 }
 
 
-void Game::Teleport(ZoneContainer::MapName zone_name, const sf::Vector2i& zone_cds,
-	const sf::Vector2i& tile_cds)
+void Game::Teleport(const Zone::Teleporter& tp)
 {
-	if (zone_name != zone_container_.GetName())
+	ZoneContainer::MapName zc_name = (ZoneContainer::MapName) tp.zone_container;
+	if (zc_name != zone_container_.GetName())
 	{
 		puts(" [Game] téléportation inter-conteneurs");
-		next_zone_name_ = zone_name;
-		next_zone_cds_ = zone_cds;
+		next_zone_name_ = zc_name;
+		next_zone_cds_ = tp.zone_coords;
 	}
 	else
 	{
 		puts(" [Game] téléportation intra-conteneur");
 		// on informe le conteneur que la zone active doit changer à la prochaine itération
-		if (!zone_container_.SetActiveZone(zone_cds.x, zone_cds.y))
+		if (!zone_container_.SetActiveZone(tp.zone_coords.x, tp.zone_coords.y))
 		{
 			puts("bad coords");
 			abort();
 		}
 	}
 	
-	int x = tile_cds.x * Tile::SIZE;
-	int y = tile_cds.y * Tile::SIZE;
+	int x = tp.tile_coords.x * Tile::SIZE;
+	int y = tp.tile_coords.y * Tile::SIZE;
 	player_->SetPosition(x, y);
 }
 

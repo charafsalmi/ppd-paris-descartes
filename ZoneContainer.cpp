@@ -99,6 +99,74 @@ void ZoneContainer::Unload()
 }
 
 
+void ZoneContainer::ChangeZone(Direction dir)
+{
+	int x = cds_zone_.x;
+	int y = cds_zone_.y;
+	
+	switch (dir)
+	{
+		case UP:
+			--y;
+			break;
+		case DOWN:
+			++y;
+			break;
+		case LEFT:
+			--x;
+			break;
+		case RIGHT:
+			++x;
+			break;
+	}
+	// est-ce qu'une zone existe aux nouvelles coordonnées ?
+	if (x >= 0 && x < width_ && y >= 0 && y < height_)
+	{
+		printf(" [ZC] demande de changement zone en [%d][%d] acceptée\n", y, x);
+		next_zone_ = &zones_[y][x];
+		cds_zone_.x = x;
+		cds_zone_.y = y;
+		
+		scrolling_ = true;
+		
+		scroll_.dir = dir;
+		scroll_.timer = SCROLL_TIME;
+		scroll_.current.SetImage(*active_zone_->GetBackground());
+		scroll_.current.SetPosition(0, 0);
+		scroll_.next.SetImage(*next_zone_->GetBackground());
+		scroll_.next.SetPosition(0, 0);
+		
+		Game::GetInstance().GetPlayer()->Lock();
+	}
+}
+
+
+bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
+{
+	if (x >= 0 && x < width_ && y >= 0 && y < height_)
+	{
+		if (cds_zone_.x == x && cds_zone_.y == y)
+		{
+			// déjà dans la bonne zone ! (téléportation intra-zone)
+			return true;
+		}
+		printf(" [ZC] teleportation en zone [%d][%d]\n", y, x);
+		next_zone_ = &zones_[y][x];
+		cds_zone_.x = x;
+		cds_zone_.y = y;
+		
+		if (!wait)
+		{
+			active_zone_ = next_zone_;
+			Entity::SetActiveZone(active_zone_);
+		}
+		return true;
+	}
+	puts("SetActiveZone refusée (coords invalides)");
+	return false;
+}
+
+
 ZoneContainer::MapName ZoneContainer::GetName() const
 {
 	return name_;
@@ -189,74 +257,6 @@ void ZoneContainer::Show(sf::RenderWindow& app)
 			puts(" [ZC] changement de zone effectué");
 		}
 		active_zone_->Show(app);
-	}
-}
-
-
-bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
-{
-	if (x >= 0 && x < width_ && y >= 0 && y < height_)
-	{
-		if (cds_zone_.x == x && cds_zone_.y == y)
-		{
-			// déjà dans la bonne zone ! (téléportation intra-zone)
-			return true;
-		}
-		printf(" [ZC] teleportation en zone [%d][%d]\n", y, x);
-		next_zone_ = &zones_[y][x];
-		cds_zone_.x = x;
-		cds_zone_.y = y;
-		
-		if (!wait)
-		{
-			active_zone_ = next_zone_;
-			Entity::SetActiveZone(active_zone_);
-		}
-		return true;
-	}
-	puts("SetActiveZone refusée (coords invalides)");
-	return false;
-}
-
-
-void ZoneContainer::ChangeZone(Direction dir)
-{
-	int x = cds_zone_.x;
-	int y = cds_zone_.y;
-	
-	switch (dir)
-	{
-		case UP:
-			--y;
-			break;
-		case DOWN:
-			++y;
-			break;
-		case LEFT:
-			--x;
-			break;
-		case RIGHT:
-			++x;
-			break;
-	}
-	// est-ce qu'une zone existe aux nouvelles coordonnées ?
-	if (x >= 0 && x < width_ && y >= 0 && y < height_)
-	{
-		printf(" [ZC] demande de changement zone en [%d][%d] acceptée\n", y, x);
-		next_zone_ = &zones_[y][x];
-		cds_zone_.x = x;
-		cds_zone_.y = y;
-		
-		scrolling_ = true;
-		
-		scroll_.dir = dir;
-		scroll_.timer = SCROLL_TIME;
-		scroll_.current.SetImage(*active_zone_->GetBackground());
-		scroll_.current.SetPosition(0, 0);
-		scroll_.next.SetImage(*next_zone_->GetBackground());
-		scroll_.next.SetPosition(0, 0);
-		
-		Game::GetInstance().GetPlayer()->Lock();
 	}
 }
 

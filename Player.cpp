@@ -157,7 +157,6 @@ void Player::Update(float frametime)
 		// Chûte-t'on ?
 		tile = zone_->GetTileAt(i, j);
 		Tile::Effect effect = Tileset::GetInstance().GetEffect(tile);
-
 		if (effect == Tile::HOLE)
 		{
 			puts(" [Player] falling...");
@@ -173,8 +172,7 @@ void Player::Update(float frametime)
 			if (zone_->GetTeleport(i, j, tp))
 			{
 				puts(" [Player] a activé un téléporteur !");
-				game.Teleport((ZoneContainer::MapName) tp.zone_container,
-					tp.zone_coords, tp.tile_coords);
+				game.Teleport(tp);
 				return;
 			}
 		}
@@ -260,8 +258,8 @@ void Player::Update(float frametime)
 		}
 	}
 	else
-	{	// En cours de chûte...
-
+	{
+		// En cours de chûte...
 		fall_timer -= frametime;
 		Animated::Update(frametime, *this);
 		if (fall_timer <= 0)
@@ -269,8 +267,7 @@ void Player::Update(float frametime)
 			Zone::Teleporter tp;
 			if (zone_->GetTeleport(i, j, tp))
 			{
-				game.Teleport((ZoneContainer::MapName) tp.zone_container,
-					tp.zone_coords, tp.tile_coords);
+				game.Teleport(tp);
 			}
 			else
 			{
