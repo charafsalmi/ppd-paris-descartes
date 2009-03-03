@@ -7,7 +7,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
+				<Option platforms="Windows;" />
 				<Option output="bin\ppd" prefix_auto="1" extension_auto="1" />
+				<Option working_dir=".\bin\" />
 				<Option object_output="obj\Debug\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -16,7 +18,9 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
+				<Option platforms="Windows;" />
 				<Option output="bin\ppd" prefix_auto="1" extension_auto="1" />
+				<Option working_dir=".\bin\" />
 				<Option object_output="obj\Release\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -32,7 +36,55 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="main.cpp" />
+		<Linker>
+			<Add option="-lsfml-graphics" />
+			<Add option="-lsfml-window" />
+			<Add option="-lsfml-system" />
+			<Add option="-lsfml-audio" />
+			<Add option="-lsfml-network" />
+		</Linker>
+		<Unit filename="src\Animated.cpp" />
+		<Unit filename="src\Animated.hpp" />
+		<Unit filename="src\Animation.cpp" />
+		<Unit filename="src\Animation.hpp" />
+		<Unit filename="src\ControlPanel.cpp" />
+		<Unit filename="src\ControlPanel.hpp" />
+		<Unit filename="src\Enemy.cpp" />
+		<Unit filename="src\Enemy.hpp" />
+		<Unit filename="src\Entity.cpp" />
+		<Unit filename="src\Entity.hpp" />
+		<Unit filename="src\Equipable.cpp" />
+		<Unit filename="src\Equipable.hpp" />
+		<Unit filename="src\Game.cpp" />
+		<Unit filename="src\Game.hpp" />
+		<Unit filename="src\Inventory.cpp" />
+		<Unit filename="src\Inventory.hpp" />
+		<Unit filename="src\Item.cpp" />
+		<Unit filename="src\Item.hpp" />
+		<Unit filename="src\Main.cpp" />
+		<Unit filename="src\MediaManager.cpp" />
+		<Unit filename="src\MediaManager.hpp" />
+		<Unit filename="src\Misc.cpp" />
+		<Unit filename="src\Misc.hpp" />
+		<Unit filename="src\Music.cpp" />
+		<Unit filename="src\Music.hpp" />
+		<Unit filename="src\Player.cpp" />
+		<Unit filename="src\Player.hpp" />
+		<Unit filename="src\Splash.cpp" />
+		<Unit filename="src\Splash.hpp" />
+		<Unit filename="src\StaticItem.cpp" />
+		<Unit filename="src\StaticItem.hpp" />
+		<Unit filename="src\Tileset.cpp" />
+		<Unit filename="src\Tileset.hpp" />
+		<Unit filename="src\Zone.cpp" />
+		<Unit filename="src\Zone.hpp" />
+		<Unit filename="src\ZoneContainer.cpp" />
+		<Unit filename="src\ZoneContainer.hpp" />
+		<Unit filename="src\tinyxml\tinyxml.cpp" />
+		<Unit filename="src\tinyxml\tinyxml.h" />
+		<Unit filename="src\tinyxml\tinyxmlerror.cpp" />
+		<Unit filename="src\tinyxml\tinyxmlparser.cpp" />
+		<Unit filename="src\type_definitions.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
