@@ -1,9 +1,9 @@
 CC=g++
 CFLAGS= -Wall -Wextra -Wwrite-strings -ansi -pedantic
 LDFLAGS= -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
-EXEC=ppd
-SRC= src/$(wildcard *.cpp)
-OBJ= src/$(SRC:.cpp=.o)
+EXEC=bin/ppd
+SRC= $(wildcard src/*.cpp)
+OBJ= $(SRC:.cpp=.o)
 
 # tinyxml
 TINYXML_OBJ= src/tinyxml/tinyxml.o src/tinyxml/tinyxmlparser.o src/tinyxml/tinyxmlerror.o
@@ -40,16 +40,16 @@ $(EXEC): $(OBJ) $(TINYXML_OBJ)
 	$(CC) $^ -o $(EXEC) $(LDFLAGS)
 
 %.o: %.cpp
-	$(CC) $< -c $(CFLAGS)
+	$(CC) $< -c -o $@ $(CFLAGS)
 
 src/tinyxml/tinyxml.o: src/tinyxml/tinyxml.cpp
-	$(CC) $< -c $(CFLAGS)
-	
+	$(CC) $< -c -o $@ $(CFLAGS)
+
 src/tinyxml/tinyxmlparser.o: src/tinyxml/tinyxmlparser.cpp
-	$(CC) $< -c $(CFLAGS)
-	
+	$(CC) $< -c -o $@ $(CFLAGS)
+
 src/tinyxml/tinyxmlerror.o: src/tinyxml/tinyxmlerror.cpp
-	$(CC) $< -c $(CFLAGS)
+	$(CC) $< -c -o $@ $(CFLAGS)
 
 .PHONY: clean cleanxml mrproper
 
@@ -63,4 +63,3 @@ mrproper: clean
 	-rm $(EXEC)
 
 all: mrproper $(EXEC)
-

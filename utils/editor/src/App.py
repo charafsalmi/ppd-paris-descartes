@@ -19,9 +19,9 @@ ZONE_WIDTH = 20
 ZONE_HEIGHT = 16
 
 TILE_SIZE = 32
-TILESET = "../../data/images/tileset.png"
+TILESET = "../../bin/data/images/tileset.png"
 
-DEFAULT_PATH = "../../data/map/"
+DEFAULT_PATH = "../../bin/data/map/"
 
 
 class EntityDialog(PopUp):
