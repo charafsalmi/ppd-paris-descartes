@@ -1,24 +1,25 @@
 #include "Splash.hpp"
-
 #include "MediaManager.hpp"
 
-#define I_C 0.f, 0.f, 0.f	//Initial_Color
-#define DELAY 2.f			//Secondes d'attente entre les fades
+#include <iostream>
 
-Splash::Splash(sf::RenderWindow& app) : win_(app)
-{}
+#define INITIAL_COLOR  0.f, 0.f, 0.f
+#define WAIT_DELAY     2.f  // attente entre les fades (secondes)
+#define FADE_DELAY     2.5f // durée d'un fade (secondes)
+
+
+Splash::Splash(sf::RenderWindow& app) : app_(app)
+{
+}
+
 
 void Splash::Run()
 {
 	bool running = true;
-	if (! sf::PostFX::CanUsePostFX())
+	if (!sf::PostFX::CanUsePostFX())
 	{
-#ifdef DEBUG
-		puts ("Incompatibilite PostFX.");
-		abort ();
-#else
-		return;	// Let's be nice with that poor user.
-#endif
+		std::cerr << "info: can't launch PostFX splash screen" << std::endl;
+		return;
 	}
 
 	if (!fx_.LoadFromFile(GET_FX("colorize")))
@@ -26,45 +27,29 @@ void Splash::Run()
 		puts("Cant load postfx");
 		return; // We're not Jesus, so that's it with the bloody, messy user.
 	}
-
-	sp_.SetImage(GET_IMG("splash"));
-	sp_.SetSubRect(sf::IntRect(0, 0, 800, 600));
+	sprite_.SetImage(GET_IMG("splash-paris-descartes"));
 	
-//<HACK>
-#ifndef FULLSCREEN_HACK
-
-	sp_.SetScale(0.8f, 0.8f);	// Ratio pour passer de 800*600 à 640*480
-	
-#else
-
-	sf::VideoMode DesktopMode = sf::VideoMode::GetDesktopMode();
-	sf::Vector2f scale_;
-	scale_.x = scale_.y = 1.6 * (DesktopMode.Width / 1280);
-	sp_.SetScale(scale_);
-	
-#endif
-
-	const_cast<sf::Image&>(GET_IMG("splash")).SetSmooth(true); // Sinon moche.
-	
-//</HACK>	
-
 	fx_.SetTexture("framebuffer", NULL);		// Agit sur le contexte de rendu courant.
-	fx_.SetParameter("color", I_C);				// I_C vaut noir.
+	fx_.SetParameter("color", INITIAL_COLOR);	// noir.
 	fx_.SetParameter("intensity", 0.f);			// intensité de l'image normalement blittée.
 												// -> on commence à noir
 	sf::Event event;
 	while (running)
 	{
-		while (win_.GetEvent(event))
+		while (app_.GetEvent(event))
 		{
-			if (event.Type == sf::Event::KeyPressed && event.Key.Code == sf::Key::Escape)
+			if (event.Type == sf::Event::KeyPressed
+			&& event.Key.Code == sf::Key::Escape)
+			{
 				return;
+			}
 		}
-		running = Update(win_.GetFrameTime());
+		running = Update(app_.GetFrameTime());
 		Draw();
-		win_.Display();
+		app_.Display();
 	}
 }
+
 
 bool Splash::Update(float frametime)
 {
@@ -80,43 +65,40 @@ bool Splash::Update(float frametime)
 		if (timer <= 0.f)
 		{
 			switcher = false;
-			if (sens)				// Hacky: (sens && switcher) se produit qu'après le 
-			{						// fondu au noir suivant le premier affichage.
-				sp_.SetSubRect(sf::IntRect(800, 0, 1600, 600));
-			}
 		}
 	}
 	else
 	{
 		if (intensity > 1.f || intensity < 0.f)	// Fin d'une transition
 		{
-			sens ^= 1;		// On change de sens
-			switcher |= 1;	// On déclenche ...
-			timer = DELAY;	// ... le timer
-			++ nb_fades;	// Et un fondu de plus, un!
+			sens ^= 1;       // On change de sens
+			switcher = true; // On déclenche le timer
+			timer = WAIT_DELAY;
+			++nb_fades;
 		}
+		
 		if (sens)
 		{
-			intensity += frametime;
+			intensity += (frametime / FADE_DELAY);
 		}
 		else
 		{
-			intensity -= frametime;
+			intensity -= (frametime / FADE_DELAY);
 		}
-	
 		fx_.SetParameter("intensity", intensity);
 	}
-		
-	if (nb_fades > 3)	// Hacky et magique à la fois :)
+	
+	if (nb_fades > 1) // nombre de transitions souhaitées
 	{
 		return false;
 	}
 	return true;
 }
 
-void Splash::Draw ()
+
+void Splash::Draw()
 {
-	win_.Draw(sp_);
-	win_.Draw(fx_);
+	app_.Draw(sprite_);
+	app_.Draw(fx_);
 }
 

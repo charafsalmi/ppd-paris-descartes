@@ -1,5 +1,5 @@
 icon.bmp
-splash.png
+splash-paris-descartes.jpg
 pillar.png
 player.png
 tileset.png

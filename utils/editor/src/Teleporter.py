@@ -16,6 +16,6 @@ class Teleporter:
 		self.tile_y = int(xml_tp.getAttribute("tile_y"))
 	
 	def to_xml(self):
-		return '<tp x="%d" y="%d" container="%d" zone_x="%d" zone_y="%d"/>' % \
+		return '<tp x="%d" y="%d" container="%d" zone_x="%d" zone_y="%d" tile_x="%d" tile_y="%d" />' % \
 			(self.x, self.y, self.container, self.zone_x, self.zone_y,
 			self.tile_x, self.tile_y)

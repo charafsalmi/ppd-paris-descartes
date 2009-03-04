@@ -30,7 +30,7 @@ ifeq ($(LINK), dynamic)
 endif
 
 # disable splash screen
-NO_SPLASH=yes
+NO_SPLASH=no
 ifeq ($(NO_SPLASH), yes)
 	CFLAGS += -DNO_SPLASH
 endif

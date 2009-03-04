@@ -1,0 +1,16 @@
+# ceci est un exemple de fichier de configuration
+# exploitable par la classe ConfigParser
+
+Capitaine
+{
+	age: 42;
+	nom: Babar;
+	bateaux: 3;
+}
+
+Lapin
+{
+	age: 2;
+	pattes: 4;
+	couleur: blanc;
+}

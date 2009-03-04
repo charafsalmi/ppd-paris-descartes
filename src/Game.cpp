@@ -2,8 +2,8 @@
 #include <iostream>
 
 #include "Game.hpp"
+#include "MediaManager.hpp"
 #include "Splash.hpp"
-#include "Tileset.hpp"
 #include "tinyxml/tinyxml.h"
 
 #define APP_WIDTH  (Tile::SIZE * Zone::WIDTH)
@@ -57,11 +57,8 @@ void Game::Run()
 	zone_container_.GetActiveZone()->AddEntity(player_);
 	
 #ifndef NO_SPLASH
-	if (sf::PostFX::CanUsePostFX())
-	{
-		Splash s(app_);
-		s.Run();
-	}
+	Splash s(app_);
+	s.Run();
 #endif
 
 #ifdef DUMB_MUSIC

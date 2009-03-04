@@ -1,31 +1,26 @@
-#ifndef _GUARD_SPLASH_HPP_
-#define _GUARD_SPLASH_HPP_
+#ifndef SPLASH_HPP
+#define SPLASH_HPP
 
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "MediaManager.hpp"
-
+/**
+ * Écran d'accueil avec effet de transition
+ */
 class Splash
 {
-	public:
-
-		Splash(sf::RenderWindow& app);
+public:
+	Splash(sf::RenderWindow& app);
 	
-		void Run();
-
-
-
-	private:
-
-		bool Update (float frametime);
+	void Run();
 	
-		void Draw ();
-
-		sf::Sprite sp_;
-		sf::PostFX fx_;
-		sf::RenderWindow& win_;
+private:
+	bool Update(float frametime);
+	
+	void Draw();
+	
+	sf::Sprite sprite_;
+	sf::PostFX fx_;
+	sf::RenderWindow& app_;
 };
 
-#endif // _GUARD_SPLASH_HPP_
+#endif /* SPLASH_HPP */
