@@ -1,4 +1,4 @@
-button_prev.bmp
+button_prev.png
 icon.bmp
 inventory-cursor.png
 inventory-slot.png
