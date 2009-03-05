@@ -19,6 +19,10 @@ Window::~Window(){
 
 }
 
+void Window::Load(const std::string& xmlfile){
+
+}
+
 void Window::Show(sf::RenderTarget& app){
 
 }

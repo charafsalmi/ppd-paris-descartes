@@ -10,6 +10,15 @@ public:
     Window(const Window& other);
     ~Window();
 
+    /**
+    * Chare une fenêtre à partir d'un fichier xml
+    * param[in] xmlfile Nom du fichier XML à ouvrir
+    */
+    void Load(const std::string& xmlfile);
+
+    /**
+    * Affichage de la fenêtre
+    */
 	void Show(sf::RenderTarget& app);
 private:
     /**

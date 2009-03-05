@@ -45,6 +45,10 @@ void Game::Init()
 {
 	player_ = new Player(sf::Vector2f(300, 300), app_.GetInput());
 
+    #ifdef WINDOW_TEST
+    fen_.Load("data/window/test.xml");
+    #endif
+
 	// chargement du conteneur de zones
 	zone_container_.Load(ZoneContainer::WORLD);
 	// InGame
@@ -236,6 +240,9 @@ void Game::InGameShow()
 {
 	zone_container_.Show(app_);
 	panel_.Show(app_);
+	#ifdef WINDOW_TEST
+	fen_.Show(app_);
+	#endif
 }
 
 
