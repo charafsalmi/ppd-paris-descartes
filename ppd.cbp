@@ -49,8 +49,6 @@
 		<Unit filename="src\Animation.hpp" />
 		<Unit filename="src\ControlPanel.cpp" />
 		<Unit filename="src\ControlPanel.hpp" />
-		<Unit filename="src\Enemy.cpp" />
-		<Unit filename="src\Enemy.hpp" />
 		<Unit filename="src\Entity.cpp" />
 		<Unit filename="src\Entity.hpp" />
 		<Unit filename="src\Equipable.cpp" />
@@ -66,6 +64,8 @@
 		<Unit filename="src\MediaManager.hpp" />
 		<Unit filename="src\Misc.cpp" />
 		<Unit filename="src\Misc.hpp" />
+		<Unit filename="src\Mob.cpp" />
+		<Unit filename="src\Mob.hpp" />
 		<Unit filename="src\Music.cpp" />
 		<Unit filename="src\Music.hpp" />
 		<Unit filename="src\Player.cpp" />
@@ -76,6 +76,10 @@
 		<Unit filename="src\StaticItem.hpp" />
 		<Unit filename="src\Tileset.cpp" />
 		<Unit filename="src\Tileset.hpp" />
+		<Unit filename="src\Unit.cpp" />
+		<Unit filename="src\Unit.hpp" />
+		<Unit filename="src\UnitFactory.cpp" />
+		<Unit filename="src\UnitFactory.hpp" />
 		<Unit filename="src\Zone.cpp" />
 		<Unit filename="src\Zone.hpp" />
 		<Unit filename="src\ZoneContainer.cpp" />
