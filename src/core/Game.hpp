@@ -7,6 +7,7 @@
 #include "../entities/Player.hpp"
 #include "../gui/ControlPanel.hpp"
 #include "../gui_system/window.hpp"
+#include "../misc/Misc.hpp"
 
 
 class Game
@@ -73,6 +74,8 @@ private:
 
 	void SetMode(Mode mode);
 
+    // Prend une capture d'écran de la fenêtre
+    void TakeScreenshot(const std::string& directory);
 
 	// pointeur de la méthode de gestion des évènements
 	void (Game::*on_event_meth_)(sf::Key::Code code);

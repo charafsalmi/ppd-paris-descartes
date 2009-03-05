@@ -89,8 +89,7 @@ void Game::Run()
 			else if (event.Type == sf::Event::KeyPressed)
 			{
 			    if(event.Key.Code == sf::Key::F1){
-                    puts("screen !");
-                    app_.Capture().SaveToFile("screenshot.png");
+                    TakeScreenshot("screenshot");
 			    }else if(event.Key.Code == sf::Key::Escape){
                     running = false;
                     break;
@@ -113,6 +112,19 @@ void Game::Run()
 	}
 }
 
+void Game::TakeScreenshot(const std::string& directory){
+    char currentTime[256];
+    std::string filename;
+    time_t t;
+
+    t = time(NULL);
+    strftime(currentTime, sizeof(currentTime), "%d-%m-%Y-%M%S", localtime(&t));
+
+    filename = str_sprintf("%s/%s.png", directory.c_str(), currentTime, t);
+
+    app_.Capture().SaveToFile(filename);
+    std::cout << "Screenshot " << filename.c_str() << " taken" << std::endl;
+}
 
 void Game::ChangeZone(ZoneContainer::Direction direction)
 {
