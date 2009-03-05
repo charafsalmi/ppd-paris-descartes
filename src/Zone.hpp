@@ -32,9 +32,14 @@ public:
 	/**
 	 * Charger le contenu de la zone
 	 * @param[in] handle: nœud XML décrivant la zone
-	 * @param[in, out] app: fenêtre de rendu
 	 */
-	void Load(const TiXmlHandle& handle, sf::RenderWindow& app);
+	void Load(const TiXmlHandle& handle);
+	
+	/**
+	 * Détermine si la zone est chargée
+	 * @return true si la zone est chargée, sinon false
+	 */
+	bool IsLoaded() const;
 	
 	/**
 	 * Mettre à jour la zone
@@ -138,6 +143,7 @@ private:
 	typedef std::map<int, Teleporter> TeleportIndexer;
 	TeleportIndexer teleporters_;
 	
+	bool loaded_;
 	int tiles_[HEIGHT][WIDTH];
 	// indique là on l'on peut marcher (pour ne pas le recalculer)
 	bool walkable_[HEIGHT][WIDTH];

@@ -14,6 +14,7 @@
 
 Zone::Zone()
 {
+	loaded_ = false;
 }
 
 
@@ -23,9 +24,10 @@ Zone::~Zone()
 }
 
 
-void Zone::Load(const TiXmlHandle& handle, sf::RenderWindow& app)
+void Zone::Load(const TiXmlHandle& handle)
 {
 	// chargement des tiles
+	sf::RenderWindow& app = Game::GetInstance().GetApp();
 	static const Tileset& tileset = Tileset::GetInstance();
 	const TiXmlElement* elem = handle.FirstChildElement("tiles").Element();
 	
@@ -102,7 +104,6 @@ void Zone::Load(const TiXmlHandle& handle, sf::RenderWindow& app)
 			tp.tile_coords = sf::Vector2i(tile_x, tile_y);
 			int key = y * WIDTH + x;
 			teleporters_[key] = tp;
-			puts("tp ajouté");
 		}
 		elem = elem->NextSiblingElement();
 	}
@@ -111,6 +112,13 @@ void Zone::Load(const TiXmlHandle& handle, sf::RenderWindow& app)
 	tiles_img_ = app.Capture();
 	tiles_sprite_.SetImage(tiles_img_);
 	app.Clear();
+	loaded_ = true;
+}
+
+
+bool Zone::IsLoaded() const
+{
+	return loaded_;
 }
 
 

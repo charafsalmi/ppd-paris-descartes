@@ -2,6 +2,7 @@
 #define ZONECONTAINER_HPP
 
 #include "Zone.hpp"
+#include "tinyxml/tinyxml.h"
 
 /**
  * Ensemble de zones
@@ -22,9 +23,8 @@ public:
 	/**
 	 * Charger les zones du conteneur
 	 * @param[in] name: identifiant du conteneur à charger
-	 * @param[in, out] app: fenêtre de rendu
 	 */
-	void Load(MapName name, sf::RenderWindow& app);
+	void Load(MapName name);
 	
 	/**
 	 * Désallouer toutes les zones du conteneur
@@ -112,6 +112,8 @@ private:
 	int width_; // largeur en nombre de zones
 	int height_; // hauteur en nombre de zones
 	Zone** zones_;
+	
+	TiXmlDocument xml_doc_;
 };
 
 #endif /* ZONECONTAINER_HPP */

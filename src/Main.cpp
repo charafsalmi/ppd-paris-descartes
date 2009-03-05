@@ -4,6 +4,7 @@
 int main()
 {
 	Game& game = Game::GetInstance();
+	game.Init();
 	game.Run();
 }
 

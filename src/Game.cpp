@@ -27,15 +27,7 @@ Game::Game() :
 	app_.SetFramerateLimit(APP_FPS);
 
 	const sf::Image& icon = GET_IMG("icon");
-	std::cerr << icon.GetWidth() << ", " << icon.GetHeight() << "\n";
 	app_.SetIcon(icon.GetWidth(), icon.GetHeight(), icon.GetPixelsPtr());
-	
-	player_ = new Player(sf::Vector2f(300, 300), app_.GetInput());
-	
-	// chargement du conteneur de zones
-	zone_container_.Load(ZoneContainer::WORLD, app_);
-	// InGame
-	SetMode(IN_GAME);
 }
 
 
@@ -46,6 +38,17 @@ Game::~Game()
 #ifdef DUMB_MUSIC
 	SetMusic(-1);
 #endif
+}
+
+
+void Game::Init()
+{
+	player_ = new Player(sf::Vector2f(300, 300), app_.GetInput());
+	
+	// chargement du conteneur de zones
+	zone_container_.Load(ZoneContainer::WORLD);
+	// InGame
+	SetMode(IN_GAME);
 }
 
 
@@ -93,9 +96,9 @@ void Game::Run()
 		(this->*render_meth_)();
 		app_.Display();
 		
-		if (zone_container_.GetName() != next_zone_name_)
+		if (zone_container_.GetName() != next_map_name_)
 		{
-			ChangeZoneContainer(next_zone_name_);
+			ChangeZoneContainer(next_map_name_);
 		}
 	}
 }
@@ -107,14 +110,14 @@ void Game::ChangeZone(ZoneContainer::Direction direction)
 }
 
 
-void Game::ChangeZoneContainer(ZoneContainer::MapName zone_name)
+void Game::ChangeZoneContainer(ZoneContainer::MapName map_name)
 {
-	puts(" exécution de la demande de changement de conteneur");
+	puts(" [Game] changement de map");
 	// on retire le joueur de la zone de l'ancien conteneur
 	Zone* active = zone_container_.GetActiveZone();
 	active->RemoveEntity(player_);
 	zone_container_.Unload();
-	zone_container_.Load(zone_name, app_);
+	zone_container_.Load(map_name);
 	if (!zone_container_.SetActiveZone(next_zone_cds_.x, next_zone_cds_.y, false))
 	{
 		puts(" impossible d'activer la zone du conteneur cible");
@@ -124,17 +127,17 @@ void Game::ChangeZoneContainer(ZoneContainer::MapName zone_name)
 	active = zone_container_.GetActiveZone();
 	active->AddEntity(player_);
 	
-	next_zone_name_ = zone_name;
+	next_map_name_ = map_name;
 }
 
 
 void Game::Teleport(const Zone::Teleporter& tp)
 {
-	ZoneContainer::MapName zc_name = (ZoneContainer::MapName) tp.zone_container;
-	if (zc_name != zone_container_.GetName())
+	ZoneContainer::MapName map_name = (ZoneContainer::MapName) tp.zone_container;
+	if (map_name != zone_container_.GetName())
 	{
 		puts(" [Game] téléportation inter-conteneurs");
-		next_zone_name_ = zc_name;
+		next_map_name_ = map_name;
 		next_zone_cds_ = tp.zone_coords;
 	}
 	else

@@ -12,30 +12,37 @@ class Game
 {
 public:
 	static Game& GetInstance();
-
+	
+	void Init();
+	
 	/**
 	 * Lancer l'application
 	 */
 	void Run();
 	
 	void ChangeZone(ZoneContainer::Direction direction);
-	void ChangeZoneContainer(ZoneContainer::MapName zone_name);
-	
-	inline Player* GetPlayer() const
-	{
-		return player_;
-	}
-	
-	inline Zone* GetZone()
-	{
-		return zone_container_.GetActiveZone();
-	}
+	void ChangeZoneContainer(ZoneContainer::MapName map_name);
 	
 	/**
 	 * Téléporter le joueur
 	 * @param[in] teleporter: cible de la téléportation
 	 */
 	void Teleport(const Zone::Teleporter& tp);
+	
+	inline Player* GetPlayer() const
+	{
+		return player_;
+	}
+	
+	inline sf::RenderWindow& GetApp()
+	{
+		return app_;
+	}
+	
+	inline Zone* GetZone()
+	{
+		return zone_container_.GetActiveZone();
+	}
 	
 private:
 	Game();
@@ -46,6 +53,8 @@ private:
 	void SetMusic(int value);
 #endif
 	
+	// callbacks
+	
 	// méthodes InGame
 	void InGameOnEvent(sf::Key::Code key);
 	void InGameShow();
@@ -55,13 +64,14 @@ private:
 	void InventoryShow();
 	
 	void DefaultUpdate(float frametime);
-
+	
 	enum Mode
 	{
 		IN_GAME, INVENTORY
 	};
 	
 	void SetMode(Mode mode);
+	
 	
 	// pointeur de la méthode de gestion des évènements
 	void (Game::*on_event_meth_)(sf::Key::Code code);
@@ -73,7 +83,7 @@ private:
 	// un seul conteneur de zones est chargé à la fois
 	ZoneContainer zone_container_;
 	// nom du prochain conteneur à charger
-	ZoneContainer::MapName next_zone_name_;
+	ZoneContainer::MapName next_map_name_;
 	// coordonnées de la zone à activer si changement de conteneur
 	sf::Vector2i next_zone_cds_;
 	
