@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "MediaManager.hpp"
+#include "tinyxml/tinyxml.h"
 
 #define IMG_LIST "data/images/images.txt"
 #define IMG_PATH "data/images/"
@@ -14,6 +15,9 @@
 
 #define FX_LIST "data/postfx/postfx.txt"
 #define FX_PATH "data/postfx/"
+
+#define ANIMATION_FILE "data/xml/animations.xml"
+
 
 // charger une image
 static void load_or_die(sf::Image& image, const char* filename)
@@ -40,7 +44,10 @@ static void load_or_die(sf::SoundBuffer& buffer, const char* filename)
 // charger un buffer lié a une instance de la lib dumb ou un postfx
 static void load_or_die(std::string& out_name, const char* filename)
 {
-	out_name = filename;
+	out_name = filename; // WTF ?
+	/* TODO: Les objets Music et PostFX doivent être DANS le media manager,
+	comme pour les images et les buffers audio
+	*/
 }
 
 
@@ -130,7 +137,7 @@ Music* MediaManager::GetMusic(const char* key) const
 }
 
 
-Music* MediaManager::GetMusic(int id) const
+/*Music* MediaManager::GetMusic(int id) const
 {
 	if(id > musics_.size())
 	{
@@ -149,7 +156,7 @@ Music* MediaManager::GetMusic(int id) const
 	std::string path(MUSIC_PATH);
 	Music* mus = new Music((path + it->second).c_str());
 	return mus;
-}
+}*/
 #endif
 
 const std::string& MediaManager::GetPostFX(const char* key) const
@@ -218,27 +225,49 @@ MediaManager::MediaManager()
 		abort();
 	}
 	
-	BuildAnimation("player_walk_top",     32, 48, 8, 0.125f, 32,   0);
-	BuildAnimation("player_walk_bottom",  32, 48, 8, 0.125f, 32,  48);
-	BuildAnimation("player_walk_left",    32, 48, 8, 0.125f, 32,  96);
-	BuildAnimation("player_walk_right",   32, 48, 8, 0.125f, 32, 144);
-	BuildAnimation("player_fall",         46, 46, 5, 0.2f,    0, 192);
-	
-	BuildAnimation("stalfos_walk_top",    32, 52, 2, 0.15f,  0,    0);
-	BuildAnimation("stalfos_walk_bottom", 32, 52, 2, 0.15f,  0,   52);
-	BuildAnimation("stalfos_walk_left",   32, 52, 2, 0.15f,  0,  104);
-	BuildAnimation("stalfos_walk_right",  32, 52, 2, 0.15f,  0,  156);
-}
-
-
-void MediaManager::BuildAnimation(const char* name, int width, int height,
-	int count, float delay, int x_offset, int y_offset)
-{
-	Animation* p = &animations_[name];
-	for (int i = 0; i < count; ++i)
+	// chargement des animations
+	TiXmlDocument doc;
+	if (!doc.LoadFile(ANIMATION_FILE))
 	{
-		p->AddFrame(x_offset + i * width, y_offset, width, height);
+		std::cerr << "can't open animation definitions: " << ANIMATION_FILE << std::endl;
+		abort();
 	}
-	p->SetDelay(delay);
+	
+	TiXmlHandle handle(&doc);
+	TiXmlElement* elem = handle.FirstChildElement().FirstChildElement().Element();
+	// attributs
+	int width, height, count, x_offset, y_offset;
+	float delay;
+	const char* name;
+	
+	while (elem != NULL)
+	{
+		bool ok = true;
+		ok &= ((name = elem->Attribute("name")) != NULL);
+		ok &= (elem->QueryIntAttribute("width", &width) == TIXML_SUCCESS);
+		ok &= (elem->QueryIntAttribute("height", &height) == TIXML_SUCCESS);
+		ok &= (elem->QueryIntAttribute("count", &count) == TIXML_SUCCESS);
+		ok &= (elem->QueryFloatAttribute("delay", &delay) == TIXML_SUCCESS);
+		ok &= (elem->QueryIntAttribute("x_offset", &x_offset) == TIXML_SUCCESS);
+		ok &= (elem->QueryIntAttribute("y_offset", &y_offset) == TIXML_SUCCESS);
+
+		if (ok)
+		{
+			// construction de l'animation
+			Animation* p = &animations_[name];
+			for (int i = 0; i < count; ++i)
+			{
+				p->AddFrame(x_offset + i * width, y_offset, width, height);
+			}
+			p->SetDelay(delay);
+			std::cout << "animation " << name << " ajoutée\n";
+		}
+		else
+		{
+			std::cerr << " [MediaManager] animation mal formée" << std::endl;
+		}
+		
+		elem = elem->NextSiblingElement();
+	}
 }
 

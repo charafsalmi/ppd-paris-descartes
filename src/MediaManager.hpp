@@ -46,7 +46,7 @@ public:
 	 */
 	Music* GetMusic(const char* key) const;
 	
-	Music* GetMusic(int id) const;
+	//Music* GetMusic(int id) const;
 #endif
 
 	const std::string& GetPostFX(const char* key) const;
@@ -69,18 +69,6 @@ private:
 	MediaManager();
 	MediaManager(const MediaManager& other);
 	MediaManager& operator=(const MediaManager& other);
-	
-	/**
-	 * Construire les frames d'une animation
-	 * @param[in] name: nom de l'animation
-	 * @param[in] width: largeur d'une frame
-	 * @param[in] height: hauteur d'une frame
-	 * @param[in] count: nombre de frames
-	 * @param[in] delay: temps d'attente entre chaque frame
-	 * @param[in] offset: décalage y sur le tileset
-	 */
-	void BuildAnimation(const char* name, int width, int height, int count,
-		float delay, int x_offset=0, int y_offset=0);
 	
 	std::map<std::string, sf::Image> images_;
 	std::map<std::string, sf::SoundBuffer> sounds_;
@@ -111,10 +99,10 @@ inline Music* GET_MUSIC(const char* key)
 	return MediaManager::GetInstance().GetMusic(key);
 }
 
-inline Music* GET_MUSIC(int id)
+/*inline Music* GET_MUSIC(int id)
 {	// Plus compact, pour utilisation dans les zones. Premier index: 1.
 	return MediaManager::GetInstance().GetMusic(id);
-}
+}*/
 #endif
 
 

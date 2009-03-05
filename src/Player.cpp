@@ -13,8 +13,7 @@
 
 
 Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
-	Entity(pos, GET_IMG("player")),
-	Animated(&GET_ANIM("player_walk_bottom"), *this),
+	Unit(pos, GET_IMG("player")),
 	input_(input),
 	panel_(ControlPanel::GetInstance())
 {
@@ -22,11 +21,13 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	SetFloor(28, 20);
 	
 	// Animations de marche
-	walk_anims_[UP]		= &GET_ANIM("player_walk_top");
-	walk_anims_[DOWN]	= &GET_ANIM("player_walk_bottom");
+	walk_anims_[UP]		= &GET_ANIM("player_walk_up");
+	walk_anims_[DOWN]	= &GET_ANIM("player_walk_down");
 	walk_anims_[LEFT]	= &GET_ANIM("player_walk_left");
 	walk_anims_[RIGHT]	= &GET_ANIM("player_walk_right");
-	
+	Animated::Change(walk_anims_[DOWN], *this);
+	SetCenter(0, walk_anims_[DOWN]->GetFrame(0).GetHeight());
+
 	fall_anim_ = &GET_ANIM("player_fall");
 	
 	// Subrects d'immobilité
@@ -46,15 +47,13 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	was_moving_ = false;
 	SetSubRect(subrects_not_moving_[DOWN]);
 	
-	SetCenter(0, subrects_not_moving_[DOWN].GetHeight());
-	
-	lives_ = DEFAULT_LIVES;
+	hp_ = DEFAULT_LIVES;
 	max_lives_ = DEFAULT_LIVES;
 	money_ = 42;
 	locked_ = false;
 	falling_ = false;
 	
-	panel_.SetLives(lives_);
+	panel_.SetLives(hp_);
 	panel_.SetRupees(money_);
 }
 
@@ -76,19 +75,19 @@ void Player::OnEvent(sf::Key::Code key)
 			break;
 		// +1 vie
 		case sf::Key::L:
-			if (lives_ < max_lives_)
+			if (hp_ < max_lives_)
 			{
-				++lives_;
-				ControlPanel::GetInstance().SetLives(lives_);
+				++hp_;
+				ControlPanel::GetInstance().SetLives(hp_);
 				std::cout << " [Player] Added life to panel.\n";
 			}
 			break;
 		// -1 vie (Z comme Ziane :D)
 		case sf::Key::Z:
-			--lives_;
-			ControlPanel::GetInstance().SetLives(lives_);
+			--hp_;
+			ControlPanel::GetInstance().SetLives(hp_);
 			std::cout << " [Player] Took away life from panel.\n";
-			if (lives_ == 0)
+			if (hp_ == 0)
 			{
 				puts("you're dead, bastard!");
 				Kill();
@@ -271,8 +270,8 @@ void Player::Update(float frametime)
 			}
 			else
 			{
-				--lives_;
-				panel_.SetLives(lives_);
+				--hp_;
+				panel_.SetLives(hp_);
 				SetPosition(Tile::SIZE, 8 * Tile::SIZE);
 			}
 			Animated::Change(walk_anims_[current_dir_], *this);
@@ -296,8 +295,8 @@ void Player::Unlock()
 
 void Player::AddLife()
 {
-	++lives_;
-	panel_.SetLives(lives_);
+	++hp_;
+	panel_.SetLives(hp_);
 }
 
 

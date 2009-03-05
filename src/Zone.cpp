@@ -5,9 +5,9 @@
 #include <cstring>
 
 #include "Zone.hpp"
-#include "Enemy.hpp"
 #include "StaticItem.hpp"
 #include "MediaManager.hpp"
+#include "UnitFactory.hpp"
 #include "Game.hpp"
 #include "ZoneContainer.hpp"
 
@@ -54,18 +54,22 @@ void Zone::Load(const TiXmlHandle& handle)
 	}
 	
 	// chargement des entités
+	UnitFactory& factory = UnitFactory::GetInstance();
 	elem = handle.FirstChildElement("entities").FirstChildElement().Element();
 	while (elem != NULL)
 	{
 		bool ok = true;
-		
-		const char* name = elem->Attribute("name");
-		int x, y;
+		int x, y, id;
+		ok &= (elem->QueryIntAttribute("id", &id) == TIXML_SUCCESS);
 		ok &= (elem->QueryIntAttribute("x", &x) == TIXML_SUCCESS);
 		ok &= (elem->QueryIntAttribute("y", &y) == TIXML_SUCCESS);
 		if (ok)
 		{
-			AddEntity(name, x, y);
+			Entity* entity = factory.Make(id, sf::Vector2f(x, y));
+			if (entity != NULL)
+			{
+				AddEntity(entity);
+			}
 		}
 		else
 		{
@@ -226,7 +230,7 @@ bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect) const
 }
 
 
-void Zone::AddEntity(const char* name, int x, int y)
+/*void Zone::AddEntity(const char* name, int x, int y)
 {
 	sf::Vector2f position(x * Tile::SIZE, (y + 1) * Tile::SIZE);
 	Entity* p = NULL;
@@ -247,7 +251,7 @@ void Zone::AddEntity(const char* name, int x, int y)
 	}
 
 	AddEntity(p);
-}
+}*/
 
 
 void Zone::AddEntity(Entity* entity)

@@ -124,7 +124,7 @@ private:
 	 * @param[in] x: tile x
 	 * @param[in] y: tile y
 	 */
-	void AddEntity(const char* name, int x, int y);
+	//void AddEntity(const char* name, int x, int y);
 	
 	/**
 	 * Désallouer toutes les entités et tous les items de la zone

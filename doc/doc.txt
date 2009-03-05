@@ -5,21 +5,27 @@ Projet pluri-disciplinaire - IUT Paris Descartes
 Architecture du projet :
 ========================
 
-/                 # tous les fichiers sources + Makefile
-|--- data/
-|    |--- images/ # les images utilisées par l'application
-|    |--- map/    # les cartes des zones de jeu
-|    |--- music/  # les musiques
-|    |--- postfx/ # les postfx (scripts d'effet graphique)
-|    |--- sound/  # les sons
-|	 |--- xml/    # des configurations en XML
+/
+|--- bin/              # binaires et DLL
+|    |--- data/
+|         |--- images/ # les images utilisées par l'application
+|         |--- map/    # les cartes des zones de jeu
+|         |--- music/  # les musiques
+|         |--- postfx/ # les postfx (scripts d'effet graphique)
+|         |--- sound/  # les sons
+|         |--- xml/    # des configurations en XML
 |
-|--- doc/         # les éléments de documentation
+|--- doc/              # les éléments de documentation
 |
-|--- tinyxml/     # la bibliothèque TinyXML
+|--- src/              # sources du projet
+|    |--- tinyxml/     # la bibliothèque TinyXML
 |
-|--- utils/       # des scripts en Python
-     |--- editor/ # l'éditeur de carte (Python)
+|--- test/             # tests unitaires, bac à sable
+|
+|--- utils/            # des scripts en Python
+|    |--- editor/      # l'éditeur de carte (Python)
+|
+|--- Makefile
 
 
 Détails des composants :
@@ -247,4 +253,28 @@ La destination est localisée avec :
 
 S'il n'y a pas de téléporteurs, l'entrée <teleporters> est optionnelle.
 
+
+Format des animations
+=====================
+
+Les animations sont définis dans data/xml/animations.xml
+Exemple :
+
+<?xml version="1.0" encoding="utf-8" ?>
+<animations>
+	<anim name="player_walk_up" width="32" height="48" count="8" delay="0.125" x_offset="32" y_offset="0" />
+	...
+</animations>
+
+Attributs de <anim />
+	- name: identifiant de l'animation
+	- width: largeur d'une frame
+	- height: hauteur d'une frame
+	- count: nombre de frames
+	- delay: délai entre chaque frame
+	- x_offset: décalage de l'origine en x
+	- y_offset: décalage de l'origine en y
+
+Une entrée "anim" par animation.
+Les animations sont construites et stockées dans MediaManager.
 

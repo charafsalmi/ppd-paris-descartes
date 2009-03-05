@@ -1,14 +1,13 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include "Animated.hpp"
 #include "ControlPanel.hpp"
-#include "Entity.hpp"
+#include "Unit.hpp"
 
 /**
  * Joueur contrôlable par l'utilisateur
  */
-class Player: public Entity, public Animated
+class Player: public Unit
 {
 public:
 	Player(const sf::Vector2f& pos, const sf::Input& input);
@@ -45,8 +44,6 @@ private:
 	// Keycodes des mouvements
 	sf::Key::Code move_keys_[COUNT_DIRECTION];
 	
-	// Animations de déplacement
-	const Animation* walk_anims_[COUNT_DIRECTION];
 	const Animation* fall_anim_;
 	
 	// Subrects du sprite immobile
@@ -57,7 +54,6 @@ private:
 	const sf::Input& input_;
 	ControlPanel& panel_;
 	
-	int lives_;
 	int max_lives_;
 	int money_;
 };

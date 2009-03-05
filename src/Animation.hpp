@@ -4,13 +4,13 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
-
+/**
+ * Séquence de frames (subrects) à faire défiler
+ */
 class Animation
 {
 public:
 	Animation();
-	friend bool operator==(const Animation& my, const Animation& other);
-	friend bool operator!=(const Animation& my, const Animation& other);
 	
 	/**
 	 * Définir le temps d'attente entre chaque frame
@@ -32,6 +32,14 @@ public:
 	 * @param[in] subrect: rectangle de la frame
 	 */
 	void AddFrame(const sf::IntRect& subrect);
+	
+	/**
+	 * Ajouter une frame dans l'animation
+	 * @param[in] left: origine x de la frame
+	 * @param[in] up: origine y de la frame
+	 * @param[in] width: largeur de la frame
+	 * @param[in] height: hauteur de la frame
+	 */
 	void AddFrame(int left, int up, int width, int height);
 	
 	/**
@@ -57,11 +65,6 @@ private:
 	std::vector<sf::IntRect> subrects_;
 	float delay_;
 };
-
-//bool operator==(Animation& my, Animation& other);
-//bool operator!=(Animation& my, Animation& other);
-bool operator==(const Animation* my, const Animation& other);
-bool operator!=(const Animation* my, const Animation& other);
 
 
 #endif /* ANIMATION_HPP */

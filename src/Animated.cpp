@@ -1,6 +1,14 @@
 #include "Animated.hpp"
 
 
+Animated::Animated()
+{
+	animation_ = NULL;
+	timer_ = 0;
+	frame_ = 0;
+	stopped_ = false;
+}
+
 Animated::Animated(const Animation* animation, sf::Sprite& sprite)
 {
 	animation_ = animation;

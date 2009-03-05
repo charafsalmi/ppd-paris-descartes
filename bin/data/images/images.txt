@@ -3,10 +3,11 @@ splash-paris-descartes.jpg
 pillar.png
 player.png
 tileset.png
-badguy.png
 items.png
 panel-background.png
 panel-hearth.png
 panel-digits.png
 inventory-cursor.png
 inventory-slot.png
+squelette.png
+rodeur.png

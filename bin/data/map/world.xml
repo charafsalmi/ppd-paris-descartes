@@ -20,17 +20,16 @@
 192  17  18   4   5   4  37   0  17  17  17  18   4   4   4   4   4   4   4  16 
 	</tiles>
 	<entities>
-		<entity name="pillar" x="10" y="2" />
+		<!--<entity name="pillar" x="10" y="2" />
 		<entity name="pillar" x="10" y="4" />
 		<entity name="pillar" x="5" y="11" />
 		<entity name="pillar" x="5" y="10" />
 		<entity name="pillar" x="15" y="2" />
 		<entity name="pillar" x="17" y="3" />
-		<entity name="pillar" x="16" y="8" />
-		<entity name="enemy" x="4" y="2" />
-		<entity name="enemy" x="4" y="5" />
-		<entity name="enemy" x="13" y="5" />
-		<entity name="enemy" x="10" y="10" />
+		<entity name="pillar" x="16" y="8" />-->
+		<entity id="0" x="128" y="64" />
+		<entity id="0" x="128" y="160" />
+		<entity id="1" x="416" y="160" />
 	</entities>
 	<teleporters>
 		<tp x="9" y="12" container="0" zone_x="0" zone_y="0" tile_x="3" tile_y="2" />
@@ -57,12 +56,12 @@
  17   1   1  17  20  17  18  37  16   2 114 193 193   6   6   6   6   6   6   6 
 	</tiles>
 	<entities>
-		<entity name="pillar" x="12" y="7" />
+		<!--<entity name="pillar" x="12" y="7" />
 		<entity name="pillar" x="14" y="7" />
 		<entity name="pillar" x="12" y="9" />
-		<entity name="pillar" x="14" y="9" />
-		<entity name="enemy" x="6" y="7" />
-	</entities>
+		<entity name="pillar" x="14" y="9" />-->
+		<entity id="0" x="192" y="224" />
+	</entities>-->
 </zone>
 <zone>
 	<tiles>
@@ -107,7 +106,8 @@
 192  49  49  49  66  68  64 193   6   6   6   6   6   6   6   6   6   6   6   6 
 	</tiles>
 	<entities>
-		<entity name="enemy" x="6" y="6" />
+		<entity id="1" x="192" y="200" />
+		<entity id="0" x="340" y="310" />
 	</entities>
 	<teleporters>
 		<tp x="13" y="3" container="0" zone_x="2" zone_y="1" tile_x="11" tile_y="9" />
@@ -132,9 +132,9 @@
   6   6   6   6   6   6   6   6   6   6   6  65  65  65  50  37  37  37  37  37 
   6   6   6   6   6   6   6   6   6   6   6  65  65  65  65  49  50  52  52  84 
 	</tiles>
-	<entities>
+	<!--<entities>
 		<entity name="pillar" x="10" y="11" />
-	</entities>
+	</entities>-->
 </zone>
 <zone>
 	<tiles>
