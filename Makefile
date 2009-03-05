@@ -2,11 +2,14 @@ CC=g++
 CFLAGS= -Wall -Wextra -Wwrite-strings -ansi -pedantic
 LDFLAGS= -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 EXEC=bin/ppd
-SRC= $(wildcard src/*.cpp)
+SRC= $(wildcard src/core/*.cpp)
+SRC += $(wildcard src/entities/*.cpp)
+SRC += $(wildcard src/gui/*.cpp)
+SRC += $(wildcard src/gui_system/*.cpp)
+SRC += $(wildcard src/misc/*.cpp)
+SRC += $(wildcard src/net/*.cpp)
+SRC += $(wildcard src/xml/*.cpp)
 OBJ= $(SRC:.cpp=.o)
-
-# tinyxml
-TINYXML_OBJ= src/tinyxml/tinyxml.o src/tinyxml/tinyxmlparser.o src/tinyxml/tinyxmlerror.o
 
 # debug/release mode
 DEBUG=yes
@@ -36,30 +39,27 @@ ifeq ($(NO_SPLASH), yes)
 endif
 
 
-$(EXEC): $(OBJ) $(TINYXML_OBJ)
+$(EXEC): $(OBJ) 
 	$(CC) $^ -o $(EXEC) $(LDFLAGS)
 
 %.o: %.cpp
 	$(CC) $< -c -o $@ $(CFLAGS)
 
-src/tinyxml/tinyxml.o: src/tinyxml/tinyxml.cpp
-	$(CC) $< -c -o $@ $(CFLAGS)
-
-src/tinyxml/tinyxmlparser.o: src/tinyxml/tinyxmlparser.cpp
-	$(CC) $< -c -o $@ $(CFLAGS)
-
-src/tinyxml/tinyxmlerror.o: src/tinyxml/tinyxmlerror.cpp
-	$(CC) $< -c -o $@ $(CFLAGS)
-
 .PHONY: clean cleanxml mrproper
 
 clean:
-	-rm src/*.o
+	-rm src/core/*.o
+	-rm src/entities/*.o
+	-rm src/gui/*.o
+	-rm src/gui_system/*.o
+	-rm src/misc/*.o
+	-rm src/net/*.o
 
 cleanxml:
-	-rm src/tinyxml/*.o
+	-rm src/xml/*.o
 	
 mrproper: clean
 	-rm $(EXEC)
 
 all: mrproper $(EXEC)
+

@@ -6,7 +6,7 @@
 #include "ZoneContainer.hpp"
 #include "../entities/Player.hpp"
 #include "../gui/ControlPanel.hpp"
-#include "../gui_system/window.hpp"
+#include "../gui_system/Window.hpp"
 #include "../misc/Misc.hpp"
 
 
