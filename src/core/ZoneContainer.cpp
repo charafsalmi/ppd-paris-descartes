@@ -15,7 +15,7 @@ ZoneContainer::ZoneContainer()
 	width_ = 0;
 	height_ = 0;
 	zones_ = NULL;
-	
+
 	cds_zone_.x = -1; // undefined coords
 	cds_zone_.y = -1;
 
@@ -50,10 +50,10 @@ void ZoneContainer::Load(MapName name)
 		printf(" [ZC] échec de l'ouverture du fichier %s\n", filename);
 		abort();
 	}
-	
+
 	TiXmlHandle handle(&xml_doc_);
 	handle = handle.FirstChildElement();
-	
+
 	// récupération des dimensions du conteneur
 	const TiXmlElement* map_element = handle.Element();
 	assert(map_element->QueryIntAttribute("width", &width_) == TIXML_SUCCESS);
@@ -70,7 +70,7 @@ void ZoneContainer::Load(MapName name)
 			printf(" [ZC] zone [%d][%d] allouee...\n", i, j);
 		}
 	}
-	
+
 	// on charge la première zone de la map
 	SetActiveZone(0, 0, false);
 }
@@ -95,7 +95,7 @@ void ZoneContainer::ChangeZone(Direction dir)
 {
 	int x = cds_zone_.x;
 	int y = cds_zone_.y;
-	
+
 	switch (dir)
 	{
 		case UP:
@@ -140,7 +140,7 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 		next_zone_ = &zones_[y][x];
 		cds_zone_.x = x;
 		cds_zone_.y = y;
-		
+
 		// est-ce la prochaine zone est déjà chargée ?
 		if (!next_zone_->IsLoaded())
 		{
@@ -155,7 +155,7 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 			printf(" [ZC] chargement de la zone [%d][%d]\n", y, x);
 			next_zone_->Load(handle);
 		}
-		
+
 		// changement immédiat ?
 		if (!wait)
 		{
@@ -164,7 +164,7 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 			Entity::SetActiveZone(active_zone_);
 			printf(" [ZC] [%d][%d] est maintenant la zone active\n", y, x);
 		}
-		
+
 		return true;
 	}
 	printf(" [ZC] coordonnées de la prochaine zone [%d][%d] invalides\n", y, x);
@@ -213,25 +213,25 @@ void ZoneContainer::Update(float frametime)
 		switch (scroll_.dir)
 		{
 			case UP:
-				coord = SCREEN_HEIGHT - (SCREEN_HEIGHT * scroll_.timer / SCROLL_TIME);
+				coord = (int)(SCREEN_HEIGHT - (SCREEN_HEIGHT * scroll_.timer / SCROLL_TIME));
 				scroll_.current.SetY(coord);
 				scroll_.next.SetY(-SCREEN_HEIGHT + coord);
 				player->SetY(coord);
 				break;
 			case DOWN:
-				coord = SCREEN_HEIGHT * scroll_.timer / SCROLL_TIME;
+				coord = (int)(SCREEN_HEIGHT * scroll_.timer / SCROLL_TIME);
 				scroll_.current.SetY(coord - SCREEN_HEIGHT);
 				scroll_.next.SetY(coord);
 				player->SetY(coord);
 				break;
 			case LEFT:
-				coord = SCREEN_WIDTH - (SCREEN_WIDTH * scroll_.timer / SCROLL_TIME);
+				coord = (int)(SCREEN_WIDTH - (SCREEN_WIDTH * scroll_.timer / SCROLL_TIME));
 				scroll_.current.SetX(coord);
 				scroll_.next.SetX(-SCREEN_WIDTH + coord);
 				player->SetX(coord);
 				break;
 			case RIGHT:
-				coord = SCREEN_WIDTH * scroll_.timer / SCROLL_TIME;
+				coord = (int)(SCREEN_WIDTH * scroll_.timer / SCROLL_TIME);
 				scroll_.current.SetX(coord - SCREEN_WIDTH);
 				scroll_.next.SetX(coord);
 				player->SetX(coord);
@@ -248,7 +248,7 @@ void ZoneContainer::Show(sf::RenderWindow& app)
 		app.Draw(scroll_.current);
 		app.Draw(scroll_.next);
 		app.Draw(*Game::GetInstance().GetPlayer());
-	}	
+	}
 	else
 	{
 		// si demande de changement de zone différée
