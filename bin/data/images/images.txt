@@ -12,3 +12,4 @@ rodeur.png
 splash-paris-descartes.jpg
 squelette.png
 tileset.png
+mandarine.png

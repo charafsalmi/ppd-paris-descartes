@@ -18,4 +18,10 @@
 	<anim name="rodeur_walk_down" width="32" height="48" count="3" delay="0.2" x_offset="0" y_offset="48" />
 	<anim name="rodeur_walk_left" width="32" height="48" count="3" delay="0.2" x_offset="0" y_offset="96" />
 	<anim name="rodeur_walk_right" width="32" height="48" count="3" delay="0.2" x_offset="0" y_offset="144" />
+	
+	<!-- mandarine géante -->
+	<anim name="mandarine_walk_up" width="32" height="48" count="3" delay="0.2" x_offset="0" y_offset="0" />
+	<anim name="mandarine_walk_down" width="32" height="48" count="3" delay="0.2" x_offset="0" y_offset="48" />
+	<anim name="mandarine_walk_left" width="32" height="48" count="3" delay="0.2" x_offset="0" y_offset="96" />
+	<anim name="mandarine_walk_right" width="32" height="48" count="3" delay="0.2" x_offset="0" y_offset="144" />
 </animations>
