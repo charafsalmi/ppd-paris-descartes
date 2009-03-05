@@ -83,6 +83,10 @@
 		<Unit filename="src\gui_system\Button.hpp" />
 		<Unit filename="src\gui_system\Control.cpp" />
 		<Unit filename="src\gui_system\Control.hpp" />
+		<Unit filename="src\gui_system\Label.cpp" />
+		<Unit filename="src\gui_system\Label.hpp" />
+		<Unit filename="src\gui_system\ProgressBar.cpp" />
+		<Unit filename="src\gui_system\Progressbar.hpp" />
 		<Unit filename="src\gui_system\Window.cpp" />
 		<Unit filename="src\gui_system\Window.hpp" />
 		<Unit filename="src\misc\ConfigParser.cpp" />

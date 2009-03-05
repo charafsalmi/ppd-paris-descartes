@@ -10,14 +10,11 @@ Control::Control(){
 
 }
 
+Control::Control(ControlID id, ControlPos pos){
+    id_ = id;
+    position_ = pos;
+}
+
 Control::~Control(){
 
 }
-
-/*
-void Control::Show(sf::RenderTarget& app){
-    #ifdef _DEBUG
-    cout << "Warning: virtual Control::Show called" << endl;
-    #endif
-}
-*/

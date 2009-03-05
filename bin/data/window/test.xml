@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<controls>
+	<button id="0" pic="button_prev" x="10" y="10"/>
+</controls>

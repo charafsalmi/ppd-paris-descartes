@@ -2,8 +2,17 @@
 #define WINDOW_HPP
 
 #include <SFML/Graphics.hpp>
-#include "../misc/MediaManager.hpp"
+
 #include "Control.hpp"
+
+/*
+    Il existe deux types de fenêtres. Les fenêtres "bloquantes" qui contienne
+dans leurs code une méthode pour récupéré les events. Et une fenêtre non-bloquante
+qui s'intercale dans le système d'event du jeu. Grace à cette procédure, le jeu continue
+alors que la fenêtre s'affiche.
+*/
+
+/* TODO: Passage en forme canonique */
 
 class Window{
 public:
@@ -42,9 +51,6 @@ private:
     */
     std::vector<Control*> controls_;
 
-	#ifdef _DEBUG
-	bool _dbg;
-	#endif
 };
 
 #endif
