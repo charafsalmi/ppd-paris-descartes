@@ -11,4 +11,4 @@ inventory-cursor.png
 inventory-slot.png
 squelette.png
 rodeur.png
-button_prev.gif
+button_prev.bmp
