@@ -78,6 +78,12 @@
 		<Unit filename="src\gui\Inventory.hpp" />
 		<Unit filename="src\gui\Splash.cpp" />
 		<Unit filename="src\gui\Splash.hpp" />
+		<Unit filename="src\gui_system\Button.cpp" />
+		<Unit filename="src\gui_system\Button.hpp" />
+		<Unit filename="src\gui_system\Control.cpp" />
+		<Unit filename="src\gui_system\Control.hpp" />
+		<Unit filename="src\gui_system\Window.cpp" />
+		<Unit filename="src\gui_system\Window.hpp" />
 		<Unit filename="src\misc\ConfigParser.cpp" />
 		<Unit filename="src\misc\ConfigParser.hpp" />
 		<Unit filename="src\misc\MediaManager.cpp" />

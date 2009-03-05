@@ -6,6 +6,7 @@
 #include "ZoneContainer.hpp"
 #include "../entities/Player.hpp"
 #include "../gui/ControlPanel.hpp"
+#include "../gui_system/window.hpp"
 
 
 class Game
@@ -89,6 +90,10 @@ private:
 
 	Player* player_;
 	ControlPanel& panel_;
+
+	#ifdef WINDOW_TEST
+	Window fen_;
+	#endif
 
 	sf::RenderWindow app_;
 };
