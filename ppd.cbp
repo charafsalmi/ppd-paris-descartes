@@ -35,6 +35,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-DWINDOW_TEST" />
 		</Compiler>
 		<Linker>
 			<Add option="-lsfml-graphics" />

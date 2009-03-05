@@ -78,16 +78,22 @@ void Game::Run()
 		// POLLING
 		while (app_.GetEvent(event))
 		{
+		    #ifdef WINDOW_TEST
+            fen_.ManageEvent(event);
+		    #endif
+
 			if (event.Type == sf::Event::Closed)
 			{
 				running = false;
 			}
 			else if (event.Type == sf::Event::KeyPressed)
 			{
-				if (event.Key.Code == sf::Key::F1)
-				{
-					puts("screen !");
-					app_.Capture().SaveToFile("screenshot.png");
+			    if(event.Key.Code == sf::Key::F1){
+                    puts("screen !");
+                    app_.Capture().SaveToFile("screenshot.png");
+			    }else if(event.Key.Code == sf::Key::Escape){
+                    running = false;
+                    break;
 				}
 				(this->*on_event_meth_)(event.Key.Code);
 			}

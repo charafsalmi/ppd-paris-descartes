@@ -19,10 +19,14 @@ Window::~Window(){
 
 }
 
-void Window::Load(const std::string& xmlfile){
+void Window::ManageEvent(sf::Event event){
+}
 
+void Window::Load(const std::string& xmlfile){
+    background_ = GET_IMG("inventory-slot");
+    background_.Resize(100, 100);
 }
 
 void Window::Show(sf::RenderTarget& app){
-
+    app.Draw(background_);
 }

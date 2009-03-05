@@ -2,6 +2,7 @@
 #define WINDOW_HPP
 
 #include <SFML/Graphics.hpp>
+#include "../misc/MediaManager.hpp"
 #include "Control.hpp"
 
 class Window{
@@ -20,6 +21,11 @@ public:
     * Affichage de la fenêtre
     */
 	void Show(sf::RenderTarget& app);
+
+	/**
+	* Gestion des evenements concernant la fenêtre
+	*/
+	void ManageEvent(sf::Event event);
 private:
     /**
     * Image de fond de la fenêtre
