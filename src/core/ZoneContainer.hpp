@@ -2,7 +2,7 @@
 #define ZONECONTAINER_HPP
 
 #include "Zone.hpp"
-#include "tinyxml/tinyxml.h"
+#include "../xml/tinyxml.h"
 
 /**
  * Ensemble de zones
@@ -15,33 +15,33 @@ public:
 		// noms des conteneurs possibles
 		WORLD, CAVES
 	};
-	
+
 	ZoneContainer();
-	
+
 	~ZoneContainer();
-	
+
 	/**
 	 * Charger les zones du conteneur
 	 * @param[in] name: identifiant du conteneur à charger
 	 */
 	void Load(MapName name);
-	
+
 	/**
 	 * Désallouer toutes les zones du conteneur
 	 */
 	void Unload();
-	
+
 	enum Direction
 	{
 		UP, DOWN, LEFT, RIGHT
 	};
-	
+
 	/**
 	 * Demander un changement de zone
 	 * @param[in] dir: direction souhaitée
 	 */
 	void ChangeZone(Direction dir);
-	
+
 	/**
 	 * Obtenir la zone active
 	 * @return adresse zone active
@@ -50,7 +50,7 @@ public:
 	{
 		return active_zone_;
 	}
-	
+
 	/**
 	 * Définir directement une zone active (si possible)
 	 * @param[in] x: position x de la zone souhaitée
@@ -60,13 +60,13 @@ public:
 	 * @return true si le changement a été accepté, sinon false
 	 */
 	bool SetActiveZone(int x, int y, bool wait=true);
-	
+
 	/**
 	 * Nom du conteneur
 	 * @return nom-identifiant
 	 */
 	MapName GetName() const;
-	
+
 	/**
 	 * Indique si le conteneur est en train de procéder à un scrolling
 	 * @return true si scrolling, sinon false
@@ -75,20 +75,20 @@ public:
 	{
 		return scrolling_;
 	}
-	
+
 	/**
 	 * Mise à jour du conteneur
 	 * @param[in] frametime: temps de la frame courante
 	 */
 	void Update(float frametime);
-	
+
 	/**
 	 * Affichage
 	 * @param[in, out] app: fenêtre de rendu
 	 */
 	void Show(sf::RenderWindow& app);
-	
-private:	
+
+private:
 	/**
 	 * Effet de défilement lors d'un changement de zone
 	 */
@@ -99,20 +99,20 @@ private:
 		Direction dir;
 		float timer;
 	};
-	
+
 	bool scrolling_;
 	ZoneScroller scroll_;
-	
+
 	Zone* active_zone_;
 	sf::Vector2i cds_zone_; // coordonnées de la zone courante
-	
+
 	Zone* next_zone_;
-	
+
 	MapName name_;
 	int width_; // largeur en nombre de zones
 	int height_; // hauteur en nombre de zones
 	Zone** zones_;
-	
+
 	TiXmlDocument xml_doc_;
 };
 

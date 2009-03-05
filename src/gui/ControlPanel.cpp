@@ -3,9 +3,9 @@
 #endif
 
 #include "ControlPanel.hpp"
-#include "MediaManager.hpp"
+#include "../misc/MediaManager.hpp"
 
-#include "Misc.hpp"
+#include "../misc/Misc.hpp"
 
 #define ORIGIN			sf::Vector2f( 32, 32)
 
@@ -45,7 +45,7 @@ void ControlPanel::SetLives(int value)
 #endif
 		lives_count_ =  2 * lives_max_;
 	}
-#ifdef DEBUG	
+#ifdef DEBUG
 	dbg_ = true;
 #endif
 }
@@ -92,16 +92,16 @@ void ControlPanel::Show(sf::RenderTarget& app)
 
 ControlPanel::ControlPanel()
 {
-	background_.SetPosition(ORIGIN);  
+	background_.SetPosition(ORIGIN);
 	background_.SetImage(GET_IMG("panel-background"));
 
 	lives_.SetImage(GET_IMG("panel-hearth"));
 	lives_.SetSubRect(sf::IntRect(0, 0, 14, 14));
 	lives_max_ = 1;
 	lives_count_ = bombs_count_ = arrows_count_ = 0;
-	
+
 	digits_.SetImage(GET_IMG("panel-digits"));
-	
+
 	blink_timer_ = 0.f;
 	blink_frame_ = true;
 	blink_sound_.SetBuffer(GET_SOUNDBUF("danger-beep"));
@@ -157,13 +157,13 @@ void ControlPanel::DrawLives(sf::RenderTarget& app)
 #ifdef DEBUG
 	if (dbg_) std::cerr << "lives_max_:" << lives_max_ << ", lives_count_" << lives_count_ << "\n" ;
 #endif
-	
+
 	for (int i = 0; i < lives_max_ ; ++i)
 	{
 		lives_pos_.x += DRAW_OFFSET;
 		if (i == MAX_LIVES / 2 - 1)
 		{
-		
+
 #ifdef DEBUG
 			if (dbg_) std::cerr << "--- Changement de ligne--- \n";
 #endif
@@ -172,7 +172,7 @@ void ControlPanel::DrawLives(sf::RenderTarget& app)
 			lives_pos_.y += DRAW_OFFSET;
 		}
 		lives_.SetPosition(lives_pos_);
-		
+
 #ifdef DEBUG
 		if (dbg_) std::cerr << "ToDraw: " << to_draw;
 #endif
@@ -181,7 +181,7 @@ void ControlPanel::DrawLives(sf::RenderTarget& app)
 		{
 			if ((to_draw) == 1)
 			{
-			
+
 #ifdef DEBUG
 				if (dbg_) std::cerr << "Dessin mini \n";
 #endif
@@ -220,7 +220,7 @@ void ControlPanel::DrawLives(sf::RenderTarget& app)
 		}
 		app.Draw(lives_);
 	}
-	
+
 #ifdef DEBUG
 	dbg_ = false;
 #endif
@@ -232,53 +232,53 @@ void ControlPanel::DrawDigits(sf::RenderTarget& app)
 {
 	sf::Vector2f draw_pos = RUPEES_ORIGIN;
 	int i = rupees_count_;
-	
+
 	// Rupees
-	
+
 	digits_.SetPosition(draw_pos);
 	digits_.SetSubRect(GetDigitRect(i / 100));
 	app.Draw(digits_);
-	
+
 	draw_pos.x += DRAW_OFFSET;
 	digits_.SetPosition(draw_pos);
 	i %= 100;
 	digits_.SetSubRect(GetDigitRect(i / 10));
 	app.Draw(digits_);
-	
+
 	draw_pos.x += DRAW_OFFSET;
-	digits_.SetPosition(draw_pos);	
+	digits_.SetPosition(draw_pos);
 	i %= 10;
 	digits_.SetSubRect(GetDigitRect(i));
 	app.Draw(digits_);
-	
+
 	// Arrows
-	
+
 	i = arrows_count_;
-	
+
 	draw_pos.x = ARROWS_ORIGIN.x;
 	digits_.SetPosition(draw_pos);
 	i %= 100;
 	digits_.SetSubRect(GetDigitRect(i / 10));
 	app.Draw(digits_);
-	
+
 	draw_pos.x += DRAW_OFFSET;
-	digits_.SetPosition(draw_pos);	
+	digits_.SetPosition(draw_pos);
 	i %= 10;
 	digits_.SetSubRect(GetDigitRect(i));
 	app.Draw(digits_);
-	
+
 	// Bombs
-	
+
 	i = bombs_count_;
-	
+
 	draw_pos.x = BOMBS_ORIGIN.x;
 	digits_.SetPosition(draw_pos);
 	i %= 100;
 	digits_.SetSubRect(GetDigitRect(i / 10));
 	app.Draw(digits_);
-	
+
 	draw_pos.x += DRAW_OFFSET;
-	digits_.SetPosition(draw_pos);	
+	digits_.SetPosition(draw_pos);
 	i %= 10;
 	digits_.SetSubRect(GetDigitRect(i));
 	app.Draw(digits_);
@@ -290,14 +290,14 @@ sf::IntRect& ControlPanel::GetDigitRect(int digit)
 {
 	static sf::IntRect my (0, 0, 0, DRAW_OFFSET);
 	static int x;
-	
+
 	x = 0;
-	
+
 	while ( --digit >= 0)
 	{
 		x += DRAW_OFFSET;
 	}
-	
+
 	my.Left  = x;
 	my.Right = x + DRAW_OFFSET;
 

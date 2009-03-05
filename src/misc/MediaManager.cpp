@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "MediaManager.hpp"
-#include "tinyxml/tinyxml.h"
+#include "../xml/tinyxml.h"
 
 #define IMG_LIST "data/images/images.txt"
 #define IMG_PATH "data/images/"
@@ -130,7 +130,7 @@ Music* MediaManager::GetMusic(const char* key) const
 		std::cerr << "can't give you music file " << key << std::endl;
 		abort();
 	}
-	
+
 	std::string path(MUSIC_PATH);
 	Music* mus = new Music((path + it->second).c_str());
 	return mus;
@@ -144,7 +144,7 @@ Music* MediaManager::GetMusic(const char* key) const
 		puts("Music: off-bounded index");
 		abort();
 	}
-	
+
 	std::map<std::string, std::string>::const_iterator it;
 	for (it = musics_.begin(); it != musics_.end() && --id; ++it) ;
 	if (it == musics_.end())
@@ -152,7 +152,7 @@ Music* MediaManager::GetMusic(const char* key) const
 		puts ("Whoops");
 		abort();
 	}
-	
+
 	std::string path(MUSIC_PATH);
 	Music* mus = new Music((path + it->second).c_str());
 	return mus;
@@ -202,15 +202,15 @@ MediaManager::MediaManager()
 		std::cerr << "can't open image list: " << IMG_LIST << std::endl;
 		abort();
 	}
-	
+
 	// chargement des buffers audio
 	if (!load_from_list(SOUND_LIST, sounds_))
 	{
 		std::cerr << "can't open sound list: " << SOUND_LIST << std::endl;
 		abort();
 	}
-	
-#ifdef DUMB_MUSIC	
+
+#ifdef DUMB_MUSIC
 	// chargement des musiques
 	if (!load_from_list(MUSIC_LIST, musics_))
 	{
@@ -224,7 +224,7 @@ MediaManager::MediaManager()
 		std::cerr << "can't open PostFX list: " << FX_LIST << std::endl;
 		abort();
 	}
-	
+
 	// chargement des animations
 	TiXmlDocument doc;
 	if (!doc.LoadFile(ANIMATION_FILE))
@@ -232,14 +232,14 @@ MediaManager::MediaManager()
 		std::cerr << "can't open animation definitions: " << ANIMATION_FILE << std::endl;
 		abort();
 	}
-	
+
 	TiXmlHandle handle(&doc);
 	TiXmlElement* elem = handle.FirstChildElement().FirstChildElement().Element();
 	// attributs
 	int width, height, count, x_offset, y_offset;
 	float delay;
 	const char* name;
-	
+
 	while (elem != NULL)
 	{
 		bool ok = true;
@@ -266,7 +266,7 @@ MediaManager::MediaManager()
 		{
 			std::cerr << " [MediaManager] animation mal formée" << std::endl;
 		}
-		
+
 		elem = elem->NextSiblingElement();
 	}
 }

@@ -10,7 +10,7 @@
 #ifdef DUMB_MUSIC
 #include "Music.hpp"
 #endif
-#include "Animation.hpp"
+#include "../core/Animation.hpp"
 
 /**
  * Gestionnaire de ressource (singleton)
@@ -23,29 +23,29 @@ public:
 	 * @return référence sur le gestionnaire de ressources
 	 */
 	static MediaManager& GetInstance();
-	
+
 	/**
 	 * Récupérer une image
 	 * @param[in] key: identifiant de l'image
 	 * @return référence sur l'image
 	 */
 	const sf::Image& GetImage(const char* key) const;
-	
+
 	/**
 	 * Récupérer un buffer audio
 	 * @param[in] key: identifiant du buffer
 	 * @return référence sur le buffer
 	 */
 	const sf::SoundBuffer& GetSoundBuf(const char* key) const;
-	
-#ifdef DUMB_MUSIC	
+
+#ifdef DUMB_MUSIC
 	/**
 	 * Obtenir une musique
 	 * @param[in] key: identifiant de la musique
 	 * @return pointeur sur la musique
 	 */
 	Music* GetMusic(const char* key) const;
-	
+
 	//Music* GetMusic(int id) const;
 #endif
 
@@ -55,13 +55,13 @@ public:
 	 * @return référence sur la police
 	 */
 	const sf::Font& GetFont() const;
-	
+
 	/**
 	 * Obtenir une animation
 	 * @param[in] key: identifiant de l'animation
 	 */
 	const Animation& GetAnimation(const char* key) const;
-	
+
 private:
 	/**
 	 * Initialisation (chargement des images)
@@ -69,7 +69,7 @@ private:
 	MediaManager();
 	MediaManager(const MediaManager& other);
 	MediaManager& operator=(const MediaManager& other);
-	
+
 	std::map<std::string, sf::Image> images_;
 	std::map<std::string, sf::SoundBuffer> sounds_;
 #ifdef DUMB_MUSIC

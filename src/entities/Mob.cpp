@@ -1,7 +1,7 @@
 #include <cstring>
 
 #include "Mob.hpp"
-#include "Zone.hpp"
+#include "../core/Zone.hpp"
 
 #define SPEED 80
 
@@ -38,7 +38,7 @@ void Mob::Update(float frametime)
 		{
 			current_dir_ = LEFT;
 		}
-		
+
 		Animated::Change(walk_anims_[current_dir_], *this);
 	}
 }

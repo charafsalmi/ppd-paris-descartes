@@ -1,7 +1,7 @@
 #include <SFML/System.hpp>
 
 #include "Entity.hpp"
-#include "Zone.hpp"
+#include "../core/Zone.hpp"
 
 
 Zone* Entity::zone_ = NULL;

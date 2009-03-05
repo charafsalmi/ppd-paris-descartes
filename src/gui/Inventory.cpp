@@ -1,5 +1,5 @@
-#include "Inventory.hpp"
-#include "MediaManager.hpp"
+#include "../gui/Inventory.hpp"
+#include "../misc/MediaManager.hpp"
 
 // origine de l'inventaire
 #define OFFSET_X ((640 - (WIDTH * SLOT_SIZE)) / 2.0)

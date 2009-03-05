@@ -5,9 +5,9 @@
 #include <cstring>
 
 #include "Zone.hpp"
-#include "StaticItem.hpp"
-#include "MediaManager.hpp"
-#include "UnitFactory.hpp"
+#include "../entities/StaticItem.hpp"
+#include "../misc/MediaManager.hpp"
+#include "../entities/UnitFactory.hpp"
 #include "Game.hpp"
 #include "ZoneContainer.hpp"
 
@@ -30,29 +30,29 @@ void Zone::Load(const TiXmlHandle& handle)
 	sf::RenderWindow& app = Game::GetInstance().GetApp();
 	static const Tileset& tileset = Tileset::GetInstance();
 	const TiXmlElement* elem = handle.FirstChildElement("tiles").Element();
-	
+
 	std::istringstream all_tiles(elem->GetText());
 	for (int i = 0; i < HEIGHT; ++i)
 	{
 		for (int j = 0; j < WIDTH; ++j)
 		{
 			assert(!all_tiles.eof()); // TODO: lecture robuste
-			
+
 			int tile_id;
 			all_tiles >> tile_id;
 			walkable_[i][j] = tileset.IsWalkable(tile_id);
 			tiles_[i][j] = tile_id;
-			
+
 			// création et dessin du sprite
 			sf::Sprite tile;
 			tileset.MakeSprite(tile_id, tile);
 			sf::Vector2f pos(j * Tile::SIZE, i * Tile::SIZE);
 			tile.SetPosition(pos);
-			
+
 			app.Draw(tile);
 		}
 	}
-	
+
 	// chargement des entités
 	UnitFactory& factory = UnitFactory::GetInstance();
 	elem = handle.FirstChildElement("entities").FirstChildElement().Element();
@@ -77,7 +77,7 @@ void Zone::Load(const TiXmlHandle& handle)
 		}
 		elem = elem->NextSiblingElement();
 	}
-	
+
 	// chargement des téléporteurs
 	elem = handle.FirstChildElement("teleporters").FirstChildElement().Element();
 	while (elem != NULL)
@@ -95,7 +95,7 @@ void Zone::Load(const TiXmlHandle& handle)
 		// coordonées de la tile cible
 		ok &= (elem->QueryIntAttribute("tile_x", &tile_x) == TIXML_SUCCESS);
 		ok &= (elem->QueryIntAttribute("tile_y", &tile_y) == TIXML_SUCCESS);
-		
+
 		if (!ok)
 		{
 			std::cerr << " [Zone] teleporteur invalide ignoré" << std::endl;
@@ -111,7 +111,7 @@ void Zone::Load(const TiXmlHandle& handle)
 		}
 		elem = elem->NextSiblingElement();
 	}
-	
+
 	// création de l'image des tiles
 	tiles_img_ = app.Capture();
 	tiles_sprite_.SetImage(tiles_img_);
@@ -169,14 +169,14 @@ void Zone::Show(sf::RenderWindow& app) const
 {
 	// affichage des tiles
 	app.Draw(tiles_sprite_);
-	
+
 	// affichage des items
 	ItemList::const_iterator it2;
 	for (it2 = items_.begin(); it2 != items_.end(); ++it2)
 	{
 		app.Draw(**it2);
 	}
-	
+
 	// affichage des entités
 	entities_.sort(Entity::PtrComp);
 	EntityList::const_iterator it;
@@ -201,14 +201,14 @@ bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect) const
 	int top = (int) rect.Top / Tile::SIZE;
 	int right = (int) rect.Right / Tile::SIZE;
 	int bottom = (int) rect.Bottom / Tile::SIZE;
-	
+
 	// si collision avec un élément statique
 	if (!walkable_[top][left] || !walkable_[top][right]
 		|| !walkable_[bottom][left] || !walkable_[bottom][right])
 	{
 		return false;
 	}
-	
+
 	// collision avec une autre unité
 	EntityList::const_iterator it;
 	sf::FloatRect other_rect;
@@ -224,7 +224,7 @@ bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect) const
 			}
 		}
 	}
-	
+
 	// ok, emitter a le droit de se déplacer
 	return true;
 }
@@ -281,7 +281,7 @@ void Zone::AddItem(char id, int x, int y)
 			item = new Money(pos);
 			break;
 	}
-	items_.push_front(item);	
+	items_.push_front(item);
 }
 
 
@@ -312,7 +312,7 @@ void Zone::Purge()
 		delete *it;
 	}
 	entities_.clear();
-	
+
 	ItemList::iterator it2;
 	for (it2 = items_.begin(); it2 != items_.end(); ++it2)
 	{

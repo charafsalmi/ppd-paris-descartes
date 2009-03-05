@@ -2,8 +2,8 @@
 #include <cassert>
 
 #include "Tileset.hpp"
-#include "MediaManager.hpp"
-#include "tinyxml/tinyxml.h"
+#include "../misc/MediaManager.hpp"
+#include "../xml/tinyxml.h"
 
 #define TILES_DEFINITION "data/xml/tiles.xml"
 
@@ -18,17 +18,17 @@ Tileset::Tileset()
 			<< TILES_DEFINITION << " (" << doc.ErrorDesc() << ")" << std::endl;
 		abort();
 	}
-	
+
 	TiXmlHandle handle(&doc);
 	TiXmlElement* elem = handle.FirstChildElement().FirstChildElement().Element();
-	
+
 	if (elem == NULL)
 	{
 		std::cerr << " [Tileset] impossible d'atteindre le noeud"
 			<< std::endl;
 		abort();
 	}
-	
+
 	int tile_id;
 	while (elem != NULL)
 	{
@@ -49,7 +49,7 @@ Tileset::Tileset()
 			{
 				effect = flag ? Tile::TELEPORT : Tile::DEFAULT;
 			}
-			
+
 			// ajout de la nouvelle tile spéciale
 			specials_[tile_id] = effect;
 		}
@@ -57,7 +57,7 @@ Tileset::Tileset()
 		{
 			std::cerr << " [Tileset] tile id manquant" << std::endl;
 		}
-		
+
 		elem = elem->NextSiblingElement();
 	}
 }
@@ -74,7 +74,7 @@ void Tileset::MakeSprite(int tile_id, sf::Sprite& sprite)
 {
 	assert(tile_id < COUNT);
 	sprite.SetImage(GET_IMG("tileset"));
-	
+
 	// on calcule le subrect de la tile grâce à son id
 	// (la tile première tile haut-gauche du tileset a l'id 0)
 	sf::IntRect rect;

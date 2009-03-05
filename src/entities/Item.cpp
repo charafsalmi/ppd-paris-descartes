@@ -1,5 +1,5 @@
 #include "Item.hpp"
-#include "MediaManager.hpp"
+#include "../misc/MediaManager.hpp"
 #include "Player.hpp"
 
 

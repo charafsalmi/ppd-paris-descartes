@@ -2,9 +2,9 @@
 #include <iostream>
 
 #include "Game.hpp"
-#include "MediaManager.hpp"
-#include "Splash.hpp"
-#include "tinyxml/tinyxml.h"
+#include "../misc/MediaManager.hpp"
+#include "../gui/Splash.hpp"
+#include "../xml/tinyxml.h"
 
 #define APP_WIDTH  (Tile::SIZE * Zone::WIDTH)
 #define APP_HEIGHT (Tile::SIZE * Zone::HEIGHT)
@@ -44,7 +44,7 @@ Game::~Game()
 void Game::Init()
 {
 	player_ = new Player(sf::Vector2f(300, 300), app_.GetInput());
-	
+
 	// chargement du conteneur de zones
 	zone_container_.Load(ZoneContainer::WORLD);
 	// InGame
@@ -58,7 +58,7 @@ void Game::Run()
 	bool running = true;
 	float frametime;
 	zone_container_.GetActiveZone()->AddEntity(player_);
-	
+
 #ifndef NO_SPLASH
 	Splash s(app_);
 	s.Run();
@@ -68,7 +68,7 @@ void Game::Run()
 	SetMusic(active_zone_->GetMusic());
 #endif
 
-	
+
 	while (running)
 	{
 		// POLLING
@@ -91,11 +91,11 @@ void Game::Run()
 		// UPDATE
 		frametime = app_.GetFrameTime();
 		(this->*update_meth_)(frametime);
-	
+
 		// RENDER
 		(this->*render_meth_)();
 		app_.Display();
-		
+
 		if (zone_container_.GetName() != next_map_name_)
 		{
 			ChangeZoneContainer(next_map_name_);
@@ -126,7 +126,7 @@ void Game::ChangeZoneContainer(ZoneContainer::MapName map_name)
 	// insertion du joueur dans le nouveau conteneur
 	active = zone_container_.GetActiveZone();
 	active->AddEntity(player_);
-	
+
 	next_map_name_ = map_name;
 }
 
@@ -150,7 +150,7 @@ void Game::Teleport(const Zone::Teleporter& tp)
 			abort();
 		}
 	}
-	
+
 	int x = tp.tile_coords.x * Tile::SIZE;
 	int y = tp.tile_coords.y * Tile::SIZE;
 	player_->SetPosition(x, y);
@@ -164,7 +164,7 @@ void Game::SetMusic(int value)
 	static short current_music_index_ = -1;
 
 	std::cerr << " [Game] SetMusic\tCur: " << current_music_index_ << "\t New: " << val << "\n";
-	
+
 	if (val > 0 && val != current_music_index_)
 	{
 		if (music_ != NULL)

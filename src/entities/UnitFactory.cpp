@@ -1,7 +1,7 @@
 #include "UnitFactory.hpp"
-#include "MediaManager.hpp"
+#include "../misc/MediaManager.hpp"
 #include "Mob.hpp"
-#include "tinyxml/tinyxml.h"
+#include "../xml/tinyxml.h"
 
 #define UNIT_DEFINITION "data/xml/units.xml"
 
@@ -23,7 +23,7 @@ UnitFactory::UnitFactory()
 	}
 	TiXmlHandle handle(&doc);
 	TiXmlElement* elem = handle.FirstChildElement().FirstChildElement().Element();
-	
+
 	const char* p = NULL;
 	MediaManager& media = MediaManager::GetInstance();
 	while (elem != NULL)
@@ -36,7 +36,7 @@ UnitFactory::UnitFactory()
 			continue;
 		}
 		Pattern* pattern = &patterns_[id];
-		
+
 		// nom
 		p = elem->Attribute("name");
 		if (p == NULL)
@@ -45,7 +45,7 @@ UnitFactory::UnitFactory()
 			continue;
 		}
 		pattern->name = p;
-		
+
 		// hp
 		int hp;
 		if (elem->QueryIntAttribute("hp", &hp) != TIXML_SUCCESS)
@@ -54,7 +54,7 @@ UnitFactory::UnitFactory()
 			continue;
 		}
 		pattern->hp = hp;
-		
+
 		// animations
 		p = elem->Attribute("animation");
 		if (p == NULL)
@@ -64,23 +64,23 @@ UnitFactory::UnitFactory()
 		}
 		pattern->image = &media.GetImage(p);
 		std::string anim_name;
-		
+
 		anim_name = p;
 		anim_name += "_walk_up";
 		pattern->anim[Entity::UP] = &media.GetAnimation(anim_name.c_str());
-		
+
 		anim_name = p;
 		anim_name += "_walk_down";
 		pattern->anim[Entity::DOWN] = &media.GetAnimation(anim_name.c_str());
-		
+
 		anim_name = p;
 		anim_name += "_walk_left";
 		pattern->anim[Entity::LEFT] = &media.GetAnimation(anim_name.c_str());
-		
+
 		anim_name = p;
 		anim_name += "_walk_right";
 		pattern->anim[Entity::RIGHT] = &media.GetAnimation(anim_name.c_str());
-		
+
 		printf("mob %s défini (id %d)\n", (pattern->name).c_str(), id);
 		elem = elem->NextSiblingElement();
 	}

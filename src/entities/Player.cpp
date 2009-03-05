@@ -2,10 +2,10 @@
 #include <cstring>
 
 #include "Player.hpp"
-#include "Game.hpp"
-#include "MediaManager.hpp"
-#include "Tileset.hpp"
-#include "Zone.hpp"
+#include "../core/Game.hpp"
+#include "../misc/MediaManager.hpp"
+#include "../core/Tileset.hpp"
+#include "../core/Zone.hpp"
 
 #define SPEED         120
 #define FALL_DELAY    1
@@ -19,7 +19,7 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 {
 	// valeurs magiques... surface de contact au sol
 	SetFloor(28, 20);
-	
+
 	// Animations de marche
 	walk_anims_[UP]		= &GET_ANIM("player_walk_up");
 	walk_anims_[DOWN]	= &GET_ANIM("player_walk_down");
@@ -29,30 +29,30 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	SetCenter(0, walk_anims_[DOWN]->GetFrame(0).GetHeight());
 
 	fall_anim_ = &GET_ANIM("player_fall");
-	
+
 	// Subrects d'immobilité
 	subrects_not_moving_[UP]	= sf::IntRect(0,   0, 32,  48);
 	subrects_not_moving_[DOWN]	= sf::IntRect(0,  48, 32,  96);
 	subrects_not_moving_[LEFT]	= sf::IntRect(0,  96, 32, 144);
 	subrects_not_moving_[RIGHT]	= sf::IntRect(0, 144, 32, 196);
-	
+
 	// attribution des touches de déplacement
 	move_keys_[UP] = sf::Key::Up;
 	move_keys_[DOWN] = sf::Key::Down;
 	move_keys_[LEFT] = sf::Key::Left;
 	move_keys_[RIGHT] = sf::Key::Right;
-	
+
 	// le joueur est de face par défaut
 	current_dir_ = DOWN;
 	was_moving_ = false;
 	SetSubRect(subrects_not_moving_[DOWN]);
-	
+
 	hp_ = DEFAULT_LIVES;
 	max_lives_ = DEFAULT_LIVES;
 	money_ = 42;
 	locked_ = false;
 	falling_ = false;
-	
+
 	panel_.SetLives(hp_);
 	panel_.SetRupees(money_);
 }
@@ -65,7 +65,7 @@ void Player::OnEvent(sf::Key::Code key)
 	{
 		// position
 		case sf::Key::Space:
-			std::cout << " [Player] position: " << GetPosition().x << ", " << GetPosition().y << ";\n"; 
+			std::cout << " [Player] position: " << GetPosition().x << ", " << GetPosition().y << ";\n";
 			break;
 		// + 1 slot
 		case sf::Key::S:
@@ -98,10 +98,10 @@ void Player::OnEvent(sf::Key::Code key)
 		{
 			int i = (int)GetPosition().x + GetFloorWidth() / 2;
 			int j = (int) GetPosition().y - GetFloorHeight() / 2;
-	
+
 			i /= Tile::SIZE;
 			j /= Tile::SIZE;
-		
+
 			int tile = zone_->GetTileAt(i, j);
 			Tile::Effect effect = Tileset::GetInstance().GetEffect(tile);
 			std::cout << " [Player] à la tile id: " << tile
@@ -126,7 +126,7 @@ void Player::OnEvent(sf::Key::Code key)
 			break;
 		default:
 			break;
-			
+
 	}
 	// </DEBUG HACK>
 }
@@ -136,23 +136,23 @@ void Player::Update(float frametime)
 {
 	if (locked_)
 		return;
-	
+
 	static Game& game = Game::GetInstance();
 	static int tile;
 	static float fall_timer;
-	
+
 	int i = (int) GetPosition().x + GetFloorWidth() / 2;
 	int j = (int) GetPosition().y - GetFloorHeight() / 2;
-		
+
 	i /= Tile::SIZE;
 	j /= Tile::SIZE;
-	
+
 	if (!falling_)
 	{
 		bool moved = false;
 		int dx, dy;
 		sf::FloatRect rect;
-		
+
 		// Chûte-t'on ?
 		tile = zone_->GetTileAt(i, j);
 		Tile::Effect effect = Tileset::GetInstance().GetEffect(tile);
@@ -164,7 +164,7 @@ void Player::Update(float frametime)
 			fall_timer = FALL_DELAY;
 			return;
 		}
-		
+
 		if (effect == Tile::TELEPORT)
 		{
 			Zone::Teleporter tp;
@@ -175,7 +175,7 @@ void Player::Update(float frametime)
 				return;
 			}
 		}
-		
+
 		// déplacement
 		Direction new_dir;
 		for (int dir = 0; dir < COUNT_DIRECTION; ++dir)
@@ -205,19 +205,19 @@ void Player::Update(float frametime)
 				sf::Vector2f pos = GetPosition();
 				pos.x += dx * frametime;
 				pos.y += dy * frametime;
-			
+
 				rect.Left = pos.x;
 				rect.Bottom = pos.y;
 				rect.Right = pos.x + GetFloorWidth();
 				rect.Top = pos.y - GetFloorHeight();
-				
+
 				// on vérifie si on doit changer de zone
 				if (rect.Left < 0)
 				{
 					game.ChangeZone(ZoneContainer::LEFT);
 					break;
 				}
-				else if (rect.Top < 0) 
+				else if (rect.Top < 0)
 				{
 					game.ChangeZone(ZoneContainer::UP);
 					break;
@@ -232,7 +232,7 @@ void Player::Update(float frametime)
 					game.ChangeZone(ZoneContainer::DOWN);
 					break;
 				}
-				
+
 				if (zone_->CanMove(this, rect))
 				{
 					SetPosition(pos);

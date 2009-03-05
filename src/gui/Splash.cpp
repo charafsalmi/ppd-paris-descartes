@@ -1,5 +1,5 @@
 #include "Splash.hpp"
-#include "MediaManager.hpp"
+#include "../misc/MediaManager.hpp"
 
 #include <iostream>
 
@@ -28,7 +28,7 @@ void Splash::Run()
 		return; // We're not Jesus, so that's it with the bloody, messy user.
 	}
 	sprite_.SetImage(GET_IMG("splash-paris-descartes"));
-	
+
 	fx_.SetTexture("framebuffer", NULL);		// Agit sur le contexte de rendu courant.
 	fx_.SetParameter("color", INITIAL_COLOR);	// noir.
 	fx_.SetParameter("intensity", 0.f);			// intensité de l'image normalement blittée.
@@ -58,7 +58,7 @@ bool Splash::Update(float frametime)
 	static bool switcher = false;	//Vaut true si l'on "attend" entre 2 fondus
 	static float intensity = 0.f;	//Intensité de la couleur [du noir en l'occurence]
 	static float timer = 0.f;		//Timer d'attente entre 2 fondus.
-	
+
 	if (switcher)					// Attente entre 2 fondus.
 	{
 		timer -= frametime;
@@ -76,7 +76,7 @@ bool Splash::Update(float frametime)
 			timer = WAIT_DELAY;
 			++nb_fades;
 		}
-		
+
 		if (sens)
 		{
 			intensity += (frametime / FADE_DELAY);
@@ -87,7 +87,7 @@ bool Splash::Update(float frametime)
 		}
 		fx_.SetParameter("intensity", intensity);
 	}
-	
+
 	if (nb_fades > 1) // nombre de transitions souhaitées
 	{
 		return false;
