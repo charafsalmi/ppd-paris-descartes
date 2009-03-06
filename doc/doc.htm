@@ -1,0 +1,308 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+	<head>
+		<title>PPD - IUT Paris Descartes</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	</head>
+	<body>
+<h1>Projet pluri-disciplinaire - IUT Paris Descartes</h1>
+
+
+<p>
+	<a href="#arch">Architecture du projet</a> |
+	<a href="#comps">Détails des composants</a> |
+	<a href="#map">Format des cartes</a> |
+	<a href="#anim">Format des animations</a>
+</p>
+
+
+<h2 id="arch">Architecture du projet</h2>
+
+<ul>
+	<li>bin/ <em>binaires et DLL</em>
+		<ul>
+			<li>data/
+				<ul>
+					<li>images/ <em>les images utilisées par l'application</em></li>
+					<li>map/  <em>les cartes des zones de jeu</em></li>
+					<li>music/ <em>les musiques</em></li>
+					<li>postfx/ <em>les postfx (scripts d'effet graphique)</em></li>
+					<li>sound/ <em>les sons</em></li>
+					<li>xml/ <em>des configurations en XML</em></li>
+				</ul>
+			</li>
+			<li>config/</li>
+			<li>screenshot/</li>
+		</ul>
+	</li>
+	<li>doc/ <em>les éléments de documentation</em></li>
+	<li>src/ <em>sources du projet</em>
+		<ul>
+			<li>core/</li>
+			<li>entities/</li>
+			<li>gui/</li>
+			<li>gui_system/</li>
+			<li>misc/</li>
+			<li>net/</li>
+			<li>xml/ <em>la bibliothèque TinyXML</em></li>
+		</ul>
+	</li>
+	<li>test/ <em>tests unitaires, bac à sable</em></li> 
+	<li>utils/ <em>des scripts en Python</em>
+		<ul>
+			<li>editor/ <em>l'éditeur de carte (Python)</em></li>
+		</ul>
+	</li>
+	<li>Makefile</li>
+</ul>
+
+
+
+
+<h2 id="comps">Détails des composants</h2>
+
+
+<h3>Game</h3>
+
+<p>Game est la classe centrale du jeu, c'est un singleton (un seul objet possible).</p>
+
+<p>La méthode principale de Game est Run(), c'est la boucle principale du jeu.
+La boucle de jeu se déroule en 3 étapes :</p>
+<ol>
+	<li>POLLING, c'est la récupération des évènements.<br />
+La récupération est non bloquante, c'est à dire que s'il y a un évènement, on le
+traite, s'il n'y en a pas, tant pis on ne fait rien, on regardera au prochain
+tour de boucle.</li>
+	<li>UPDATE, c'est la mise à jour de tout ce qu'il y a l'écran (par exemple,
+les déplacements).</li>
+	<li>RENDER, c'est le rendu, l'affichage des objets.</li>
+</ol>
+
+<p>Un tour de boucle constitue une frame.
+La constante APP_FPS (APPlication Frame Per Second) définit à 60 le nombre
+maximum de frames par seconde (ce nombre est seulement un plafond, on ne peut
+pas garantir que la machine pourra atteindre ce taux).</p>
+
+<p>La séquence Polling / Update / Render peut être très différente selon l'état
+du jeu. Par exemple, si on ouvre l'inventaire, la gestion des flèches doit
+naviguer dans l'inventaire, et non diriger le joueur.</p>
+
+<p>Pour modifier le comportement de la boucle de jeu, Game dispose de 3 pointeurs
+de méthodes :
+on_event_meth_, update_meth_, et render_meth_
+qui correspondent chacun à une partie des 3 étapes.
+Ces pointeurs de méthodes contiennent l'adresse des méthodes à exécuter à chaque
+tour de boucle.
+L'intérêt est de ne pas avoir plein de if dans le code de la boucle principale,
+on découpe chaque partie du code dans une méthode particulière.</p>
+
+<p>L'énumération Game::Mode définit les modes de jeu, c'est à dire les combinaisons
+de ces 3 pointeurs de méthodes.
+Ainsi, pour basculer en mode Inventaire, un simple
+SetMode(INVENTORY);
+suffit (les pointeurs de méthodes seront mis à jour).</p>
+
+<p>Les éléments du jeu sont encapsulés dans un objet ZoneContainer.</p>
+
+<h3>ZoneContainer</h3>
+
+<p>Le jeu est divisé en zones, chaque zone fait la taille de l'écran.
+ZoneContainer contient une matrice de zones, ainsi qu'un pointeur sur la zone
+courante (l'attribut active_zone_).
+Quand on doit changer de zone en passant par une frontière (haut, bas, gauche,
+droite), on utilise la méthode :
+ChangeZone(Direction)</p>
+
+<p>Il est également possible d'aller dans n'importe quelle zone directement avec
+la méthode SetActiveZone (on passe les coordonnées de la zone cible dans la
+matrice de ZoneContainer).</p>
+
+<p>ZoneContainer s'occupe de vérifier si le changement de zone est autorisé, fait
+un effet de scrolling et change la zone courante.
+Le joueur est supprimé de l'ancienne zone et inséré dans la nouvelle, car chaque
+zone contient la liste de ses entités.</p>
+
+<p>Les groupes de zones d'un ZoneContainer sont déjà prédéfinis dans des fichiers
+XML (dans data/map/), et à chaque fichier XML correspond un identifiant
+(énumération ZoneContainer::MapName)</p>
+
+<p>ZoneContainer::Load permet de charger un de ces groupes de zones en passant une
+des valeurs MapName en paramètre.</p>
+
+<h3>Zone</h3>
+
+
+<p>Zone est un écran de jeu. Chaque zone contient sa liste d'entités (entities_),
+sa liste d'objets (items_) et ses téléporteurs (teleporters_).
+Avant d'utiliser une zone, il faut la construire avec la méthode Load().
+Cette méthode prend en paramètre un nœud XML de type TiXmlHandle.
+Ce nœud doit correspondre à une entrée zone dans le fichier XML d'une carte,
+et à partir des indications qui s'y trouvent, constituer le décor, insérer les
+entités et les téléporteurs, etc.</p>
+<p>Le décor est représenté par une suite de numéro (des id), chacun d'entre eux est
+associé à petit carré de la carte, appelé "Tile".
+Cet id permet de déterminer l'image de la tile, si on a le droit de marcher
+dessus, etc.</p>
+
+
+<h3>Tileset</h3>
+
+
+<p>Tileset est un singleton dédié à la gestion des id des tiles.
+C'est cette classe qui permet, à partir d'un id, de définir tous les attributs
+d'une tile.
+Les attributs des tiles ne sont pas codés en dur dans Tileset, ils se trouvent
+dans le fichier data/xml/tiles.xml.</p>
+
+
+<h3>MediaManager</h3>
+
+
+<p>Encore une classe singleton. Le MediaManager sert à contenir tous les médias du
+jeu, c'est à dire les images, les sons, les musiques, etc.
+Tous les contenus sont identifiés par une chaîne de caractères, qui correspond
+au nom de la ressource sans son extension.
+Ainsi, l'image pingouin.png est identifiée par "pingouin", le son boom.wav par
+"boom", etc.</p>
+<p>Quelques fonctions inlines permettent de raccourcir la syntaxe, qui est un peu
+longue. Ainsi,
+sf::Image& img = MediaManager::GetInstance().GetImage("pingouin");
+peut être remplacé par :
+sf::Image& img = GET_IMG("pingouin");</p>
+
+<h3>Les entités</h3>
+
+<p>Les entités concernent la classe Entity et ses classes enfants.
+Entity est la classe de base de toutes les entités, qui elle même hérite de
+sf::Sprite.</p>
+<p>Une entité est mise à jour avec Update.
+Comme une entité est un sprite, on peut directement l'afficher, la déplacer,
+obtenir sa position, etc. (voir les méthodes de sf::Sprite dans la documentation
+SFML).</p>
+
+
+<h3>Les animations sur les entités</h3>
+
+<p>Par défaut, les entités ne sont pas animées.
+Les animations sont fournies par les classes Animation et Animated.
+Animation est un tableau de rectangles, qui définissent quelle sous-partie
+d'une image il faut utiliser.
+Les animations sont stockées dans MediaManager.
+Animated est un timer lié à un objet Animation, il fait défiler les sous-parties
+de l'image.
+Pour avoir une entité animée, il faut faire de l'héritage multiple.
+Ainsi, Player hérite de Entity ET de Animated.</p>
+
+
+<h3>ControlPanel</h3>
+
+<p>Cette classe est un singleton et définit l'interface visuel de l'utilisateur.
+ControlPanel sert donc à afficher toutes les informations à l'écran, comme le
+nombre de vie, l'argent, etc.</p>
+
+
+<h3>Music</h3>
+
+
+<p>La SFML ne gère par certains formats musicaux, comme le .xm ou le .mod.
+Cette classe permet de charger et de jouer des fichiers de ces formats, grâce
+à la bibliothèque DUMB.</p>
+
+
+<h3>Misc</h3>
+
+<p>Ce composant ne contient pas de classe, juste quelques fonctions pratiques qui
+ne sont pas directement liées au projet.
+str_sprintf permet notamment de construire des std::string avec la syntaxe de
+la vénérable fonction printf :
+std::string ma_string = str_sprintf("J'ai %d ans", 42);</p>
+
+
+<h3 id="map">Format d'une carte XML</h3>
+
+<p>Les cartes sont encodés en XML.<br />
+Voici un exemple :</p>
+<xmp>
+<?xml version="1.0" encoding="utf-8" ?>
+<map width="2" height="2">
+	<zone>
+		<tiles>...</tiles>
+		<entities>
+			<entity name="blah" x="220" y="50" />
+			...
+		</entities>
+		<teleporters>
+			<tp x="9" y="1" container="1" zone_x="0" zone_y="0" tile_x="8" tile_y="4" />
+		</teleporters>
+	</zone>
+	<zone>
+		...
+	</zone>
+</map>
+</xmp>
+
+<p>"map" est l'élément racine. Les attributs "width" et "height" indiquent combien
+il y a de zones en largeur et en hauteur.<br />
+Chaque zone correspond à une entrée "zone" (il doit y avoir width * height
+entrées "zone").<br />
+Dans chaque zone, on trouve :</p>
+
+<ul>
+	<li>les tiles : tous les id à la suite en plein texte, dans le tag "tiles".</li>
+	<li>les entités : une entrée "entity" par entité, dans le tag "entities".<br />
+	Les attributs de entity:
+		<ul>
+			<li>name: l'identifiant</li>
+			<li>x: la position x</li>
+			<li>y: la position y</li>
+		</ul>
+	S'il n'y a pas d'entités, l'entrée "entities" est optionnelle.
+	</li>
+	<li>les téléporteurs : une entrée tp par téléporteur, dans le tag "teleporters"<br />
+	Les attribut de tp :<br />
+	Le téléporteur est localisé dans la zone avec :
+		<ul>
+			<li>x: position x en tiles</li>
+			<li>y: position y en tiles</li>
+		</ul>
+	La destination est localisée avec :
+		<ul>
+			<li>container: valeur énumérée ZoneContainer::MapName (identifie le conteneur
+	de zones cible)</li>
+			<li>zone_x: position x de la zone cible</li>
+			<li>zone_y: position y de la zone cible</li>
+			<li>tile_x: position x en tiles dans la zone cible</li>
+			<li>tile_y: position y en tiles dans la zone cible</li>
+		</ul>
+	S'il n'y a pas de téléporteurs, l'entrée "teleporters" est optionnelle.
+	</li>
+</ul>
+
+
+<h2 id="anim">Format des animations</h2>
+
+<p>Les animations sont définies dans data/xml/animations.xml<br />
+Exemple :</p>
+
+<xmp>
+<?xml version="1.0" encoding="utf-8" ?>
+<animations>
+	<anim name="player_walk_up" width="32" height="48" count="8" delay="0.125" x_offset="32" y_offset="0" />
+	...
+</animations>
+</xmp>
+<p>Attributs de anim</p>
+<ul>
+	<li>name: identifiant de l'animation</li>
+	<li>width: largeur d'une frame</li>
+	<li>height: hauteur d'une frame</li>
+	<li>count: nombre de frames</li>
+	<li>delay: délai entre chaque frame</li>
+	<li>x_offset: décalage de l'origine en x</li>
+	<li>y_offset: décalage de l'origine en y</li>
+</ul>
+
+<p>Une entrée "anim" par animation.<br />
+Les animations sont construites et stockées dans MediaManager.</p>
+
+</body>
+</html>

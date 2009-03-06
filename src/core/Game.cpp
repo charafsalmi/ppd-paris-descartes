@@ -3,6 +3,7 @@
 
 #include "Game.hpp"
 #include "../misc/MediaManager.hpp"
+#include "../misc/ConfigParser.hpp"
 #include "../gui/Splash.hpp"
 #include "../xml/tinyxml.h"
 
@@ -12,6 +13,7 @@
 #define APP_FPS    60
 #define APP_TITLE  "PPD"
 
+#define CONFIG_FILE "config/config.css"
 
 Game& Game::GetInstance()
 {
@@ -33,6 +35,13 @@ Game::Game() :
 
 Game::~Game()
 {
+	// writing options
+	ConfigParser config;
+	config.SeekSection("Settings");
+	config.WriteItem("panel_on_top", options_.panel_on_top ? 1 : 0);
+	
+	config.SaveToFile(CONFIG_FILE);
+	
 	app_.Close();
 
 #ifdef DUMB_MUSIC
@@ -52,6 +61,23 @@ void Game::Init()
 	// chargement du conteneur de zones
 	zone_container_.Load(ZoneContainer::WORLD);
 	zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
+	
+	// default options
+	options_.panel_on_top = true;
+	
+	// load options
+	ConfigParser config;
+	if (config.LoadFromFile(CONFIG_FILE))
+	{
+		printf("loading %s...\n", CONFIG_FILE);
+		config.SeekSection("Settings");
+		config.ReadItem("panel_on_top", options_.panel_on_top);
+		if (!options_.panel_on_top)
+		{
+			InGameOnEvent(sf::Key::PageDown);
+		}
+	}
+	
 	// InGame
 	SetMode(IN_GAME);
 }
@@ -73,29 +99,32 @@ void Game::Run()
 	SetMusic(active_zone_->GetMusic());
 #endif
 
-
 	while (running)
 	{
 		// POLLING
 		while (app_.GetEvent(event))
 		{
-		    #ifdef WINDOW_TEST
-		    fen_.ManageEvent(event);
-            #endif
-            		    		    
+#ifdef WINDOW_TEST
+			fen_.ManageEvent(event);
+#endif
 			if (event.Type == sf::Event::Closed)
 			{
 				running = false;
 			}
 			else if (event.Type == sf::Event::KeyPressed)
 			{
-			    if(event.Key.Code == sf::Key::F1){
-                    TakeScreenshot("screenshot");
-			    }else if(event.Key.Code == sf::Key::Escape){
-                    running = false;
-                    break;
+				switch (event.Key.Code)
+				{
+					case sf::Key::F1:
+						TakeScreenshot("screenshot");
+						break;
+					case sf::Key::Escape:
+						running = false;
+						break;
+					default:
+						(this->*on_event_meth_)(event.Key.Code);
+						break;
 				}
-				(this->*on_event_meth_)(event.Key.Code);
 			}
 		}
 		// UPDATE
@@ -113,18 +142,19 @@ void Game::Run()
 	}
 }
 
-void Game::TakeScreenshot(const std::string& directory){
-    char currentTime[256];
-    std::string filename;
-    time_t t;
 
-    t = time(NULL);
-    strftime(currentTime, sizeof(currentTime), "%d-%m-%Y-%M%S", localtime(&t));
-
-    filename = str_sprintf("%s/%s.png", directory.c_str(), currentTime, t);
-
-    app_.Capture().SaveToFile(filename);
-    std::cout << "Screenshot " << filename.c_str() << " taken" << std::endl;
+void Game::TakeScreenshot(const char* directory)
+{
+	char currentTime[256];
+	std::string filename;
+	time_t t = time(NULL);
+	
+	strftime(currentTime, sizeof(currentTime), "%d-%m-%Y-%M%S", localtime(&t));
+	
+	filename = str_sprintf("%s/%s.png", directory, currentTime, t);
+	
+	app_.Capture().SaveToFile(filename);
+	std::cout << "Screenshot " << filename << " taken" << std::endl;
 }
 
 
@@ -248,21 +278,35 @@ void Game::InGameOnEvent(sf::Key::Code key)
 	{
 		return;
 	}
-	if (key == sf::Key::Return)
+	switch (key)
 	{
-		SetMode(INVENTORY);
+		case sf::Key::Return:
+			SetMode(INVENTORY);
+			break;
+		case sf::Key::PageUp:
+			panel_.SetPosition(0, 0);
+			zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
+			options_.panel_on_top = true;
+			break;
+		case sf::Key::PageDown:
+			panel_.SetPosition(0, Zone::HEIGHT_PX);
+			zone_container_.SetPosition(0, 0);
+			options_.panel_on_top = false;
+			break;
+		default:
+			player_->OnEvent(key);
+			break;
 	}
-	player_->OnEvent(key);
 }
 
 
 void Game::InGameShow()
 {
-	app_.Draw(panel_);
 	app_.Draw(zone_container_);
-	#ifdef WINDOW_TEST
+	app_.Draw(panel_);
+#ifdef WINDOW_TEST
 	fen_.Show(app_);
-	#endif
+#endif
 }
 
 

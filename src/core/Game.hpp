@@ -50,11 +50,14 @@ private:
 	Game();
 	Game(const Game&);
 	~Game();
-
+	
+	// Prend une capture d'écran de la fenêtre
+	void TakeScreenshot(const char* directory);
+    
 #ifdef DUMB_MUSIC
 	void SetMusic(int value);
 #endif
-
+	
 	// callbacks
 
 	// méthodes InGame
@@ -73,17 +76,20 @@ private:
 	};
 
 	void SetMode(Mode mode);
-
-    // Prend une capture d'écran de la fenêtre
-    void TakeScreenshot(const std::string& directory);
-
+	
 	// pointeur de la méthode de gestion des évènements
 	void (Game::*on_event_meth_)(sf::Key::Code code);
 	// pointeur de la méthode de mise à jour
 	void (Game::*update_meth_)(float frametime);
 	// pointeur de la méthode d'affichage'
 	void (Game::*render_meth_)();
-
+	
+	struct Options
+	{
+		bool panel_on_top;
+	};
+	Options options_;
+	
 	// un seul conteneur de zones est chargé à la fois
 	ZoneContainer zone_container_;
 	// nom du prochain conteneur à charger

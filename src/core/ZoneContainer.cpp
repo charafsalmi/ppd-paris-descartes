@@ -6,12 +6,13 @@
 // durée du scrolling lors d'un changement de zone
 #define SCROLL_TIME .6f
 
+
 ZoneContainer::ZoneContainer()
 {
 	width_ = 0;
 	height_ = 0;
 	zones_ = NULL;
-
+	scrolling_ = false;
 	cds_zone_.x = -1; // undefined coords
 	cds_zone_.y = -1;
 

@@ -98,5 +98,5 @@ private:
 	Properties* cursor_;
 };
 
-#endif /* guard CONFIGPARSER_HPP */
+#endif /* CONFIGPARSER_HPP */
 
