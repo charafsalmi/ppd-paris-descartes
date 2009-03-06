@@ -27,7 +27,9 @@ void Splash::Run()
 		puts("Cant load postfx");
 		return; // We're not Jesus, so that's it with the bloody, messy user.
 	}
-	sprite_.SetImage(GET_IMG("splash-paris-descartes"));
+	const sf::Image& splash = GET_IMG("splash-paris-descartes");
+	sprite_.SetImage(splash);
+	sprite_.SetPosition(0, (app_.GetHeight() - splash.GetHeight()) / 2);
 
 	fx_.SetTexture("framebuffer", NULL);		// Agit sur le contexte de rendu courant.
 	fx_.SetParameter("color", INITIAL_COLOR);	// noir.

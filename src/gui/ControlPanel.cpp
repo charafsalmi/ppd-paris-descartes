@@ -7,13 +7,10 @@
 
 #include "../misc/Misc.hpp"
 
-#define ORIGIN			sf::Vector2f( 32, 32)
-
-
-#define RUPEES_ORIGIN	sf::Vector2f(132, 48)
-#define ARROWS_ORIGIN	sf::Vector2f(194, 48)
-#define BOMBS_ORIGIN	sf::Vector2f(242, 48)
-#define HEARTH_ORIGIN	sf::Vector2f(322, 48)
+#define RUPEES_ORIGIN	sf::Vector2f(132, 24)
+#define ARROWS_ORIGIN	sf::Vector2f(194, 24)
+#define BOMBS_ORIGIN	sf::Vector2f(242, 24)
+#define HEARTH_ORIGIN	sf::Vector2f(322, 24)
 
 #define DRAW_OFFSET		 16	// Le même pour les sprites des vies et les chiffres
 
@@ -82,7 +79,7 @@ void ControlPanel::Update(float frametime)
 }
 
 
-void ControlPanel::Show(sf::RenderTarget& app)
+void ControlPanel::Render(sf::RenderTarget& app) const
 {
 	app.Draw(background_);
 	DrawLives(app);
@@ -92,9 +89,9 @@ void ControlPanel::Show(sf::RenderTarget& app)
 
 ControlPanel::ControlPanel()
 {
-	background_.SetPosition(ORIGIN);
 	background_.SetImage(GET_IMG("panel-background"));
-
+	background_.Resize(640, HEIGHT_PX);
+	
 	lives_.SetImage(GET_IMG("panel-hearth"));
 	lives_.SetSubRect(sf::IntRect(0, 0, 14, 14));
 	lives_max_ = 1;
@@ -120,7 +117,7 @@ ControlPanel::~ControlPanel()
 }
 
 
-void ControlPanel::DrawLives(sf::RenderTarget& app)
+void ControlPanel::DrawLives(sf::RenderTarget& app) const
 {
 	sf::Vector2f lives_pos_ = HEARTH_ORIGIN;
 	int to_draw;
@@ -228,7 +225,7 @@ void ControlPanel::DrawLives(sf::RenderTarget& app)
 }
 
 
-void ControlPanel::DrawDigits(sf::RenderTarget& app)
+void ControlPanel::DrawDigits(sf::RenderTarget& app) const
 {
 	sf::Vector2f draw_pos = RUPEES_ORIGIN;
 	int i = rupees_count_;
@@ -286,9 +283,9 @@ void ControlPanel::DrawDigits(sf::RenderTarget& app)
 }
 
 
-sf::IntRect& ControlPanel::GetDigitRect(int digit)
+sf::IntRect& ControlPanel::GetDigitRect(int digit) const
 {
-	static sf::IntRect my (0, 0, 0, DRAW_OFFSET);
+	static sf::IntRect my(0, 0, 0, DRAW_OFFSET);
 	static int x;
 
 	x = 0;

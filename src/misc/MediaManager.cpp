@@ -232,7 +232,8 @@ MediaManager::MediaManager()
 		std::cerr << "can't open animation definitions: " << ANIMATION_FILE << std::endl;
 		abort();
 	}
-
+	std::cout << "loading animations..." << std::endl;
+	
 	TiXmlHandle handle(&doc);
 	TiXmlElement* elem = handle.FirstChildElement().FirstChildElement().Element();
 	// attributs
@@ -260,7 +261,6 @@ MediaManager::MediaManager()
 				p->AddFrame(x_offset + i * width, y_offset, width, height);
 			}
 			p->SetDelay(delay);
-			std::cout << "animation " << name << " ajoutée\n";
 		}
 		else
 		{

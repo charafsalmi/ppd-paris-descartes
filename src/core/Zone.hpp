@@ -22,7 +22,9 @@ public:
 	enum
 	{
 		// Dimensions de la zone en nombre de tiles
-		WIDTH = 20, HEIGHT = 16
+		WIDTH = 20, HEIGHT = 16,
+		// Dimensions en pixels
+		WIDTH_PX = WIDTH * Tile::SIZE, HEIGHT_PX = HEIGHT * Tile::SIZE
 	};
 
 	Zone();
@@ -49,9 +51,9 @@ public:
 
 	/**
 	 * Afficher la zone de jeu
-	 * @param[in, out] app: fenêtre de rendu
+	 * @param[in, out] target: cible de rendu
 	 */
-	void Show(sf::RenderWindow& app) const;
+	void Show(sf::RenderTarget& target) const;
 
 	/**
 	 * Ajouter une entité dans la zone de jeu

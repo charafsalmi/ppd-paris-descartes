@@ -7,28 +7,17 @@
 #include "Inventory.hpp"
 
 
-class ControlPanel
+class ControlPanel: public sf::Drawable
 {
 public:
-
-
-
-/*
-
-	TODO :
-			- Quand on aura du rendu sur image: blitter tout sur image, scalée 
-				pour prendre toute la largeur de l'app.
-				but-> préserver l'aspect en permettant de changer de résolution.
-			- Quand un Inventaire sera codé: dans les N slots, blitter l'icone de 
-				l'item équipé dans chaque slot, s'il existe.
-
-*/
-
+	enum
+	{
+		HEIGHT_PX = 60
+	};
+	
 	static ControlPanel& GetInstance();
 	
 	void Update(float frametime);
-	
-	void Show(sf::RenderTarget& app);
 	
 	void SetLives(int value);
 	
@@ -46,24 +35,26 @@ private:
 	ControlPanel(const ControlPanel& other);
 	~ControlPanel();
 	
-	void DrawLives(sf::RenderTarget& app);
-	void DrawDigits(sf::RenderTarget& app);
+	void Render(sf::RenderTarget& app) const;
 	
-	sf::IntRect& GetDigitRect(int digit);
+	void DrawLives(sf::RenderTarget& app) const;
+	void DrawDigits(sf::RenderTarget& app) const;
+	
+	sf::IntRect& GetDigitRect(int digit) const;
 	
 	int lives_count_, lives_max_, rupees_count_, bombs_count_, arrows_count_;
-	float blink_timer_;
-	bool blink_frame_;	
+	mutable float blink_timer_;
+	mutable bool blink_frame_;	
 
 	
-	sf::Sprite lives_;
-	sf::Sprite digits_;
+	mutable sf::Sprite lives_;
+	mutable sf::Sprite digits_;
 	sf::Sprite background_;
 
-	sf::Sound blink_sound_;
+	mutable sf::Sound blink_sound_;
 	
 #ifdef DEBUG
-	bool dbg_;
+	mutable bool dbg_;
 #endif
 	Inventory* inventory_;
 };

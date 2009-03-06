@@ -34,7 +34,7 @@ public:
 	/**
 	* Gestion des evenements concernant la fenêtre
 	*/
-	void ManageEvent(sf::Event event);
+	void ManageEvent(const sf::Event& event);
 private:
     /**
     * Image de fond de la fenêtre

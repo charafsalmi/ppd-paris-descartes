@@ -4,7 +4,7 @@
 
 #include "Button.hpp"
 #include "Label.hpp"
-#include "Progressbar.hpp"
+#include "ProgressBar.hpp"
 
 #include "../misc/MediaManager.hpp"
 #include "../misc/Misc.hpp"
@@ -28,7 +28,7 @@ Window::~Window(){
     }
 }
 
-void Window::ManageEvent(sf::Event event){
+void Window::ManageEvent(const sf::Event& event){
 }
 
 void Window::Load(const std::string& xmlfile){

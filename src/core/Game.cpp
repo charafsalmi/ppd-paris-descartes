@@ -6,8 +6,8 @@
 #include "../gui/Splash.hpp"
 #include "../xml/tinyxml.h"
 
-#define APP_WIDTH  (Tile::SIZE * Zone::WIDTH)
-#define APP_HEIGHT (Tile::SIZE * Zone::HEIGHT)
+#define APP_WIDTH  Zone::WIDTH_PX
+#define APP_HEIGHT (Zone::HEIGHT_PX + ControlPanel::HEIGHT_PX)
 #define APP_BPP    32
 #define APP_FPS    60
 #define APP_TITLE  "PPD"
@@ -48,9 +48,10 @@ void Game::Init()
     #ifdef WINDOW_TEST
     fen_.Load("data/window/test.xml");
     #endif
-
+    
 	// chargement du conteneur de zones
 	zone_container_.Load(ZoneContainer::WORLD);
+	zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
 	// InGame
 	SetMode(IN_GAME);
 }
@@ -79,9 +80,9 @@ void Game::Run()
 		while (app_.GetEvent(event))
 		{
 		    #ifdef WINDOW_TEST
-            fen_.ManageEvent(event);
-		    #endif
-
+		    fen_.ManageEvent(event);
+            #endif
+            		    		    
 			if (event.Type == sf::Event::Closed)
 			{
 				running = false;
@@ -125,6 +126,7 @@ void Game::TakeScreenshot(const std::string& directory){
     app_.Capture().SaveToFile(filename);
     std::cout << "Screenshot " << filename.c_str() << " taken" << std::endl;
 }
+
 
 void Game::ChangeZone(ZoneContainer::Direction direction)
 {
@@ -256,8 +258,8 @@ void Game::InGameOnEvent(sf::Key::Code key)
 
 void Game::InGameShow()
 {
-	zone_container_.Show(app_);
-	panel_.Show(app_);
+	app_.Draw(panel_);
+	app_.Draw(zone_container_);
 	#ifdef WINDOW_TEST
 	fen_.Show(app_);
 	#endif
@@ -276,7 +278,7 @@ void Game::InventoryOnEvent(sf::Key::Code key)
 
 void Game::InventoryShow()
 {
-	zone_container_.Show(app_);
+	app_.Draw(zone_container_);
 	panel_.GetInventory()->Show(app_);
 }
 

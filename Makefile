@@ -2,21 +2,21 @@ CC=g++
 CFLAGS= -Wall -Wextra -Wwrite-strings -ansi -pedantic
 LDFLAGS= -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 EXEC=bin/ppd
-SRC= $(wildcard src/core/*.cpp)
-SRC += $(wildcard src/entities/*.cpp)
-SRC += $(wildcard src/gui/*.cpp)
-SRC += $(wildcard src/gui_system/*.cpp)
-SRC += $(wildcard src/misc/*.cpp)
-SRC += $(wildcard src/net/*.cpp)
-SRC += $(wildcard src/xml/*.cpp)
+SRC= $(wildcard src/*/*.cpp)
 OBJ= $(SRC:.cpp=.o)
 
 # debug/release mode
 DEBUG=yes
 ifeq ($(DEBUG), yes)
-	CFLAGS += -g -DDEBUG 
+	CFLAGS += -g -DDEBUG
 else
 	CFLAGS += -O2
+endif
+
+# test gui_system
+WINDOW_TEST=no
+ifeq ($(WINDOW_TEST), yes)
+	CFLAGS += WINDOW_TEST
 endif
 
 # DUMBlib used?

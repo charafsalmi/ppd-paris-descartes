@@ -11,3 +11,4 @@ ProgressBar::ProgressBar() : Control(){
 ProgressBar::~ProgressBar(){
 
 }
+

@@ -5,11 +5,14 @@
 #include <cstring>
 
 #include "Zone.hpp"
-#include "../entities/StaticItem.hpp"
-#include "../misc/MediaManager.hpp"
-#include "../entities/UnitFactory.hpp"
-#include "Game.hpp"
 #include "ZoneContainer.hpp"
+#include "Game.hpp"
+#include "../entities/StaticItem.hpp"
+#include "../entities/UnitFactory.hpp"
+#include "../misc/MediaManager.hpp"
+#include "../gui/ControlPanel.hpp"
+
+#define ZONE_SUBRECT sf::IntRect(0, ControlPanel::HEIGHT_PX, WIDTH_PX, ControlPanel::HEIGHT_PX + HEIGHT_PX)
 
 
 Zone::Zone()
@@ -48,7 +51,12 @@ void Zone::Load(const TiXmlHandle& handle)
 			tileset.MakeSprite(tile_id, tile);
 			sf::Vector2f pos(j * Tile::SIZE, i * Tile::SIZE);
 			tile.SetPosition(pos);
-
+			
+			/* on dessine toutes les tiles dans le buffer de la fenêtre de rendu
+			ce buffer sera ensuite capturé dans tiles_img_ afin de pouvoir
+			afficher toutes les tiles en un seul coup
+			(hack de rendu sur image, en attendant SFML 2.0)
+			*/
 			app.Draw(tile);
 		}
 	}
@@ -113,8 +121,12 @@ void Zone::Load(const TiXmlHandle& handle)
 	}
 
 	// création de l'image des tiles
-	tiles_img_ = app.Capture();
+	if (!tiles_img_.CopyScreen(app, ZONE_SUBRECT))
+	{
+		std::cerr << " [Zone] échec création image des tiles" << std::endl;
+	}
 	tiles_sprite_.SetImage(tiles_img_);
+	tiles_sprite_.FlipY(true); // HACK BUGFIX SFML 1.4
 	app.Clear();
 	loaded_ = true;
 }
@@ -165,24 +177,24 @@ void Zone::Update(float frametime)
 }
 
 
-void Zone::Show(sf::RenderWindow& app) const
+void Zone::Show(sf::RenderTarget& target) const
 {
 	// affichage des tiles
-	app.Draw(tiles_sprite_);
-
+	target.Draw(tiles_sprite_);
+	
 	// affichage des items
 	ItemList::const_iterator it2;
 	for (it2 = items_.begin(); it2 != items_.end(); ++it2)
 	{
-		app.Draw(**it2);
+		target.Draw(**it2);
 	}
-
+	
 	// affichage des entités
 	entities_.sort(Entity::PtrComp);
 	EntityList::const_iterator it;
 	for (it = entities_.begin(); it != entities_.end(); ++it)
 	{
-		app.Draw(**it);
+		target.Draw(**it);
 	}
 }
 

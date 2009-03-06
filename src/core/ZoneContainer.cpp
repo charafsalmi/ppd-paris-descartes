@@ -6,10 +6,6 @@
 // durée du scrolling lors d'un changement de zone
 #define SCROLL_TIME .6f
 
-#define SCREEN_WIDTH  (Tile::SIZE * Zone::WIDTH)
-#define SCREEN_HEIGHT (Tile::SIZE * Zone::HEIGHT)
-
-
 ZoneContainer::ZoneContainer()
 {
 	width_ = 0;
@@ -118,9 +114,11 @@ void ZoneContainer::ChangeZone(Direction dir)
 		scroll_.timer = SCROLL_TIME;
 		scroll_.current.SetImage(*active_zone_->GetBackground());
 		scroll_.current.SetPosition(0, 0);
+		scroll_.current.FlipY(true); // HACK BUGFIX SFML 1.4
 		scroll_.next.SetImage(*next_zone_->GetBackground());
 		scroll_.next.SetPosition(0, 0);
-
+		scroll_.next.FlipY(true); // HACK BUGFIX SFML 1.4
+		
 		Game::GetInstance().GetPlayer()->Lock();
 		printf(" [ZC] scrolling vers la zone [%d][%d]\n", y, x);
 	}
@@ -190,13 +188,13 @@ void ZoneContainer::Update(float frametime)
 		switch (scroll_.dir)
 		{
 			case UP:
-				player->SetY(SCREEN_HEIGHT - 1);
+				player->SetY(Zone::HEIGHT_PX - 1);
 				break;
 			case DOWN:
 				player->SetY(player->GetFloorHeight());
 				break;
 			case LEFT:
-				player->SetX(SCREEN_WIDTH - player->GetFloorWidth() - 1);
+				player->SetX(Zone::WIDTH_PX - player->GetFloorWidth() - 1);
 				break;
 			case RIGHT:
 				player->SetX(0);
@@ -213,26 +211,26 @@ void ZoneContainer::Update(float frametime)
 		switch (scroll_.dir)
 		{
 			case UP:
-				coord = (int)(SCREEN_HEIGHT - (SCREEN_HEIGHT * scroll_.timer / SCROLL_TIME));
+				coord = (int)(Zone::HEIGHT_PX - (Zone::HEIGHT_PX * scroll_.timer / SCROLL_TIME));
 				scroll_.current.SetY(coord);
-				scroll_.next.SetY(-SCREEN_HEIGHT + coord);
+				scroll_.next.SetY(-Zone::HEIGHT_PX + coord);
 				player->SetY(coord);
 				break;
 			case DOWN:
-				coord = (int)(SCREEN_HEIGHT * scroll_.timer / SCROLL_TIME);
-				scroll_.current.SetY(coord - SCREEN_HEIGHT);
+				coord = (int)(Zone::HEIGHT_PX * scroll_.timer / SCROLL_TIME);
+				scroll_.current.SetY(coord - Zone::HEIGHT_PX);
 				scroll_.next.SetY(coord);
 				player->SetY(coord);
 				break;
 			case LEFT:
-				coord = (int)(SCREEN_WIDTH - (SCREEN_WIDTH * scroll_.timer / SCROLL_TIME));
+				coord = (int)(Zone::WIDTH_PX - (Zone::WIDTH_PX * scroll_.timer / SCROLL_TIME));
 				scroll_.current.SetX(coord);
-				scroll_.next.SetX(-SCREEN_WIDTH + coord);
+				scroll_.next.SetX(-Zone::WIDTH_PX + coord);
 				player->SetX(coord);
 				break;
 			case RIGHT:
-				coord = (int)(SCREEN_WIDTH * scroll_.timer / SCROLL_TIME);
-				scroll_.current.SetX(coord - SCREEN_WIDTH);
+				coord = (int)(Zone::WIDTH_PX * scroll_.timer / SCROLL_TIME);
+				scroll_.current.SetX(coord - Zone::WIDTH_PX);
 				scroll_.next.SetX(coord);
 				player->SetX(coord);
 				break;
@@ -241,13 +239,13 @@ void ZoneContainer::Update(float frametime)
 }
 
 
-void ZoneContainer::Show(sf::RenderWindow& app)
+void ZoneContainer::Render(sf::RenderTarget& target) const
 {
 	if (scrolling_)
 	{
-		app.Draw(scroll_.current);
-		app.Draw(scroll_.next);
-		app.Draw(*Game::GetInstance().GetPlayer());
+		target.Draw(scroll_.current);
+		target.Draw(scroll_.next);
+		target.Draw(*Game::GetInstance().GetPlayer());
 	}
 	else
 	{
@@ -258,9 +256,8 @@ void ZoneContainer::Show(sf::RenderWindow& app)
 			active_zone_ = next_zone_;
 			active_zone_->AddEntity(Game::GetInstance().GetPlayer());
 			Entity::SetActiveZone(active_zone_);
-			puts(" [ZC] scrolling terminé");
 		}
-		active_zone_->Show(app);
+		active_zone_->Show(target);
 	}
 }
 

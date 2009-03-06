@@ -7,7 +7,7 @@
 /**
  * Ensemble de zones
  */
-class ZoneContainer
+class ZoneContainer: public sf::Drawable
 {
 public:
 	enum MapName
@@ -84,11 +84,13 @@ public:
 
 	/**
 	 * Affichage
-	 * @param[in, out] app: fenêtre de rendu
+	 * @param[in, out] target: cible de rendu
 	 */
-	void Show(sf::RenderWindow& app);
+	//void Show(sf::RenderTarget& target) const;
 
 private:
+	void Render(sf::RenderTarget& target) const;
+	
 	/**
 	 * Effet de défilement lors d'un changement de zone
 	 */
@@ -103,7 +105,7 @@ private:
 	bool scrolling_;
 	ZoneScroller scroll_;
 
-	Zone* active_zone_;
+	mutable Zone* active_zone_;
 	sf::Vector2i cds_zone_; // coordonnées de la zone courante
 
 	Zone* next_zone_;
