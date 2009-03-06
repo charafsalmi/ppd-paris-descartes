@@ -15,6 +15,11 @@ public:
 	 */
 	StaticItem(const sf::Vector2f& pos, const sf::Image& image,
 		const sf::Vector2i* floor=NULL);
+	
+	inline void TakeDamage(int damage)
+	{
+		(void) damage;
+	}
 };
 
 #endif /* STATICITEM_HPP */

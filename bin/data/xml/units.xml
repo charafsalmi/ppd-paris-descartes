@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <mobs>
 	<mob id="0" name="Squelette" animation="squelette" hp="3" />
-	<mob id="1" name="rôdeur" animation="rodeur" hp="5" />
+	<mob id="1" name="Rôdeur" animation="rodeur" hp="5" />
 	<mob id="2" name="Mandarine géante" animation="mandarine" hp="10" />
 </mobs>
 

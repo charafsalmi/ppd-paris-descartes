@@ -40,7 +40,13 @@ public:
 	 * @return true si déplacement est effectué
 	 */
 	//virtual bool MoveRandomly(float frametime);
-
+	
+	/**
+	 * Encaisser des dommages
+	 * @param[in] damage: dommages infligés
+	 */
+	virtual void TakeDamage(int damage) = 0;
+	
 	/**
 	 * @brief Largeur du rectangle de contact avec le sol
 	 */

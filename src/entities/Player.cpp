@@ -9,7 +9,7 @@
 
 #define SPEED         120
 #define FALL_DELAY    1
-#define DEFAULT_LIVES 3
+#define DEFAULT_LIVES 42
 
 
 Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
@@ -124,6 +124,9 @@ void Player::OnEvent(sf::Key::Code key)
 			}
 		}
 			break;
+		case sf::Key::F2:
+			TakeDamage(1);
+			break;
 		default:
 			break;
 
@@ -134,6 +137,8 @@ void Player::OnEvent(sf::Key::Code key)
 
 void Player::Update(float frametime)
 {
+	Unit::Update(frametime);
+	
 	if (locked_)
 		return;
 
