@@ -24,139 +24,6 @@ TILESET = "../../bin/data/images/tileset.png"
 DEFAULT_PATH = "../../bin/data/map/"
 
 
-class EntityDialog(PopUp):
-	"Interface de la gestion des entités"
-	
-	def __init__(self, entities):
-		PopUp.__init__(self, "Gestion des entités")
-		self.save = False
-		self.entities = []
-		self.current = -1
-		for entity in entities:
-			self.add_entity(entity)
-		
-	def body(self, master):
-		
-		frame_left = Tk.LabelFrame(master, text="Entités", padx=5, pady=5)
-		frame_left.pack(side=Tk.LEFT)
-		
-		# listbox des entités existantes
-		self.lbx_entity = Tk.Listbox(frame_left, width=50, height=10, bg="white")
-		self.lbx_entity.pack(side=Tk.LEFT)
-		
-		# barre de défilement verticale à droite du listbox
-		scb_entity = Tk.Scrollbar(frame_left, command=self.lbx_entity.yview, orient=Tk.VERTICAL)
-		scb_entity.pack(expand=1, fill=Tk.BOTH)
-		self.lbx_entity.configure(yscrollcommand=scb_entity.set)
-		
-		frame_right = Tk.Frame(master, padx=5, pady=5)
-		frame_right.pack(side=Tk.RIGHT)
-		
-		self.btn_add = Tk.Button(frame_right, text="Ajouter")#, command=self.ask_entity)
-		self.btn_add.pack(fill=Tk.X)
-		self.btn_edit = Tk.Button(frame_right, text="Modifier")
-		self.btn_edit.pack(fill=Tk.X)
-		self.btn_delete = Tk.Button(frame_right, text="Supprimer")#, command=self.delete_entity)
-		self.btn_delete.pack(fill=Tk.X)
-		self.btn_del_all = Tk.Button(frame_right, text="Supprimer tous")#, command=self.delete_all)
-		self.btn_del_all.pack(fill=Tk.X)
-		
-	def ask_entity(self):
-		"saisir une entité pour l'ajouter"
-		
-		entity = AskEntityDialog(self, "add").get_entity()
-		if entity:
-			self.add_entity(entity)	
-	
-	def add_entity(self, entity):
-		"ajouter d'une entité dans la liste et la listbox"
-		
-		self.lbx_entity.insert(self.current, str(entity))
-		self.lbx_entity.select_set(self.current)
-		self.lbx_entity.select_anchor(self.current)
-		
-		self.entities.insert(self.current, entity)
-		self.current += 1
-	
-	def delete_entity(self):
-		"supprimer l'entité sélectionnée"
-		
-		self.lbx_entity.delete(self.current)
-		self.lbx_entity.select_set(self.current)
-		self.lbx_entity.select_anchor(self.current)
-
-		self.current -= 1
-		print "current:", self.current
-		
-	def delete_all(self):
-		"supprimer toutes les entités de la liste"
-		
-		if self.current != -1:
-			self.lbx_entity.delete(0, Tk.END)
-			self.current = -1
-
-	def get_current(self):
-		"retourne l'entité sélectionnée si elle existe"
-		
-		return self.entities[self.current] if self.current != -1 else None
-
-	def get_result(self):
-		"retourne toutes les entités si validation"
-		
-		return self.entities if self.save else None
-
-class AskEntityDialog(PopUp):
-	
-	def __init__(self, master, mode):
-		title = None
-		if mode == "add":
-			pass
-		elif mode == "edit":
-			pass
-		else:
-			raise Exception("bad mode")
-		self.entity = {}
-		PopUp.__init__(self, master)
-		
-		
-	def body(self, master):
-		"construction des widgets"
-		
-		Tk.Label(master, text="Identifiant : ").grid(row=0)
-		Tk.Label(master, text="Position X :").grid(row=1)
-		Tk.Label(master, text="Position Y :").grid(row=2)
-		
-		self.ent_id = Tk.Entry(master)
-		self.ent_id.grid(row=0, column=1)
-		self.ent_posx = Tk.Entry(master)
-		self.ent_posx.grid(row=1, column=1)
-		self.ent_posy = Tk.Entry(master)
-		self.ent_posy.grid(row=2, column=1)
-		
-
-	def validate(self):
-		"contrôle des valeurs entrées"
-		
-		self.entity.clear()
-		success = False
-		try:
-			id_value = self.ent_id.get()
-			if len(id_value) == 0:
-				raise ValueError
-			self.entity["id"] = id_value
-			self.entity["x"] = int(self.ent_posx.get())
-			self.entity["y"] = int(self.ent_posx.get())
-			success = True
-		except ValueError:
-			tkMessageBox.showwarning("Erreur", "Données invalides")
-			self.entity.clear()
-			
-		return success
-	
-	def get_entity(self):
-		return self.entity
-
-
 class TiledCanvas(Tk.Canvas):
 	def __init__(self, master, **kwargs):
 		Tk.Canvas.__init__(self, master, **kwargs)
@@ -194,11 +61,11 @@ class Zone:
 		except IndexError:
 			pass # pas d'entités
 		else:
-			for element in all_entities:
-				name = element.getAttribute("name")
-				x = int(element.getAttribute("x"))
-				y = int(element.getAttribute("y"))
-				self.entities.append(Entity(name, x, y))
+			for node in all_entities:
+				id_ = int(node.getAttribute("id"))
+				x = int(node.getAttribute("x"))
+				y = int(node.getAttribute("y"))
+				self.entities.append(Entity(id_, x, y))
 	
 		# parsing teleporters
 		try:
@@ -206,8 +73,25 @@ class Zone:
 		except IndexError:
 			pass # pas de tp
 		else:
-			for xml_tp in xml_teleporters:
-				self.teleporters.append(Teleporter(xml_tp))
+			for node in xml_teleporters:
+				container = int(node.getAttribute("container"))
+				x = int(node.getAttribute("x"))
+				y = int(node.getAttribute("y"))
+				zone_x = int(node.getAttribute("zone_x"))
+				zone_y = int(node.getAttribute("zone_y"))
+				tile_x = int(node.getAttribute("tile_x"))
+				tile_y = int(node.getAttribute("tile_y"))
+				self.teleporters.append(Teleporter(container, x, y, zone_x, zone_y, tile_x, tile_y))
+	
+	def get_entities(self):
+		"liste des entités de la zone"
+		
+		return self.entities
+	
+	def get_teleporters(self):
+		"liste des téléporteurs de la zone"
+		
+		return self.teleporters
 		
 	def draw(self, app):
 		"""
@@ -286,7 +170,8 @@ class App(Tk.Tk):
 		m_edit.add_command(label="Annuler (U)", command=self.undo)
 		self.bind("<u>", self.undo)
 		m_edit.add_command(label="Peindre avec la tile courante", command=self.paint_all)
-		m_edit.add_command(label="Gestion des entités", command=self.set_entities)
+		m_edit.add_command(label="Voir les entités", command=self.show_entities)
+		m_edit.add_command(label="Voir les téléporteurs", command=self.show_teleporters)
 		menubar.add_cascade(label="Édition", menu=m_edit)
 		
 		#menu navigation
@@ -343,8 +228,6 @@ class App(Tk.Tk):
 		self.can.pack()
 		self.can.bind("<ButtonPress-1>", self.put_tile)
 		self.can.bind("<B1-Motion>", self.put_tile)
-		
-		
 		
 		# création d'une carte par défaut
 		self.history = [] # pile de l'historique
@@ -511,9 +394,12 @@ class App(Tk.Tk):
 			tkMessageBox.showwarning("Stop", "Il n'y a plus rien de coté là !")
 		
 		
-	def set_entities(self):
+	def show_entities(self):
 		"interface pour ajouter/modifier/supprimer des entités"
 		
-		EntityDialog(self.entities)
-		# to be continued
+		EntityDialog(self.zones[self.current_zone].get_entities())
 		
+	
+	def show_teleporters(self):
+		TeleportDialog(self.zones[self.current_zone].get_teleporters())
+	
