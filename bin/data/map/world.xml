@@ -21,7 +21,7 @@
 	</tiles>
 	<entities>
 		<entity id="0" x="128" y="64" />
-		<entity id="2" x="128" y="160" />
+		<entity id="2" x="328" y="170" />
 		<entity id="0" x="416" y="160" />
 	</entities>
 	<teleporters>

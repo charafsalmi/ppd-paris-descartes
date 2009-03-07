@@ -5,6 +5,12 @@
 
 #define UNIT_DEFINITION "data/xml/units.xml"
 
+// profil par défaut (si incomplet)
+#define DEFAULT_HP        3
+#define DEFAULT_SPEED     80
+#define DEFAULT_NAME      "Unamed entity"
+#define DEFAULT_ANIMATION "Squelette"
+
 
 UnitFactory& UnitFactory::GetInstance()
 {
@@ -28,44 +34,60 @@ UnitFactory::UnitFactory()
 	MediaManager& media = MediaManager::GetInstance();
 	while (elem != NULL)
 	{
-		// id de l'unité
+		// unit id
 		int id;
 		if (elem->QueryIntAttribute("id", &id) != TIXML_SUCCESS)
 		{
-			puts(" [UnitFactory] id attribute missing (skipped)");
-			continue;
+			puts(" [UnitFactory] id attribute missing");
+			abort();
 		}
 		Pattern* pattern = &patterns_[id];
 
-		// nom
+		// name
 		p = elem->Attribute("name");
 		if (p == NULL)
 		{
-			puts(" [UnitFactory] name attribute missing (skipped)");
-			continue;
+#ifdef DEBUG
+			printf("[UnitFactory] unit %d doesn't have name attribute\n", id);
+#endif
+			p = DEFAULT_NAME;
 		}
 		pattern->name = p;
 
-		// hp
+		// health points
 		int hp;
 		if (elem->QueryIntAttribute("hp", &hp) != TIXML_SUCCESS)
 		{
-			puts(" [UnitFactory] hp attribute missing (skipped)");
-			continue;
+#ifdef DEBUG
+			printf("[UnitFactory] unit %d doesn't have hp attribute\n", id);
+#endif
+			hp = DEFAULT_HP;
 		}
 		pattern->hp = hp;
+
+		// speed
+		int speed;
+		if (elem->QueryIntAttribute("speed", &speed) != TIXML_SUCCESS)
+		{
+#ifdef DEBUG
+			printf("[UnitFactory] unit %d doesn't have speed attribute\n", id);
+#endif
+			speed = DEFAULT_SPEED;
+		}
+		pattern->speed = speed;
 
 		// animations
 		p = elem->Attribute("animation");
 		if (p == NULL)
 		{
-			puts(" [UnitFactory] animation attribute missing (skipped)");
-			continue;
+#ifdef DEBUG
+			printf("[UnitFactory] unit %d doesn't have animation attribute\n", id);
+#endif
+			p = DEFAULT_ANIMATION;
 		}
 		pattern->image = &media.GetImage(p);
-		std::string anim_name;
 
-		anim_name = p;
+		std::string anim_name(p);
 		anim_name += "_walk_up";
 		pattern->anim[Entity::UP] = &media.GetAnimation(anim_name.c_str());
 
@@ -94,8 +116,7 @@ Unit* UnitFactory::Make(int id, const sf::Vector2f& position)
 	if (it != patterns_.end())
 	{
 		const Pattern& pattern = it->second;
-		Mob* mob = new Mob(position, *pattern.image);
-		mob->SetHP(pattern.hp);
+		Mob* mob = new Mob(position, *pattern.image, pattern.hp, pattern.speed);
 		for (int i = 0; i < Entity::COUNT_DIRECTION; ++i)
 		{
 			mob->SetAnimation((Entity::Direction) i, pattern.anim[i]);

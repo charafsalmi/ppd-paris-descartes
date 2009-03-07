@@ -9,7 +9,7 @@
 
 #define SPEED         120
 #define FALL_DELAY    1
-#define DEFAULT_LIVES 42
+#define DEFAULT_LIVES 99
 
 
 Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
@@ -53,7 +53,7 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	locked_ = false;
 	falling_ = false;
 
-	panel_.SetLives(hp_);
+	panel_.SetHP(hp_);
 	panel_.SetRupees(money_);
 }
 
@@ -72,26 +72,6 @@ void Player::OnEvent(sf::Key::Code key)
 			++max_lives_;
 			ControlPanel::GetInstance().AddLifeSlot();
 			std::cout << " [Player] added life slot to panel.\n";
-			break;
-		// +1 vie
-		case sf::Key::L:
-			if (hp_ < max_lives_)
-			{
-				++hp_;
-				ControlPanel::GetInstance().SetLives(hp_);
-				std::cout << " [Player] Added life to panel.\n";
-			}
-			break;
-		// -1 vie (Z comme Ziane :D)
-		case sf::Key::Z:
-			--hp_;
-			ControlPanel::GetInstance().SetLives(hp_);
-			std::cout << " [Player] Took away life from panel.\n";
-			if (hp_ == 0)
-			{
-				puts("you're dead, bastard!");
-				Kill();
-			}
 			break;
 		// afficher la tile sous nos pieds
 		case sf::Key::T:
@@ -124,8 +104,14 @@ void Player::OnEvent(sf::Key::Code key)
 			}
 		}
 			break;
+		// -1 hp (Ziane <3)
 		case sf::Key::F2:
 			TakeDamage(1);
+			ControlPanel::GetInstance().SetHP(hp_);
+			std::cout << " [Player] -1 hp\n";
+			break;
+		case sf::Key::F3:
+			AddLife();
 			break;
 		default:
 			break;
@@ -138,7 +124,7 @@ void Player::OnEvent(sf::Key::Code key)
 void Player::Update(float frametime)
 {
 	Unit::Update(frametime);
-	
+
 	if (locked_)
 		return;
 
@@ -238,7 +224,7 @@ void Player::Update(float frametime)
 					break;
 				}
 
-				if (zone_->CanMove(this, rect))
+				if (zone_->CanMove(rect))
 				{
 					SetPosition(pos);
 				}
@@ -276,13 +262,20 @@ void Player::Update(float frametime)
 			else
 			{
 				--hp_;
-				panel_.SetLives(hp_);
+				panel_.SetHP(hp_);
 				SetPosition(Tile::SIZE, 8 * Tile::SIZE);
 			}
 			Animated::Change(walk_anims_[current_dir_], *this);
 			falling_ = false;
 		}
 	}
+}
+
+
+void Player::OnCollide(Entity& entity)
+{
+	TakeDamage(1);
+	panel_.SetHP(hp_);
 }
 
 
@@ -300,8 +293,12 @@ void Player::Unlock()
 
 void Player::AddLife()
 {
-	++hp_;
-	panel_.SetLives(hp_);
+	if (hp_ < max_lives_)
+	{
+		++hp_;
+		std::cout << " [Player] +1 hp.\n";
+		panel_.SetHP(hp_);
+	}
 }
 
 

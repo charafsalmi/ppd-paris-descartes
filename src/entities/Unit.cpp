@@ -7,7 +7,7 @@ Unit::Unit(const sf::Vector2f& position, const sf::Image& image) :
 	Entity(position, image)
 {
 	SetFloor(32, 32); // FIXME: magic
-	
+
 	for (int i = 0; i < COUNT_DIRECTION; ++i)
 	{
 		walk_anims_[i] = NULL;
@@ -53,7 +53,7 @@ void Unit::Update(float frametime)
 void Unit::TakeDamage(int damage)
 {
 	hp_ -= damage;
-	if (hp_ < 0)
+	if (hp_ <= 0)
 	{
 		Kill();
 	}

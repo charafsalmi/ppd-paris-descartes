@@ -69,11 +69,10 @@ public:
 
 	/**
 	 * Détermine si un mouvement est possible
-	 * @param[in] emitter: entité qui cherche à se déplacer
 	 * @param[in] rect: rectangle de la position issue du mouvement à tester
 	 * @return true si le mouvement est possible, sinon false
 	 */
-	bool CanMove(Entity* emitter, const sf::FloatRect& rect) const;
+	bool CanMove(const sf::FloatRect& rect) const;
 
 	/**
 	 * Ajouter un objet

@@ -18,7 +18,11 @@ public:
 	 */
 	void OnEvent(sf::Key::Code key);
 
+	// inherited
 	void Update(float frametime);
+
+	// inherited
+	void OnCollide(Entity& entity);
 
 	/**
 	 * Verrouiller le joueur (plus de mises à jour possibles)

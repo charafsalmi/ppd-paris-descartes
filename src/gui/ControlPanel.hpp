@@ -14,45 +14,48 @@ public:
 	{
 		HEIGHT_PX = 60
 	};
-	
+
 	static ControlPanel& GetInstance();
-	
+
 	void Update(float frametime);
-	
-	void SetLives(int value);
-	
+
+	/**
+	 * Indiquer le nombre de points de vie affiché
+	 */
+	void SetHP(int value);
+
 	void SetRupees(int value);
 
 	void AddLifeSlot();
-	
+
 	inline Inventory* GetInventory()
 	{
 		return inventory_;
 	}
-	
+
 private:
 	ControlPanel();
 	ControlPanel(const ControlPanel& other);
 	~ControlPanel();
-	
+
 	void Render(sf::RenderTarget& app) const;
-	
+
 	void DrawLives(sf::RenderTarget& app) const;
 	void DrawDigits(sf::RenderTarget& app) const;
-	
+
 	sf::IntRect& GetDigitRect(int digit) const;
-	
+
 	int lives_count_, lives_max_, rupees_count_, bombs_count_, arrows_count_;
 	mutable float blink_timer_;
-	mutable bool blink_frame_;	
+	mutable bool blink_frame_;
 
-	
+
 	mutable sf::Sprite lives_;
 	mutable sf::Sprite digits_;
 	sf::Sprite background_;
 
 	mutable sf::Sound blink_sound_;
-	
+
 #ifdef DEBUG
 	mutable bool dbg_;
 #endif

@@ -24,6 +24,12 @@ void Entity::Update(float frametime)
 }
 
 
+void Entity::OnCollide(Entity& entity)
+{
+	(void) entity;
+}
+
+
 void Entity::SetActiveZone(Zone* zone)
 {
 	zone_ = zone;

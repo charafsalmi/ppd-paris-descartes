@@ -51,7 +51,7 @@ void Zone::Load(const TiXmlHandle& handle)
 			tileset.MakeSprite(tile_id, tile);
 			sf::Vector2f pos(j * Tile::SIZE, i * Tile::SIZE);
 			tile.SetPosition(pos);
-			
+
 			/* on dessine toutes les tiles dans le buffer de la fenêtre de rendu
 			ce buffer sera ensuite capturé dans tiles_img_ afin de pouvoir
 			afficher toutes les tiles en un seul coup
@@ -140,38 +140,67 @@ bool Zone::IsLoaded() const
 
 void Zone::Update(float frametime)
 {
-	// collisions avec les entités
-	EntityList::iterator it;
-	for (it = entities_.begin(); it != entities_.end(); ++it)
+	// removing dead entities
+	EntityList::iterator it1, it2, it_end;
+	/*
+	TODO: gérer la suppression du joueur (sinon plantage car player désalloué)
+	for (it1 = entities_.begin(); it1 != entities_.end();)
 	{
-		(**it).Update(frametime);
+		if ((**it1).IsDead())
+		{
+			delete *it1;
+			it1 = entities_.erase(it1);
+		}
+		else
+		{
+			++it1;
+		}
+	}
+	*/
+	// collisions avec les entités
+	it_end = entities_.end();
+	sf::FloatRect rect1, rect2;
+	for (it1 = entities_.begin(); it1 != it_end; ++it1)
+	{
+		(**it1).Update(frametime);
+		(**it1).GetFloorRect(rect1);
+		it2 = it1;
+		for (++it2; it2 != it_end; ++it2)
+		{
+			(**it2).GetFloorRect(rect2);
+			if (rect1.Intersects(rect2))
+			{
+				(**it1).OnCollide(**it2);
+				(**it2).OnCollide(**it1);
+			}
+		}
 	}
 
 	// collisions avec les items
-	ItemList::iterator it2;
+	ItemList::iterator it3;
 	Player* player = Game::GetInstance().GetPlayer();
 	sf::FloatRect player_rect;
 	player->GetFloorRect(player_rect);
 	sf::FloatRect item_rect;
-	for (it2 = items_.begin(); it2 != items_.end();)
+	for (it3 = items_.begin(); it3 != items_.end();)
 	{
-		if ((**it2).IsDead())
+		if ((**it3).IsDead())
 		{
 #ifdef DEBUG
-			printf(" [Zone] %s supprimé\n", (**it2).GetName().c_str());
+			printf(" [Zone] %s supprimé\n", (**it3).GetName().c_str());
 #endif
-			delete *it2;
-			it2 = items_.erase(it2);
+			delete *it3;
+			it3 = items_.erase(it3);
 		}
 		else
 		{
-			(**it2).GetRect(item_rect);
+			(**it3).GetRect(item_rect);
 			if (item_rect.Intersects(player_rect))
 			{
-				(**it2).OnCollide(*player);
+				(**it3).OnCollide(*player);
 				break;
 			}
-			++it2;
+			++it3;
 		}
 	}
 }
@@ -181,14 +210,14 @@ void Zone::Show(sf::RenderTarget& target) const
 {
 	// affichage des tiles
 	target.Draw(tiles_sprite_);
-	
+
 	// affichage des items
 	ItemList::const_iterator it2;
 	for (it2 = items_.begin(); it2 != items_.end(); ++it2)
 	{
 		target.Draw(**it2);
 	}
-	
+
 	// affichage des entités
 	entities_.sort(Entity::PtrComp);
 	EntityList::const_iterator it;
@@ -199,7 +228,7 @@ void Zone::Show(sf::RenderTarget& target) const
 }
 
 
-bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect) const
+bool Zone::CanMove(const sf::FloatRect& rect) const
 {
 	// si hors de la zone
 	if (rect.Top < 0 || rect.Left < 0 || rect.Bottom > Tile::SIZE * HEIGHT
@@ -219,22 +248,6 @@ bool Zone::CanMove(Entity* emitter, const sf::FloatRect& rect) const
 		|| !walkable_[bottom][left] || !walkable_[bottom][right])
 	{
 		return false;
-	}
-
-	// collision avec une autre unité
-	EntityList::const_iterator it;
-	sf::FloatRect other_rect;
-	for (it = entities_.begin(); it != entities_.end(); ++it)
-	{
-		// pas de collision avec soi même
-		if (*it != emitter)
-		{
-			(**it).GetFloorRect(other_rect);
-			if (rect.Intersects(other_rect))
-			{
-				return false;
-			}
-		}
 	}
 
 	// ok, emitter a le droit de se déplacer

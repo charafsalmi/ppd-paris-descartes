@@ -14,6 +14,7 @@
 
 #define DRAW_OFFSET		 16	// Le même pour les sprites des vies et les chiffres
 
+// FIXME: ce n'est pas au control panel de tester les valeurs
 #define MAX_RUPEES		999
 #define MAX_ARROWS		 99
 #define MAX_BOMBS		 99
@@ -29,9 +30,9 @@ ControlPanel& ControlPanel::GetInstance()
 }
 
 
-void ControlPanel::SetLives(int value)
+void ControlPanel::SetHP(int value)
 {
-	if (value < 2 * lives_max_)
+	/*if (value < 2 * lives_max_)
 	{
 		lives_count_ = value;
 	}
@@ -44,7 +45,8 @@ void ControlPanel::SetLives(int value)
 	}
 #ifdef DEBUG
 	dbg_ = true;
-#endif
+#endif*/
+	lives_count_ = value;
 }
 
 
@@ -52,7 +54,7 @@ void ControlPanel::AddLifeSlot()
 {
 	if (lives_max_ < MAX_LIVES)
 	{
-		lives_max_ += 1;
+		++lives_max_;
 	}
 }
 
@@ -82,7 +84,7 @@ void ControlPanel::Update(float frametime)
 void ControlPanel::Render(sf::RenderTarget& app) const
 {
 	app.Draw(background_);
-	DrawLives(app);
+	//DrawLives(app);
 	DrawDigits(app);
 }
 
@@ -91,7 +93,7 @@ ControlPanel::ControlPanel()
 {
 	background_.SetImage(GET_IMG("panel-background"));
 	background_.Resize(640, HEIGHT_PX);
-	
+
 	lives_.SetImage(GET_IMG("panel-hearth"));
 	lives_.SetSubRect(sf::IntRect(0, 0, 14, 14));
 	lives_max_ = 1;
@@ -280,24 +282,37 @@ void ControlPanel::DrawDigits(sf::RenderTarget& app) const
 	digits_.SetSubRect(GetDigitRect(i));
 	app.Draw(digits_);
 
+	// HP
+
+	i = lives_count_;
+
+	draw_pos.x = HEARTH_ORIGIN.x;
+	digits_.SetPosition(draw_pos);
+	i %= 100;
+	digits_.SetSubRect(GetDigitRect(i / 10));
+	app.Draw(digits_);
+
+	draw_pos.x += DRAW_OFFSET;
+	digits_.SetPosition(draw_pos);
+	i %= 10;
+	digits_.SetSubRect(GetDigitRect(i));
+	app.Draw(digits_);
+
 }
 
 
 sf::IntRect& ControlPanel::GetDigitRect(int digit) const
 {
-	static sf::IntRect my(0, 0, 0, DRAW_OFFSET);
-	static int x;
+	static sf::IntRect rect(0, 0, 0, DRAW_OFFSET);
+	int x = 0;
 
-	x = 0;
-
-	while ( --digit >= 0)
+	while (--digit >= 0)
 	{
 		x += DRAW_OFFSET;
 	}
+	rect.Left = x;
+	rect.Right = x + DRAW_OFFSET;
 
-	my.Left  = x;
-	my.Right = x + DRAW_OFFSET;
-
-	return my;
+	return rect;
 }
 

@@ -15,17 +15,23 @@ public:
 	{
 		UP, DOWN, LEFT, RIGHT, COUNT_DIRECTION
 	};
-	
+
 	/**
 	 * @param[in] pos: position de l'entité (pixels)
 	 * @param[in] image: image du sprite
 	 */
 	Entity(const sf::Vector2f& pos, const sf::Image& image);
-	
+
 	/**
 	 * Mettre à jour l'entité
 	 */
 	virtual void Update(float frametime);
+
+	/**
+	 * Callback de détection de collision
+	 * @param[in, out] entity: entité à modifer suite à la collision
+	 */
+	virtual void OnCollide(Entity& entity);
 
 	/**
 	 * @brief Déplacer l'entité, si possible et en gérant le changement de zone
@@ -40,13 +46,13 @@ public:
 	 * @return true si déplacement est effectué
 	 */
 	//virtual bool MoveRandomly(float frametime);
-	
+
 	/**
 	 * Encaisser des dommages
 	 * @param[in] damage: dommages infligés
 	 */
 	virtual void TakeDamage(int damage) = 0;
-	
+
 	/**
 	 * @brief Largeur du rectangle de contact avec le sol
 	 */
@@ -62,7 +68,7 @@ public:
 	{
 		return floor_height_;
 	}
-	
+
 	/**
 	 * Obtenir le rectangle de contact avec le sol
 	 * @param[out] rect: rectangle à définir
@@ -75,7 +81,7 @@ public:
 		rect.Right = pos.x + floor_width_;
 		rect.Top = pos.y - floor_height_;
 	}
-	
+
 	/**
 	 * Comparer la profondeur de deux entités (axe y)
 	 */
@@ -96,12 +102,12 @@ public:
 	 * Définir la zone active
 	 */
 	static void SetActiveZone(Zone* zone);
-	
+
 	/**
 	 * Tuer l'objet entité (sera supprimé à frame n + 1)
 	 */
 	void Kill();
-	
+
 	inline bool IsDead() const
 	{
 		return dead_;
@@ -114,7 +120,7 @@ protected:
 	 * @param[in] height: hauteur en pixels
 	 */
 	void SetFloor(int width, int height);
-	
+
 	// pour accéder rapidement à la zone active
 	static Zone* zone_;
 
