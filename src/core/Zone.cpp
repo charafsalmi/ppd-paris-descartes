@@ -276,27 +276,22 @@ bool Zone::CanMove(const sf::FloatRect& rect) const
 }
 
 
-/*void Zone::AddEntity(const char* name, int x, int y)
+/*void Zone::AddDecor(int id, int x, int y)
 {
 	sf::Vector2f position(x * Tile::SIZE, (y + 1) * Tile::SIZE);
-	Entity* p = NULL;
-	if (strcmp(name, "enemy") == 0)
-	{
-		p = new Enemy(position);
-	}
-	else if (strcmp(name, "pillar") == 0)
-	{
-		// le rectangle de surface du pillier est de 1 x 1
-		sf::Vector2i floor(1 * Tile::SIZE, 1 * Tile::SIZE);
-		p = new StaticItem(position, GET_IMG("pillar"), &floor);
-		walkable_[y][x] = false;
-	}
-	else
-	{
-		puts(" [Zone] ajout annulé : bad entity name");
-	}
+	Entity* decor = EntityFactory::GetInstance().BuildDecor(id, position);
 
-	AddEntity(p);
+	// récupérer les dimensions en nombre de tiles
+	int tile_width =
+	int tile_height =
+	for (; y < tile_height; ++y)
+	{
+		for (; x < tile_width; ++x)
+		{
+			walkable_[y][x] = false;
+		}
+	}
+	AddEntity(decor);
 }*/
 
 

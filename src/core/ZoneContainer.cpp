@@ -119,7 +119,7 @@ void ZoneContainer::ChangeZone(Direction dir)
 		scroll_.next.SetImage(*next_zone_->GetBackground());
 		scroll_.next.SetPosition(0, 0);
 		scroll_.next.FlipY(true); // HACK BUGFIX SFML 1.4
-		
+
 		Game::GetInstance().GetPlayer()->Lock();
 		printf(" [ZC] scrolling vers la zone [%d][%d]\n", y, x);
 	}
@@ -244,8 +244,8 @@ void ZoneContainer::Render(sf::RenderTarget& target) const
 {
 	if (scrolling_)
 	{
-		target.Draw(scroll_.current);
 		target.Draw(scroll_.next);
+		target.Draw(scroll_.current);
 		target.Draw(*Game::GetInstance().GetPlayer());
 	}
 	else
@@ -258,7 +258,10 @@ void ZoneContainer::Render(sf::RenderTarget& target) const
 			active_zone_->AddEntity(Game::GetInstance().GetPlayer());
 			Entity::SetActiveZone(active_zone_);
 		}
-		active_zone_->Show(target);
+		else
+		{
+			active_zone_->Show(target);
+		}
 	}
 }
 

@@ -11,7 +11,8 @@
 	<a href="#arch">Architecture du projet</a> |
 	<a href="#comps">Détails des composants</a> |
 	<a href="#map">Format des cartes</a> |
-	<a href="#anim">Format des animations</a>
+	<a href="#anim">Format des animations</a> |
+	<a href="#unit">Format des unités</a>
 </p>
 
 
@@ -22,6 +23,7 @@
 		<ul>
 			<li>data/
 				<ul>
+					<li>font</li> <em>police de caractères</em>
 					<li>images/ <em>les images utilisées par l'application</em></li>
 					<li>map/  <em>les cartes des zones de jeu</em></li>
 					<li>music/ <em>les musiques</em></li>
@@ -304,5 +306,23 @@ Exemple :</p>
 <p>Une entrée "anim" par animation.<br />
 Les animations sont construites et stockées dans MediaManager.</p>
 
+<h2 id="unit">Format des unités</h2>
+
+<p>Les profils sont dans le fichier data/xml/units.xml</p>
+
+<xmp>
+<?xml version="1.0" encoding="utf-8" ?>
+<mobs>
+	<mob id="1" name="Rôdeur" animation="rodeur" hp="5" speed="80" />
+	...
+</mobs>
+</xmp>
+<ul>
+	<li>id: identifiant unique de l'unité</li>
+	<li>name: nom du profil</li>
+	<li>animation: nom des animations associées</li>
+	<li>hp: nombre de points de vie (health point)</li>
+	<li>speed: vitesse (pixels/seconde)</li>
+</ul>
 </body>
 </html>
