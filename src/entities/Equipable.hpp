@@ -6,13 +6,14 @@
 /**
  *	Classe des objets d'inventaire équipables (Épée, bombes, grappin...)
  */
+#if 0
 class Equipable: public Item
 {
 public:
 	Equipable(const sf::Vector2f& pos);
-	
+
 	void OnCollide(Player& player);
-	
+
 private:
 	/*
 	Alexandre:
@@ -25,6 +26,7 @@ private:
 	*/
 	sf::Sprite inventory_item_;
 };
+#endif
 
 #endif /* EQUIPABLE */
 

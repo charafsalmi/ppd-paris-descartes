@@ -17,6 +17,9 @@ public:
 
 	static ControlPanel& GetInstance();
 
+	void PrintInfoText(const wchar_t* text);
+	void PrintInfoText(const std::wstring& text);
+
 	void Update(float frametime);
 
 	/**
@@ -27,6 +30,8 @@ public:
 	void SetRupees(int value);
 
 	void AddLifeSlot();
+
+
 
 	inline Inventory* GetInventory()
 	{
@@ -60,6 +65,8 @@ private:
 	mutable bool dbg_;
 #endif
 	Inventory* inventory_;
+	sf::String info_text_;
+	float timer_info_text_;
 };
 
 #endif /* CONTROLPANEL_HPP */

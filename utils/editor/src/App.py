@@ -8,6 +8,7 @@ from PIL import Image, ImageTk
 from PopUp import *
 from Entity import *
 from Teleporter import *
+from Item import *
 
 import xml.dom.minidom as dom
 import sys
@@ -61,18 +62,33 @@ class Zone:
 		except IndexError:
 			pass # pas d'entités
 		else:
+			print "parsing", len(all_entities), "entities"
 			for node in all_entities:
 				id_ = int(node.getAttribute("id"))
 				x = int(node.getAttribute("x"))
 				y = int(node.getAttribute("y"))
 				self.entities.append(Entity(id_, x, y))
-	
+		
+		# parsing items
+		try:
+			xml_items = xml_elem.getElementsByTagName("items")[0].getElementsByTagName("item")
+		except IndexError:
+			pass # pas d'entités
+		else:
+			print "parsing", len(xml_items), "items"
+			for node in xml_items:
+				code = node.getAttribute("code")[0]
+				x = int(node.getAttribute("x"))
+				y = int(node.getAttribute("y"))
+				self.items.append(Item(code, x, y))
+		
 		# parsing teleporters
 		try:
 			xml_teleporters = xml_elem.getElementsByTagName("teleporters")[0].getElementsByTagName("tp")
 		except IndexError:
 			pass # pas de tp
 		else:
+			print "parsing", len(xml_teleporters), "teleporters"
 			for node in xml_teleporters:
 				container = int(node.getAttribute("container"))
 				x = int(node.getAttribute("x"))
@@ -136,7 +152,11 @@ class Zone:
 			f.write("\t</entities>\n")
 		
 		# écriture des items
-		# TODO
+		if len(self.items) > 0:
+			f.write("\t<items>\n")
+			for it in self.items:
+				f.write("\t\t%s\n" % it.to_xml())
+			f.write("\t</items>\n")
 		
 		# écriture des téléporteurs
 		if len(self.teleporters) > 0:

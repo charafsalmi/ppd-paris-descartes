@@ -18,6 +18,9 @@
 
 #define ANIMATION_FILE "data/xml/animations.xml"
 
+#define FONT_PATH "data/font/VeraMono.ttf"
+#define FONT_SIZE 20
+
 
 // charger une image
 static void load_or_die(sf::Image& image, const char* filename)
@@ -233,7 +236,7 @@ MediaManager::MediaManager()
 		abort();
 	}
 	std::cout << "loading animations..." << std::endl;
-	
+
 	TiXmlHandle handle(&doc);
 	TiXmlElement* elem = handle.FirstChildElement().FirstChildElement().Element();
 	// attributs
@@ -269,5 +272,8 @@ MediaManager::MediaManager()
 
 		elem = elem->NextSiblingElement();
 	}
+
+	// chargement police
+	font_.LoadFromFile(FONT_PATH, FONT_SIZE);
 }
 

@@ -60,6 +60,8 @@
 		<Unit filename="src/core/ZoneContainer.hpp" />
 		<Unit filename="src/entities/Entity.cpp" />
 		<Unit filename="src/entities/Entity.hpp" />
+		<Unit filename="src/entities/EntityFactory.cpp" />
+		<Unit filename="src/entities/EntityFactory.hpp" />
 		<Unit filename="src/entities/Equipable.cpp" />
 		<Unit filename="src/entities/Equipable.hpp" />
 		<Unit filename="src/entities/Item.cpp" />
@@ -72,8 +74,6 @@
 		<Unit filename="src/entities/StaticItem.hpp" />
 		<Unit filename="src/entities/Unit.cpp" />
 		<Unit filename="src/entities/Unit.hpp" />
-		<Unit filename="src/entities/UnitFactory.cpp" />
-		<Unit filename="src/entities/UnitFactory.hpp" />
 		<Unit filename="src/gui/ControlPanel.cpp" />
 		<Unit filename="src/gui/ControlPanel.hpp" />
 		<Unit filename="src/gui/Inventory.cpp" />
@@ -87,7 +87,7 @@
 		<Unit filename="src/gui_system/Label.cpp" />
 		<Unit filename="src/gui_system/Label.hpp" />
 		<Unit filename="src/gui_system/ProgressBar.cpp" />
-		<Unit filename="src/gui_system/Progressbar.hpp" />
+		<Unit filename="src/gui_system/ProgressBar.hpp" />
 		<Unit filename="src/gui_system/Window.cpp" />
 		<Unit filename="src/gui_system/Window.hpp" />
 		<Unit filename="src/misc/ConfigParser.cpp" />

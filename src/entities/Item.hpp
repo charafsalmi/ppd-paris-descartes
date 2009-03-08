@@ -1,64 +1,38 @@
-#ifndef ITEM
-#define ITEM
+#ifndef ITEM_HPP
+#define ITEM_HPP
 
-#include <SFML/Graphics.hpp>
+#include "Entity.hpp"
 
 class Player;
 
 /**
- * Base de tous les objets
+ * Objet intéractif
  */
-class Item: public sf::Sprite
+class Item: public Entity
 {
 public:
-	Item(const sf::Vector2f& pos, const char* name);
-	
+	Item(char code, const sf::Vector2f& pos);
+
 	/**
 	 * Méthode callback en cas de collision avec le joueur
 	 * @param[in, out] player: joueur à modifier
 	 */
-	virtual void OnCollide(Player& player) = 0;
-	
-	/**
-	 * Obtenir le rectangle de la surface de collision
-	 */
-	void GetRect(sf::FloatRect& rect) const;
-	
+	void OnCollide(Player& player);
+
+	// inherited
+	void TakeDamage(int damage)
+	{
+		(void) damage;
+	}
+
 	/**
 	 * Nom générique de l'objet
 	 */
-	const std::string& GetName() const;
-	
-	inline bool IsDead() const
-	{
-		return dead_;
-	}
-	
-protected:
-	void Kill();
-	
+	//const char* GetName() const;
+
 private:
-	bool dead_;
-	std::string name_;
+	char code_;
 };
 
-
-class Money: public Item
-{
-public:
-	Money(const sf::Vector2f& pos);
-	
-	void OnCollide(Player& player);
-};
-
-
-class Heart: public Item
-{
-public:
-	Heart(const sf::Vector2f& pos);
-	
-	void OnCollide(Player& player);
-};
-
-#endif /* ITEM */
+#endif /* ITEM_HPP */
 

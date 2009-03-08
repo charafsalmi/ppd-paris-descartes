@@ -19,6 +19,20 @@
 273 273 273 273 273 273 273 273 273 273 273 273 273 273 273 273 273 273 273 273 
 273 273 273 273 273 273 273 273 273 273 273 273 273 273 273 273 273 273 273 273 
 	</tiles>
+	<items>
+		<item code="M" x="170" y="100" />
+		<item code="M" x="200" y="100" />
+		<item code="M" x="230" y="100" />
+		<item code="M" x="260" y="100" />
+		<item code="M" x="170" y="160" />
+		<item code="M" x="200" y="160" />
+		<item code="M" x="230" y="160" />
+		<item code="M" x="260" y="160" />
+		<item code="M" x="170" y="220" />
+		<item code="M" x="200" y="220" />
+		<item code="M" x="230" y="220" />
+		<item code="M" x="260" y="220" />
+	</items>
 	<teleporters>
 		<tp x="18" y="1" container="0" zone_x="2" zone_y="0" tile_x="16" tile_y="2" />
 	</teleporters>

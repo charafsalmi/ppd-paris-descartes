@@ -11,7 +11,9 @@
 #define ARROWS_ORIGIN	sf::Vector2f(194, 24)
 #define BOMBS_ORIGIN	sf::Vector2f(242, 24)
 #define HEARTH_ORIGIN	sf::Vector2f(322, 24)
+#define INFOTEXT_ORIGIN sf::Vector2f(400, 24)
 
+#define INFOTEXT_DELAY 4.0f
 #define DRAW_OFFSET		 16	// Le même pour les sprites des vies et les chiffres
 
 // FIXME: ce n'est pas au control panel de tester les valeurs
@@ -50,6 +52,19 @@ void ControlPanel::SetHP(int value)
 }
 
 
+void ControlPanel::PrintInfoText(const wchar_t* text)
+{
+	info_text_.SetText(text);
+	timer_info_text_ = 0;
+}
+
+
+void ControlPanel::PrintInfoText(const std::wstring& text)
+{
+	PrintInfoText(text.c_str());
+}
+
+
 void ControlPanel::AddLifeSlot()
 {
 	if (lives_max_ < MAX_LIVES)
@@ -78,6 +93,12 @@ void ControlPanel::Update(float frametime)
 	{
 		blink_timer_ -= frametime;
 	}
+	if (timer_info_text_ < INFOTEXT_DELAY)
+	{
+		sf::Uint8 rate = (sf::Uint8) (255 * timer_info_text_ / INFOTEXT_DELAY);
+		info_text_.SetColor(sf::Color(255, 255, 255, 255 - rate));
+		timer_info_text_ += frametime;
+	}
 }
 
 
@@ -86,6 +107,7 @@ void ControlPanel::Render(sf::RenderTarget& app) const
 	app.Draw(background_);
 	//DrawLives(app);
 	DrawDigits(app);
+	app.Draw(info_text_);
 }
 
 
@@ -109,6 +131,13 @@ ControlPanel::ControlPanel()
 	dbg_ = false;
 #endif
 	inventory_ = new Inventory();
+
+	timer_info_text_ = 0;
+
+	info_text_.SetPosition(INFOTEXT_ORIGIN);
+	info_text_.SetColor(sf::Color::White);
+	info_text_.SetFont(GET_FONT());
+	info_text_.SetSize(20);
 }
 
 

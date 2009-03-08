@@ -1,6 +1,6 @@
-#include "UnitFactory.hpp"
-#include "../misc/MediaManager.hpp"
+#include "EntityFactory.hpp"
 #include "Mob.hpp"
+#include "../misc/MediaManager.hpp"
 #include "../xml/tinyxml.h"
 
 #define UNIT_DEFINITION "data/xml/units.xml"
@@ -12,15 +12,16 @@
 #define DEFAULT_ANIMATION "Squelette"
 
 
-UnitFactory& UnitFactory::GetInstance()
+EntityFactory& EntityFactory::GetInstance()
 {
-	static UnitFactory self;
+	static EntityFactory self;
 	return self;
 }
 
 
-UnitFactory::UnitFactory()
+EntityFactory::EntityFactory()
 {
+	// loading units definition
 	TiXmlDocument doc;
 	if (!doc.LoadFile(UNIT_DEFINITION))
 	{
@@ -41,7 +42,7 @@ UnitFactory::UnitFactory()
 			puts(" [UnitFactory] id attribute missing");
 			abort();
 		}
-		Pattern* pattern = &patterns_[id];
+		UnitPattern* pattern = &patterns_[id];
 
 		// name
 		p = elem->Attribute("name");
@@ -109,13 +110,13 @@ UnitFactory::UnitFactory()
 }
 
 
-Unit* UnitFactory::Make(int id, const sf::Vector2f& position)
+Unit* EntityFactory::BuildUnit(int id, const sf::Vector2f& position)
 {
 	Definition::const_iterator it;
 	it = patterns_.find(id);
 	if (it != patterns_.end())
 	{
-		const Pattern& pattern = it->second;
+		const UnitPattern& pattern = it->second;
 		Mob* mob = new Mob(position, *pattern.image, pattern.hp, pattern.speed);
 		for (int i = 0; i < Entity::COUNT_DIRECTION; ++i)
 		{
@@ -129,3 +130,8 @@ Unit* UnitFactory::Make(int id, const sf::Vector2f& position)
 	return NULL;
 }
 
+
+Item* EntityFactory::BuildItem(char code, const sf::Vector2f& position) const
+{
+	return new Item(code, position);
+}

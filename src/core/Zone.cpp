@@ -8,7 +8,7 @@
 #include "ZoneContainer.hpp"
 #include "Game.hpp"
 #include "../entities/StaticItem.hpp"
-#include "../entities/UnitFactory.hpp"
+#include "../entities/EntityFactory.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../gui/ControlPanel.hpp"
 
@@ -62,7 +62,7 @@ void Zone::Load(const TiXmlHandle& handle)
 	}
 
 	// chargement des entités
-	UnitFactory& factory = UnitFactory::GetInstance();
+	EntityFactory& factory = EntityFactory::GetInstance();
 	elem = handle.FirstChildElement("entities").FirstChildElement().Element();
 	while (elem != NULL)
 	{
@@ -73,11 +73,32 @@ void Zone::Load(const TiXmlHandle& handle)
 		ok &= (elem->QueryIntAttribute("y", &y) == TIXML_SUCCESS);
 		if (ok)
 		{
-			Entity* entity = factory.Make(id, sf::Vector2f(x, y));
+			Entity* entity = factory.BuildUnit(id, sf::Vector2f(x, y));
 			if (entity != NULL)
 			{
 				AddEntity(entity);
 			}
+		}
+		else
+		{
+			std::cerr << " [Zone] attributs invalides" << std::endl;
+		}
+		elem = elem->NextSiblingElement();
+	}
+
+	// chargements des items
+	elem = handle.FirstChildElement("items").FirstChildElement().Element();
+	while (elem != NULL)
+	{
+		bool ok = true;
+		int x, y;
+		char code;
+		ok &= (elem->QueryValueAttribute("code", &code) == TIXML_SUCCESS);
+		ok &= (elem->QueryIntAttribute("x", &x) == TIXML_SUCCESS);
+		ok &= (elem->QueryIntAttribute("y", &y) == TIXML_SUCCESS);
+		if (ok)
+		{
+			AddItem(code, x, y);
 		}
 		else
 		{
@@ -179,22 +200,22 @@ void Zone::Update(float frametime)
 	// collisions avec les items
 	ItemList::iterator it3;
 	Player* player = Game::GetInstance().GetPlayer();
-	sf::FloatRect player_rect;
+	sf::FloatRect player_rect, item_rect;
 	player->GetFloorRect(player_rect);
-	sf::FloatRect item_rect;
+
 	for (it3 = items_.begin(); it3 != items_.end();)
 	{
 		if ((**it3).IsDead())
 		{
-#ifdef DEBUG
+/*#ifdef DEBUG
 			printf(" [Zone] %s supprimé\n", (**it3).GetName().c_str());
-#endif
+#endif*/
 			delete *it3;
 			it3 = items_.erase(it3);
 		}
 		else
 		{
-			(**it3).GetRect(item_rect);
+			(**it3).GetFloorRect(item_rect);
 			if (item_rect.Intersects(player_rect))
 			{
 				(**it3).OnCollide(*player);
@@ -293,19 +314,7 @@ void Zone::RemoveEntity(Entity* entity)
 
 void Zone::AddItem(char id, int x, int y)
 {
-	Item* item = NULL;
-	sf::Vector2f pos(x, y);
-	switch (id)
-	{
-		case 'H':
-			// Heart (coeur de vie)
-			item = new Heart(pos);
-			break;
-		case 'R':
-			// Rupee (argent)
-			item = new Money(pos);
-			break;
-	}
+	Item* item = EntityFactory::GetInstance().BuildItem(id, sf::Vector2f(x, y));
 	items_.push_front(item);
 }
 

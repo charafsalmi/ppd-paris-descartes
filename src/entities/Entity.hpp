@@ -24,6 +24,7 @@ public:
 
 	/**
 	 * Mettre à jour l'entité
+	 * @param[in] frametime: temps de la frame courante
 	 */
 	virtual void Update(float frametime);
 
@@ -34,18 +35,16 @@ public:
 	virtual void OnCollide(Entity& entity);
 
 	/**
-	 * @brief Déplacer l'entité, si possible et en gérant le changement de zone
-	 * @param[in] direction
-	 * @param[in] frametime
-	 * @return true si le déplacement a été effectué
+	 * Déplacer l'entité selon un angle donné
+	 * @param[in] angle
 	 */
-	//virtual bool Move(Direction dir, float frametime);
+	//void MoveByAngle(float frametime, float speed, float angle);
 
 	/**
 	 * @brief Déplace l'entité au hasard, si possible
 	 * @return true si déplacement est effectué
 	 */
-	//virtual bool MoveRandomly(float frametime);
+	//bool MoveRandomly(float frametime, float speed);
 
 	/**
 	 * Encaisser des dommages
