@@ -6,7 +6,7 @@
 #include "ZoneContainer.hpp"
 #include "../entities/Player.hpp"
 #include "../gui/ControlPanel.hpp"
-#include "../gui_system/Window.hpp"
+#include "../gui/MyWin.hpp"
 #include "../misc/Misc.hpp"
 
 
@@ -101,7 +101,7 @@ private:
 	ControlPanel& panel_;
 
 	#ifdef WINDOW_TEST
-	Window fen_;
+	MyWin fen_;
 	#endif
 
 	sf::RenderWindow app_;

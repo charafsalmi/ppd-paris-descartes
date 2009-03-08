@@ -4,27 +4,34 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
-class Control{
-public:
-    /**
-    * Typedef
-    */
-    typedef unsigned int ControlID;
-    typedef sf::Vector2f ControlPos;
+namespace gui{
+    class Control{
+    public:
+        /**
+        * Typedef
+        */
+        typedef unsigned int ControlID;
+        typedef sf::Vector2i ControlPos;
 
-    Control();
-    Control(ControlID id, ControlPos pos);
-    virtual ~Control();
+        Control();
+        Control(ControlID id, ControlPos pos);
+        virtual ~Control();
 
-    virtual void Show(sf::RenderTarget& app)=0;
+        virtual void Show(sf::RenderTarget& app)=0;
 
-protected:
-    ControlID id_;
-private:
-    /**
-    * Position du contrôle
-    */
-    sf::Vector2f position_;
-};
+        inline sf::IntRect GetPosition(){
+            return rect_;
+        }
+        inline ControlID GetID(){
+            return id_;
+        }
+    protected:
+        ControlID id_;
+        /**
+        * Position du contrôle
+        */
+        sf::IntRect rect_;
+    };
+}
 
 #endif

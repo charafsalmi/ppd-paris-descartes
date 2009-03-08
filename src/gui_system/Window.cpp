@@ -12,9 +12,14 @@
 #include "../xml/tinyxml.h"
 
 using namespace std;
+using namespace gui;
 
 Window::Window(){
-    position_ = sf::Vector2f(0, 0);
+    // 100*100
+    rect_.Top = 0;
+    rect_.Bottom = 100;
+    rect_.Left = 100;
+    rect_.Right = 0;
 }
 
 Window::Window(const Window& other){
@@ -22,19 +27,35 @@ Window::Window(const Window& other){
 }
 
 Window::~Window(){
-    std::vector<Control*>::const_iterator it;
-    for(it=controls_.begin();it!=controls_.end();it++){
-        delete (*it);
-    }
+    UnLoad();
 }
 
 void Window::ManageEvent(const sf::Event& event){
+    std::vector<Control*>::const_iterator it;
+
+    for(it=controls_.begin();it!=controls_.end();it++){
+        // Pour chaque contrôle on verifit si une action les concernes
+        /*
+        sf::Event::MouseButtonEvent
+        Mouse::Button == Mouse::Left, ...
+        int X, Y
+        */
+        /*if (p.Intersects((*it)->GetPosition())){
+            cout << "Intersection !" << endl;
+            // this->WindowCallback((*it)->GetID());
+        }
+        */
+
+    }
+    // this->WindowCallback(id);
 }
 
 void Window::Load(const std::string& xmlfile){
     background_ = GET_IMG("inventory-slot");
     background_.Resize(100, 100);
 
+    // controls_.push_back(new Button(IDEXIT, Control::ControlPos(0,0), "button_prev"));
+	/*
 	TiXmlDocument doc;
     if (!doc.LoadFile(xmlfile.c_str()))
 	{
@@ -75,6 +96,17 @@ void Window::Load(const std::string& xmlfile){
 
 		elem = elem->NextSiblingElement();
 	}
+	*/
+}
+
+void Window::UnLoad(){
+    /* Access violation
+    std::vector<Control*>::const_iterator it;
+    for(it=controls_.begin();it!=controls_.end();it++){
+        delete (*it);
+        //it.remove();
+    }
+    */
 }
 
 void Window::Show(sf::RenderTarget& app){

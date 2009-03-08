@@ -39,9 +39,9 @@ Game::~Game()
 	ConfigParser config;
 	config.SeekSection("Settings");
 	config.WriteItem("panel_on_top", options_.panel_on_top ? 1 : 0);
-	
+
 	config.SaveToFile(CONFIG_FILE);
-	
+
 	app_.Close();
 
 #ifdef DUMB_MUSIC
@@ -54,17 +54,13 @@ void Game::Init()
 {
 	player_ = new Player(sf::Vector2f(300, 300), app_.GetInput());
 
-    #ifdef WINDOW_TEST
-    fen_.Load("data/window/test.xml");
-    #endif
-    
 	// chargement du conteneur de zones
 	zone_container_.Load(ZoneContainer::WORLD);
 	zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
-	
+
 	// default options
 	options_.panel_on_top = true;
-	
+
 	// load options
 	ConfigParser config;
 	if (config.LoadFromFile(CONFIG_FILE))
@@ -77,7 +73,7 @@ void Game::Init()
 			InGameOnEvent(sf::Key::PageDown);
 		}
 	}
-	
+
 	// InGame
 	SetMode(IN_GAME);
 }
@@ -148,11 +144,11 @@ void Game::TakeScreenshot(const char* directory)
 	char currentTime[256];
 	std::string filename;
 	time_t t = time(NULL);
-	
+
 	strftime(currentTime, sizeof(currentTime), "%d-%m-%Y-%M%S", localtime(&t));
-	
+
 	filename = str_sprintf("%s/%s.png", directory, currentTime, t);
-	
+
 	app_.Capture().SaveToFile(filename);
 	std::cout << "Screenshot " << filename << " taken" << std::endl;
 }

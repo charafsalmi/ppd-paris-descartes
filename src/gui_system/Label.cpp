@@ -4,6 +4,8 @@
 
 #include "Label.hpp"
 
+using namespace gui;
+
 Label::Label() : Control(){
 
 }

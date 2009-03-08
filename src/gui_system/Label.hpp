@@ -3,10 +3,11 @@
 
 #include "Control.hpp"
 
-class Label : public Control{
-public:
-    Label();
-    ~Label();
-};
-
+namespace gui{
+    class Label : public Control{
+    public:
+        Label();
+        ~Label();
+    };
+}
 #endif

@@ -13,44 +13,60 @@ alors que la fenêtre s'affiche.
 */
 
 /* TODO: Passage en forme canonique */
+namespace gui{
+    enum ID
+    {
+        IDEXIT = 7771, IDCONFIRM
+    };
 
-class Window{
-public:
-    Window();
-    Window(const Window& other);
-    ~Window();
+    class Window{
+    public:
+        Window();
+        Window(const Window& other);
+        virtual ~Window();
 
-    /**
-    * Chare une fenêtre à partir d'un fichier xml
-    * param[in] xmlfile Nom du fichier XML à ouvrir
-    */
-    void Load(const std::string& xmlfile);
+        /**
+        * Callback du gestionnaire de fenêtre
+        */
+        virtual int WindowCallback(Control::ControlID id){return 0;};
 
-    /**
-    * Affichage de la fenêtre
-    */
-	void Show(sf::RenderTarget& app);
+        /**
+        * Affichage de la fenêtre
+        */
+        void Show(sf::RenderTarget& app);
 
-	/**
-	* Gestion des evenements concernant la fenêtre
-	*/
-	void ManageEvent(const sf::Event& event);
-private:
-    /**
-    * Image de fond de la fenêtre
-    */
-    sf::Sprite background_;
+        /**
+        * Gestion des evenements concernant la fenêtre
+        */
+        void ManageEvent(const sf::Event& event);
+    protected:
+        /**
+        * Charge une fenêtre à partir d'un fichier xml
+        * param[in] xmlfile Nom du fichier XML à ouvrir
+        */
+        void Load(const std::string& xmlfile);
 
-    /**
-    * Position de la fenêtre
-    */
-    sf::Vector2f position_;
+        /**
+        * Déchargement de tout les composants
+        */
+        void UnLoad();
+    private:
 
-    /**
-    * Control composant la fenêtre
-    */
-    std::vector<Control*> controls_;
+        /**
+        * Image de fond de la fenêtre
+        */
+        sf::Sprite background_;
 
-};
+        /**
+        * Position de la fenêtre
+        */
+        sf::IntRect rect_;
+
+        /**
+        * Composants de la fenêtre
+        */
+        std::vector<Control*> controls_;
+    };
+}
 
 #endif

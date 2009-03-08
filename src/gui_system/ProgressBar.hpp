@@ -3,10 +3,12 @@
 
 #include "Control.hpp"
 
-class ProgressBar : public Control{
-public:
-    ProgressBar();
-    ~ProgressBar();
-};
+namespace gui{
+    class ProgressBar : public Control{
+    public:
+        ProgressBar();
+        ~ProgressBar();
+    };
+}
 
 #endif
