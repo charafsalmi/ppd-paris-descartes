@@ -11,7 +11,7 @@ namespace gui{
         * Typedef
         */
         typedef unsigned int ControlID;
-        typedef sf::Vector2i ControlPos;
+        typedef sf::Vector2f ControlPos;
 
         Control();
         Control(ControlID id, ControlPos pos);

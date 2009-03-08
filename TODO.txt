@@ -24,3 +24,7 @@
 * Interface
 	- GUI pour les dialogues
 
+* Window
+    - Passer la classe en forme canonique
+    - Compléter le système de label
+    - Ajout d'un système de bind de variable à une progress bar ou à un label

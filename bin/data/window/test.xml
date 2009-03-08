@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<window x="0" y="0" w="100" h="100" background="inventory-slot"/>
-<controls>
-	<button id="7771" pic="button_prev" x="10" y="10"/>
-	<label x="10" y="10">Ceci est un texte</label>
-</controls>
+<window x="0" y="0" w="100" h="100" background="interface/background" alpha="128">
+	<button id="7771" pic="interface/button1" x="10" y="10"/>
+	<button id="7772" pic="interface/button2" x="10" y="45"/>
+	<label x="105" y="5">Ceci est un texte</label>
+</window>

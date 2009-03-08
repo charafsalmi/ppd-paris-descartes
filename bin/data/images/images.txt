@@ -1,4 +1,3 @@
-button_prev.png
 icon.bmp
 inventory-cursor.png
 inventory-slot.png
@@ -13,3 +12,7 @@ splash-paris-descartes.jpg
 squelette.png
 tileset.png
 mandarine.png
+interface/button1.png
+interface/button2.png
+interface/button3.png
+interface/background.png

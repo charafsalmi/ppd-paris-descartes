@@ -29,25 +29,19 @@ Window::~Window(){
 void Window::ManageEvent(const sf::Event& event){
     std::vector<Control*>::const_iterator it;
 
-    for(it=controls_.begin();it!=controls_.end();it++){
-        // Pour chaque contrôle on verifit si une action les concernes
-        /*
-        sf::Event::MouseButtonEvent, event.MouseButtonEvent.X
-        Mouse::Button == Mouse::Left, ...
-        int X, Y
-        */
-        /*if ((*it)->IsClicked(event.))){
-            cout << "Intersection !" << endl;
-            // this->WindowCallback((*it)->GetID());
-        }
-        */
 
+    if(event.MouseButton.Button == sf::Mouse::Left){
+        for(it=controls_.begin();it!=controls_.end();it++){
+        // Pour chaque widget on verifit si une action les concernes
+            if((*it)->GetPosition().Contains(event.MouseButton.X, event.MouseButton.Y)){
+                WindowCallback((*it)->GetID());
+            }
+        }
     }
-    // this->WindowCallback(id);
 }
 
 void Window::Load(const std::string& xmlfile){
-    int id, x, y, w, h;
+    int id, x, y, w, h, alpha;
     const char* p = NULL;
 
     TiXmlDocument doc;
@@ -74,6 +68,9 @@ void Window::Load(const std::string& xmlfile){
         if (elem->QueryIntAttribute("h", &h) != TIXML_SUCCESS){
 		    cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
 		}
+		if (elem->QueryIntAttribute("alpha", &alpha) != TIXML_SUCCESS){
+		    alpha = -1;
+		}
         p = elem->Attribute("background");
         if(p == NULL){
             cout << "Warning: No window's background" << endl;
@@ -81,14 +78,18 @@ void Window::Load(const std::string& xmlfile){
 
         background_ = GET_IMG(p);
         background_.Resize(w, h);
+        background_.SetPosition(x, y);
 
-        rect_.Top = x;
-        rect_.Bottom = h;
-        rect_.Left = w;
-        rect_.Right = y;
+        if(alpha != -1)
+            background_.SetColor(sf::Color(255,255,255,alpha));
+
+        rect_.Top = y;
+        rect_.Bottom = h + y;
+        rect_.Left = x;
+        rect_.Right = h + x;
     }
 
-	node = doc.FirstChild("controls")->FirstChildElement();
+	node = doc.FirstChild("window")->FirstChildElement();
 	controls_elem = node->ToElement();
 	while (controls_elem != NULL){
 	    // Position du widget (nécéssaire à tout les contrôles)

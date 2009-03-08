@@ -10,6 +10,9 @@ namespace gui{
         ~Label();
 
         void Show(sf::RenderTarget& app);
+    private:
+        sf::Font font_;
+        sf::String text_;
     };
 }
 #endif
