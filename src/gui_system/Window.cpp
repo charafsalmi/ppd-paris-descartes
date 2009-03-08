@@ -15,11 +15,7 @@ using namespace std;
 using namespace gui;
 
 Window::Window(){
-    // 100*100
-    rect_.Top = 0;
-    rect_.Bottom = 100;
-    rect_.Left = 100;
-    rect_.Right = 0;
+
 }
 
 Window::Window(const Window& other){
@@ -36,11 +32,11 @@ void Window::ManageEvent(const sf::Event& event){
     for(it=controls_.begin();it!=controls_.end();it++){
         // Pour chaque contrôle on verifit si une action les concernes
         /*
-        sf::Event::MouseButtonEvent
+        sf::Event::MouseButtonEvent, event.MouseButtonEvent.X
         Mouse::Button == Mouse::Left, ...
         int X, Y
         */
-        /*if (p.Intersects((*it)->GetPosition())){
+        /*if ((*it)->IsClicked(event.))){
             cout << "Intersection !" << endl;
             // this->WindowCallback((*it)->GetID());
         }
@@ -51,62 +47,93 @@ void Window::ManageEvent(const sf::Event& event){
 }
 
 void Window::Load(const std::string& xmlfile){
-    background_ = GET_IMG("inventory-slot");
-    background_.Resize(100, 100);
+    int id, x, y, w, h;
+    const char* p = NULL;
 
-    // controls_.push_back(new Button(IDEXIT, Control::ControlPos(0,0), "button_prev"));
-	/*
-	TiXmlDocument doc;
-    if (!doc.LoadFile(xmlfile.c_str()))
-	{
-		std::cerr << "can't open window definitions: " << xmlfile.c_str() << std::endl;
+    TiXmlDocument doc;
+    TiXmlElement* controls_elem, *elem;
+    TiXmlNode *node;
+
+    if (!doc.LoadFile(xmlfile.c_str())){
+		std::cerr << "can't open window definitions: " << xmlfile << std::endl;
 		abort();
 	}
-    TiXmlHandle handle(&doc);
-	TiXmlElement* elem = handle.FirstChildElement().FirstChildElement().Element();
 
-	const char* p = NULL;
-	MediaManager& media = MediaManager::GetInstance();
-	while (elem != NULL)
-	{
-		// id du control
-		int id;
-		if (elem->QueryIntAttribute("id", &id) != TIXML_SUCCESS)
-		{
-		    id = 0;
+    node = doc.FirstChild("window");
+    elem = node->ToElement();
+    if(elem != NULL){
+        if (elem->QueryIntAttribute("x", &x) != TIXML_SUCCESS){
+		    cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
 		}
-
-		// Image à charger (si il y a lieu)
-		p = elem->Attribute("pic");
-		if(p == NULL){
-		    cerr << "Pic attribute not defined" << endl;
-		    continue;
+        if (elem->QueryIntAttribute("y", &y) != TIXML_SUCCESS){
+		    cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
 		}
+        if (elem->QueryIntAttribute("w", &w) != TIXML_SUCCESS){
+		    cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
+		}
+        if (elem->QueryIntAttribute("h", &h) != TIXML_SUCCESS){
+		    cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
+		}
+        p = elem->Attribute("background");
+        if(p == NULL){
+            cout << "Warning: No window's background" << endl;
+        }
 
-		// Position du control
-		int x,y;
-		if (elem->QueryIntAttribute("x", &x) != TIXML_SUCCESS){
+        background_ = GET_IMG(p);
+        background_.Resize(w, h);
+
+        rect_.Top = x;
+        rect_.Bottom = h;
+        rect_.Left = w;
+        rect_.Right = y;
+    }
+
+	node = doc.FirstChild("controls")->FirstChildElement();
+	controls_elem = node->ToElement();
+	while (controls_elem != NULL){
+	    // Position du widget (nécéssaire à tout les contrôles)
+		if (controls_elem->QueryIntAttribute("x", &x) != TIXML_SUCCESS){
+		    cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
 			x = 0;
+			break;
 		}
-		if (elem->QueryIntAttribute("y", &y) != TIXML_SUCCESS){
+		if (controls_elem->QueryIntAttribute("y", &y) != TIXML_SUCCESS){
+		    cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
 			y = 0;
+			break;
 		}
 
-        controls_.push_back(new Button(id, Control::ControlPos(x,y), p));
+	    std::string s1 = controls_elem->Value();
 
-		elem = elem->NextSiblingElement();
+	    if(s1 == "button"){
+            // id du widget
+            if(controls_elem->QueryIntAttribute("id", &id) != TIXML_SUCCESS){
+                cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
+                id = 0;
+            }
+
+            // Image à charger
+            p = controls_elem->Attribute("pic");
+            if(p == NULL){
+                cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
+                break;
+            }
+
+            controls_.push_back(new Button(id, Control::ControlPos(x,y), p));
+	    }else if(s1 == "label"){
+	        controls_.push_back(new Label(Control::ControlPos(x,y), controls_elem->GetText()));
+	    }
+
+		controls_elem = controls_elem->NextSiblingElement();
 	}
-	*/
 }
 
 void Window::UnLoad(){
-    /* Access violation
     std::vector<Control*>::const_iterator it;
     for(it=controls_.begin();it!=controls_.end();it++){
         delete (*it);
-        //it.remove();
     }
-    */
+    controls_.clear();
 }
 
 void Window::Show(sf::RenderTarget& app){
