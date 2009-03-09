@@ -94,6 +94,12 @@ void Window::Load(const std::string& xmlfile){
 	node = doc.FirstChild("window")->FirstChildElement();
 	controls_elem = node->ToElement();
 	while (controls_elem != NULL){
+        // id du widget
+        if(controls_elem->QueryIntAttribute("id", &id) != TIXML_SUCCESS){
+            cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
+            id = 0;
+        }
+
 	    // Position du widget (nécéssaire à tout les contrôles)
 		if (controls_elem->QueryIntAttribute("x", &x) != TIXML_SUCCESS){
 		    cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
@@ -109,11 +115,6 @@ void Window::Load(const std::string& xmlfile){
 	    std::string s1 = controls_elem->Value();
 
 	    if(s1 == "button"){
-            // id du widget
-            if(controls_elem->QueryIntAttribute("id", &id) != TIXML_SUCCESS){
-                cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
-                id = 0;
-            }
 
             // Image à charger
             p = controls_elem->Attribute("pic");
@@ -124,7 +125,7 @@ void Window::Load(const std::string& xmlfile){
 
             controls_.push_back(new Button(id, Control::ControlPos(x,y), p));
 	    }else if(s1 == "label"){
-	        controls_.push_back(new Label(Control::ControlPos(x,y), controls_elem->GetText()));
+	        controls_.push_back(new Label(id, Control::ControlPos(x,y), controls_elem->GetText()));
 	    }
 
 		controls_elem = controls_elem->NextSiblingElement();

@@ -6,7 +6,7 @@
 using namespace gui;
 using namespace std;
 
-Label::Label(const ControlPos& pos, const std::string& text) : Control(0, pos){
+Label::Label(const ControlID id, const ControlPos& pos, const std::string& text) : Control(id, pos){
 
     text_.SetText(text);
     text_.SetFont(GET_FONT());

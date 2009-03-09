@@ -6,8 +6,7 @@
 namespace gui{
     class ProgressBar : public Control{
     public:
-        ProgressBar();
-        ~ProgressBar();
+        ProgressBar(const ControlID id, const ControlPos pos);
     };
 }
 

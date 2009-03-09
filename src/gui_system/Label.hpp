@@ -6,7 +6,7 @@
 namespace gui{
     class Label : public Control{
     public:
-        Label(const ControlPos& pos, const std::string& text);
+        Label(const ControlID id, const ControlPos& pos, const std::string& text);
         ~Label();
 
         void Show(sf::RenderTarget& app);

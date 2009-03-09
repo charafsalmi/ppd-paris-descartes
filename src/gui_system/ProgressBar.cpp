@@ -6,11 +6,7 @@
 
 using namespace gui;
 
-ProgressBar::ProgressBar() : Control(){
-
-}
-
-ProgressBar::~ProgressBar(){
+ProgressBar::ProgressBar(const ControlID id, const ControlPos pos) : Control(id, pos){
 
 }
 
