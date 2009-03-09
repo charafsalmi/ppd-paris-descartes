@@ -12,6 +12,7 @@ Control::Control(){
 }
 
 Control::Control(ControlID id, const ControlPos& pos){
+	SetPosition(pos.x, pos.y);
     id_ = id;
     // rect_ = pos;
 }

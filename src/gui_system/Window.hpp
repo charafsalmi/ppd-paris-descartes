@@ -19,7 +19,8 @@ namespace gui{
         IDEXIT = 7771, IDCONFIRM
     };
 
-    class Window{
+    class Window: public sf::Drawable
+    {
     public:
         Window();
         Window(const Window& other);
@@ -31,14 +32,10 @@ namespace gui{
         virtual int WindowCallback(Control::ControlID id){return 0;};
 
         /**
-        * Affichage de la fenêtre
-        */
-        void Show(sf::RenderTarget& app);
-
-        /**
         * Gestion des evenements concernant la fenêtre
         */
         void ManageEvent(const sf::Event& event);
+
     protected:
         /**
         * Charge une fenêtre à partir d'un fichier xml
@@ -51,6 +48,10 @@ namespace gui{
         */
         void UnLoad();
     private:
+		/**
+         * Affichage de la fenêtre
+         */
+		virtual void Render(sf::RenderTarget& app) const;
 
         /**
         * Image de fond de la fenêtre

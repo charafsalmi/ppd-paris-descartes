@@ -1,7 +1,7 @@
 #define DEBUG
-#include "../../src/Misc.cpp"
-#include "../../src/ConfigParser.hpp"
-#include "../../src/ConfigParser.cpp"
+#include "../../src/misc/Misc.cpp"
+#include "../../src/misc/ConfigParser.hpp"
+#include "../../src/misc/ConfigParser.cpp"
 
 /*
 exemple d'utilisation de la classe ConfigParser

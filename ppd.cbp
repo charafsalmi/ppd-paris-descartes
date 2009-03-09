@@ -66,6 +66,8 @@
 		<Unit filename="src/entities/EntityFactory.hpp" />
 		<Unit filename="src/entities/Equipment.cpp" />
 		<Unit filename="src/entities/Equipment.hpp" />
+		<Unit filename="src/entities/Hit.cpp" />
+		<Unit filename="src/entities/Hit.hpp" />
 		<Unit filename="src/entities/Item.cpp" />
 		<Unit filename="src/entities/Item.hpp" />
 		<Unit filename="src/entities/Mob.cpp" />

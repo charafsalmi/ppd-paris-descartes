@@ -9,9 +9,8 @@ namespace gui{
         Button();
         Button(const ControlID id, const ControlPos& pos, const std::string& str);
 
-        void Show(sf::RenderTarget& app);
-
     private:
+		void Render(sf::RenderTarget& app) const;
         sf::Sprite img_;
     };
 }

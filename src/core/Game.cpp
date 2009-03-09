@@ -76,6 +76,7 @@ void Game::Init()
 
 	// InGame
 	SetMode(IN_GAME);
+
 }
 
 
@@ -300,8 +301,9 @@ void Game::InGameShow()
 {
 	app_.Draw(zone_container_);
 	app_.Draw(panel_);
+
 #ifdef WINDOW_TEST
-	fen_.Show(app_);
+	app_.Draw(fen_);
 #endif
 }
 

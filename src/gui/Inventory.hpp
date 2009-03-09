@@ -24,7 +24,7 @@ private:
 		WIDTH = 6, HEIGHT = 4, SLOT_SIZE = 60
 	};
 
-	// TODO: remplacer les sprites par des InventoryObject
+
 	sf::Sprite slots_[HEIGHT][WIDTH];
 	Equipment* items_[HEIGHT][WIDTH];
 	struct Cursor

@@ -13,16 +13,14 @@ Button::Button() : Control(){
 Button::Button(ControlID id, const ControlPos& pos, const std::string& str) : Control(id, pos){
     img_ = GET_IMG(str.c_str());
 
-    img_.SetPosition(pos.x, pos.y);
-
     // Positionnement du contrôle
-    rect_.Top = (int)pos.y;
-    rect_.Left = (int)pos.x;
-    rect_.Bottom = (int)pos.y + img_.GetSize().y;
-    rect_.Right = (int)pos.x + img_.GetSize().x;
+    rect_.Top = pos.y;
+    rect_.Left = pos.x;
+    rect_.Bottom = pos.y + img_.GetSize().y;
+    rect_.Right = pos.x + img_.GetSize().x;
 }
 
-void Button::Show(sf::RenderTarget& app){
+void Button::Render(sf::RenderTarget& app) const{
     #ifdef _DEBUG
     std::cout << "Show button" << std::endl;
     #endif

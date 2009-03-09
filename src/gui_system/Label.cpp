@@ -11,13 +11,12 @@ Label::Label(const ControlID id, const ControlPos& pos, const std::string& text)
     text_.SetText(text);
     text_.SetFont(GET_FONT());
     text_.SetSize(12);
-    text_.Move(pos.x, pos.y);
 }
 
 Label::~Label(){
 
 }
 
-void Label::Show(sf::RenderTarget& app){
+void Label::Render(sf::RenderTarget& app) const{
     app.Draw(text_);
 }

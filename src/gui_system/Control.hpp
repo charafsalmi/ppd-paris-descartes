@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 namespace gui{
-    class Control{
+    class Control: public sf::Drawable{
     public:
         /**
         * Typedef
@@ -17,12 +17,11 @@ namespace gui{
         Control(const ControlID id, const ControlPos& pos);
         virtual ~Control();
 
-        virtual void Show(sf::RenderTarget& app)=0;
 
-        inline sf::IntRect GetPosition(){
+        inline sf::IntRect GetRect() const {
             return rect_;
         }
-        inline ControlID GetID(){
+        inline ControlID GetID() const{
             return id_;
         }
     protected:
@@ -31,6 +30,8 @@ namespace gui{
         * Position du contrôle
         */
         sf::IntRect rect_;
+	private:
+		virtual void Render(sf::RenderTarget& app) const = 0;
     };
 }
 

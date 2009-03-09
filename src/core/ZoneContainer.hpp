@@ -82,15 +82,13 @@ public:
 	 */
 	void Update(float frametime);
 
+private:
 	/**
 	 * Affichage
 	 * @param[in, out] target: cible de rendu
 	 */
-	//void Show(sf::RenderTarget& target) const;
-
-private:
 	void Render(sf::RenderTarget& target) const;
-	
+
 	/**
 	 * Effet de défilement lors d'un changement de zone
 	 */
@@ -116,6 +114,16 @@ private:
 	Zone** zones_;
 
 	TiXmlDocument xml_doc_;
+};
+
+class Dummy: public ZoneContainer
+{
+	public:
+	Dummy(int i)
+	{
+		i_ = i;
+	}
+	int i_;
 };
 
 #endif /* ZONECONTAINER_HPP */

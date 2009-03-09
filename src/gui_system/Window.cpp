@@ -31,10 +31,15 @@ void Window::ManageEvent(const sf::Event& event){
 
 	if (event.Type == sf::Event::MouseButtonReleased)
 	{
-		if(event.MouseButton.Button == sf::Mouse::Left){
-			for(it=controls_.begin();it!=controls_.end();it++){
+		if(event.MouseButton.Button == sf::Mouse::Left)
+		{
+			// transormations des coords absolues en coords relatives
+			int x = event.MouseButton.X - GetPosition().x;
+			int y = event.MouseButton.Y - GetPosition().y;
+
+			for (it=controls_.begin();it!=controls_.end();it++){
 			// Pour chaque widget on verifit si une action les concernes
-				if((*it)->GetPosition().Contains(event.MouseButton.X, event.MouseButton.Y)){
+				if((*it)->GetRect().Contains(x, y)){
 					WindowCallback((*it)->GetID());
 				}
 			}
@@ -78,9 +83,9 @@ void Window::Load(const std::string& xmlfile){
             cout << "Warning: No window's background" << endl;
         }
 
+		SetPosition(x, y);
         background_ = GET_IMG(p);
         background_.Resize(w, h);
-        background_.SetPosition(x, y);
 
         if(alpha != -1)
             background_.SetColor(sf::Color(255,255,255,alpha));
@@ -140,11 +145,11 @@ void Window::UnLoad(){
     controls_.clear();
 }
 
-void Window::Show(sf::RenderTarget& app){
+void Window::Render(sf::RenderTarget& app) const{
     std::vector<Control*>::const_iterator it;
 
     app.Draw(background_);
     for(it=controls_.begin();it!=controls_.end();it++){
-        (*it)->Show(app);
+        app.Draw(**it);
     }
 }

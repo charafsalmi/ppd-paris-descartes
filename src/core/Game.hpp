@@ -100,9 +100,9 @@ private:
 	Player* player_;
 	ControlPanel& panel_;
 
-	#ifdef WINDOW_TEST
+#ifdef WINDOW_TEST
 	MyWin fen_;
-	#endif
+#endif
 
 	sf::RenderWindow app_;
 };
