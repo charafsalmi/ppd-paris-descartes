@@ -3,13 +3,12 @@
 	- items utilisables dans l'inventaire
 	- système d'attaque (collision item / entité ?)
 	- collisions plus élaborées
-		+ pouvoir interagir avec des items
+
 
 * Format des cartes
-	- étendre le format : support des items, de la musique, etc.
-	- plusieurs zones par fichier
+	- étendre le format : la musique, etc.
 	- interface pour l'édition des entités dans editor
-	- visualisation des entités dans editor
+	- visualisation des entités dans editor [WIP à l'arrache]
 	- utilisation d'un double layer ?
 
 * IA

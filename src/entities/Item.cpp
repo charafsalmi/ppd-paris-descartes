@@ -4,28 +4,13 @@
 #include "../gui/ControlPanel.hpp"
 
 
-Item::Item(char code, const sf::Vector2f& position) :
+Item::Item(char code, const sf::Vector2f& position, const sf::IntRect& subrect) :
 	Entity(position, GET_IMG("items"))
 {
-	switch (code)
-	{
-		// money
-		case 'M':
-			SetSubRect(sf::IntRect(20, 0, 20 + 14, 0 + 28));
-			SetFloor(14, 28);
-			SetCenter(0, 28);
-			break;
-		// hearth
-		case 'H':
-			SetSubRect(sf::IntRect(2, 4, 2 + 14, 4 + 14));
-			SetFloor(14, 14);
-			SetCenter(0, 14);
-			break;
-		default:
-			puts("bad item code");
-			abort();
-			break;
-	}
+	SetSubRect(subrect);
+	SetFloor(subrect.GetWidth(), subrect.GetHeight());
+	SetCenter(0, subrect.GetHeight());
+
 	code_ = code;
 }
 

@@ -111,6 +111,7 @@
 	</teleporters>
 	<items>
 			<item code="M" x="192" y="480" />
+			<item code="S" x="200" y="350" />
 	</items>
 </zone>
 <zone>

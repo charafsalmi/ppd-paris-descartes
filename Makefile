@@ -16,7 +16,7 @@ endif
 # test gui_system
 WINDOW_TEST=no
 ifeq ($(WINDOW_TEST), yes)
-	CFLAGS += WINDOW_TEST
+	CFLAGS += -DWINDOW_TEST
 endif
 
 # DUMBlib used?

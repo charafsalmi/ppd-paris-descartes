@@ -1,5 +1,6 @@
 #include "EntityFactory.hpp"
 #include "Mob.hpp"
+#include "Equipment.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../xml/tinyxml.h"
 
@@ -110,7 +111,7 @@ EntityFactory::EntityFactory()
 }
 
 
-Unit* EntityFactory::BuildUnit(int id, const sf::Vector2f& position)
+Unit* EntityFactory::BuildUnit(int id, const sf::Vector2f& position) const
 {
 	Definition::const_iterator it;
 	it = patterns_.find(id);
@@ -133,5 +134,18 @@ Unit* EntityFactory::BuildUnit(int id, const sf::Vector2f& position)
 
 Item* EntityFactory::BuildItem(char code, const sf::Vector2f& position) const
 {
-	return new Item(code, position);
+	sf::IntRect subrect;
+	switch (code)
+	{
+		case 'M':
+			subrect = sf::IntRect(0, 16, 0 + 16, 16 + 28);
+			return new Item(code, position, subrect);
+		case 'H':
+			subrect = sf::IntRect(0, 0, 16, 16);
+			return new Item(code, position, subrect);
+		case 'S':
+			subrect = sf::IntRect(16, 0, 16 + 18, 0 + 32);
+			return new Equipment(code, position, subrect);
+	}
+	return NULL;
 }

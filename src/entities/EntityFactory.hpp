@@ -14,7 +14,7 @@ class EntityFactory
 public:
 	static EntityFactory& GetInstance();
 
-	Unit* BuildUnit(int id, const sf::Vector2f& position);
+	Unit* BuildUnit(int id, const sf::Vector2f& position) const;
 
 	Item* BuildItem(char code, const sf::Vector2f& position) const;
 
