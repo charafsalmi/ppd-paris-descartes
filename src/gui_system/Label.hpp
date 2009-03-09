@@ -6,12 +6,11 @@
 namespace gui{
     class Label : public Control{
     public:
-        Label(ControlPos pos, const std::string& text);
+        Label(const ControlPos& pos, const std::string& text);
         ~Label();
 
         void Show(sf::RenderTarget& app);
     private:
-        sf::Font font_;
         sf::String text_;
     };
 }

@@ -14,7 +14,7 @@ namespace gui{
         typedef sf::Vector2f ControlPos;
 
         Control();
-        Control(ControlID id, ControlPos pos);
+        Control(ControlID id, const ControlPos& pos);
         virtual ~Control();
 
         virtual void Show(sf::RenderTarget& app)=0;

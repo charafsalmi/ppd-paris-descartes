@@ -29,15 +29,17 @@ Window::~Window(){
 void Window::ManageEvent(const sf::Event& event){
     std::vector<Control*>::const_iterator it;
 
-
-    if(event.MouseButton.Button == sf::Mouse::Left){
-        for(it=controls_.begin();it!=controls_.end();it++){
-        // Pour chaque widget on verifit si une action les concernes
-            if((*it)->GetPosition().Contains(event.MouseButton.X, event.MouseButton.Y)){
-                WindowCallback((*it)->GetID());
-            }
-        }
-    }
+	if (event.Type == sf::Event::MouseButtonReleased)
+	{
+		if(event.MouseButton.Button == sf::Mouse::Left){
+			for(it=controls_.begin();it!=controls_.end();it++){
+			// Pour chaque widget on verifit si une action les concernes
+				if((*it)->GetPosition().Contains(event.MouseButton.X, event.MouseButton.Y)){
+					WindowCallback((*it)->GetID());
+				}
+			}
+		}
+	}
 }
 
 void Window::Load(const std::string& xmlfile){

@@ -11,7 +11,7 @@ Control::Control(){
 
 }
 
-Control::Control(ControlID id, ControlPos pos){
+Control::Control(ControlID id, const ControlPos& pos){
     id_ = id;
     // rect_ = pos;
 }

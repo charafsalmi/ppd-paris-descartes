@@ -10,7 +10,7 @@ Button::Button() : Control(){
 
 }
 
-Button::Button(ControlID id, ControlPos pos, const std::string& str) : Control(id, pos){
+Button::Button(ControlID id, const ControlPos& pos, const std::string& str) : Control(id, pos){
     img_ = GET_IMG(str.c_str());
 
     img_.SetPosition(pos.x, pos.y);
