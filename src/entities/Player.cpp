@@ -34,7 +34,7 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	subrects_not_moving_[UP]	= sf::IntRect(0,   0, 32,  48);
 	subrects_not_moving_[DOWN]	= sf::IntRect(0,  48, 32,  96);
 	subrects_not_moving_[LEFT]	= sf::IntRect(0,  96, 32, 144);
-	subrects_not_moving_[RIGHT]	= sf::IntRect(0, 144, 32, 196);
+	subrects_not_moving_[RIGHT]	= sf::IntRect(0, 144, 32, 192);
 
 	// attribution des touches de déplacement
 	move_keys_[UP] = sf::Key::Up;
@@ -274,6 +274,7 @@ void Player::Update(float frametime)
 
 void Player::OnCollide(Entity& entity)
 {
+	(void) entity;
 	TakeDamage(1);
 	panel_.SetHP(hp_);
 }
