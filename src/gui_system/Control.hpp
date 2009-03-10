@@ -17,16 +17,19 @@ namespace gui{
         Control(const ControlID id, const ControlPos& pos);
         virtual ~Control();
 
+        /** Récupère la zone du widget */
         inline const sf::IntRect& GetRect() const {
             return rect_;
         }
+        /** Récupère son identifiant */
         inline ControlID GetID() const{
             return id_;
         }
     protected:
+        /** Identifiant du contrôle */
         ControlID id_;
         /**
-        * Position du contrôle
+        * Zone du contrôle
         */
         sf::IntRect rect_;
 	private:

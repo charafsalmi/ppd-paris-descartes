@@ -9,7 +9,7 @@ MyWin::MyWin(){
     Load("data/window/test.xml");
 }
 
-int MyWin::WindowCallback(Control::ControlID id){
+int MyWin::WindowCallback(const Control::ControlID id, const int p1, void *p2){
     switch(id){
         case IDEXIT:
             std::cout << "gui_system : IDEXIT called" << std::endl;

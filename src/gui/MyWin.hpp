@@ -7,7 +7,8 @@ class MyWin : public gui::Window{
 public:
     MyWin();
 
-    int WindowCallback(gui::Control::ControlID id); // private?
+private:
+    int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2); // private?
 };
 
 #endif

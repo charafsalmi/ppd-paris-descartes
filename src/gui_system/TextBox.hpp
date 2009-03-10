@@ -19,6 +19,9 @@ private:
 	sf::Shape background_;
 	sf::Shape cursor_;
 	BitmapString text_;
+
+	/** Définit si le contrôle est activé */
+    bool activated_;
 };
 
 }

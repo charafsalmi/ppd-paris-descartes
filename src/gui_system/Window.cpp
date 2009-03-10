@@ -30,18 +30,18 @@ Window::~Window(){
 void Window::ManageEvent(const sf::Event& event){
     std::vector<Control*>::const_iterator it;
 
+    // transormations des coords absolues en coords relatives
+    int x = event.MouseButton.X - GetPosition().x;
+    int y = event.MouseButton.Y - GetPosition().y;
+
 	if (event.Type == sf::Event::MouseButtonReleased)
 	{
 		if(event.MouseButton.Button == sf::Mouse::Left)
 		{
-			// transormations des coords absolues en coords relatives
-			int x = event.MouseButton.X - GetPosition().x;
-			int y = event.MouseButton.Y - GetPosition().y;
-
 			for (it=controls_.begin();it!=controls_.end();it++){
 			// Pour chaque widget on verifit si une action les concerne
 				if((*it)->GetRect().Contains(x, y)){
-					WindowCallback((*it)->GetID());
+					WindowCallback((*it)->GetID(), 0, NULL);
 				}
 			}
 		}

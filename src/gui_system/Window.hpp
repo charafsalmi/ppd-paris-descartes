@@ -29,7 +29,7 @@ namespace gui{
         /**
         * Callback du gestionnaire de fenêtre
         */
-        virtual int WindowCallback(Control::ControlID id){return 0;};
+        virtual int WindowCallback(const Control::ControlID id, const int p1, void *p2){return 0;};
 
         /**
         * Gestion des evenements concernant la fenêtre
