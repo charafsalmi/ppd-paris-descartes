@@ -7,7 +7,7 @@
 #include "Zone.hpp"
 #include "ZoneContainer.hpp"
 #include "Game.hpp"
-#include "../entities/StaticItem.hpp"
+#include "../entities/Decor.hpp"
 #include "../entities/EntityFactory.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../gui/ControlPanel.hpp"
@@ -164,7 +164,6 @@ void Zone::Update(float frametime)
 	// removing dead entities
 	EntityList::iterator it1, it2, it_end;
 
-	//TODO: gérer la suppression du joueur (sinon plantage car player désalloué)
 	for (it1 = entities_.begin(); it1 != entities_.end();)
 	{
 		if ((**it1).IsDead())

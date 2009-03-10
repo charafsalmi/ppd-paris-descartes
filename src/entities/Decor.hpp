@@ -1,19 +1,19 @@
-#ifndef STATICITEM_HPP
-#define STATICITEM_HPP
+#ifndef DECOR_HPP
+#define DECOR_HPP
 
 #include "Entity.hpp"
 
 /**
- * Élément immobile
+ * Élément de décoration fixe
  */
-class StaticItem: public Entity
+class Decor: public Entity
 {
 public:
 	/**
 	 * @param[in] floor: dimensions du rectangle de contact avec le sol
 	 * NULL si le rectangle recouvre tout le sprite
 	 */
-	StaticItem(const sf::Vector2f& pos, const sf::Image& image,
+	Decor(const sf::Vector2f& pos, const sf::Image& image,
 		const sf::Vector2i* floor=NULL);
 	
 	inline void TakeDamage(int damage)
@@ -22,5 +22,5 @@ public:
 	}
 };
 
-#endif /* STATICITEM_HPP */
+#endif /* DECOR_HPP */
 

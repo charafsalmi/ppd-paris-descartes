@@ -14,6 +14,7 @@
 #define APP_TITLE  "PPD"
 
 #define CONFIG_FILE "config/config.css"
+#define KEY_PAUSE   sf::Key::F11
 
 
 Game& Game::GetInstance()
@@ -126,13 +127,6 @@ void Game::Run()
 					case sf::Key::Escape:
 						running_ = false;
 						break;
-                    case sf::Key::F11:
-                        if(mode_ == PAUSE){
-                            SetMode(IN_GAME);
-                        }else{
-                            SetMode(PAUSE);
-                        }
-                        break;
 				}
 			}
 		}
@@ -258,8 +252,8 @@ void Game::EndGame()
 
 void Game::SetMode(Mode mode)
 {
-    // On sauvegarde le mode
-    mode_ = mode;
+	// On sauvegarde le mode
+	//mode_ = mode; (inutile, je laisse si jamais ça devrait changer)
 
 	// initialisation des callbacks
 	switch (mode)
@@ -301,35 +295,40 @@ void Game::DefaultUpdate(float frametime)
 	zone_container_.Update(frametime);
 }
 
+// IN_GAME
 
 void Game::InGameOnEvent(const sf::Event& event)
 {
-    sf::Key::Code key = event.Key.Code;
+	sf::Key::Code key = event.Key.Code;
 
-    if(event.Type == sf::Event::KeyPressed){
-        if (zone_container_.Scrolling())
-        {
-            return;
-        }
-        switch (key)
-        {
-            case sf::Key::Return:
-                SetMode(INVENTORY);
-                break;
-            case sf::Key::PageUp:
-                panel_.SetPosition(0, 0);
-                zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
-                options_.panel_on_top = true;
-                break;
-            case sf::Key::PageDown:
-                panel_.SetPosition(0, Zone::HEIGHT_PX);
-                zone_container_.SetPosition(0, 0);
-                options_.panel_on_top = false;
-                break;
-            default:
-                player_->OnEvent(key);
-                break;
-        }
+	if (event.Type == sf::Event::KeyPressed)
+	{
+		if (zone_container_.Scrolling())
+		{
+			return;
+		}
+		switch (key)
+		{
+			case sf::Key::Return:
+				SetMode(INVENTORY);
+				break;
+			case sf::Key::PageUp:
+				panel_.SetPosition(0, 0);
+				zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
+				options_.panel_on_top = true;
+				break;
+			case sf::Key::PageDown:
+				panel_.SetPosition(0, Zone::HEIGHT_PX);
+				zone_container_.SetPosition(0, 0);
+				options_.panel_on_top = false;
+				break;
+			case KEY_PAUSE:
+				SetMode(PAUSE);
+				break;
+			default:
+				player_->OnEvent(key);
+				break;
+		}
     }
 }
 
@@ -348,6 +347,7 @@ void Game::InGameShow()
 #endif
 }
 
+// INVENTORY
 
 void Game::InventoryOnEvent(const sf::Event& event)
 {
@@ -359,27 +359,43 @@ void Game::InventoryOnEvent(const sf::Event& event)
 	    SetMode(IN_GAME);
 }
 
-void Game::PauseShow()
-{
-	app_.Draw(pause_);
-}
-
-void Game::PauseUpdate(float)
-{
-
-}
-
-void Game::PauseOnEvent(const sf::Event& event)
-{
-	if(pause_.ManageEvent(event) == WinPause::_EXIT)
-	    running_ = false;
-}
 
 void Game::InventoryShow()
 {
 	app_.Draw(zone_container_);
 	app_.Draw(*panel_.GetInventory());
 }
+
+// PAUSE
+
+void Game::PauseOnEvent(const sf::Event& event)
+{
+	if (event.Type == sf::Event::KeyPressed)
+	{
+		if (event.Key.Code == KEY_PAUSE)
+		{
+			SetMode(IN_GAME);
+			return;
+		}
+	}
+	if (pause_.ManageEvent(event) == WinPause::_EXIT)
+		running_ = false;
+}
+
+
+void Game::PauseUpdate(float)
+{
+
+}
+
+
+void Game::PauseShow()
+{
+	app_.Draw(pause_);
+}
+
+
+// GAME_OVER
 
 void Game::GameOverOnEvent(const sf::Event& event)
 {

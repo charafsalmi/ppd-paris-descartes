@@ -100,7 +100,7 @@ private:
 		IN_GAME, GAME_OVER, INVENTORY, PAUSE
 	};
 
-    Mode mode_;
+    //Mode mode_;
 
 	void SetMode(Mode mode);
 

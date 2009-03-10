@@ -12,7 +12,7 @@
 
 #define SPEED         120
 #define FALL_DELAY    1
-#define DEFAULT_LIVES 99
+#define DEFAULT_LIVES 20
 
 
 Player::Player(const sf::Vector2f& pos, const sf::Input& input) :

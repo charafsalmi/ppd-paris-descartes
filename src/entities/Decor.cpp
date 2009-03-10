@@ -1,7 +1,7 @@
-#include "StaticItem.hpp"
+#include "Decor.hpp"
 
 
-StaticItem::StaticItem(const sf::Vector2f& pos, const sf::Image& image,
+Decor::Decor(const sf::Vector2f& pos, const sf::Image& image,
 	const sf::Vector2i* floor) :
 	Entity(pos, image)
 {
