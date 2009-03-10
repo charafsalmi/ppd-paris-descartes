@@ -131,7 +131,7 @@ ControlPanel::ControlPanel() :
 #ifdef DEBUG
 	dbg_ = false;
 #endif
-	inventory_ = new Inventory();
+	inventory_ = new WinInventory();
 
 	timer_info_text_ = 0;
 

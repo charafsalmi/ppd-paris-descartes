@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<window x="100" y="100" w="240" h="120" background="interface/background">
+	<button id="9000" pic="inventory-slot" x="0" y="0" />
+	<button id="9001" pic="inventory-slot" x="60" y="0" />
+	<button id="9002" pic="inventory-slot" x="120" y="0" />
+	<button id="9003" pic="inventory-slot" x="180" y="0" />
+	
+	<button id="9004" pic="inventory-slot" x="0" y="60" />
+	<button id="9005" pic="inventory-slot" x="60" y="60" />
+	<button id="9006" pic="inventory-slot" x="120" y="60" />
+	<button id="9007" pic="inventory-slot" x="180" y="60" />
+</window>
+

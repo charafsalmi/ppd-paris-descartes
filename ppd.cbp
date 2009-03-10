@@ -14,7 +14,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-W" />
+					<Add option="-w" />
 					<Add option="-g" />
 					<Add option="-DDEBUG" />
 				</Compiler>
@@ -89,6 +89,8 @@
 		<Unit filename="src\gui\MyWin.hpp" />
 		<Unit filename="src\gui\Splash.cpp" />
 		<Unit filename="src\gui\Splash.hpp" />
+		<Unit filename="src\gui\WinInventory.cpp" />
+		<Unit filename="src\gui\WinInventory.hpp" />
 		<Unit filename="src\gui_system\Button.cpp" />
 		<Unit filename="src\gui_system\Button.hpp" />
 		<Unit filename="src\gui_system\Control.cpp" />

@@ -1,4 +1,4 @@
-#include "../gui/Inventory.hpp"
+#include "Inventory.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../entities/Equipment.hpp"
 

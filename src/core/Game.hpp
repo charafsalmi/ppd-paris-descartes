@@ -61,11 +61,11 @@ private:
 	// callbacks
 
 	// méthodes InGame
-	void InGameOnEvent(sf::Key::Code key);
+	void InGameOnEvent(sf::Event &event);
 	void InGameShow();
 
 	// méthodes Inventory
-	void InventoryOnEvent(sf::Key::Code key);
+	void InventoryOnEvent(sf::Event &event);
 	void InventoryShow();
 
 	void DefaultUpdate(float frametime);
@@ -78,7 +78,7 @@ private:
 	void SetMode(Mode mode);
 
 	// pointeur de la méthode de gestion des évènements
-	void (Game::*on_event_meth_)(sf::Key::Code code);
+	void (Game::*on_event_meth_)(sf::Event &event);
 	// pointeur de la méthode de mise à jour
 	void (Game::*update_meth_)(float frametime);
 	// pointeur de la méthode d'affichage'
@@ -101,7 +101,7 @@ private:
 	ControlPanel& panel_;
 
 #ifdef WINDOW_TEST
-	MyWin fen_;
+	// MyWin fen_;
 #endif
 
 	sf::RenderWindow app_;

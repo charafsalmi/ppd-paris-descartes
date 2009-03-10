@@ -49,7 +49,7 @@ void Window::ManageEvent(const sf::Event& event){
 }
 
 void Window::Load(const std::string& xmlfile){
-    int id, x, y, w, h, alpha;
+    int id, x=0, y=0, w, h, alpha;
     const char* p = NULL;
 
     TiXmlDocument doc;
@@ -100,6 +100,7 @@ void Window::Load(const std::string& xmlfile){
 	node = doc.FirstChild("window")->FirstChildElement();
 	controls_elem = node->ToElement();
 	while (controls_elem != NULL){
+
         // id du widget
         if(controls_elem->QueryIntAttribute("id", &id) != TIXML_SUCCESS){
             cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
@@ -121,7 +122,6 @@ void Window::Load(const std::string& xmlfile){
 	    std::string s1 = controls_elem->Value();
 
 	    if(s1 == "button"){
-
             // Image à charger
             p = controls_elem->Attribute("pic");
             if(p == NULL){
@@ -155,6 +155,6 @@ void Window::Render(sf::RenderTarget& app) const{
 
     app.Draw(background_);
     for(it=controls_.begin();it!=controls_.end();it++){
-        app.Draw(**it);
+        app.Draw(*(*it));
     }
 }

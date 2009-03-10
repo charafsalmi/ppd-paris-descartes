@@ -4,7 +4,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "Inventory.hpp"
+#include "WinInventory.hpp"
 #include "../misc/BitmapString.hpp"
 
 
@@ -34,7 +34,7 @@ public:
 
 
 
-	inline Inventory* GetInventory()
+	inline WinInventory* GetInventory()
 	{
 		return inventory_;
 	}
@@ -65,7 +65,7 @@ private:
 #ifdef DEBUG
 	mutable bool dbg_;
 #endif
-	Inventory* inventory_;
+	WinInventory* inventory_;
 	BitmapString info_text_;
 	float timer_info_text_;
 };

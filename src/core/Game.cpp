@@ -70,7 +70,7 @@ void Game::Init()
 		config.ReadItem("panel_on_top", options_.panel_on_top);
 		if (!options_.panel_on_top)
 		{
-			InGameOnEvent(sf::Key::PageDown);
+			//InGameOnEvent(sf::Key::PageDown);
 		}
 	}
 
@@ -102,8 +102,10 @@ void Game::Run()
 		while (app_.GetEvent(event))
 		{
 #ifdef WINDOW_TEST
-			fen_.ManageEvent(event);
+			//fen_.ManageEvent(event);
 #endif
+            (this->*on_event_meth_)(event);
+
 			if (event.Type == sf::Event::Closed)
 			{
 				running = false;
@@ -119,11 +121,12 @@ void Game::Run()
 						running = false;
 						break;
 					default:
-						(this->*on_event_meth_)(event.Key.Code);
+						// (this->*on_event_meth_)(event.Key.Code);
 						break;
 				}
 			}
 		}
+
 		// UPDATE
 		frametime = app_.GetFrameTime();
 		(this->*update_meth_)(frametime);
@@ -269,31 +272,35 @@ void Game::DefaultUpdate(float frametime)
 }
 
 
-void Game::InGameOnEvent(sf::Key::Code key)
+void Game::InGameOnEvent(sf::Event &event)
 {
-	if (zone_container_.Scrolling())
-	{
-		return;
-	}
-	switch (key)
-	{
-		case sf::Key::Return:
-			SetMode(INVENTORY);
-			break;
-		case sf::Key::PageUp:
-			panel_.SetPosition(0, 0);
-			zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
-			options_.panel_on_top = true;
-			break;
-		case sf::Key::PageDown:
-			panel_.SetPosition(0, Zone::HEIGHT_PX);
-			zone_container_.SetPosition(0, 0);
-			options_.panel_on_top = false;
-			break;
-		default:
-			player_->OnEvent(key);
-			break;
-	}
+    sf::Key::Code key = event.Key.Code;
+
+    if(event.Type == sf::Event::KeyPressed){
+        if (zone_container_.Scrolling())
+        {
+            return;
+        }
+        switch (key)
+        {
+            case sf::Key::Return:
+                SetMode(INVENTORY);
+                break;
+            case sf::Key::PageUp:
+                panel_.SetPosition(0, 0);
+                zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
+                options_.panel_on_top = true;
+                break;
+            case sf::Key::PageDown:
+                panel_.SetPosition(0, Zone::HEIGHT_PX);
+                zone_container_.SetPosition(0, 0);
+                options_.panel_on_top = false;
+                break;
+            default:
+                player_->OnEvent(key);
+                break;
+        }
+    }
 }
 
 
@@ -303,24 +310,24 @@ void Game::InGameShow()
 	app_.Draw(panel_);
 
 #ifdef WINDOW_TEST
-	app_.Draw(fen_);
+	//app_.Draw(fen_);
 #endif
 }
 
 
-void Game::InventoryOnEvent(sf::Key::Code key)
+void Game::InventoryOnEvent(sf::Event &event)
 {
-	if (key == sf::Key::Return)
+	if ((event.Key.Code == sf::Key::Return) && (event.Type == sf::Event::KeyPressed))
 	{
 		SetMode(IN_GAME);
 	}
-	panel_.GetInventory()->OnEvent(key);
+	panel_.GetInventory()->ManageEvent(event);
 }
 
 
 void Game::InventoryShow()
 {
 	app_.Draw(zone_container_);
-	panel_.GetInventory()->Show(app_);
+	app_.Draw(*panel_.GetInventory());
+	//panel_.GetInventory()->Show(app_);
 }
-
