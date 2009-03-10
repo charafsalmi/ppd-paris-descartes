@@ -3,19 +3,21 @@
 #define FIRST_CHAR 32
 
 
-BitmapFont::BitmapFont(int width, int height, int width_count, int height_count)
+BitmapFont::BitmapFont(const sf::Image& image, int width, int height)
 {
 	width_ = width;
 	height_ = height;
-	width_count_ = width_count;
-	height_count_ = height_count;
-	image_ = NULL;
+	image_ = &image;
+	
+	char_width_ = image.GetWidth() / width;
+	char_height_ = image.GetHeight() / height;
 }
 
 
 void BitmapFont::SetImage(const sf::Image& image)
 {
 	image_ = &image;
+	char_width_ = image.GetWidth() / width_;
 }
 
 
@@ -25,24 +27,26 @@ const sf::Image& BitmapFont::GetImage() const
 }
 
 
-void BitmapFont::GetCharRect(char character, sf::IntRect& subrect) const
+sf::IntRect BitmapFont::GetCharRect(char character) const
 {
-
-	character -= FIRST_CHAR;
-	if (character < 0)
+	if (character < 32 || character > 127)
 	{
-		character = 0;
-		puts("warning: bad character (< 20)");
+		printf("warning: caractère non imprimable (ASCII %d)\n", character);
+		character = FIRST_CHAR;
 	}
-	subrect.Left = (character % width_count_) * width_;
-	subrect.Right = subrect.Left + width_;
-	subrect.Top = (character / width_count_) * height_;
-	subrect.Bottom = subrect.Top + height_;
+	character -= FIRST_CHAR;
+	
+	sf::IntRect subrect;
+	subrect.Left = (character % width_) * char_width_;
+	subrect.Right = subrect.Left + char_width_;
+	subrect.Top = (character / width_) * char_height_;
+	subrect.Bottom = subrect.Top + char_height_;
+	return subrect;
 }
 
 
 int BitmapFont::GetCharWidth() const
 {
-	return width_;
+	return char_width_;
 }
 
