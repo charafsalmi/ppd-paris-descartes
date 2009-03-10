@@ -34,7 +34,7 @@ namespace gui{
         /**
         * Gestion des evenements concernant la fenêtre
         */
-        void ManageEvent(const sf::Event& event);
+        int ManageEvent(const sf::Event& event);
 
     protected:
         /**

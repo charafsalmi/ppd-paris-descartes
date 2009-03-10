@@ -37,12 +37,13 @@ Control *Window::GetFromID(Control::ControlID id){
     return NULL;
 }
 
-void Window::ManageEvent(const sf::Event& event){
+int Window::ManageEvent(const sf::Event& event){
     std::vector<Control*>::const_iterator it;
 
     // transormations des coords absolues en coords relatives
     int x = event.MouseButton.X - GetPosition().x;
     int y = event.MouseButton.Y - GetPosition().y;
+    int r;
 
 	if (event.Type == sf::Event::MouseButtonReleased)
 	{
@@ -51,11 +52,13 @@ void Window::ManageEvent(const sf::Event& event){
 			for (it=controls_.begin();it!=controls_.end();it++){
 			// Pour chaque widget on verifit si une action les concerne
 				if((*it)->GetRect().Contains(x, y)){
-					WindowCallback((*it)->GetID(), 0, NULL);
+					if(r = WindowCallback((*it)->GetID(), 0, NULL))
+                        return r;
 				}
 			}
 		}
 	}
+	return 0;
 }
 
 void Window::Load(const std::string& xmlfile){
