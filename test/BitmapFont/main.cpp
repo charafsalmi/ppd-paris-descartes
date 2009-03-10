@@ -68,8 +68,26 @@ int main(int argc, char* argv[])
 					case sf::Key::F6:
 						string.Clear();
 						break;
+					case sf::Key::F7:
+						string.RemoveChar(2);
+						break;
 					case sf::Key::Back:
 						string.RemoveChar(-1);
+						break;
+					case sf::Key::F8:
+						string.InsertChar('*', 0);
+						break;
+					case sf::Key::F9:
+						string.SetColor(sf::Color::Red);
+						break;
+					case sf::Key::F10:
+						string.SetColor(sf::Color::Green);
+						break;
+					case sf::Key::F11:
+						string.SetColor(sf::Color::Blue);
+						break;
+					case sf::Key::F12:
+						string.SetColor(sf::Color(255, 255, 255, 128));
 						break;
 					default:
 						break;

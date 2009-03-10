@@ -1,6 +1,7 @@
 #include "BitmapFont.hpp"
 
 #define FIRST_CHAR 32
+#define LAST_CHAR  127
 
 
 BitmapFont::BitmapFont(const sf::Image& image, int width, int height)
@@ -18,6 +19,7 @@ void BitmapFont::SetImage(const sf::Image& image)
 {
 	image_ = &image;
 	char_width_ = image.GetWidth() / width_;
+	char_height_ = image.GetHeight() / height_;
 }
 
 
@@ -29,7 +31,7 @@ const sf::Image& BitmapFont::GetImage() const
 
 sf::IntRect BitmapFont::GetCharRect(char character) const
 {
-	if (character < 32 || character > 127)
+	if (character < FIRST_CHAR || character > LAST_CHAR)
 	{
 		printf("warning: caractère non imprimable (ASCII %d)\n", character);
 		character = FIRST_CHAR;
@@ -48,5 +50,11 @@ sf::IntRect BitmapFont::GetCharRect(char character) const
 int BitmapFont::GetCharWidth() const
 {
 	return char_width_;
+}
+
+
+int BitmapFont::GetCharHeight() const
+{
+	return char_height_;
 }
 

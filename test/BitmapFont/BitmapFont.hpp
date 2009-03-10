@@ -3,18 +3,25 @@
 
 #include <SFML/Graphics.hpp>
 
+
 class BitmapFont
 {
 public:
 	/**
 	 * @param[in] image: image de la police bitmap
-	 * @param[in] width: nombre caractères en largeur
+	 * @param[in] width: nombre de caractères en largeur
 	 * @param[in] height: nombre de caractère en hauteur
 	 */
 	BitmapFont(const sf::Image& image, int width, int height);
 	
+	/**
+	 * Changer l'image de la police
+	 */
 	void SetImage(const sf::Image& image);
 	
+	/**
+	 * Récupérer l'image en cours d'utilisation
+	 */
 	const sf::Image& GetImage() const;
 	
 	/**
@@ -28,6 +35,11 @@ public:
 	 * Largeur d'un caractère
 	 */
 	int GetCharWidth() const;
+	
+	/**
+	 * Hauteur d'un caractère
+	 */
+	int GetCharHeight() const;
 	
 private:
 	const sf::Image* image_;

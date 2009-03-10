@@ -71,11 +71,30 @@ public:
 	 */
 	int Length() const;
 	
+	/**
+	 * Définir la couleur des bitmaps
+	 */
+	void SetColor(const sf::Color& color);
+	
 private:
+	/**
+	 * Affichage
+	 */
 	void Render(sf::RenderTarget& target) const;
 	
+	/**
+	 * Transforme les positions négatives en positions positives exploitables
+	 */
+	int GetRealPosition(int position) const;
+	
+	/**
+	 * Recalculer la position des bitmaps
+	 * @param[in] from: première position à recalculer
+	 */
+	void ComputePosition(int from);
+	
 	typedef std::vector<sf::Sprite> SpriteVec;
-	SpriteVec text_;
+	SpriteVec bitmaps_;
 	
 	int char_width_;
 	std::string chars_;
