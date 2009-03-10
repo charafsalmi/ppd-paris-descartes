@@ -7,6 +7,7 @@
 #include "../entities/Player.hpp"
 #include "../gui/ControlPanel.hpp"
 #include "../gui/MyWin.hpp"
+#include "../gui/WinPause.hpp"
 #include "../misc/Misc.hpp"
 #include "../misc/BitmapString.hpp"
 
@@ -57,6 +58,8 @@ private:
 	Game(const Game&);
 	~Game();
 
+	bool running_;
+
 	// Prend une capture d'écran de la fenêtre
 	void TakeScreenshot(const char* directory);
 
@@ -74,6 +77,16 @@ private:
 	void InventoryOnEvent(const sf::Event& event);
 	void InventoryShow();
 
+	// méthode menu principal
+	void MainMenuOnEvent(const sf::Event& event);
+	void MainMenuUpdate(float frametime);
+	void MainMenuShow();
+
+    // méthodes Pause
+	void PauseOnEvent(const sf::Event& event);
+	void PauseUpdate(float frametime);
+	void PauseShow();
+
 	// méthodes GameOver
 	void GameOverOnEvent(const sf::Event& event);
 	void GameOverUpdate(float frametime);
@@ -84,8 +97,10 @@ private:
 
 	enum Mode
 	{
-		IN_GAME, GAME_OVER, INVENTORY
+		IN_GAME, GAME_OVER, INVENTORY, PAUSE
 	};
+
+    Mode mode_;
 
 	void SetMode(Mode mode);
 
@@ -109,11 +124,13 @@ private:
 	// coordonnées de la zone à activer si changement de conteneur
 	sf::Vector2i next_zone_cds_;
 
+    WinPause pause_;
 	Player* player_;
 	ControlPanel& panel_;
 	BitmapString message_;
+
 #ifdef WINDOW_TEST
-	//MyWin fen_;
+	MyWin fen_;
 #endif
 
 	sf::RenderWindow app_;

@@ -87,9 +87,10 @@ void Game::Init()
 void Game::Run()
 {
 	sf::Event event;
-	bool running = true;
 	float frametime;
 	zone_container_.GetActiveZone()->AddEntity(player_);
+
+    running_ = true;
 
 #ifndef NO_SPLASH
 	Splash s(app_);
@@ -100,7 +101,7 @@ void Game::Run()
 	SetMusic(active_zone_->GetMusic());
 #endif
 
-	while (running)
+	while (running_)
 	{
 		// POLLING
 		while (app_.GetEvent(event))
@@ -113,7 +114,7 @@ void Game::Run()
 			// global events
 			if (event.Type == sf::Event::Closed)
 			{
-				running = false;
+				running_ = false;
 			}
 			else if (event.Type == sf::Event::KeyPressed)
 			{
@@ -123,8 +124,15 @@ void Game::Run()
 						TakeScreenshot("screenshot");
 						break;
 					case sf::Key::Escape:
-						running = false;
+						running_ = false;
 						break;
+                    case sf::Key::F11:
+                        if(mode_ == PAUSE){
+                            SetMode(IN_GAME);
+                        }else{
+                            SetMode(PAUSE);
+                        }
+                        break;
 				}
 			}
 		}
@@ -250,6 +258,9 @@ void Game::EndGame()
 
 void Game::SetMode(Mode mode)
 {
+    // On sauvegarde le mode
+    mode_ = mode;
+
 	// initialisation des callbacks
 	switch (mode)
 	{
@@ -273,6 +284,12 @@ void Game::SetMode(Mode mode)
 			update_meth_ = &Game::GameOverUpdate;
 			render_meth_ = &Game::GameOverShow;
 			break;
+        case PAUSE:
+            puts("Mode pause");
+            on_event_meth_ = &Game::PauseOnEvent;
+			update_meth_ = &Game::PauseUpdate;
+			render_meth_ = &Game::PauseShow;
+            break;
 	}
 }
 
@@ -327,7 +344,7 @@ void Game::InGameShow()
 		ChangeZoneContainer(next_map_name_);
 	}
 #ifdef WINDOW_TEST
-	//app_.Draw(fen_);
+	app_.Draw(fen_);
 #endif
 }
 
@@ -336,22 +353,33 @@ void Game::InventoryOnEvent(const sf::Event& event)
 {
     // TODO: Evenement à déporter dans le gestionnaire de fenêtre
 	if ((event.Key.Code == sf::Key::Return) && (event.Type == sf::Event::KeyPressed))
-	{
 		SetMode(IN_GAME);
-	}
-	if(panel_.GetInventory()->ManageEvent(event) == WinInventory::_CLOSE){
+
+	if(panel_.GetInventory()->ManageEvent(event) == WinInventory::_CLOSE)
 	    SetMode(IN_GAME);
-	}
 }
 
+void Game::PauseShow()
+{
+	app_.Draw(pause_);
+}
+
+void Game::PauseUpdate(float)
+{
+
+}
+
+void Game::PauseOnEvent(const sf::Event& event)
+{
+	if(pause_.ManageEvent(event) == WinPause::_EXIT)
+	    running_ = false;
+}
 
 void Game::InventoryShow()
 {
 	app_.Draw(zone_container_);
 	app_.Draw(*panel_.GetInventory());
-	//panel_.GetInventory()->Show(app_);
 }
-
 
 void Game::GameOverOnEvent(const sf::Event& event)
 {

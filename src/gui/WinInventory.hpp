@@ -1,5 +1,5 @@
-#ifndef MYWIN_HPP
-#define MYWIN_HPP
+#ifndef WININVENTORY_HPP
+#define WININVENTORY_HPP
 
 #include "../gui_system/Window.hpp"
 
