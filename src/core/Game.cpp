@@ -317,11 +317,14 @@ void Game::InGameShow()
 
 void Game::InventoryOnEvent(sf::Event &event)
 {
+    // TODO: Evenement à déporter dans le gestionnaire de fenêtre
 	if ((event.Key.Code == sf::Key::Return) && (event.Type == sf::Event::KeyPressed))
 	{
 		SetMode(IN_GAME);
 	}
-	panel_.GetInventory()->ManageEvent(event);
+	if(panel_.GetInventory()->ManageEvent(event) == WinInventory::_CLOSE){
+	    SetMode(IN_GAME);
+	}
 }
 
 

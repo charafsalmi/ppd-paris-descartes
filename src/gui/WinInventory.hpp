@@ -10,6 +10,12 @@ public:
     WinInventory();
     ~WinInventory();
 
+    /** Retours de l'inventaire */
+    enum
+    {
+        _CLOSE=101
+    };
+
     /**
     Permet d'ajouter un item à l'inventaire
     @return 1 Si l'inventaire est plein
@@ -20,7 +26,7 @@ private:
 
     /** Identifiant du slot principale */
     enum{
-        ID_SLOT=9000, ITEM_N=8
+        ID_SLOT=9000, ITEM_N=15
     };
 
     /** Liste des équipements */

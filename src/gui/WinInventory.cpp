@@ -43,10 +43,9 @@ int WinInventory::AddItem(Equipment* item)
 
 int WinInventory::WindowCallback(const Control::ControlID id, const int p1, void *p2)
 {
-    cout << "Inventory callback" << endl;
-    /*
-    switch(id){
+    cout << "Inventory callback [id:" << id << "]" << endl;
+    if(id == ID_SLOT+14){
+        return WinInventory::_CLOSE;
     }
-    */
     return 0;
 }

@@ -91,6 +91,8 @@
 		<Unit filename="src\gui\Splash.hpp" />
 		<Unit filename="src\gui\WinInventory.cpp" />
 		<Unit filename="src\gui\WinInventory.hpp" />
+		<Unit filename="src\gui\WinPause.cpp" />
+		<Unit filename="src\gui\WinPause.hpp" />
 		<Unit filename="src\gui_system\Button.cpp" />
 		<Unit filename="src\gui_system\Button.hpp" />
 		<Unit filename="src\gui_system\Control.cpp" />
