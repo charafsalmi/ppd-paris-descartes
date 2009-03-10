@@ -27,3 +27,6 @@
     - Passer la classe en forme canonique
     - Compléter le système de label
     - Ajout d'un système de bind de variable à une progress bar ou à un label
+    - Ajouter un système de OnHover sur les boutons (l'image change quand on passe dessus)
+    - Compléter le système de textbox
+    - Autoriser la création de bouton vide

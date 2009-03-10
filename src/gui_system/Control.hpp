@@ -25,6 +25,9 @@ namespace gui{
         inline ControlID GetID() const{
             return id_;
         }
+
+        /** Change le sprite du contrôle qui le peu */
+        virtual void ChangeSprite(sf::Sprite nimg){}
     protected:
         /** Identifiant du contrôle */
         ControlID id_;

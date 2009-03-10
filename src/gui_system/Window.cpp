@@ -27,6 +27,16 @@ Window::~Window(){
     UnLoad();
 }
 
+Control *Window::GetFromID(Control::ControlID id){
+    std::vector<Control*>::const_iterator it;
+    for(it=controls_.begin();it!=controls_.end();it++){
+        if((*it)->GetID() == id){
+            return (*it);
+        }
+    }
+    return NULL;
+}
+
 void Window::ManageEvent(const sf::Event& event){
     std::vector<Control*>::const_iterator it;
 
@@ -135,6 +145,7 @@ void Window::Load(const std::string& xmlfile){
 	    }
 	    else if (s1 == "textbox")
 	    {
+	        // TODO: Ajout possible d'un texte par défaut ?
 	    	controls_.push_back(new TextBox(id, Control::ControlPos(x, y)));
 	    }
 
@@ -143,7 +154,7 @@ void Window::Load(const std::string& xmlfile){
 }
 
 void Window::UnLoad(){
-    std::vector<Control*>::const_iterator it;
+    std::vector<Control*>::iterator it;
     for(it=controls_.begin();it!=controls_.end();it++){
         delete (*it);
     }

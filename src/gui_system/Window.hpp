@@ -38,6 +38,11 @@ namespace gui{
 
     protected:
         /**
+        * Récupère un contrôle à partir de son id
+        */
+        Control *GetFromID(Control::ControlID id);
+
+        /**
         * Charge une fenêtre à partir d'un fichier xml
         * param[in] xmlfile Nom du fichier XML à ouvrir
         */
@@ -62,7 +67,6 @@ namespace gui{
         * Position de la fenêtre
         */
         sf::IntRect rect_;
-
         /**
         * Composants de la fenêtre
         */
