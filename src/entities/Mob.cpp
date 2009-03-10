@@ -13,8 +13,9 @@ Mob::Mob(const sf::Vector2f& pos, const sf::Image& image, int hp, int speed) :
 
 void Mob::Update(float frametime)
 {
+	Unit::Update(frametime);
 	const sf::Vector2f& pos = GetPosition();
-	sf::FloatRect rect;
+	sf::IntRect rect;
 	rect.Left = pos.x + speed_ * frametime;
 	rect.Bottom = pos.y;
 	rect.Right = rect.Left + GetFloorWidth();

@@ -72,13 +72,23 @@ public:
 	 * Obtenir le rectangle de contact avec le sol
 	 * @param[out] rect: rectangle à définir
 	 */
-	inline void GetFloorRect(sf::FloatRect& rect) const
+	inline void GetFloorRect(sf::IntRect& rect) const
 	{
 		const sf::Vector2f& pos = GetPosition();
 		rect.Left = pos.x;
 		rect.Bottom = pos.y;
 		rect.Right = pos.x + floor_width_;
 		rect.Top = pos.y - floor_height_;
+	}
+
+	inline sf::IntRect GetRect() const
+	{
+		sf::IntRect rect;
+		rect.Left = GetPosition().x;
+		rect.Bottom = GetPosition().y;
+		rect.Right = rect.Left + GetSize().x;
+		rect.Top = rect.Bottom - GetSize().y;
+		return rect;
 	}
 
 	/**

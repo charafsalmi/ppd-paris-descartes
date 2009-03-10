@@ -72,7 +72,7 @@ public:
 	 * @param[in] rect: rectangle de la position issue du mouvement à tester
 	 * @return true si le mouvement est possible, sinon false
 	 */
-	bool CanMove(const sf::FloatRect& rect) const;
+	bool CanMove(const sf::IntRect& rect) const;
 
 	/**
 	 * Ajouter un objet

@@ -163,24 +163,25 @@ void Zone::Update(float frametime)
 {
 	// removing dead entities
 	EntityList::iterator it1, it2, it_end;
-	/*
-	TODO: gérer la suppression du joueur (sinon plantage car player désalloué)
+
+	/*//TODO: gérer la suppression du joueur (sinon plantage car player désalloué)
 	for (it1 = entities_.begin(); it1 != entities_.end();)
 	{
 		if ((**it1).IsDead())
 		{
 			delete *it1;
 			it1 = entities_.erase(it1);
+			puts("desallocate entity");
 		}
 		else
 		{
 			++it1;
 		}
-	}
-	*/
+	}*/
+
 	// collisions avec les entités
 	it_end = entities_.end();
-	sf::FloatRect rect1, rect2;
+	sf::IntRect rect1, rect2;
 	for (it1 = entities_.begin(); it1 != it_end; ++it1)
 	{
 		(**it1).Update(frametime);
@@ -200,7 +201,7 @@ void Zone::Update(float frametime)
 	// collisions avec les items
 	ItemList::iterator it3;
 	Player* player = Game::GetInstance().GetPlayer();
-	sf::FloatRect player_rect, item_rect;
+	sf::IntRect player_rect, item_rect;
 	player->GetFloorRect(player_rect);
 
 	for (it3 = items_.begin(); it3 != items_.end();)
@@ -249,7 +250,7 @@ void Zone::Show(sf::RenderTarget& target) const
 }
 
 
-bool Zone::CanMove(const sf::FloatRect& rect) const
+bool Zone::CanMove(const sf::IntRect& rect) const
 {
 	// si hors de la zone
 	if (rect.Top < 0 || rect.Left < 0 || rect.Bottom > Tile::SIZE * HEIGHT

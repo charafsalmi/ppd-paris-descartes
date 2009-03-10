@@ -74,6 +74,8 @@
 		<Unit filename="src/entities/Mob.hpp" />
 		<Unit filename="src/entities/Player.cpp" />
 		<Unit filename="src/entities/Player.hpp" />
+		<Unit filename="src/entities/PlayerHit.cpp" />
+		<Unit filename="src/entities/PlayerHit.hpp" />
 		<Unit filename="src/entities/StaticItem.cpp" />
 		<Unit filename="src/entities/StaticItem.hpp" />
 		<Unit filename="src/entities/Unit.cpp" />
@@ -94,8 +96,14 @@
 		<Unit filename="src/gui_system/Label.hpp" />
 		<Unit filename="src/gui_system/ProgressBar.cpp" />
 		<Unit filename="src/gui_system/ProgressBar.hpp" />
+		<Unit filename="src/gui_system/TextBox.cpp" />
+		<Unit filename="src/gui_system/TextBox.hpp" />
 		<Unit filename="src/gui_system/Window.cpp" />
 		<Unit filename="src/gui_system/Window.hpp" />
+		<Unit filename="src/misc/BitmapFont.cpp" />
+		<Unit filename="src/misc/BitmapFont.hpp" />
+		<Unit filename="src/misc/BitmapString.cpp" />
+		<Unit filename="src/misc/BitmapString.hpp" />
 		<Unit filename="src/misc/ConfigParser.cpp" />
 		<Unit filename="src/misc/ConfigParser.hpp" />
 		<Unit filename="src/misc/MediaManager.cpp" />

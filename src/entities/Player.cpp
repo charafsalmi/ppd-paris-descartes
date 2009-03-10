@@ -1,7 +1,10 @@
 #include <iostream>
 #include <cstring>
+#include <typeinfo>
 
 #include "Player.hpp"
+#include "PlayerHit.hpp"
+#include "Mob.hpp"
 #include "../core/Game.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../core/Tileset.hpp"
@@ -63,8 +66,11 @@ void Player::OnEvent(sf::Key::Code key)
 	// <DEBUG HACK>
 	switch (key)
 	{
-		// position
 		case sf::Key::Space:
+			zone_->AddEntity(new PlayerHit(GetPosition(), 2, current_dir_));
+			break;
+		// position
+		case sf::Key::P:
 			std::cout << " [Player] position: " << GetPosition().x << ", " << GetPosition().y << ";\n";
 			break;
 		// + 1 slot
@@ -142,7 +148,7 @@ void Player::Update(float frametime)
 	{
 		bool moved = false;
 		int dx, dy;
-		sf::FloatRect rect;
+		sf::IntRect rect;
 
 		// Chûte-t'on ?
 		tile = zone_->GetTileAt(i, j);
@@ -274,9 +280,11 @@ void Player::Update(float frametime)
 
 void Player::OnCollide(Entity& entity)
 {
-	(void) entity;
-	TakeDamage(1);
-	panel_.SetHP(hp_);
+	if (typeid (entity) == typeid (Mob))
+	{
+		TakeDamage(1);
+		panel_.SetHP(hp_);
+	}
 }
 
 
