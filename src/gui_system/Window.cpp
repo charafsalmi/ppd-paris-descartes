@@ -129,17 +129,24 @@ void Window::Load(const std::string& xmlfile){
 			break;
 		}
 
+        // Taille souhaité du widget
+        if (controls_elem->QueryIntAttribute("w", &w) != TIXML_SUCCESS){
+			w = -1;
+		}
+		if (controls_elem->QueryIntAttribute("h", &h) != TIXML_SUCCESS){
+			h = -1;
+		}
+
 	    std::string s1 = controls_elem->Value();
 
 	    if(s1 == "button"){
             // Image à charger
             p = controls_elem->Attribute("pic");
             if(p == NULL){
-                cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
-                break;
+                controls_.push_back(new Button(id, Control::ControlPos(x,y), Control::ControlPos(w,h), ""));
+            }else{
+                controls_.push_back(new Button(id, Control::ControlPos(x,y), Control::ControlPos(w,h), p));
             }
-
-            controls_.push_back(new Button(id, Control::ControlPos(x,y), p));
 	    }else if(s1 == "label"){
 	        controls_.push_back(new Label(id, Control::ControlPos(x,y), controls_elem->GetText()));
 	    }

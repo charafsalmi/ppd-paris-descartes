@@ -6,8 +6,7 @@
 namespace gui{
     class Button : public Control{
     public:
-        Button();
-        Button(const ControlID id, const ControlPos& pos, const std::string& str);
+        Button(const ControlID id, const ControlPos& pos, const ControlPos& size, const std::string& str);
 
         void ChangeSprite(sf::Sprite nimg);
 
