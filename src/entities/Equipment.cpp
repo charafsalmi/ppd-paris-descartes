@@ -15,6 +15,6 @@ void Equipment::OnCollide(Player& player)
 	(void) player;
 	Equipment* clone = new Equipment(*this);
 	panel.GetInventory()->AddItem(clone);
-	panel.PrintInfoText(L"Équipement trouvé");
+	panel.PrintInfoText("Equipement trouve");
 	Kill();
 }

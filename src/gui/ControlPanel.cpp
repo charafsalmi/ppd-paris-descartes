@@ -52,14 +52,14 @@ void ControlPanel::SetHP(int value)
 }
 
 
-void ControlPanel::PrintInfoText(const wchar_t* text)
+void ControlPanel::PrintInfoText(const char* text)
 {
 	info_text_.SetText(text);
 	timer_info_text_ = 0;
 }
 
 
-void ControlPanel::PrintInfoText(const std::wstring& text)
+void ControlPanel::PrintInfoText(const std::string& text)
 {
 	PrintInfoText(text.c_str());
 }
@@ -111,7 +111,8 @@ void ControlPanel::Render(sf::RenderTarget& app) const
 }
 
 
-ControlPanel::ControlPanel()
+ControlPanel::ControlPanel() :
+	info_text_(GET_BITMAP_FONT("mono12-black"))
 {
 	background_.SetImage(GET_IMG("panel-background"));
 	background_.Resize(640, HEIGHT_PX);
@@ -135,9 +136,6 @@ ControlPanel::ControlPanel()
 	timer_info_text_ = 0;
 
 	info_text_.SetPosition(INFOTEXT_ORIGIN);
-	info_text_.SetColor(sf::Color::White);
-	info_text_.SetFont(GET_FONT());
-	info_text_.SetSize(20);
 }
 
 

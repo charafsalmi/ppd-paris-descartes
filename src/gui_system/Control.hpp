@@ -17,8 +17,7 @@ namespace gui{
         Control(const ControlID id, const ControlPos& pos);
         virtual ~Control();
 
-
-        inline sf::IntRect GetRect() const {
+        inline const sf::IntRect& GetRect() const {
             return rect_;
         }
         inline ControlID GetID() const{

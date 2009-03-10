@@ -39,7 +39,7 @@ void BitmapString::AppendChar(char character)
 	sprite.SetImage(font_->GetImage());
 	sprite.SetSubRect(font_->GetCharRect(character));
 	sprite.SetColor(GetColor());
-	
+
 	size_t length = bitmaps_.size();
 	if (length > 0)
 	{
@@ -53,13 +53,13 @@ void BitmapString::AppendChar(char character)
 void BitmapString::InsertChar(char character, int position)
 {
 	position = GetRealPosition(position);
-	
+
 	sf::Sprite sprite;
 	sprite.SetImage(font_->GetImage());
 	sprite.SetSubRect(font_->GetCharRect(character));
 	sprite.SetColor(GetColor());
 	sprite.SetX(position * char_width_);
-	
+
 	chars_.insert(position, 1, character);
 	bitmaps_.insert(bitmaps_.begin() + position, sprite);
 	ComputePosition(position + 1);
@@ -72,13 +72,13 @@ void BitmapString::RemoveChar(int position)
 	{
 		return;
 	}
-	
+
 	position = GetRealPosition(position);
 	if (position > (chars_.size() - 1))
 	{
 		position = chars_.size() - 1;
 	}
-	
+
 	chars_.erase(position, 1);
 	bitmaps_.erase(bitmaps_.begin() + position);
 	ComputePosition(position);
@@ -97,7 +97,7 @@ void BitmapString::SetFont(const BitmapFont& font)
 	{
 		font_ = &font;
 		char_width_ = font.GetCharWidth();
-		for (int i = 0; i < bitmaps_.size(); ++i)
+		for (size_t i = 0; i < bitmaps_.size(); ++i)
 		{
 			sf::Sprite& sprite = bitmaps_[i];
 			sprite.SetX(i * char_width_);
@@ -105,6 +105,12 @@ void BitmapString::SetFont(const BitmapFont& font)
 			sprite.SetImage(font_->GetImage());
 		}
 	}
+}
+
+
+const BitmapFont& BitmapString::GetFont() const
+{
+	return *font_;
 }
 
 
@@ -152,9 +158,9 @@ int BitmapString::GetRealPosition(int position) const
 
 void BitmapString::ComputePosition(int from)
 {
-	for (int i = from; i < bitmaps_.size(); ++i)
+	for (size_t i = from; i < bitmaps_.size(); ++i)
 	{
-		bitmaps_[i].SetPosition(i * char_width_, 0);
+		bitmaps_[i].SetX(i * char_width_);
 	}
 }
 

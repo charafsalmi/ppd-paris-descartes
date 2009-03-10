@@ -11,6 +11,7 @@
 #include "Music.hpp"
 #endif
 #include "../core/Animation.hpp"
+#include "BitmapFont.hpp"
 
 /**
  * Gestionnaire de ressource (singleton)
@@ -50,11 +51,12 @@ public:
 #endif
 
 	const std::string& GetPostFX(const char* key) const;
+
 	/**
 	 * Obtenir la police de caractères
 	 * @return référence sur la police
 	 */
-	const sf::Font& GetFont() const;
+	const BitmapFont& GetBitmapFont(const char* key) const;
 
 	/**
 	 * Obtenir une animation
@@ -69,15 +71,16 @@ private:
 	MediaManager();
 	MediaManager(const MediaManager& other);
 	MediaManager& operator=(const MediaManager& other);
+	~MediaManager();
 
 	std::map<std::string, sf::Image> images_;
 	std::map<std::string, sf::SoundBuffer> sounds_;
+	std::map<std::string, Animation> animations_;
+	std::map<std::string, BitmapFont*> fonts_;
 #ifdef DUMB_MUSIC
 	std::map<std::string, std::string> musics_;
 #endif
 	std::map<std::string, std::string> post_fx_;
-	std::map<std::string, Animation> animations_;
-	sf::Font font_;
 };
 
 
@@ -106,9 +109,9 @@ inline Music* GET_MUSIC(const char* key)
 #endif
 
 
-inline const sf::Font& GET_FONT()
+inline const BitmapFont& GET_BITMAP_FONT(const char* key)
 {
-	return MediaManager::GetInstance().GetFont();
+	return MediaManager::GetInstance().GetBitmapFont(key);
 }
 
 inline const Animation& GET_ANIM(const char* key)

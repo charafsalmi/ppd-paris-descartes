@@ -5,6 +5,7 @@
 #include "Button.hpp"
 #include "Label.hpp"
 #include "ProgressBar.hpp"
+#include "TextBox.hpp"
 
 #include "../misc/MediaManager.hpp"
 #include "../misc/Misc.hpp"
@@ -38,7 +39,7 @@ void Window::ManageEvent(const sf::Event& event){
 			int y = event.MouseButton.Y - GetPosition().y;
 
 			for (it=controls_.begin();it!=controls_.end();it++){
-			// Pour chaque widget on verifit si une action les concernes
+			// Pour chaque widget on verifit si une action les concerne
 				if((*it)->GetRect().Contains(x, y)){
 					WindowCallback((*it)->GetID());
 				}
@@ -131,6 +132,10 @@ void Window::Load(const std::string& xmlfile){
             controls_.push_back(new Button(id, Control::ControlPos(x,y), p));
 	    }else if(s1 == "label"){
 	        controls_.push_back(new Label(id, Control::ControlPos(x,y), controls_elem->GetText()));
+	    }
+	    else if (s1 == "textbox")
+	    {
+	    	controls_.push_back(new TextBox(id, Control::ControlPos(x, y)));
 	    }
 
 		controls_elem = controls_elem->NextSiblingElement();

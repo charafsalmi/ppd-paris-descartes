@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Inventory.hpp"
+#include "../misc/BitmapString.hpp"
 
 
 class ControlPanel: public sf::Drawable
@@ -17,8 +18,8 @@ public:
 
 	static ControlPanel& GetInstance();
 
-	void PrintInfoText(const wchar_t* text);
-	void PrintInfoText(const std::wstring& text);
+	void PrintInfoText(const char* text);
+	void PrintInfoText(const std::string& text);
 
 	void Update(float frametime);
 
@@ -65,7 +66,7 @@ private:
 	mutable bool dbg_;
 #endif
 	Inventory* inventory_;
-	sf::String info_text_;
+	BitmapString info_text_;
 	float timer_info_text_;
 };
 

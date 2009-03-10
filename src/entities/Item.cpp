@@ -23,13 +23,13 @@ void Item::OnCollide(Player& player)
 		// money
 		case 'M':
 			player.AddMoney();
-			panel.PrintInfoText(L"argent ramassé");
+			panel.PrintInfoText("argent ramasse");
 			Kill();
 			break;
 		// hearth
 		case 'H':
 			player.AddLife();
-			panel.PrintInfoText(L"coeur ramassé");
+			panel.PrintInfoText("coeur ramasse");
 			Kill();
 			break;
 	}

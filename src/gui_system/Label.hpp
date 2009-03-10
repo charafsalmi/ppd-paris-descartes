@@ -2,6 +2,7 @@
 #define LABEL_HPP
 
 #include "Control.hpp"
+#include "../misc/BitmapString.hpp"
 
 namespace gui{
     class Label : public Control{
@@ -12,7 +13,7 @@ namespace gui{
 
     private:
 		void Render(sf::RenderTarget& app) const;
-        sf::String text_;
+        BitmapString text_;
     };
 }
 #endif

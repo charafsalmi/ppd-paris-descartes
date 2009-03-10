@@ -18,9 +18,6 @@
 
 #define ANIMATION_FILE "data/xml/animations.xml"
 
-#define FONT_PATH "data/font/VeraMono.ttf"
-#define FONT_SIZE 20
-
 
 // charger une image
 static void load_or_die(sf::Image& image, const char* filename)
@@ -178,9 +175,16 @@ const std::string& MediaManager::GetPostFX(const char* key) const
 }
 
 
-const sf::Font& MediaManager::GetFont() const
+const BitmapFont& MediaManager::GetBitmapFont(const char* key) const
 {
-	return font_;
+	std::map<std::string, BitmapFont*>::const_iterator it;
+	it = fonts_.find(key);
+	if (it == fonts_.end())
+	{
+		std::cerr << "can't give you bitmap font " << key << std::endl;
+		abort();
+	}
+	return *it->second;
 }
 
 
@@ -273,7 +277,21 @@ MediaManager::MediaManager()
 		elem = elem->NextSiblingElement();
 	}
 
-	// chargement police
-	font_.LoadFromFile(FONT_PATH, FONT_SIZE);
+	// chargement des polices bitmap
+	fonts_["mono10-white"] = new BitmapFont(images_["bitmap-font/mono10-white"], 10, 10);
+	fonts_["mono10-black"] = new BitmapFont(images_["bitmap-font/mono10-black"], 10, 10);
+	fonts_["mono12-white"] = new BitmapFont(images_["bitmap-font/mono12-white"], 10, 10);
+	fonts_["mono12-black"] = new BitmapFont(images_["bitmap-font/mono12-black"], 10, 10);
+	fonts_["retro"] = new BitmapFont(images_["bitmap-font/retro"], 10, 10);
 }
 
+
+MediaManager::~MediaManager()
+{
+	std::map<std::string, BitmapFont*>::iterator it;
+	for (it = fonts_.begin(); it != fonts_.end(); ++it)
+	{
+		delete it->second;
+		it->second = NULL;
+	}
+}

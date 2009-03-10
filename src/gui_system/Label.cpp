@@ -6,11 +6,11 @@
 using namespace gui;
 using namespace std;
 
-Label::Label(const ControlID id, const ControlPos& pos, const std::string& text) : Control(id, pos){
-
-    text_.SetText(text);
-    text_.SetFont(GET_FONT());
-    text_.SetSize(12);
+Label::Label(const ControlID id, const ControlPos& pos, const std::string& text) :
+	Control(id, pos),
+	text_(GET_BITMAP_FONT("mono12-white"))
+{
+	text_.SetText(text);
 }
 
 Label::~Label(){

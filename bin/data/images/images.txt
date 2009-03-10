@@ -16,3 +16,8 @@ interface/button1.png
 interface/button2.png
 interface/button3.png
 interface/background.png
+bitmap-font/retro.png
+bitmap-font/mono10-black.png
+bitmap-font/mono10-white.png
+bitmap-font/mono12-black.png
+bitmap-font/mono12-white.png

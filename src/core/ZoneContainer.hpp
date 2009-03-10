@@ -116,15 +116,6 @@ private:
 	TiXmlDocument xml_doc_;
 };
 
-class Dummy: public ZoneContainer
-{
-	public:
-	Dummy(int i)
-	{
-		i_ = i;
-	}
-	int i_;
-};
 
 #endif /* ZONECONTAINER_HPP */
 
