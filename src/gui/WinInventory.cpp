@@ -3,7 +3,7 @@
 #include "WinInventory.hpp"
 #include "../entities/Equipment.hpp"
 
-#include "../gui_system/button.hpp"
+#include "../gui_system/Button.hpp"
 
 using namespace gui;
 using namespace std;

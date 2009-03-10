@@ -148,7 +148,7 @@ void Player::Update(float frametime)
 	{
 		bool moved = false;
 		int dx, dy;
-		sf::IntRect rect;
+		sf::FloatRect rect;
 
 		// Chûte-t'on ?
 		tile = zone_->GetTileAt(i, j);
@@ -317,3 +317,9 @@ void Player::AddMoney()
 	panel_.SetRupees(money_);
 }
 
+
+void Player::Kill()
+{
+	Entity::Kill();
+	Game::GetInstance().EndGame();
+}

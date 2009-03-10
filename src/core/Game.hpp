@@ -8,6 +8,7 @@
 #include "../gui/ControlPanel.hpp"
 #include "../gui/MyWin.hpp"
 #include "../misc/Misc.hpp"
+#include "../misc/BitmapString.hpp"
 
 
 class Game
@@ -46,6 +47,11 @@ public:
 		return zone_container_.GetActiveZone();
 	}
 
+	/**
+	 * Stopper le déroulement de la partie
+	 */
+	void EndGame();
+
 private:
 	Game();
 	Game(const Game&);
@@ -61,24 +67,30 @@ private:
 	// callbacks
 
 	// méthodes InGame
-	void InGameOnEvent(sf::Event &event);
+	void InGameOnEvent(const sf::Event& event);
 	void InGameShow();
 
 	// méthodes Inventory
-	void InventoryOnEvent(sf::Event &event);
+	void InventoryOnEvent(const sf::Event& event);
 	void InventoryShow();
 
+	// méthodes GameOver
+	void GameOverOnEvent(const sf::Event& event);
+	void GameOverUpdate(float frametime);
+	void GameOverShow();
+
+	// update générique
 	void DefaultUpdate(float frametime);
 
 	enum Mode
 	{
-		IN_GAME, INVENTORY
+		IN_GAME, GAME_OVER, INVENTORY
 	};
 
 	void SetMode(Mode mode);
 
 	// pointeur de la méthode de gestion des évènements
-	void (Game::*on_event_meth_)(sf::Event &event);
+	void (Game::*on_event_meth_)(const sf::Event& event);
 	// pointeur de la méthode de mise à jour
 	void (Game::*update_meth_)(float frametime);
 	// pointeur de la méthode d'affichage'
@@ -99,9 +111,9 @@ private:
 
 	Player* player_;
 	ControlPanel& panel_;
-
+	BitmapString message_;
 #ifdef WINDOW_TEST
-	// MyWin fen_;
+	//MyWin fen_;
 #endif
 
 	sf::RenderWindow app_;

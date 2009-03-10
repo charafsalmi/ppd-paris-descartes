@@ -44,6 +44,8 @@ public:
 	 */
 	void AddMoney();
 
+	// inherited
+	void Kill();
 private:
 	// Keycodes des mouvements
 	sf::Key::Code move_keys_[COUNT_DIRECTION];

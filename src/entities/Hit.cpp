@@ -33,7 +33,7 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir) :
 	}
 	update_callback_ = &Hit::MoveLinear;
 	direction_ = dir;
-	speed_ = 200;
+	speed_ = 250;
 	SetSubRect(sf::IntRect(34, 0, 34 + 30, 0 + 10));
 	SetFloor(30, 10);
 	SetCenter(0, 10);
@@ -43,7 +43,7 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir) :
 void Hit::Update(float frametime)
 {
 	(this->*update_callback_)(frametime);
-	const sf::IntRect& rect = GetRect();
+	const sf::FloatRect& rect = GetRect();
 	if (!zone_->CanMove(rect))
 	{
 		Kill();

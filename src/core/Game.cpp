@@ -15,6 +15,7 @@
 
 #define CONFIG_FILE "config/config.css"
 
+
 Game& Game::GetInstance()
 {
 	static Game self;
@@ -23,7 +24,8 @@ Game& Game::GetInstance()
 
 
 Game::Game() :
-	panel_(ControlPanel::GetInstance())
+	panel_(ControlPanel::GetInstance()),
+	message_(GET_BITMAP_FONT("retro"))
 {
 	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, APP_BPP), APP_TITLE);
 	app_.SetFramerateLimit(APP_FPS);
@@ -56,6 +58,8 @@ void Game::Init()
 
 	// chargement du conteneur de zones
 	zone_container_.Load(ZoneContainer::WORLD);
+	next_map_name_ = ZoneContainer::WORLD;
+
 	zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
 
 	// default options
@@ -104,8 +108,9 @@ void Game::Run()
 #ifdef WINDOW_TEST
 			//fen_.ManageEvent(event);
 #endif
-            (this->*on_event_meth_)(event);
+			(this->*on_event_meth_)(event);
 
+			// global events
 			if (event.Type == sf::Event::Closed)
 			{
 				running = false;
@@ -120,9 +125,6 @@ void Game::Run()
 					case sf::Key::Escape:
 						running = false;
 						break;
-					default:
-						// (this->*on_event_meth_)(event.Key.Code);
-						break;
 				}
 			}
 		}
@@ -134,11 +136,6 @@ void Game::Run()
 		// RENDER
 		(this->*render_meth_)();
 		app_.Display();
-
-		if (zone_container_.GetName() != next_map_name_)
-		{
-			ChangeZoneContainer(next_map_name_);
-		}
 	}
 }
 
@@ -241,6 +238,16 @@ void Game::SetMusic(int value)
 }
 #endif
 
+
+void Game::EndGame()
+{
+	message_.SetText("T'es mort espece de tanche (Enter pour rejouer)");
+	message_.SetPosition(100, 100);
+	SetMode(GAME_OVER);
+
+}
+
+
 void Game::SetMode(Mode mode)
 {
 	// initialisation des callbacks
@@ -260,6 +267,12 @@ void Game::SetMode(Mode mode)
 			render_meth_ = &Game::InventoryShow;
 			player_->Lock();
 			break;
+		case GAME_OVER:
+			puts("mode gameover");
+			on_event_meth_ = &Game::GameOverOnEvent;
+			update_meth_ = &Game::GameOverUpdate;
+			render_meth_ = &Game::GameOverShow;
+			break;
 	}
 }
 
@@ -272,7 +285,7 @@ void Game::DefaultUpdate(float frametime)
 }
 
 
-void Game::InGameOnEvent(sf::Event &event)
+void Game::InGameOnEvent(const sf::Event& event)
 {
     sf::Key::Code key = event.Key.Code;
 
@@ -309,13 +322,17 @@ void Game::InGameShow()
 	app_.Draw(zone_container_);
 	app_.Draw(panel_);
 
+	if (zone_container_.GetName() != next_map_name_)
+	{
+		ChangeZoneContainer(next_map_name_);
+	}
 #ifdef WINDOW_TEST
 	//app_.Draw(fen_);
 #endif
 }
 
 
-void Game::InventoryOnEvent(sf::Event &event)
+void Game::InventoryOnEvent(const sf::Event& event)
 {
     // TODO: Evenement à déporter dans le gestionnaire de fenêtre
 	if ((event.Key.Code == sf::Key::Return) && (event.Type == sf::Event::KeyPressed))
@@ -333,4 +350,35 @@ void Game::InventoryShow()
 	app_.Draw(zone_container_);
 	app_.Draw(*panel_.GetInventory());
 	//panel_.GetInventory()->Show(app_);
+}
+
+
+void Game::GameOverOnEvent(const sf::Event& event)
+{
+	if (event.Type == sf::Event::KeyPressed)
+	{
+		if (event.Key.Code == sf::Key::Return)
+		{
+			zone_container_.Unload();
+			zone_container_.Load(ZoneContainer::WORLD);
+			next_map_name_ = ZoneContainer::WORLD;
+			// respawn player
+			player_ = new Player(sf::Vector2f(300, 300), app_.GetInput());
+			zone_container_.GetActiveZone()->AddEntity(player_);
+			SetMode(IN_GAME);
+		}
+	}
+}
+
+
+void Game::GameOverUpdate(float frametime)
+{
+	(void) frametime;
+}
+
+
+void Game::GameOverShow()
+{
+	app_.Clear();
+	app_.Draw(message_);
 }

@@ -72,7 +72,7 @@ public:
 	 * Obtenir le rectangle de contact avec le sol
 	 * @param[out] rect: rectangle à définir
 	 */
-	inline void GetFloorRect(sf::IntRect& rect) const
+	inline void GetFloorRect(sf::FloatRect& rect) const
 	{
 		const sf::Vector2f& pos = GetPosition();
 		rect.Left = pos.x;
@@ -81,9 +81,9 @@ public:
 		rect.Top = pos.y - floor_height_;
 	}
 
-	inline sf::IntRect GetRect() const
+	inline sf::FloatRect GetRect() const
 	{
-		sf::IntRect rect;
+		sf::FloatRect rect;
 		rect.Left = GetPosition().x;
 		rect.Bottom = GetPosition().y;
 		rect.Right = rect.Left + GetSize().x;
@@ -115,7 +115,7 @@ public:
 	/**
 	 * Tuer l'objet entité (sera supprimé à frame n + 1)
 	 */
-	void Kill();
+	virtual void Kill();
 
 	inline bool IsDead() const
 	{
