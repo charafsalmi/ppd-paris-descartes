@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <tiles>
+<definitions>
 	<tile id="6" block="1" />
 	<tile id="8" block="1" />
 	<tile id="9" block="1" />
@@ -101,6 +102,10 @@
 	<tile id="216" teleport="1" />
 	<tile id="310" teleport="1" />
 	<tile id="294" teleport="1" />
+	</definitions>
+	<animated>
+		<tile from="198" to="201" />
+	</animated>
 </tiles>
 
 

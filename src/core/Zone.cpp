@@ -52,6 +52,14 @@ void Zone::Load(const TiXmlHandle& handle)
 			sf::Vector2f pos(j * Tile::SIZE, i * Tile::SIZE);
 			tile.SetPosition(pos);
 
+			if (tileset.IsAnimated(tile_id))
+			{
+				Tileset::AnimatedTile animated_tile;
+				tileset.MakeAnimatedTile(tile_id, animated_tile);
+				animated_tile.sprite.SetPosition(j * Tile::SIZE, i * Tile::SIZE);
+				animated_.push_back(animated_tile);
+			}
+
 			/* on dessine toutes les tiles dans le buffer de la fenêtre de rendu
 			ce buffer sera ensuite capturé dans tiles_img_ afin de pouvoir
 			afficher toutes les tiles en un seul coup
@@ -182,6 +190,17 @@ bool Zone::IsLoaded() const
 
 void Zone::Update(float frametime)
 {
+	// updating animated tiles
+	static const Tileset& tileset = Tileset::GetInstance();
+	if (tileset.NeedUpdate(frametime))
+	{
+		for (std::vector<Tileset::AnimatedTile>::iterator it = animated_.begin();
+			it != animated_.end(); ++it)
+		{
+			tileset.UpdateAnimated(*it);
+		}
+	}
+
 	// removing dead entities
 	EntityList::iterator it1, it2, it_end;
 
@@ -252,6 +271,13 @@ void Zone::Show(sf::RenderTarget& target) const
 {
 	// affichage des tiles
 	target.Draw(tiles_sprite_);
+
+	// affichage des tiles animées
+	for (std::vector<Tileset::AnimatedTile>::const_iterator it = animated_.begin();
+		it != animated_.end(); ++it)
+	{
+		target.Draw(it->sprite);
+	}
 
 	// affichage des items
 	ItemList::const_iterator it2;
@@ -329,7 +355,8 @@ void Zone::RemoveEntity(Entity* entity)
 void Zone::AddItem(unsigned int id, int x, int y)
 {
 	ControlPanel& panel = ControlPanel::GetInstance();
-	if(!panel.GetInventory()->searchItem(id)){
+	if(!panel.GetInventory()->searchItem(id))
+	{
 		Item* item = EntityFactory::GetInstance().BuildItem(id, sf::Vector2f(x, y));
 		items_.push_front(item);
 	}
@@ -370,5 +397,7 @@ void Zone::Purge()
 		delete *it2;
 	}
 	items_.clear();
+
+	animated_.clear();
 }
 

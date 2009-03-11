@@ -6,6 +6,14 @@
 #include "../xml/tinyxml.h"
 
 #define TILES_DEFINITION "data/xml/tiles.xml"
+#define ANIMATED_DELAY    0.25f
+
+
+Tileset& Tileset::GetInstance()
+{
+	static Tileset self;
+	return self;
+}
 
 
 Tileset::Tileset()
@@ -20,14 +28,8 @@ Tileset::Tileset()
 	}
 
 	TiXmlHandle handle(&doc);
-	TiXmlElement* elem = handle.FirstChildElement().FirstChildElement().Element();
-
-	if (elem == NULL)
-	{
-		std::cerr << " [Tileset] impossible d'atteindre le noeud"
-			<< std::endl;
-		abort();
-	}
+	handle = handle.FirstChildElement();
+	TiXmlElement* elem = handle.FirstChildElement("definitions").FirstChildElement().Element();
 
 	int tile_id;
 	while (elem != NULL)
@@ -60,13 +62,28 @@ Tileset::Tileset()
 
 		elem = elem->NextSiblingElement();
 	}
-}
 
+	// tiles animées
+	int from_id, to_id;
+	elem = handle.FirstChildElement("animated").FirstChildElement().Element();
+	while (elem != NULL)
+	{
+		bool ok = true;
+		ok &= (elem->QueryIntAttribute("from", &from_id) == TIXML_SUCCESS);
+		ok &= (elem->QueryIntAttribute("to", &to_id) == TIXML_SUCCESS);
+		if (ok)
+		{
+			animated_[from_id] = to_id;
+			printf("%d est animée\n", from_id);
+		}
+		else
+		{
+			std::cerr << " [Tileset] animated invalide ignoré" << std::endl;
+		}
+		elem = elem->NextSiblingElement();
+	}
 
-Tileset& Tileset::GetInstance()
-{
-	static Tileset self;
-	return self;
+	timer_ = 0.f;
 }
 
 
@@ -83,6 +100,13 @@ void Tileset::MakeSprite(int tile_id, sf::Sprite& sprite)
 	rect.Top = (tile_id / WIDTH) * Tile::SIZE;
 	rect.Bottom = rect.Top + Tile::SIZE;
 	sprite.SetSubRect(rect);
+}
+
+
+void Tileset::MakeAnimatedTile(int tile_id, AnimatedTile& tile)
+{
+	MakeSprite(tile_id, tile.sprite);
+	tile.id = tile.frame = tile_id;
 }
 
 
@@ -104,3 +128,41 @@ bool Tileset::IsWalkable(int tile_id) const
 	return GetEffect(tile_id) != Tile::BLOCK;
 }
 
+
+bool Tileset::NeedUpdate(float frametime) const
+{
+	if (timer_ >= ANIMATED_DELAY)
+	{
+		timer_ = 0;
+		return true;
+	}
+	timer_ += frametime;
+	return false;
+}
+
+
+void Tileset::UpdateAnimated(AnimatedTile& tile) const
+{
+	int last = animated_[tile.id];
+	if (last == tile.frame)
+	{
+		tile.frame = tile.id;
+	}
+	else
+	{
+		++tile.frame;
+	}
+	sf::IntRect rect;
+	rect.Left = (tile.frame % WIDTH) * Tile::SIZE;
+	rect.Right = rect.Left + Tile::SIZE;
+	rect.Top = (tile.frame / WIDTH) * Tile::SIZE;
+	rect.Bottom = rect.Top + Tile::SIZE;
+	tile.sprite.SetSubRect(rect);
+}
+
+
+bool Tileset::IsAnimated(int tile_id) const
+{
+	AnimatedIndexer::const_iterator it = animated_.find(tile_id);
+	return it != animated_.end();
+}

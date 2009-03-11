@@ -150,6 +150,9 @@ private:
 	bool walkable_[HEIGHT][WIDTH];
 	sf::Image tiles_img_; // image des tiles de la zone
 	sf::Sprite tiles_sprite_; // sprite associé aux tiles
+
+	std::vector<Tileset::AnimatedTile> animated_;
+
 #ifdef DUMB_MUSIC
 	int music_index_;
 #endif
