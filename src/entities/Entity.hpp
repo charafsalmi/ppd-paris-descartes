@@ -121,6 +121,8 @@ public:
 	{
 		return dead_;
 	}
+	
+	virtual void ThrowHit();
 
 protected:
 	/**

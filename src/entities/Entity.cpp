@@ -79,3 +79,7 @@ void Entity::SetFloor(int width, int height)
 	floor_height_ = height;
 }
 
+void Entity::ThrowHit(){
+
+
+}

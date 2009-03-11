@@ -67,7 +67,7 @@ void Player::OnEvent(sf::Key::Code key)
 	switch (key)
 	{
 		case sf::Key::Space:
-			zone_->AddEntity(new PlayerHit(GetPosition(), 2, current_dir_));
+			ThrowHit();
 			break;
 		// position
 		case sf::Key::P:
@@ -322,4 +322,9 @@ void Player::Kill()
 {
 	Entity::Kill();
 	Game::GetInstance().EndGame();
+}
+
+void Player::ThrowHit()
+{
+	zone_->AddEntity(new PlayerHit(GetPosition(), 2, current_dir_));
 }

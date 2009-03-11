@@ -46,6 +46,9 @@ public:
 
 	// inherited
 	void Kill();
+	
+	//voir entity
+	void ThrowHit();
 private:
 	// Keycodes des mouvements
 	sf::Key::Code move_keys_[COUNT_DIRECTION];
