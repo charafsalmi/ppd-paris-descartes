@@ -7,7 +7,6 @@
 PlayerHit::PlayerHit(const sf::Vector2f position, int damage, Direction dir) :
 	Hit(position, damage, dir)
 {
-	printf("le hero se prend des dommages");
 }
 
 

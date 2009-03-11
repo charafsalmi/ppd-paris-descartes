@@ -150,6 +150,10 @@ void Zone::Load(const TiXmlHandle& handle)
 	tiles_sprite_.FlipY(true); // HACK BUGFIX SFML 1.4
 	app.Clear();
 	loaded_ = true;
+
+	// TEST HACK
+	AddDecor(factory.BuildDecor(0, sf::Vector2i(1, 10)), 1, 10);
+	AddDecor(factory.BuildDecor(2, sf::Vector2i(2, 12)), 2, 12);
 }
 
 
@@ -276,23 +280,24 @@ bool Zone::CanMove(const sf::FloatRect& rect) const
 }
 
 
-/*void Zone::AddDecor(int id, int x, int y)
+void Zone::AddDecor(Entity* decor, int x, int y)
 {
-	sf::Vector2f position(x * Tile::SIZE, (y + 1) * Tile::SIZE);
-	Entity* decor = EntityFactory::GetInstance().BuildDecor(id, position);
-
 	// récupérer les dimensions en nombre de tiles
-	int tile_width =
-	int tile_height =
-	for (; y < tile_height; ++y)
+	int right_x = x + decor->GetFloorWidth() / Tile::SIZE;
+	int top_y = y - decor->GetFloorHeight() / Tile::SIZE;
+
+	printf("left %d, bottom %d, right %d, top %d\n", x, y, right_x, top_y);
+	int xcopy = x;
+	for (--y; y >= top_y; --y)
 	{
-		for (; x < tile_width; ++x)
+		for (x = xcopy; x < right_x; ++x)
 		{
 			walkable_[y][x] = false;
+			printf("tile unwalkable at [%d][%d]\n", y, x);
 		}
 	}
-	AddEntity(decor);
-}*/
+	entities_.push_front(decor);
+}
 
 
 void Zone::AddEntity(Entity* entity)

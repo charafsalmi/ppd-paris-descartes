@@ -55,6 +55,11 @@ Game::~Game()
 
 void Game::Init()
 {
+#ifndef NO_SPLASH
+	Splash s(app_);
+	s.Run();
+#endif
+
 	player_ = new Player(sf::Vector2f(300, 300), app_.GetInput());
 
 	// chargement du conteneur de zones
@@ -81,7 +86,6 @@ void Game::Init()
 
 	// InGame
 	SetMode(IN_GAME);
-
 }
 
 
@@ -92,11 +96,6 @@ void Game::Run()
 	zone_container_.GetActiveZone()->AddEntity(player_);
 
     running_ = true;
-
-#ifndef NO_SPLASH
-	Splash s(app_);
-	s.Run();
-#endif
 
 #ifdef DUMB_MUSIC
 	SetMusic(active_zone_->GetMusic());

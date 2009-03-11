@@ -9,13 +9,8 @@
 class Decor: public Entity
 {
 public:
-	/**
-	 * @param[in] floor: dimensions du rectangle de contact avec le sol
-	 * NULL si le rectangle recouvre tout le sprite
-	 */
-	Decor(const sf::Vector2f& pos, const sf::Image& image,
-		const sf::Vector2i* floor=NULL);
-	
+	Decor(const sf::Vector2f& pos, const sf::Image& image);
+
 	inline void TakeDamage(int damage)
 	{
 		(void) damage;

@@ -120,12 +120,12 @@ public:
 
 private:
 	/**
-	 * Ajouter une entité dans la zone de jeu
-	 * @param[in] name: identifiant
+	 * Ajouter un décor dans la zone de jeu
+	 * @param[in] decor: décor à ajouter
 	 * @param[in] x: tile x
 	 * @param[in] y: tile y
 	 */
-	//void AddEntity(const char* name, int x, int y);
+	void AddDecor(Entity* decor, int x, int y);
 
 	/**
 	 * Désallouer toutes les entités et tous les items de la zone

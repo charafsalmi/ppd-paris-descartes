@@ -2,10 +2,10 @@ icon.bmp
 inventory-cursor.png
 inventory-slot.png
 items.png
+decors.png
 panel-background.png
 panel-digits.png
 panel-hearth.png
-pillar.png
 player.png
 rodeur.png
 splash-paris-descartes.jpg

@@ -124,7 +124,6 @@ public:
 	
 	virtual void ThrowHit();
 
-protected:
 	/**
 	 * Définir les dimensions du rectangle de contact avec le sol
 	 * @param[in] width: largeur en pixels
@@ -132,6 +131,7 @@ protected:
 	 */
 	void SetFloor(int width, int height);
 
+protected:
 	// pour accéder rapidement à la zone active
 	static Zone* zone_;
 

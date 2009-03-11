@@ -1,13 +1,9 @@
 #include "Decor.hpp"
 
 
-Decor::Decor(const sf::Vector2f& pos, const sf::Image& image,
-	const sf::Vector2i* floor) :
+Decor::Decor(const sf::Vector2f& pos, const sf::Image& image) :
 	Entity(pos, image)
 {
-	if (floor != NULL)
-	{
-		SetFloor(floor->x, floor->y);
-	}
+		printf("decor en %d, %d\n", (int)pos.x, (int)pos.y);
 }
 

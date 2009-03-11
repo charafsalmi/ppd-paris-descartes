@@ -25,7 +25,8 @@ void Splash::Run()
 	if (!fx_.LoadFromFile(GET_FX("colorize")))
 	{
 		puts("Cant load postfx");
-		return; // We're not Jesus, so that's it with the bloody, messy user.
+		app_.Display();
+		return;
 	}
 	const sf::Image& splash = GET_IMG("splash-paris-descartes");
 	sprite_.SetImage(splash);

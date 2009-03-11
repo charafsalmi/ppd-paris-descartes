@@ -61,6 +61,8 @@
 		<Unit filename="src/core/Zone.hpp" />
 		<Unit filename="src/core/ZoneContainer.cpp" />
 		<Unit filename="src/core/ZoneContainer.hpp" />
+		<Unit filename="src/entities/Decor.cpp" />
+		<Unit filename="src/entities/Decor.hpp" />
 		<Unit filename="src/entities/Entity.cpp" />
 		<Unit filename="src/entities/Entity.hpp" />
 		<Unit filename="src/entities/EntityFactory.cpp" />
