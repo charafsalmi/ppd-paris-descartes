@@ -81,7 +81,7 @@ void Zone::Load(const TiXmlHandle& handle)
 		}
 		else
 		{
-			std::cerr << " [Zone] attributs invalides" << std::endl;
+			std::cerr << " [Zone] entité invalide ignoré" << std::endl;
 		}
 		elem = elem->NextSiblingElement();
 	}
@@ -91,18 +91,17 @@ void Zone::Load(const TiXmlHandle& handle)
 	while (elem != NULL)
 	{
 		bool ok = true;
-		int x, y;
-		int code;
-		ok &= (elem->QueryIntAttribute("code", &code) == TIXML_SUCCESS);
+		int id, x, y;
+		ok &= (elem->QueryIntAttribute("id", &id) == TIXML_SUCCESS);
 		ok &= (elem->QueryIntAttribute("x", &x) == TIXML_SUCCESS);
 		ok &= (elem->QueryIntAttribute("y", &y) == TIXML_SUCCESS);
 		if (ok)
 		{
-			AddItem(code, x, y);
+			AddItem(id, x, y);
 		}
 		else
 		{
-			std::cerr << " [Zone] attributs invalides" << std::endl;
+			std::cerr << " [Zone] item invalide ignoré" << std::endl;
 		}
 		elem = elem->NextSiblingElement();
 	}

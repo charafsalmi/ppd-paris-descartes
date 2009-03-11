@@ -13,23 +13,16 @@
 	<tile id="41" block="1" />
 	<tile id="56" block="1" />
 	<tile id="57" block="1" />
-	<tile id="176" block="1" />
-	<tile id="177" block="1" />
-	<tile id="178" block="1" />
 	<tile id="179" block="1" />
 	<tile id="180" block="1" />
-	<tile id="192" block="1" />
-	<tile id="193" block="1" />
-	<tile id="194" block="1" />
 	<tile id="195" block="1" />
 	<tile id="196" block="1" />
 	<tile id="197" block="1" />
-	<tile id="208" block="1" />
-	<tile id="209" block="1" />
-	<tile id="210" block="1" />
 	<tile id="211" block="1" />
 	<tile id="212" block="1" />
 	<tile id="213" block="1" />
+	
+	<tile id="198" block="1" />
 	<!-- falaises -->
 	<tile id="69" block="1" />
 	<tile id="70" block="1" />

@@ -231,20 +231,21 @@ Decor* EntityFactory::BuildDecor(int id, const sf::Vector2i& position) const
 }
 
 
-Item* EntityFactory::BuildItem(unsigned int code, const sf::Vector2f& position) const
+Item* EntityFactory::BuildItem(unsigned int id, const sf::Vector2f& position) const
 {
 	sf::IntRect subrect;
-	switch (code)
+	// TODO définition en XML
+	switch (id)
 	{
-		case 01:
+		case 1:
 			subrect = sf::IntRect(0, 16, 0 + 16, 16 + 28);
-			return new Item(code, position, subrect);
-		case 02:
+			return new Item(id, position, subrect);
+		case 2:
 			subrect = sf::IntRect(0, 0, 16, 16);
-			return new Item(code, position, subrect);
+			return new Item(id, position, subrect);
 		case 10:
 			subrect = sf::IntRect(16, 0, 16 + 18, 0 + 32);
-			return new Equipment(code, position, subrect);
+			return new Equipment(id, position, subrect);
 	}
 	return NULL;
 }

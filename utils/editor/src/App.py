@@ -92,10 +92,10 @@ class Zone:
 		else:
 			print "parsing", len(xml_items), "items"
 			for node in xml_items:
-				code = node.getAttribute("code")[0]
+				_id = int(node.getAttribute("id"))
 				x = int(node.getAttribute("x"))
 				y = int(node.getAttribute("y"))
-				self.items.append(Item(code, x, y))
+				self.items.append(Item(_id, x, y))
 		
 		# parsing teleporters
 		try:
