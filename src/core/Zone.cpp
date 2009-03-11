@@ -107,6 +107,28 @@ void Zone::Load(const TiXmlHandle& handle)
 		elem = elem->NextSiblingElement();
 	}
 
+	// chargement des décors
+	elem = handle.FirstChildElement("decors").FirstChildElement().Element();
+	while (elem != NULL)
+	{
+		bool ok = true;
+		int id, x, y;
+		ok &= (elem->QueryIntAttribute("id", &id) == TIXML_SUCCESS);
+		ok &= (elem->QueryIntAttribute("x", &x) == TIXML_SUCCESS);
+		ok &= (elem->QueryIntAttribute("y", &y) == TIXML_SUCCESS);
+
+		if (ok)
+		{
+			++y;
+			AddDecor(factory.BuildDecor(id, sf::Vector2i(x, y)), x, y);
+		}
+		else
+		{
+			std::cerr << " [Zone] décor invalide ignoré" << std::endl;
+		}
+		elem = elem->NextSiblingElement();
+	}
+
 	// chargement des téléporteurs
 	elem = handle.FirstChildElement("teleporters").FirstChildElement().Element();
 	while (elem != NULL)
@@ -150,10 +172,6 @@ void Zone::Load(const TiXmlHandle& handle)
 	tiles_sprite_.FlipY(true); // HACK BUGFIX SFML 1.4
 	app.Clear();
 	loaded_ = true;
-
-	// TEST HACK
-	AddDecor(factory.BuildDecor(0, sf::Vector2i(1, 10)), 1, 10);
-	AddDecor(factory.BuildDecor(2, sf::Vector2i(2, 12)), 2, 12);
 }
 
 
@@ -285,15 +303,12 @@ void Zone::AddDecor(Entity* decor, int x, int y)
 	// récupérer les dimensions en nombre de tiles
 	int right_x = x + decor->GetFloorWidth() / Tile::SIZE;
 	int top_y = y - decor->GetFloorHeight() / Tile::SIZE;
-
-	printf("left %d, bottom %d, right %d, top %d\n", x, y, right_x, top_y);
 	int xcopy = x;
 	for (--y; y >= top_y; --y)
 	{
 		for (x = xcopy; x < right_x; ++x)
 		{
 			walkable_[y][x] = false;
-			printf("tile unwalkable at [%d][%d]\n", y, x);
 		}
 	}
 	entities_.push_front(decor);

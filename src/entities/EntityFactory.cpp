@@ -178,9 +178,6 @@ void EntityFactory::LoadDecors(const char* filename)
 			abort();
 		}
 		decor->block = int_attr;
-
-		printf("definition de decor ajoutee : x %d y %d widht %d height %d block %d\n",
-			decor->x, decor->y, decor->width, decor->height, decor->block);
 		elem = elem->NextSiblingElement();
 	}
 }
@@ -225,13 +222,11 @@ Decor* EntityFactory::BuildDecor(int id, const sf::Vector2i& position) const
 		subrect.Bottom = subrect.Top + (decor_p.height * Tile::SIZE);
 		subrect.Right = subrect.Left + (decor_p.width * Tile::SIZE);
 		decor->SetSubRect(subrect);
-		printf("sub rect : Top %d Left %d Bottom %d Right %d\n", subrect.Top, subrect.Left, subrect.Bottom, subrect.Right);
 		decor->SetCenter(0, subrect.GetHeight());
-		printf("set floor height = %d\n", decor_p.block * Tile::SIZE);
 		decor->SetFloor(subrect.GetWidth(), decor_p.block * Tile::SIZE);
 		return decor;
 	}
-	std::cerr << "can't spawn mob, bad id: " << id << std::endl;
+	std::cerr << "can't spawn decor, bad id: " << id << std::endl;
 	return NULL;
 }
 

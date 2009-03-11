@@ -10,7 +10,7 @@ class Teleporter:
 		self.x = x
 		self.y = y
 		self.zone_x = zone_x
-		self.zone_y = zone_x
+		self.zone_y = zone_y
 		self.tile_x = tile_x
 		self.tile_y = tile_y
 	
