@@ -41,6 +41,13 @@ int WinInventory::AddItem(Equipment* item)
     last_item_ ++;
 }
 
+bool WinInventory::searchItem(unsigned int code){
+    for(unsigned int i=0;i<last_item_;i++){
+        if (items_[i]->getCode() == code) return true;
+    }
+    return false;
+}
+
 int WinInventory::WindowCallback(const Control::ControlID id, const int p1, void *p2)
 {
     cout << "Inventory callback [id:" << id << "]" << endl;

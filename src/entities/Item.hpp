@@ -26,9 +26,11 @@ public:
 	}
 
 	/**
-	 * Nom générique de l'objet
+	 * Code de l'objet
 	 */
-	//const char* GetName() const;
+	const unsigned int getCode() const{
+		return code_;
+	}
 
 private:
 	unsigned int code_;

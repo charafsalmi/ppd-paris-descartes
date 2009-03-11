@@ -21,6 +21,12 @@ public:
     @return 1 Si l'inventaire est plein
     */
     int AddItem(Equipment* item);
+
+    /**
+    * Permet de savoir si un item est deja présent dans l'inventaire
+    * @return: true si il y est
+    */
+    bool searchItem(unsigned int code);
 private:
     int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2);
 
@@ -31,7 +37,7 @@ private:
 
     /** Liste des équipements */
 	Equipment** items_;
-	int last_item_;
+    int last_item_;
 };
 
 #endif

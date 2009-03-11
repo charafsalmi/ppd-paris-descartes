@@ -329,8 +329,11 @@ void Zone::RemoveEntity(Entity* entity)
 
 void Zone::AddItem(unsigned int id, int x, int y)
 {
-	Item* item = EntityFactory::GetInstance().BuildItem(id, sf::Vector2f(x, y));
-	items_.push_front(item);
+	ControlPanel& panel = ControlPanel::GetInstance();
+	if(!panel.GetInventory()->searchItem(id)){
+		Item* item = EntityFactory::GetInstance().BuildItem(id, sf::Vector2f(x, y));
+		items_.push_front(item);
+	}
 }
 
 
