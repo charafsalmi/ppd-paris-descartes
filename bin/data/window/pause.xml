@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <window x="216" y="216" w="270" h="181" background="interface/pause/background">
 	<button id="7772" pic="interface/pause/boptions" x="21" y="30" />
-	<button id="7771" pic="interface/pause/bquitter" x="21" y="100" />
+	<button id="7771" pic="interface/pause/bquitter" OnHover="interface/pause/bquitter_inv" x="21" y="100" />
 </window>

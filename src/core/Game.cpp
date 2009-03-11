@@ -107,7 +107,7 @@ void Game::Run()
 		while (app_.GetEvent(event))
 		{
 #ifdef WINDOW_TEST
-			//fen_.ManageEvent(event);
+			fen_.ManageEvent(event);
 #endif
 			(this->*on_event_meth_)(event);
 
@@ -242,7 +242,7 @@ void Game::SetMusic(int value)
 
 void Game::EndGame()
 {
-	message_.SetText("T'es mort espece de tanche (Enter pour rejouer)");
+	message_.SetText("Tu n'es pas le digne fils de Chuck Norris (Enter pour rejouer)");
 	message_.SetPosition(100, 100);
 	SetMode(GAME_OVER);
 

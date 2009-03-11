@@ -3,6 +3,7 @@
 	- items utilisables dans l'inventaire
 	- système d'attaque (collision item / entité ?)
 	- collisions plus élaborées
+	- Ajouter un système de Log (pour sauvegarder les sorties) et ainsi uniformiser les informations de différents type (error, warning, information)
 
 
 * Format des cartes
@@ -27,6 +28,4 @@
     - Passer la classe en forme canonique
     - Compléter le système de label
     - Ajout d'un système de bind de variable à une progress bar ou à un label
-    - Ajouter un système de OnHover sur les boutons (l'image change quand on passe dessus)
     - Compléter le système de textbox
-    - Autoriser la création de bouton vide

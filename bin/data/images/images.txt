@@ -13,6 +13,7 @@ squelette.png
 tileset.png
 mandarine.png
 interface/test/button1.png
+interface/test/button1_inv.png
 interface/test/button2.png
 interface/test/button3.png
 interface/test/background.png
@@ -20,6 +21,7 @@ interface/inventory/background.png
 interface/pause/background.png
 interface/pause/boptions.png
 interface/pause/bquitter.png
+interface/pause/bquitter_inv.png
 bitmap-font/retro.png
 bitmap-font/mono10-black.png
 bitmap-font/mono10-white.png

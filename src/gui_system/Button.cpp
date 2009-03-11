@@ -6,21 +6,33 @@
 using namespace gui;
 using namespace std;
 
-Button::Button(ControlID id, const ControlPos& pos, const ControlPos& size, const std::string& str) : Control(id, pos)
+Button::Button(ControlID id, const ControlPos& pos, const ControlPos& size, const std::string &imagePath, const std::string &hoverPath) : Control(id, pos)
 {
     ControlPos s = size;
 
     // Mode avec image
-    if(!str.empty()){
-        img_ = GET_IMG(str.c_str());
+    if(!imagePath.empty()){
+        img_ = GET_IMG(imagePath.c_str());
 
+        // Si aucune largeur ou hauteur n'est définit,
+        // on récupère celles de l'image
         if(s.x == -1 || s.y == -1){
             s.x = img_.GetSize().x;
             s.y = img_.GetSize().y;
         }
     }
 
+    // Système OnHover
+    if(!hoverPath.empty()){
+        img_hover_ = GET_IMG(hoverPath.c_str());
+
+        accepted_states_ |= ON_HOVER;
+        // On applique la même position que l'image de base
+        //img_hover_.SetPosition(pos.x, pos.y);
+    }
+
     // Positionnement du contrôle
+    // Ce rectangle sert à calculer les points d'intercept.
     rect_.Top = pos.y;
     rect_.Left = pos.x;
     rect_.Bottom = pos.y + s.y;
@@ -29,7 +41,11 @@ Button::Button(ControlID id, const ControlPos& pos, const ControlPos& size, cons
 
 void Button::Render(sf::RenderTarget& app) const
 {
-    app.Draw(img_);
+    if((accepted_states_ & ON_HOVER)&&(curr_state_ == ON_HOVER)){
+        app.Draw(img_hover_);
+    }else{
+        app.Draw(img_);
+    }
 }
 
 void Button::ChangeSprite(sf::Sprite nimg)

@@ -17,6 +17,7 @@ MyWin::~MyWin()
 
 int MyWin::WindowCallback(const Control::ControlID id, const int p1, void *p2)
 {
+    std::cout << "MyWin callback [id:" << id << "]" << std::endl;
     /*
     switch(id){
         case IDEXIT:

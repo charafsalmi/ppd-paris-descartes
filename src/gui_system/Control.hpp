@@ -13,9 +13,22 @@ namespace gui{
         typedef unsigned int ControlID;
         typedef sf::Vector2f ControlPos;
 
-        Control();
+        /**
+        * Etat du control
+        */
+        enum State{
+            NORMAL=0x100,
+            ON_FOCUS=0x010,
+            ON_HOVER=0x001
+        };
+
         Control(const ControlID id, const ControlPos& pos);
         virtual ~Control();
+
+        /** Changement d'état du contrôle */
+        inline void SetState(State s){
+            curr_state_ = s;
+        }
 
         /** Récupère la zone du widget */
         inline const sf::IntRect& GetRect() const {
@@ -35,6 +48,16 @@ namespace gui{
         * Zone du contrôle
         */
         sf::IntRect rect_;
+
+        /**
+        * Etat courant du contrôle
+        */
+        State curr_state_;
+
+        /**
+        * Etats réalisable par le contrôle
+        */
+        int accepted_states_;
 	private:
 		virtual void Render(sf::RenderTarget& app) const = 0;
     };

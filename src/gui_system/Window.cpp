@@ -40,13 +40,32 @@ Control *Window::GetFromID(Control::ControlID id){
 int Window::ManageEvent(const sf::Event& event){
     std::vector<Control*>::const_iterator it;
 
-    // transormations des coords absolues en coords relatives
-    int x = event.MouseButton.X - GetPosition().x;
-    int y = event.MouseButton.Y - GetPosition().y;
     int r;
+
+    if(event.Type == sf::Event::MouseMoved){
+        // transormations des coords absolues en coords relatives
+        int x = event.MouseMove.X - GetPosition().x;
+        int y = event.MouseMove.Y - GetPosition().y;
+
+        //if(event.Type == sf::Event::MouseMoved){
+        for (it=controls_.begin();it!=controls_.end();it++){
+            // Pour chaque widget on verifit si une action les concerne
+            if((*it)->GetRect().Contains(x, y)){
+                (*it)->SetState(Control::ON_HOVER);
+            }else{
+                (*it)->SetState(Control::NORMAL);
+            }
+        }
+    }
+	//}
 
 	if (event.Type == sf::Event::MouseButtonReleased)
 	{
+        // transormations des coords absolues en coords relatives
+        int x = event.MouseButton.X - GetPosition().x;
+        int y = event.MouseButton.Y - GetPosition().y;
+        int r;
+
 		if(event.MouseButton.Button == sf::Mouse::Left)
 		{
 			for (it=controls_.begin();it!=controls_.end();it++){
@@ -64,6 +83,7 @@ int Window::ManageEvent(const sf::Event& event){
 void Window::Load(const std::string& xmlfile){
     int id, x=0, y=0, w, h, alpha;
     const char* p = NULL;
+    std::string temp1, temp2;
 
     TiXmlDocument doc;
     TiXmlElement* controls_elem, *elem;
@@ -93,21 +113,19 @@ void Window::Load(const std::string& xmlfile){
 		    alpha = -1;
 		}
         p = elem->Attribute("background");
-        if(p == NULL){
-            cout << "Warning: No window's background" << endl;
+        if(p != NULL){
+            SetPosition(x, y);
+            background_ = GET_IMG(p);
+            background_.Resize(w, h);
+
+            if(alpha != -1)
+                background_.SetColor(sf::Color(255,255,255,alpha));
+
+            rect_.Top = y;
+            rect_.Bottom = h + y;
+            rect_.Left = x;
+            rect_.Right = h + x;
         }
-
-		SetPosition(x, y);
-        background_ = GET_IMG(p);
-        background_.Resize(w, h);
-
-        if(alpha != -1)
-            background_.SetColor(sf::Color(255,255,255,alpha));
-
-        rect_.Top = y;
-        rect_.Bottom = h + y;
-        rect_.Left = x;
-        rect_.Right = h + x;
     }
 
 	node = doc.FirstChild("window")->FirstChildElement();
@@ -116,7 +134,7 @@ void Window::Load(const std::string& xmlfile){
 
         // id du widget
         if(controls_elem->QueryIntAttribute("id", &id) != TIXML_SUCCESS){
-            cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
+            cout << "Warning: Aucun identifiant pour ce widget" << endl;
             id = 0;
         }
 
@@ -133,30 +151,39 @@ void Window::Load(const std::string& xmlfile){
 		}
 
         // Taille souhaité du widget
-        if (controls_elem->QueryIntAttribute("w", &w) != TIXML_SUCCESS){
+        if (controls_elem->QueryIntAttribute("w", &w) != TIXML_SUCCESS)
 			w = -1;
-		}
-		if (controls_elem->QueryIntAttribute("h", &h) != TIXML_SUCCESS){
+		if (controls_elem->QueryIntAttribute("h", &h) != TIXML_SUCCESS)
 			h = -1;
-		}
+
+        Control::ControlPos ctrl_pos(x, y);
+	    Control::ControlPos ctrl_size(w, h);
 
 	    std::string s1 = controls_elem->Value();
 
 	    if(s1 == "button"){
-            // Image à charger
             p = controls_elem->Attribute("pic");
             if(p == NULL){
-                controls_.push_back(new Button(id, Control::ControlPos(x,y), Control::ControlPos(w,h), ""));
+                temp1 = "";
             }else{
-                controls_.push_back(new Button(id, Control::ControlPos(x,y), Control::ControlPos(w,h), p));
+                temp1 = p;
             }
+
+            p = controls_elem->Attribute("OnHover");
+            if(p == NULL){
+                temp2 = "";
+            }else{
+                temp2 = p;
+            }
+
+            controls_.push_back(new Button(id, ctrl_pos, ctrl_size, temp1, temp2));
 	    }else if(s1 == "label"){
-	        controls_.push_back(new Label(id, Control::ControlPos(x,y), controls_elem->GetText()));
+	        controls_.push_back(new Label(id, ctrl_pos, controls_elem->GetText()));
 	    }
 	    else if (s1 == "textbox")
 	    {
 	        // TODO: Ajout possible d'un texte par défaut ?
-	    	controls_.push_back(new TextBox(id, Control::ControlPos(x, y)));
+	    	controls_.push_back(new TextBox(id, ctrl_pos));
 	    }
 
 		controls_elem = controls_elem->NextSiblingElement();
