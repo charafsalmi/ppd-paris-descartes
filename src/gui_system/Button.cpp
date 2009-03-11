@@ -34,7 +34,9 @@ void Button::Render(sf::RenderTarget& app) const
 
 void Button::ChangeSprite(sf::Sprite nimg)
 {
+    ControlPos p = img_.GetPosition();
+
     img_ = nimg;
-    img_.SetPosition(rect_.Left, rect_.Bottom);
     img_.Resize(rect_.Right-rect_.Left, rect_.Bottom-rect_.Top);
+    img_.SetPosition(p.x, p.y+img_.GetSize().y);
 }
