@@ -9,6 +9,7 @@ from PopUp import *
 from Entity import *
 from Teleporter import *
 from Item import *
+from Decor import *
 
 import xml.dom.minidom as dom
 import sys
@@ -50,6 +51,7 @@ class Zone:
 		self.items = []
 		self.id_tiles = []
 		self.teleporters = []
+		self.decors = []
 		
 		# parsing tiles
 		all_tiles = xml_elem.getElementsByTagName("tiles")[0].firstChild.data.split()
@@ -69,11 +71,24 @@ class Zone:
 				y = int(node.getAttribute("y"))
 				self.entities.append(Entity(id_, x, y))
 		
+		# parsing decors
+		try:
+			xml_decors = xml_elem.getElementsByTagName("decors")[0].getElementsByTagName("decor")
+		except IndexError:
+			pass # pas de décors
+		else:
+			print "parsing", len(xml_decors), "decors"
+			for node in xml_decors:
+				_id = int(node.getAttribute("id"))
+				x = int(node.getAttribute("x"))
+				y = int(node.getAttribute("y"))
+				self.decors.append(Decor(_id, x, y))
+				
 		# parsing items
 		try:
 			xml_items = xml_elem.getElementsByTagName("items")[0].getElementsByTagName("item")
 		except IndexError:
-			pass # pas d'entités
+			pass # pas d'items
 		else:
 			print "parsing", len(xml_items), "items"
 			for node in xml_items:
@@ -150,6 +165,13 @@ class Zone:
 			for entity in self.entities:
 				f.write("\t\t%s\n" % entity.to_xml())
 			f.write("\t</entities>\n")
+		
+		# écriture des décors
+		if len(self.decors) > 0:
+			f.write("\t<decors>\n")
+			for decor in self.decors:
+				f.write("\t\t%s\n" % decor.to_xml())
+			f.write("\t</decors>\n")
 		
 		# écriture des items
 		if len(self.items) > 0:

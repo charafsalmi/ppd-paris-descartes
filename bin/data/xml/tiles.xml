@@ -13,10 +13,6 @@
 	<tile id="41" block="1" />
 	<tile id="56" block="1" />
 	<tile id="57" block="1" />
-	<tile id="72" block="1" />
-	<tile id="73" block="1" />
-	<tile id="88" block="1" />
-	<tile id="89" block="1" />
 	<tile id="176" block="1" />
 	<tile id="177" block="1" />
 	<tile id="178" block="1" />
@@ -34,6 +30,47 @@
 	<tile id="211" block="1" />
 	<tile id="212" block="1" />
 	<tile id="213" block="1" />
+	<!-- falaises -->
+	<tile id="69" block="1" />
+	<tile id="70" block="1" />
+	<tile id="71" block="1" />
+	<tile id="72" block="1" />
+	<tile id="73" block="1" />
+	<tile id="74" block="1" />
+	<tile id="75" block="1" />
+	<tile id="85" block="1" />
+	<tile id="86" block="1" />
+	<tile id="87" block="1" />
+	<tile id="88" block="1" />
+	<tile id="89" block="1" />
+	<tile id="90" block="1" />
+	<tile id="91" block="1" />
+	<tile id="101" block="1" />
+	<tile id="102" block="1" />
+	<tile id="103" block="1" />
+	<tile id="104" block="1" />
+	<tile id="105" block="1" />
+	<tile id="106" block="1" />
+	<tile id="107" block="1" />
+	<tile id="117" block="1" />
+	<tile id="118" block="1" />
+	<tile id="119" block="1" />
+	<tile id="120" block="1" />
+	<tile id="121" block="1" />
+	<tile id="122" block="1" />
+	<tile id="133" block="1" />
+	<tile id="134" block="1" />
+	<tile id="135" block="1" />
+	<tile id="136" block="1" />
+	<tile id="137" block="1" />
+	<tile id="138" block="1" />
+	<tile id="149" block="1" />
+	<tile id="150" block="1" />
+	<tile id="151" block="1" />
+	<tile id="152" block="1" />
+	<tile id="153" block="1" />
+	<tile id="154" block="1" />
+
 	<!-- dungeon -->
 	<tile id="224" block="1" />
 	<tile id="225" block="1" />
