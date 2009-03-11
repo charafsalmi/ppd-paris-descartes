@@ -4,7 +4,7 @@
 #include "../gui/ControlPanel.hpp"
 
 
-Item::Item(char code, const sf::Vector2f& position, const sf::IntRect& subrect) :
+Item::Item(unsigned int code, const sf::Vector2f& position, const sf::IntRect& subrect) :
 	Entity(position, GET_IMG("items"))
 {
 	SetSubRect(subrect);
@@ -21,13 +21,13 @@ void Item::OnCollide(Player& player)
 	switch (code_)
 	{
 		// money
-		case 'M':
+		case 01:
 			player.AddMoney();
 			panel.PrintInfoText("argent ramasse");
 			Kill();
 			break;
 		// hearth
-		case 'H':
+		case 02:
 			player.AddLife();
 			panel.PrintInfoText("coeur ramasse");
 			Kill();

@@ -231,18 +231,18 @@ Decor* EntityFactory::BuildDecor(int id, const sf::Vector2i& position) const
 }
 
 
-Item* EntityFactory::BuildItem(char code, const sf::Vector2f& position) const
+Item* EntityFactory::BuildItem(unsigned int code, const sf::Vector2f& position) const
 {
 	sf::IntRect subrect;
 	switch (code)
 	{
-		case 'M':
+		case 01:
 			subrect = sf::IntRect(0, 16, 0 + 16, 16 + 28);
 			return new Item(code, position, subrect);
-		case 'H':
+		case 02:
 			subrect = sf::IntRect(0, 0, 16, 16);
 			return new Item(code, position, subrect);
-		case 'S':
+		case 10:
 			subrect = sf::IntRect(16, 0, 16 + 18, 0 + 32);
 			return new Equipment(code, position, subrect);
 	}

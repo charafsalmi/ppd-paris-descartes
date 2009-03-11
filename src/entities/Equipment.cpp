@@ -2,7 +2,7 @@
 #include "../gui/ControlPanel.hpp"
 
 
-Equipment::Equipment(char code, const sf::Vector2f& position,
+Equipment::Equipment(unsigned int code, const sf::Vector2f& position,
 	const sf::IntRect& subrect) :
 	Item(code, position, subrect)
 {

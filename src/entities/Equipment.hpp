@@ -7,7 +7,7 @@
 class Equipment: public Item
 {
 public:
-	Equipment(char code, const sf::Vector2f& position, const sf::IntRect& subrect);
+	Equipment(unsigned int code, const sf::Vector2f& position, const sf::IntRect& subrect);
 
 	void OnCollide(Player& player);
 private:

@@ -11,7 +11,7 @@ class Player;
 class Item: public Entity
 {
 public:
-	Item(char code, const sf::Vector2f& pos, const sf::IntRect& subrect);
+	Item(unsigned int code, const sf::Vector2f& pos, const sf::IntRect& subrect);
 
 	/**
 	 * Méthode callback en cas de collision avec le joueur
@@ -31,7 +31,7 @@ public:
 	//const char* GetName() const;
 
 private:
-	char code_;
+	unsigned int code_;
 };
 
 #endif /* ITEM_HPP */

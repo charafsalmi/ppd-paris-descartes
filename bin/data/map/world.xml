@@ -127,12 +127,12 @@
 		<decor id="1" x="14" y="9" />
 	</decors>
 	<items>
-		<item code="H" x="120" y="360" />
-		<item code="H" x="140" y="380" />
-		<item code="H" x="160" y="400" />
-		<item code="H" x="180" y="360" />
-		<item code="H" x="200" y="380" />
-		<item code="H" x="220" y="400" />
+		<item code="01" x="120" y="360" />
+		<item code="02" x="140" y="380" />
+		<item code="02" x="160" y="400" />
+		<item code="02" x="180" y="360" />
+		<item code="02" x="200" y="380" />
+		<item code="02" x="220" y="400" />
 	</items>
 </zone>
 <zone>
@@ -185,8 +185,8 @@
 		<decor id="2" x="5" y="10" />
 	</decors>
 	<items>
-		<item code="M" x="192" y="480" />
-		<item code="S" x="200" y="350" />
+		<item code="01" x="192" y="480" />
+		<item code="10" x="200" y="350" />
 	</items>
 	<teleporters>
 		<tp x="13" y="3" container="0" zone_x="2" zone_y="2" tile_x="11" tile_y="9" />
@@ -260,7 +260,7 @@
 208 209 209 209 209 209 209 209 209 209 209 209 209 209 209 209 209 209 209 209 
 	</tiles>
 	<items>
-		<item code="H" x="200" y="350" />
+		<item code="02" x="200" y="350" />
 	</items>
 </zone>
 <zone>

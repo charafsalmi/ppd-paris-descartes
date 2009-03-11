@@ -92,8 +92,8 @@ void Zone::Load(const TiXmlHandle& handle)
 	{
 		bool ok = true;
 		int x, y;
-		char code;
-		ok &= (elem->QueryValueAttribute("code", &code) == TIXML_SUCCESS);
+		int code;
+		ok &= (elem->QueryIntAttribute("code", &code) == TIXML_SUCCESS);
 		ok &= (elem->QueryIntAttribute("x", &x) == TIXML_SUCCESS);
 		ok &= (elem->QueryIntAttribute("y", &y) == TIXML_SUCCESS);
 		if (ok)
@@ -327,7 +327,7 @@ void Zone::RemoveEntity(Entity* entity)
 }
 
 
-void Zone::AddItem(char id, int x, int y)
+void Zone::AddItem(unsigned int id, int x, int y)
 {
 	Item* item = EntityFactory::GetInstance().BuildItem(id, sf::Vector2f(x, y));
 	items_.push_front(item);
