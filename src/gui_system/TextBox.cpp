@@ -50,14 +50,29 @@ void TextBox::OnKeyPressed(sf::Key::Code key)
 	switch (key)
 	{
 		case sf::Key::Back:
-			text_.RemoveChar(cursor_pos_);
-			SetCursor(cursor_pos_ - 1);
+			if (cursor_pos_ > 0)
+			{
+				text_.RemoveChar(cursor_pos_);
+				SetCursor(cursor_pos_ - 1);
+			}
+			break;
+		case sf::Key::Delete:
+			if (cursor_pos_ < text_.Length())
+			{
+				text_.RemoveChar(cursor_pos_ + 1);
+			}
 			break;
 		case sf::Key::Left:
 			SetCursor(cursor_pos_ - 1);
 			break;
 		case sf::Key::Right:
 			SetCursor(cursor_pos_ + 1);
+			break;
+		case sf::Key::Home:
+			SetCursor(0);
+			break;
+		case sf::Key::End:
+			SetCursor(text_.Length());
 			break;
 		default:
 			break;

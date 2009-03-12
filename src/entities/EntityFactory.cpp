@@ -129,7 +129,6 @@ void EntityFactory::LoadDecors(const char* filename)
 		std::cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << std::endl;
 		abort();
 	}
-	MediaManager& media = MediaManager::GetInstance();
 
 	TiXmlHandle handle(&doc);
 	TiXmlElement* elem = handle.FirstChildElement().FirstChildElement().Element();

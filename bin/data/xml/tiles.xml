@@ -102,9 +102,11 @@
 	<tile id="216" teleport="1" />
 	<tile id="310" teleport="1" />
 	<tile id="294" teleport="1" />
+	
 	</definitions>
 	<animated>
 		<tile from="198" to="201" />
+		<tile from="182" to="183" />
 	</animated>
 </tiles>
 

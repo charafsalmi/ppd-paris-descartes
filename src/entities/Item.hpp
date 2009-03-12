@@ -28,7 +28,7 @@ public:
 	/**
 	 * Code de l'objet
 	 */
-	const unsigned int getCode() const{
+	inline unsigned int getCode() const{
 		return code_;
 	}
 

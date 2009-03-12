@@ -26,7 +26,8 @@ public:
     * Permet de savoir si un item est deja présent dans l'inventaire
     * @return: true si il y est
     */
-    bool searchItem(unsigned int code);
+    bool HasItem(int id);
+
 private:
     int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2);
 

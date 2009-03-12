@@ -9,7 +9,7 @@ class BitmapFont
 public:
 	enum
 	{
-		FIRST_CHAR = 32, LAST_CHAR = 127
+		FIRST_CHAR = 32, LAST_CHAR = 126
 	};
 
 	/**

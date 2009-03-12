@@ -74,7 +74,7 @@ void BitmapString::RemoveChar(int position)
 	}
 
 	position = GetRealPosition(position);
-	if (position > (chars_.size() - 1))
+	if (position > (int) chars_.size() - 1)
 	{
 		position = chars_.size() - 1;
 	}

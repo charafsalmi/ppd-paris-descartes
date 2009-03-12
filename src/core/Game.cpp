@@ -242,7 +242,7 @@ void Game::SetMusic(int value)
 void Game::EndGame()
 {
 	message_.SetText("Tu n'es pas le digne fils de Chuck Norris (Enter pour rejouer)");
-	message_.SetPosition(100, 100);
+	message_.SetPosition(10, 250);
 	SetMode(GAME_OVER);
 
 }

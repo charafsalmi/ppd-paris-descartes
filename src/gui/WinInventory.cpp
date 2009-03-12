@@ -41,9 +41,9 @@ int WinInventory::AddItem(Equipment* item)
     last_item_ ++;
 }
 
-bool WinInventory::searchItem(unsigned int code){
-    for(unsigned int i=0;i<last_item_;i++){
-        if (items_[i]->getCode() == code) return true;
+bool WinInventory::HasItem(int id){
+    for(int i=0; i<last_item_;i++){
+        if (items_[i]->getCode() == id) return true;
     }
     return false;
 }
