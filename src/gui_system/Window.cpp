@@ -16,7 +16,8 @@ using namespace std;
 using namespace gui;
 
 Window::Window(){
-
+	active_ = NULL;
+	hover_ = NULL;
 }
 
 Window::Window(const Window& other){
@@ -37,48 +38,73 @@ Control *Window::GetFromID(Control::ControlID id){
     return NULL;
 }
 
-int Window::ManageEvent(const sf::Event& event){
-    std::vector<Control*>::const_iterator it;
+int Window::ManageEvent(const sf::Event& event)
+{
+	// test effet de hover
+	std::vector<Control*>::const_iterator it;
 
-    int r;
+    if (event.Type == sf::Event::MouseMoved)
+    {
+    	Control* new_hover = GetUnderMouse(event.MouseMove.X, event.MouseMove.Y);
+    	if (new_hover != NULL && new_hover != hover_)
+    	{
+    		// cas particulier où la souris passe instantanément au dessus d'un autre contrôle
+    		// (deux contrôles collés par exemple)
+    		if (hover_ != NULL)
+    		{
+    			hover_->SetState(active_ == hover_ ? Control::ON_FOCUS : Control::NORMAL);
+    		}
+    		hover_ = new_hover;
+    		hover_->SetState(Control::ON_HOVER);
+    	}
+    	else if (new_hover == NULL && hover_ != NULL)
+    	{
+    		// la souris a quitté hover_
+    		hover_->SetState(active_ == hover_ ? Control::ON_FOCUS : Control::NORMAL);
+    		hover_ = NULL;
+    	}
+		return 0;
+	}
 
-    if(event.Type == sf::Event::MouseMoved){
-        // transormations des coords absolues en coords relatives
-        int x = event.MouseMove.X - GetPosition().x;
-        int y = event.MouseMove.Y - GetPosition().y;
-
-        //if(event.Type == sf::Event::MouseMoved){
-        for (it=controls_.begin();it!=controls_.end();it++){
-            // Pour chaque widget on verifit si une action les concerne
-            if((*it)->GetRect().Contains(x, y)){
-                (*it)->SetState(Control::ON_HOVER);
-            }else{
-                (*it)->SetState(Control::NORMAL);
-            }
+	// on vérifie si un contrôle doit prendre le focus
+	// TODO: prendre le focus aussi avec <tab>
+	if (event.Type == sf::Event::MouseButtonPressed)
+	{
+		Control* new_active = GetUnderMouse(event.MouseButton.X, event.MouseButton.Y);
+        if (new_active != NULL && new_active != active_)
+        {
+        	printf(" nouveau controle actif : %u\n", new_active->GetID());
+        	if  (active_ != NULL)
+        	{
+				active_->SetState(Control::NORMAL);
+        	}
+			active_ = new_active;
+			active_->SetState(Control::ON_FOCUS);
         }
-    }
-	//}
+        else if (new_active == NULL && active_ != NULL)
+        {
+        	// active_ a perdu focus
+        	puts(" le controle actif perd le perdu");
+        	active_->SetState(Control::NORMAL);
+        	active_ = NULL;
+        }
+	}
 
 	if (event.Type == sf::Event::MouseButtonReleased)
 	{
-        // transormations des coords absolues en coords relatives
-        int x = event.MouseButton.X - GetPosition().x;
-        int y = event.MouseButton.Y - GetPosition().y;
-        int r;
-
-		if(event.MouseButton.Button == sf::Mouse::Left)
+        if(event.MouseButton.Button == sf::Mouse::Left)
 		{
-			for (it=controls_.begin();it!=controls_.end();it++){
-			// Pour chaque widget on verifit si une action les concerne
-				if((*it)->GetRect().Contains(x, y)){
-					if(r = WindowCallback((*it)->GetID(), 0, NULL))
-                        return r;
-				}
+			// le contrôle cliqué est forcément sous la souris
+			if (hover_ != NULL)
+			{
+				return WindowCallback(hover_->GetID(), 0, NULL);
 			}
 		}
 	}
+
 	return 0;
 }
+
 
 void Window::Load(const std::string& xmlfile){
     int id, x=0, y=0, w, h, alpha;
@@ -205,4 +231,21 @@ void Window::Render(sf::RenderTarget& app) const{
     for(it=controls_.begin();it!=controls_.end();it++){
         app.Draw(*(*it));
     }
+}
+
+
+Control* Window::GetUnderMouse(int x, int y)
+{
+	// transformation des coords absolues en coords relatives
+	x -= GetPosition().x;
+	y -= GetPosition().y;
+	for (std::vector<Control*>::const_iterator it = controls_.begin();
+		it != controls_.end(); ++it)
+	{
+		if ((**it).GetRect().Contains(x, y))
+		{
+			return *it;
+		}
+	}
+	return NULL;
 }

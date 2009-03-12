@@ -106,9 +106,6 @@ void Game::Run()
 		// POLLING
 		while (app_.GetEvent(event))
 		{
-#ifdef WINDOW_TEST
-			fen_.ManageEvent(event);
-#endif
 			(this->*on_event_meth_)(event);
 
 			// global events
@@ -125,6 +122,8 @@ void Game::Run()
 						break;
 					case sf::Key::Escape:
 						running_ = false;
+						break;
+					default:
 						break;
 				}
 			}
@@ -329,6 +328,9 @@ void Game::InGameOnEvent(const sf::Event& event)
 				break;
 		}
     }
+#ifdef WINDOW_TEST
+	fen_.ManageEvent(event);
+#endif
 }
 
 

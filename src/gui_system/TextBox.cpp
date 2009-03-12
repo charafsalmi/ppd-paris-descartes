@@ -18,7 +18,7 @@ TextBox::TextBox(ControlID id, const ControlPos& pos) :
 	rect_.Left = pos.x;
 	rect_.Top = pos.y;
 	rect_.Right = pos.x + WIDTH;
-	rect_.Bottom = pos.y + WIDTH;
+	rect_.Bottom = pos.y + height;
 
 	// postionnment relatif des éléments internes
 	background_ = sf::Shape::Rectangle(0, 0, WIDTH, height, sf::Color::White, 3, sf::Color::Black);

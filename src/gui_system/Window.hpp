@@ -58,6 +58,14 @@ namespace gui{
          */
 		virtual void Render(sf::RenderTarget& app) const;
 
+		/**
+		 * Récupérer le contrôle sous la souris
+		 * @param[in] x: position absolue x
+		 * @param[in] y: position absolue y
+		 * @return le contrôle sous la souris, NULL si aucun
+		 */
+		Control* GetUnderMouse(int x, int y);
+
         /**
         * Image de fond de la fenêtre
         */
@@ -71,6 +79,10 @@ namespace gui{
         * Composants de la fenêtre
         */
         std::vector<Control*> controls_;
+        // contrôle qui a le focus
+        Control* active_;
+        // contrôle sous la souris
+        Control* hover_;
     };
 }
 
