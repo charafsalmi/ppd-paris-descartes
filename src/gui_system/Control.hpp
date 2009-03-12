@@ -42,7 +42,7 @@ namespace gui{
         }
 
         /** Change le sprite du contrôle qui le peu */
-        virtual void ChangeSprite(sf::Sprite nimg){}
+        virtual void ChangeSprite(const sf::Sprite& nimg);
 
 		/**
 		 * Callback évènement texte saisi

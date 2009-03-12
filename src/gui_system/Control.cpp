@@ -21,6 +21,12 @@ Control::~Control(){
 }
 
 
+void Control::ChangeSprite(const sf::Sprite& nming)
+{
+	(void) nming;
+}
+
+
 void Control::OnTextEntered(sf::Uint32 unicode)
 {
 	(void) unicode;

@@ -1,10 +1,12 @@
 #include "TextBox.hpp"
 #include "../misc/MediaManager.hpp"
 
-#define PADDING 3 // marge en pixels autour du texte
-#define DEFAULT_WIDTH   100
-#define CURSOR_WIDTH    2
-#define CURSOR_COLOR    sf::Color::Blue
+#define PADDING        3 // marge en pixels autour du texte
+#define OUTLINE        1 // bordure de la textbox
+#define DEFAULT_WIDTH  100
+#define CURSOR_WIDTH   2
+#define CURSOR_COLOR   sf::Color::Blue
+
 
 using namespace gui;
 
@@ -25,13 +27,24 @@ TextBox::TextBox(ControlID id, const ControlPos& pos, int width) :
 
 	// postionnment relatif des éléments internes
 	background_ = sf::Shape::Rectangle(0, 0, width, height,
-		sf::Color::White, 3, sf::Color::Black);
+		sf::Color::White, OUTLINE, sf::Color::Black);
 	text_.SetPosition(PADDING, PADDING);
 	cursor_ = sf::Shape::Line(PADDING, PADDING, PADDING, height - PADDING,
 		CURSOR_WIDTH, CURSOR_COLOR);
-	// test
-	text_.SetText("pouet");
 	SetCursor(0);
+}
+
+
+void TextBox::SetText(const char* text)
+{
+	text_.Clear();
+	text_.SetText(text);
+}
+
+
+const char* TextBox::GetText() const
+{
+	return text_.GetText();
 }
 
 

@@ -12,6 +12,16 @@ class TextBox: public Control
 public:
 	TextBox(ControlID id, const ControlPos& pos, int width);
 
+	/**
+	 * Indiquer le texte de la textbox
+	 */
+	void SetText(const char* text);
+
+	/**
+	 * Récupérer le contenu de la textbox
+	 */
+	const char* GetText() const;
+
 	// inherited
 	void OnTextEntered(sf::Uint32 unicode);
 
@@ -35,6 +45,5 @@ private:
 };
 
 }
-
 
 #endif /* TEXTBOX_HPP */

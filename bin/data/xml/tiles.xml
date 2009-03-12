@@ -107,6 +107,9 @@
 	<animated>
 		<tile from="198" to="201" />
 		<tile from="182" to="183" />
+		<tile from="11" to="14" />
+		<tile from="27" to="30" />
+		<tile from="43" to="46" />
 	</animated>
 </tiles>
 

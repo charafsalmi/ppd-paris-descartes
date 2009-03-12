@@ -1,16 +1,21 @@
 * Core
-	- multijoueurs en mode client/serveur
+	- multijoueurs en mode client/serveur (report post-PPD)
 	- items utilisables dans l'inventaire
 	- système d'attaque (collision item / entité ?)
 	- collisions plus élaborées
-	- Ajouter un système de Log (pour sauvegarder les sorties) et ainsi uniformiser les informations de différents type (error, warning, information)
+	- Ajouter un système de Log (pour sauvegarder les sorties) et ainsi uniformiser les informations de différents type (error, warning, information) (report post-PPD ?)
 
-
-* Format des cartes
-	- étendre le format : la musique, etc.
+* Tileset
+	- gérer les TileEffect (WATER, LAVA, HOLE, ...)
+	- revoir le format de tiles.xml (trop de redondance)
+	- vrai scrolling, avec toutes les entités des deux zones en cours de scrolling
+	
+* Audio
+	- moteur audio élémentaire, gérant N buffers pour les bruitages + musique d'ambiance
+	
+* Éditeur Python (report post-PPD)
 	- interface pour l'édition des entités dans editor
 	- visualisation des entités dans editor [WIP à l'arrache]
-	- utilisation d'un double layer ?
 
 * IA
 	- création de pattern
@@ -19,13 +24,24 @@
 * Graphisme
 	- plus de tiles
 	- plus d'unités
-	- ne pas tout repomper sur zelda :)
 
 * Interface
 	- GUI pour les dialogues
 
 * Window
-    - Passer la classe en forme canonique
-    - Compléter le système de label
-    - Ajout d'un système de bind de variable à une progress bar ou à un label
-    - Compléter le système de textbox
+	- Passer la classe en forme canonique
+	- Compléter le système de label
+	- Ajout d'un système de bind de variable à une progress bar ou à un label
+	- Compléter le système de textbox (done ?)
+
+* Réseau (report post-PPD)
+	- architecture client/serveur
+	client : envoyer uniquement les évènements relatifs au joueur,
+	recevoir les données à afficher depuis le serveur
+	serveur : recevoir les actions des clients, effectuer les collisions,
+	envoyer les entités mises à jour aux clients
+	(le serveur ne fait aucun affichage, ce qui devrait laisser assez de ressources
+	pour calculer les collisions de plusieurs zones simultanément)
+
+	
+

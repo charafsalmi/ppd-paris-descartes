@@ -8,7 +8,7 @@ namespace gui{
     public:
         Button(const ControlID id, const ControlPos& pos, const ControlPos& size, const std::string &imagePath, const std::string &hoverPath);
 
-        void ChangeSprite(sf::Sprite nimg);
+        void ChangeSprite(const sf::Sprite& nimg);
 
     private:
 		void Render(sf::RenderTarget& app) const;

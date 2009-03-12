@@ -365,6 +365,7 @@ void Game::InventoryOnEvent(const sf::Event& event)
 void Game::InventoryShow()
 {
 	app_.Draw(zone_container_);
+	app_.Draw(panel_);
 	app_.Draw(*panel_.GetInventory());
 }
 

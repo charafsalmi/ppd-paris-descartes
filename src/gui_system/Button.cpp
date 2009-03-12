@@ -48,7 +48,7 @@ void Button::Render(sf::RenderTarget& app) const
     }
 }
 
-void Button::ChangeSprite(sf::Sprite nimg)
+void Button::ChangeSprite(const sf::Sprite& nimg)
 {
     ControlPos p = img_.GetPosition();
 

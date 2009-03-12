@@ -326,5 +326,6 @@ void Player::Kill()
 
 void Player::ThrowHit()
 {
-	zone_->AddEntity(new PlayerHit(GetPosition(), 2, current_dir_));
+	sf::Vector2f pos(GetPosition().x + GetSize().x / 2, GetPosition().y - GetSize().y / 2);
+	zone_->AddEntity(new PlayerHit(pos, 2, current_dir_));
 }
