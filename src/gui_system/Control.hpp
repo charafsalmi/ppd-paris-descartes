@@ -7,6 +7,8 @@
 namespace gui{
     class Control: public sf::Drawable{
     public:
+		enum { UNDEFINED = -1 };
+
         /**
         * Typedef
         */
@@ -41,6 +43,19 @@ namespace gui{
 
         /** Change le sprite du contrôle qui le peu */
         virtual void ChangeSprite(sf::Sprite nimg){}
+
+		/**
+		 * Callback évènement texte saisi
+		 * @param[in] unicode: caractère reçu
+		 */
+        virtual void OnTextEntered(sf::Uint32 unicode);
+
+		/**
+		 * Callback évènement touche pressée
+		 * @param[in] key: touche appuyée
+		 */
+		virtual void OnKeyPressed(sf::Key::Code key);
+
     protected:
         /** Identifiant du contrôle */
         ControlID id_;

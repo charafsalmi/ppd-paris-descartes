@@ -1,15 +1,12 @@
 #include "BitmapFont.hpp"
 
-#define FIRST_CHAR 32
-#define LAST_CHAR  127
-
 
 BitmapFont::BitmapFont(const sf::Image& image, int width, int height)
 {
 	width_ = width;
 	height_ = height;
 	image_ = &image;
-	
+
 	char_width_ = image.GetWidth() / width;
 	char_height_ = image.GetHeight() / height;
 }
@@ -37,7 +34,7 @@ sf::IntRect BitmapFont::GetCharRect(char character) const
 		character = FIRST_CHAR;
 	}
 	character -= FIRST_CHAR;
-	
+
 	sf::IntRect subrect;
 	subrect.Left = (character % width_) * char_width_;
 	subrect.Right = subrect.Left + char_width_;

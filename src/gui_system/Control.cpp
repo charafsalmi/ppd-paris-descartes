@@ -19,3 +19,15 @@ Control::Control(ControlID id, const ControlPos& pos){
 Control::~Control(){
 
 }
+
+
+void Control::OnTextEntered(sf::Uint32 unicode)
+{
+	(void) unicode;
+}
+
+
+void Control::OnKeyPressed(sf::Key::Code key)
+{
+	(void) key;
+}

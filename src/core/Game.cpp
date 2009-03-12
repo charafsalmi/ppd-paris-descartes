@@ -298,9 +298,13 @@ void Game::DefaultUpdate(float frametime)
 void Game::InGameOnEvent(const sf::Event& event)
 {
 	sf::Key::Code key = event.Key.Code;
+#ifdef WINDOW_TEST
+	fen_.ManageEvent(event);
+#endif
 
 	if (event.Type == sf::Event::KeyPressed)
 	{
+
 		if (zone_container_.Scrolling())
 		{
 			return;
@@ -327,10 +331,7 @@ void Game::InGameOnEvent(const sf::Event& event)
 				player_->OnEvent(key);
 				break;
 		}
-    }
-#ifdef WINDOW_TEST
-	fen_.ManageEvent(event);
-#endif
+	}
 }
 
 

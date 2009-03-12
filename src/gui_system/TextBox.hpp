@@ -10,18 +10,28 @@ namespace gui
 class TextBox: public Control
 {
 public:
-	TextBox(ControlID id, const ControlPos& pos);
+	TextBox(ControlID id, const ControlPos& pos, int width);
+
+	// inherited
+	void OnTextEntered(sf::Uint32 unicode);
+
+	// inherited
+	void OnKeyPressed(sf::Key::Code key);
 
 private:
 	// inherited
 	void Render(sf::RenderTarget& app) const;
 
+	/**
+	 * Positionne le curseur
+	 * @param[in] position: position du curseur dans le texte
+	 */
+	void SetCursor(int position);
+
 	sf::Shape background_;
 	sf::Shape cursor_;
+	int cursor_pos_;
 	BitmapString text_;
-
-	/** Définit si le contrôle est activé */
-    bool activated_;
 };
 
 }

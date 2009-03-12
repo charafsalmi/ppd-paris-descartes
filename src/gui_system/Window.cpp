@@ -38,6 +38,7 @@ Control *Window::GetFromID(Control::ControlID id){
     return NULL;
 }
 
+
 int Window::ManageEvent(const sf::Event& event)
 {
 	// test effet de hover
@@ -84,15 +85,21 @@ int Window::ManageEvent(const sf::Event& event)
         else if (new_active == NULL && active_ != NULL)
         {
         	// active_ a perdu focus
-        	puts(" le controle actif perd le perdu");
+        	printf(" le controle %d a perdu le focus\n", active_->GetID());
         	active_->SetState(Control::NORMAL);
         	active_ = NULL;
         }
 	}
 
+	// pas de contrôle actif = rien à faire
+	if (active_ == NULL)
+	{
+		return 0;
+	}
+
 	if (event.Type == sf::Event::MouseButtonReleased)
 	{
-        if(event.MouseButton.Button == sf::Mouse::Left)
+        if (event.MouseButton.Button == sf::Mouse::Left)
 		{
 			// le contrôle cliqué est forcément sous la souris
 			if (hover_ != NULL)
@@ -101,8 +108,22 @@ int Window::ManageEvent(const sf::Event& event)
 			}
 		}
 	}
+	else if (event.Type == sf::Event::KeyPressed)
+	{
+		active_->OnKeyPressed(event.Key.Code);
+	}
+	else if (event.Type == sf::Event::TextEntered)
+	{
+		active_->OnTextEntered(event.Text.Unicode);
+	}
 
 	return 0;
+}
+
+
+bool Window::HasFocus() const
+{
+	return active_ != NULL;
 }
 
 
@@ -178,9 +199,9 @@ void Window::Load(const std::string& xmlfile){
 
         // Taille souhaité du widget
         if (controls_elem->QueryIntAttribute("w", &w) != TIXML_SUCCESS)
-			w = -1;
+			w = Control::UNDEFINED;
 		if (controls_elem->QueryIntAttribute("h", &h) != TIXML_SUCCESS)
-			h = -1;
+			h = Control::UNDEFINED;
 
         Control::ControlPos ctrl_pos(x, y);
 	    Control::ControlPos ctrl_size(w, h);
@@ -208,8 +229,8 @@ void Window::Load(const std::string& xmlfile){
 	    }
 	    else if (s1 == "textbox")
 	    {
-	        // TODO: Ajout possible d'un texte par défaut ?
-	    	controls_.push_back(new TextBox(id, ctrl_pos));
+			// TODO: Ajout possible d'un texte par défaut ?
+	    	controls_.push_back(new TextBox(id, ctrl_pos, w));
 	    }
 
 		controls_elem = controls_elem->NextSiblingElement();

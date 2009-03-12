@@ -7,6 +7,11 @@
 class BitmapFont
 {
 public:
+	enum
+	{
+		FIRST_CHAR = 32, LAST_CHAR = 127
+	};
+
 	/**
 	 * @param[in] image: image de la police bitmap
 	 * @param[in] width: nombre de caractères en largeur

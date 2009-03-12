@@ -36,6 +36,12 @@ namespace gui{
         */
         int ManageEvent(const sf::Event& event);
 
+		/**
+		 * Détermine si un contrôle de la fenêtre a le focus
+		 * @return true si un contrôle a le focus, sinon false
+		 */
+		bool HasFocus() const;
+
     protected:
         /**
         * Récupère un contrôle à partir de son id

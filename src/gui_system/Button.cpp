@@ -16,7 +16,7 @@ Button::Button(ControlID id, const ControlPos& pos, const ControlPos& size, cons
 
         // Si aucune largeur ou hauteur n'est définit,
         // on récupère celles de l'image
-        if(s.x == -1 || s.y == -1){
+        if(s.x == UNDEFINED || s.y == UNDEFINED){
             s.x = img_.GetSize().x;
             s.y = img_.GetSize().y;
         }
