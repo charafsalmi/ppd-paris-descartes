@@ -109,7 +109,7 @@ void Game::Init()
 }
 
 
-void Game::Run()
+int Game::Run()
 {
 	sf::Event event;
 	float frametime;
@@ -155,6 +155,7 @@ void Game::Run()
 		(this->*render_meth_)();
 		app_.Display();
 	}
+	return 0;
 }
 
 

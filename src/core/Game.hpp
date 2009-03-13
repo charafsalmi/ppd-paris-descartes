@@ -9,6 +9,7 @@
 #include "../gui/WinPause.hpp"
 #include "../misc/Misc.hpp"
 #include "../misc/BitmapString.hpp"
+#include "../misc/Log.hpp"
 
 class MiniMap;
 class Player;
@@ -23,7 +24,7 @@ public:
 	/**
 	 * Lancer l'application
 	 */
-	void Run();
+	int Run();
 
 	void ChangeZone(ZoneContainer::Direction direction);
 	void ChangeZoneContainer(ZoneContainer::MapName map_name);
