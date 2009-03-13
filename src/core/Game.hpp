@@ -4,13 +4,14 @@
 #include <SFML/Graphics.hpp>
 
 #include "ZoneContainer.hpp"
-#include "../entities/Player.hpp"
 #include "../gui/ControlPanel.hpp"
 #include "../gui/MyWin.hpp"
 #include "../gui/WinPause.hpp"
 #include "../misc/Misc.hpp"
 #include "../misc/BitmapString.hpp"
 
+class MiniMap;
+class Player;
 
 class Game
 {
@@ -92,12 +93,16 @@ private:
 	void GameOverUpdate(float frametime);
 	void GameOverShow();
 
+	// méthodes MiniMap
+	void MiniMapOnEvent(const sf::Event& event);
+	void MiniMapShow();
+
 	// update générique
 	void DefaultUpdate(float frametime);
 
 	enum Mode
 	{
-		IN_GAME, GAME_OVER, INVENTORY, PAUSE
+		IN_GAME, GAME_OVER, INVENTORY, PAUSE, MINI_MAP
 	};
 
     //Mode mode_;
@@ -132,7 +137,7 @@ private:
 #ifdef WINDOW_TEST
 	MyWin fen_;
 #endif
-
+	MiniMap* mini_map_;
 	sf::RenderWindow app_;
 };
 

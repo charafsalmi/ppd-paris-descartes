@@ -82,6 +82,26 @@ public:
 	 */
 	void Update(float frametime);
 
+	/**
+	 * Nombre de zones en largeur
+	 */
+	int GetWidth() const;
+
+	/**
+	 * Nombre de zones en hauteur
+	 */
+	int GetHeight() const;
+
+	/**
+	 * Coordonnées de la zone du joueur
+	 */
+	sf::Vector2i GetPlayerPosition() const;
+
+	/**
+	 * Récupérer une zone aux coordonnées
+	 */
+	const Zone* GetZoneAt(int x, int y) const;
+
 private:
 	/**
 	 * Affichage

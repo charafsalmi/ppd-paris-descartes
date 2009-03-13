@@ -5,6 +5,8 @@
 #include "../misc/MediaManager.hpp"
 #include "../misc/ConfigParser.hpp"
 #include "../gui/Splash.hpp"
+#include "../gui/MiniMap.hpp"
+#include "../entities/Player.hpp"
 #include "../xml/tinyxml.h"
 
 #define APP_WIDTH  Zone::WIDTH_PX
@@ -14,7 +16,9 @@
 #define APP_TITLE  "PPD"
 
 #define CONFIG_FILE "config/config.css"
-#define KEY_PAUSE   sf::Key::F11
+#define KEY_SCREENSHOT sf::Key::F1
+#define KEY_PAUSE      sf::Key::F11
+#define KEY_MINIMAP    sf::Key::F10
 
 
 Game& Game::GetInstance()
@@ -33,6 +37,31 @@ Game::Game() :
 
 	const sf::Image& icon = GET_IMG("icon");
 	app_.SetIcon(icon.GetWidth(), icon.GetHeight(), icon.GetPixelsPtr());
+
+#ifndef NO_SPLASH
+	Splash s(app_);
+	s.Run();
+#endif
+
+	// default: panel on top
+	zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
+	options_.panel_on_top = true;
+
+	// load options
+	ConfigParser config;
+	if (config.LoadFromFile(CONFIG_FILE))
+	{
+		printf("loading %s...\n", CONFIG_FILE);
+		config.SeekSection("Settings");
+		config.ReadItem("panel_on_top", options_.panel_on_top);
+		if (!options_.panel_on_top)
+		{
+			sf::Event event;
+			event.Type = sf::Event::KeyPressed;
+			event.Key.Code = sf::Key::PageDown;
+			InGameOnEvent(event);
+		}
+	}
 }
 
 
@@ -45,6 +74,8 @@ Game::~Game()
 
 	config.SaveToFile(CONFIG_FILE);
 
+	delete mini_map_;
+
 	app_.Close();
 
 #ifdef DUMB_MUSIC
@@ -55,34 +86,23 @@ Game::~Game()
 
 void Game::Init()
 {
-#ifndef NO_SPLASH
-	Splash s(app_);
-	s.Run();
-#endif
-
 	player_ = new Player(sf::Vector2f(300, 300), app_.GetInput());
 
 	// chargement du conteneur de zones
 	zone_container_.Load(ZoneContainer::WORLD);
+	// chargement de la première zone
+	zone_container_.SetActiveZone(0, 0, false);
+	zone_container_.GetActiveZone()->AddEntity(player_);
+
 	next_map_name_ = ZoneContainer::WORLD;
 
-	zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
-
-	// default options
-	options_.panel_on_top = true;
-
-	// load options
-	ConfigParser config;
-	if (config.LoadFromFile(CONFIG_FILE))
-	{
-		printf("loading %s...\n", CONFIG_FILE);
-		config.SeekSection("Settings");
-		config.ReadItem("panel_on_top", options_.panel_on_top);
-		if (!options_.panel_on_top)
-		{
-			//InGameOnEvent(sf::Key::PageDown);
-		}
-	}
+	// initialisation de la mini map
+	mini_map_ = new MiniMap(zone_container_);
+	// centrée dans la fenêtre
+	mini_map_->SetPosition(
+		(APP_WIDTH - mini_map_->GetWidth()) / 2,
+		(APP_HEIGHT - mini_map_->GetHeight()) / 2);
+	mini_map_->SetPlayerPosition(zone_container_.GetPlayerPosition());
 
 	// InGame
 	SetMode(IN_GAME);
@@ -93,8 +113,6 @@ void Game::Run()
 {
 	sf::Event event;
 	float frametime;
-	zone_container_.GetActiveZone()->AddEntity(player_);
-
     running_ = true;
 
 #ifdef DUMB_MUSIC
@@ -117,7 +135,7 @@ void Game::Run()
 			{
 				switch (event.Key.Code)
 				{
-					case sf::Key::F1:
+					case KEY_SCREENSHOT:
 						TakeScreenshot("screenshot");
 						break;
 					case sf::Key::Escape:
@@ -158,6 +176,7 @@ void Game::TakeScreenshot(const char* directory)
 void Game::ChangeZone(ZoneContainer::Direction direction)
 {
 	zone_container_.ChangeZone(direction);
+	mini_map_->SetPlayerPosition(zone_container_.GetPlayerPosition());
 }
 
 
@@ -179,6 +198,14 @@ void Game::ChangeZoneContainer(ZoneContainer::MapName map_name)
 	active->AddEntity(player_);
 
 	next_map_name_ = map_name;
+
+	// on réinitialise la minimap
+	delete mini_map_;
+	mini_map_ = new MiniMap(zone_container_);
+	mini_map_->SetPosition(
+		(APP_WIDTH - mini_map_->GetWidth()) / 2,
+		(APP_HEIGHT - mini_map_->GetHeight()) / 2);
+	mini_map_->SetPlayerPosition(zone_container_.GetPlayerPosition());
 }
 
 
@@ -282,6 +309,13 @@ void Game::SetMode(Mode mode)
 			update_meth_ = &Game::PauseUpdate;
 			render_meth_ = &Game::PauseShow;
             break;
+		case MINI_MAP:
+			puts("mode mini carte");
+			on_event_meth_ = &Game::MiniMapOnEvent;
+			update_meth_ = &Game::DefaultUpdate;
+			render_meth_ = &Game::MiniMapShow;
+			player_->Lock();
+			break;
 	}
 }
 
@@ -304,7 +338,6 @@ void Game::InGameOnEvent(const sf::Event& event)
 
 	if (event.Type == sf::Event::KeyPressed)
 	{
-
 		if (zone_container_.Scrolling())
 		{
 			return;
@@ -326,6 +359,9 @@ void Game::InGameOnEvent(const sf::Event& event)
 				break;
 			case KEY_PAUSE:
 				SetMode(PAUSE);
+				break;
+			case KEY_MINIMAP:
+				SetMode(MINI_MAP);
 				break;
 			default:
 				player_->OnEvent(key);
@@ -407,12 +443,7 @@ void Game::GameOverOnEvent(const sf::Event& event)
 		if (event.Key.Code == sf::Key::Return)
 		{
 			zone_container_.Unload();
-			zone_container_.Load(ZoneContainer::WORLD);
-			next_map_name_ = ZoneContainer::WORLD;
-			// respawn player
-			player_ = new Player(sf::Vector2f(300, 300), app_.GetInput());
-			zone_container_.GetActiveZone()->AddEntity(player_);
-			SetMode(IN_GAME);
+			Init();
 		}
 	}
 }
@@ -428,4 +459,25 @@ void Game::GameOverShow()
 {
 	app_.Clear();
 	app_.Draw(message_);
+}
+
+// MINI_MAP
+
+void Game::MiniMapOnEvent(const sf::Event& event)
+{
+	if (event.Type == sf::Event::KeyPressed)
+	{
+		if (event.Key.Code == KEY_MINIMAP)
+		{
+			SetMode(IN_GAME);
+		}
+	}
+}
+
+
+void Game::MiniMapShow()
+{
+	app_.Draw(zone_container_);
+	app_.Draw(panel_);
+	app_.Draw(*mini_map_);
 }

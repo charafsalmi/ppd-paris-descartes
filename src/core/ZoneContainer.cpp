@@ -2,6 +2,7 @@
 
 #include "ZoneContainer.hpp"
 #include "Game.hpp"
+#include "../entities/Player.hpp"
 
 // durée du scrolling lors d'un changement de zone
 #define SCROLL_TIME .6f
@@ -62,14 +63,7 @@ void ZoneContainer::Load(MapName name)
 	for (int i = 0; i < height_; ++i)
 	{
 		zones_[i] = new Zone [width_];
-		for (int j = 0; j < width_; ++j)
-		{
-			printf(" [ZC] zone [%d][%d] allouee...\n", i, j);
-		}
 	}
-
-	// on charge la première zone de la map
-	SetActiveZone(0, 0, false);
 }
 
 
@@ -237,6 +231,34 @@ void ZoneContainer::Update(float frametime)
 				break;
 		}
 	}
+}
+
+
+int ZoneContainer::GetWidth() const
+{
+	return width_;
+}
+
+
+int ZoneContainer::GetHeight() const
+{
+	return height_;
+}
+
+
+sf::Vector2i ZoneContainer::GetPlayerPosition() const
+{
+	return cds_zone_;
+}
+
+
+const Zone* ZoneContainer::GetZoneAt(int x, int y) const
+{
+	if (x >= 0 && x < width_ && y >= 0 && y < height_)
+	{
+		return &zones_[y][x];
+	}
+	return NULL;
 }
 
 

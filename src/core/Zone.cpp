@@ -8,6 +8,7 @@
 #include "ZoneContainer.hpp"
 #include "Game.hpp"
 #include "../entities/Decor.hpp"
+#include "../entities/Player.hpp"
 #include "../entities/EntityFactory.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../gui/ControlPanel.hpp"
@@ -210,7 +211,6 @@ void Zone::Update(float frametime)
 		{
 			delete *it1;
 			it1 = entities_.erase(it1);
-			puts(" -- entity removed --");
 		}
 		else
 		{
@@ -247,9 +247,6 @@ void Zone::Update(float frametime)
 	{
 		if ((**it3).IsDead())
 		{
-/*#ifdef DEBUG
-			printf(" [Zone] %s supprimé\n", (**it3).GetName().c_str());
-#endif*/
 			delete *it3;
 			it3 = items_.erase(it3);
 		}
