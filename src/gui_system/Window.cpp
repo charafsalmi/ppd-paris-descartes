@@ -240,7 +240,10 @@ void Window::Load(const std::string& xmlfile){
 			// TODO: Ajout possible d'un texte par défaut ?
 	    	controls_.push_back(new TextBox(id, ctrl_pos, w));
 	    }
-
+	    else if (s1 == "progressbar")
+	    {
+	        controls_.push_back(new ProgressBar(id, ctrl_pos, ctrl_size));
+	    }
 		controls_elem = controls_elem->NextSiblingElement();
 	}
 }

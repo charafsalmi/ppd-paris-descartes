@@ -11,11 +11,10 @@ MyWin::MyWin()
     mavar_ = 0;
 
     c_ = new char[256];
-
     strcpy(c_, "dynamic text");
 
     // Bind d'un int avec un label
-    BindIntTo(ID_LABEL1, &mavar_);
+    BindIntTo(ID_PROGRESS, &mavar_);
     BindCharTo(ID_LABEL2, c_);
 }
 

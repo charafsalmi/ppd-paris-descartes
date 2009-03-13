@@ -12,7 +12,9 @@ private:
     /// Listing des fenêtres
     enum Windows{
         ID_LABEL1=7000,
-        ID_LABEL2
+        ID_LABEL2,
+        ID_PROGRESS,
+        ID_TEXTBOX
     };
 
     char *c_;

@@ -15,11 +15,13 @@ mandarine.png
 interface/test/button1.png
 interface/test/button1_inv.png
 interface/test/button2.png
+interface/test/button2_inv.png
 interface/test/button3.png
 interface/test/background.png
 interface/inventory/background.png
 interface/pause/background.png
 interface/pause/boptions.png
+interface/pause/boptions_inv.png
 interface/pause/bquitter.png
 interface/pause/bquitter_inv.png
 bitmap-font/retro.png
