@@ -15,6 +15,10 @@ Log::SetLogger(new LogDebug());
 Log::Log(WARNING) << "message;"
 */
 
+#define Output Log::W()
+#define OutputW Log::W(L_WARNING)
+#define OutputE Log::W(L_ERROR)
+
 enum MsgType{
     L_INFO=0,
     L_WARNING,
