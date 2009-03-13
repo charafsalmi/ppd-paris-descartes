@@ -3,6 +3,7 @@
 #include "ZoneContainer.hpp"
 #include "Game.hpp"
 #include "../entities/Player.hpp"
+#include "../misc/Log.hpp"
 
 // durée du scrolling lors d'un changement de zone
 #define SCROLL_TIME .6f
@@ -41,11 +42,12 @@ void ZoneContainer::Load(MapName name)
 			filename = "data/map/caves.xml";
 			break;
 	}
-	printf(" [ZC] loading %s...\n", filename);
+	Output << ZC_S << "Loading " << filename << "..." << lEnd;
+
 	// ouverture du fichier des zones du monde extérieur
 	if (!xml_doc_.LoadFile(filename))
 	{
-		printf(" [ZC] échec de l'ouverture du fichier %s\n", filename);
+	    OutputE << ZC_S << "Echec de l'ouverture du fichier " << filename << lEnd;
 		abort();
 	}
 
@@ -56,7 +58,8 @@ void ZoneContainer::Load(MapName name)
 	const TiXmlElement* map_element = handle.Element();
 	assert(map_element->QueryIntAttribute("width", &width_) == TIXML_SUCCESS);
 	assert(map_element->QueryIntAttribute("height", &height_) == TIXML_SUCCESS);
-	printf(" [ZC] width = %d, height = %d\n", width_, height_);
+
+	Output << ZC_S << "width = " << width_ << ", height = " << height_ << lEnd;
 
 	// allocation des zones
 	zones_ = new Zone* [height_];
@@ -110,7 +113,7 @@ void ZoneContainer::ChangeZone(Direction dir)
 		next_zone_->SetPosition(0, 0);
 
 		Game::GetInstance().GetPlayer()->Lock();
-		printf(" [ZC] scrolling vers la zone [%d][%d]\n", y, x);
+		Output << ZC_S << "Scrolling vers la zone [" << y << "] [" << x << "]" << lEnd;
 	}
 }
 
@@ -122,7 +125,7 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 	{
 		if (cds_zone_.x == x && cds_zone_.y == y)
 		{
-			printf(" [ZC] déjà en zone [%d][%d], rien à faire\n", y, x);
+		    Output << ZC_S << "Deja en zone [" << y << "][" << x << "], rien a faire" << lEnd;
 			return true;
 		}
 		next_zone_ = &zones_[y][x];
@@ -137,10 +140,10 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 			handle = handle.FirstChildElement().Child(offset);
 			if (handle.Node() == NULL)
 			{
-				printf(" [ZC] impossible de charger la zone [%d][%d]\n", y, x);
+			    OutputE << ZC_S << "Impossible de charger la zone [" << y << "][" << x << "]" << lEnd;
 				abort();
 			}
-			printf(" [ZC] chargement de la zone [%d][%d]\n", y, x);
+			Output << ZC_S << "Chargement de la zone [" << y << "][" << x << "]" << lEnd;
 			next_zone_->Load(handle);
 		}
 
@@ -150,12 +153,11 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 			scrolling_ = false;
 			active_zone_ = next_zone_;
 			Entity::SetActiveZone(active_zone_);
-			printf(" [ZC] [%d][%d] est maintenant la zone active\n", y, x);
+			Output << ZC_S << "[" << y << "][" << x << "] est maintenant la zone active" << lEnd;
 		}
-
 		return true;
 	}
-	printf(" [ZC] coordonnées de la prochaine zone [%d][%d] invalides\n", y, x);
+	Output << ZC_S << "Coordonnees de la prochaine zone [" << y << "][" << x << "] invalides" << lEnd;
 	return false;
 }
 

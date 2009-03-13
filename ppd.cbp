@@ -50,6 +50,8 @@
 		</Linker>
 		<Unit filename="bin\config\config.css" />
 		<Unit filename="bin\data\images\images.txt" />
+		<Unit filename="bin\data\window\console.xml" />
+		<Unit filename="bin\data\window\controlpanel.xml" />
 		<Unit filename="bin\data\window\inventory.xml" />
 		<Unit filename="bin\data\window\pause.xml" />
 		<Unit filename="bin\data\window\test.xml" />
@@ -120,6 +122,8 @@
 		<Unit filename="src\misc\ConfigParser.hpp" />
 		<Unit filename="src\misc\Log.cpp" />
 		<Unit filename="src\misc\Log.hpp" />
+		<Unit filename="src\misc\LogConsole.cpp" />
+		<Unit filename="src\misc\LogConsole.hpp" />
 		<Unit filename="src\misc\LogDebug.cpp" />
 		<Unit filename="src\misc\LogDebug.hpp" />
 		<Unit filename="src\misc\MediaManager.cpp" />

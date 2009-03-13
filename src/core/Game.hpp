@@ -11,6 +11,10 @@
 #include "../misc/BitmapString.hpp"
 #include "../misc/Log.hpp"
 
+#ifdef WINDOW_TEST
+#include "../misc/LogConsole.hpp"
+#endif
+
 class MiniMap;
 class Player;
 
@@ -136,6 +140,9 @@ private:
 	ControlPanel& panel_;
 	BitmapString message_;
 
+#ifdef CONSOLE_TEST
+    LogConsole *log_;
+#endif
 #ifdef WINDOW_TEST
 	MyWin fen_;
 #endif

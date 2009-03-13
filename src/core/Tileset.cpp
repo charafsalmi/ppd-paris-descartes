@@ -4,6 +4,7 @@
 #include "Tileset.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../xml/tinyxml.h"
+#include "../misc/Log.hpp"
 
 #define TILES_DEFINITION "data/xml/tiles.xml"
 #define ANIMATED_DELAY    0.25f
@@ -57,7 +58,7 @@ Tileset::Tileset()
 		}
 		else
 		{
-			std::cerr << " [Tileset] tile id manquant" << std::endl;
+		    OutputE << TILE_S << "Tile id manquant" << lEnd;
 		}
 
 		elem = elem->NextSiblingElement();
@@ -74,11 +75,11 @@ Tileset::Tileset()
 		if (ok)
 		{
 			animated_[from_id] = to_id;
-			printf("%d est animée\n", from_id);
+			OutputD << TILE_S << from_id << " est animee" << lEnd;
 		}
 		else
 		{
-			std::cerr << " [Tileset] animated invalide ignoré" << std::endl;
+		    OutputW << TILE_S << "Animated invalide (ignore)" << lEnd;
 		}
 		elem = elem->NextSiblingElement();
 	}

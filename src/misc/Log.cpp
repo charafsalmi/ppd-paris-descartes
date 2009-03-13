@@ -5,6 +5,7 @@
 Log* Log::m_Instance;
 MsgType Log::t_;
 int Log::verbosity_level_;
+std::ostringstream Log::stream;
 
 Log::~Log(){}
 

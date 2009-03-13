@@ -35,6 +35,11 @@ void Label::Update()
     BStext_.SetText(text_);
 }
 
+void Label::SetText(const std::string s){
+    text_ = s;
+    BStext_.SetText(s);
+}
+
 void Label::Render(sf::RenderTarget& app) const
 {
     app.Draw(BStext_);

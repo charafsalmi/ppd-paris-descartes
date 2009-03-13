@@ -8,6 +8,8 @@
 #include "../gui/Splash.hpp"
 #include "../gui/MiniMap.hpp"
 #include "../entities/Player.hpp"
+#include "../misc/LogDebug.hpp"
+#include "../misc/LogConsole.hpp"
 #include "../xml/tinyxml.h"
 
 #define APP_WIDTH  Zone::WIDTH_PX
@@ -45,6 +47,13 @@ Game::Game() :
 	s.Run();
 #endif
 
+	#ifdef CONSOLE_TEST
+	log_ = new LogConsole();
+	Log::SetLogger(log_);
+	#else
+    Log::SetLogger(new LogDebug());
+	#endif
+
 	// default: panel on top
 	zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
 	options_.panel_on_top = true;
@@ -53,7 +62,7 @@ Game::Game() :
 	ConfigParser config;
 	if (config.LoadFromFile(CONFIG_FILE))
 	{
-	    Output << "loading " << CONFIG_FILE << "...";
+	    Output << "loading " << CONFIG_FILE << "..." << lEnd;
 
 		config.SeekSection("Settings");
 		config.ReadItem("panel_on_top", options_.panel_on_top);
@@ -70,8 +79,6 @@ Game::Game() :
         Output << "verbose: " << options_.verbosity << lEnd;
         */
 	}
-
-	OutputW << "test" << lEnd;
 }
 
 
@@ -91,6 +98,10 @@ Game::~Game()
 #ifdef DUMB_MUSIC
 	SetMusic(-1);
 #endif
+
+	#ifdef CONSOLE_TEST
+    delete log_;
+	#endif
 }
 
 
@@ -397,6 +408,10 @@ void Game::InGameShow()
 	{
 		ChangeZoneContainer(next_map_name_);
 	}
+#ifdef CONSOLE_TEST
+    app_.Draw(*log_);
+#endif
+
 #ifdef WINDOW_TEST
 	app_.Draw(fen_);
 #endif

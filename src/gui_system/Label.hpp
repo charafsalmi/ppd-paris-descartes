@@ -9,6 +9,8 @@ namespace gui{
     public:
         Label(const ControlID id, const ControlPos& pos, const std::string& text);
         ~Label();
+
+        void SetText(const std::string s);
     private:
         void Update();
 		void Render(sf::RenderTarget& app) const;

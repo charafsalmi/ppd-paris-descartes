@@ -29,7 +29,8 @@ Zone::~Zone()
 
 void Zone::Load(const TiXmlHandle& handle)
 {
-	// chargement des tiles
+    OutputT << "Chargement des tiles" << lEnd;
+
 	sf::RenderWindow& app = Game::GetInstance().GetApp();
 	static const Tileset& tileset = Tileset::GetInstance();
 	const TiXmlElement* elem = handle.FirstChildElement("tiles").Element();
@@ -89,7 +90,7 @@ void Zone::Load(const TiXmlHandle& handle)
 		}
 		else
 		{
-			std::cerr << " [Zone] entité invalide ignoré" << std::endl;
+		    OutputW << ZONE_S << "Entite invalide (ignore)" << lEnd;
 		}
 		elem = elem->NextSiblingElement();
 	}
@@ -109,7 +110,7 @@ void Zone::Load(const TiXmlHandle& handle)
 		}
 		else
 		{
-			std::cerr << " [Zone] item invalide ignoré" << std::endl;
+		    OutputW << ZONE_S << "Item invalide (ignore)" << lEnd;
 		}
 		elem = elem->NextSiblingElement();
 	}
@@ -131,7 +132,7 @@ void Zone::Load(const TiXmlHandle& handle)
 		}
 		else
 		{
-			std::cerr << " [Zone] décor invalide ignoré" << std::endl;
+		    OutputW << ZONE_S << "Decor invalide (ignore)" << lEnd;
 		}
 		elem = elem->NextSiblingElement();
 	}
@@ -156,7 +157,7 @@ void Zone::Load(const TiXmlHandle& handle)
 
 		if (!ok)
 		{
-			std::cerr << " [Zone] teleporteur invalide ignoré" << std::endl;
+		    OutputW << ZONE_S << "Teleporteur invalide (ignore)" << lEnd;
 		}
 		else
 		{
@@ -173,7 +174,7 @@ void Zone::Load(const TiXmlHandle& handle)
 	// création de l'image des tiles
 	if (!tiles_img_.CopyScreen(app, ZONE_SUBRECT))
 	{
-		std::cerr << " [Zone] échec création image des tiles" << std::endl;
+	    OutputE << ZONE_S << "Echec de creation image des tiles" << lEnd;
 	}
 	tiles_sprite_.SetImage(tiles_img_);
 	tiles_sprite_.FlipY(true); // HACK BUGFIX SFML 1.4

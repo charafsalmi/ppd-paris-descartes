@@ -1,14 +1,16 @@
 #include "LogConsole.hpp"
 
+LogConsole::LogConsole()
+{
+    Window::Load("data/window/console.xml");
+}
+
+LogConsole::~LogConsole()
+{
+
+}
+
 void LogConsole::Write(MsgType t, const std::string& rMessage)
 {
-    /*
-    if(t == L_WARNING)
-        std::cout << "Warning :";
-    if(t == L_ERROR){
-        std::cerr << rMessage << std::endl;
-    }else{
-        std::cout << rMessage << std::endl;
-    }
-    */
+    SetControlText(ID_TXT, rMessage);
 }

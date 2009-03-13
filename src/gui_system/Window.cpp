@@ -297,3 +297,22 @@ void Window::BindCharTo(Control::ControlID id, char *ptr)
         c->LinkChar(ptr);
     }
 }
+
+void Window::SetControlText(Control::ControlID id, const string &s){
+    Control *c = GetFromID(id);
+    if(c != NULL){
+        c->SetText(s);
+    }
+}
+
+string & Window::GetControlText(Control::ControlID id){
+    string s;
+    Control *c = GetFromID(id);
+
+    if(c != NULL){
+        s = c->GetText();
+    }else{
+        s = "";
+    }
+    return s;
+}

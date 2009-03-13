@@ -47,7 +47,14 @@ namespace gui{
         void BindCharTo(Control::ControlID id, char *ptr);
 
         /// Récupère le contenu du composant selon son type
-        void GetControlText(Control::ControlID id, std::string & s);
+        /// @param[in] id Identifiant du contrôle
+        /// @return Texte à récuperer
+        std::string & GetControlText(Control::ControlID id);
+
+        /// Change le contenu d'un composant
+        /// @param[in] id Identifiant du contrôle
+        /// @param[in] s Texte à placer
+        void SetControlText(Control::ControlID id, const std::string &s);
 
         /// Charge une fenêtre à partir d'un fichier xml
         /// @param[in] xmlfile Nom du fichier XML à ouvrir

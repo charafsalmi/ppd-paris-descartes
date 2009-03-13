@@ -3,6 +3,7 @@
 #include "Equipment.hpp"
 #include "../core/Tileset.hpp"
 #include "../misc/MediaManager.hpp"
+#include "../misc/Log.hpp"
 #include "../xml/tinyxml.h"
 
 #define UNIT_DEFINITION   "data/xml/units.xml"
@@ -34,7 +35,7 @@ void EntityFactory::LoadUnits(const char* filename)
 	TiXmlDocument doc;
 	if (!doc.LoadFile(filename))
 	{
-		std::cerr << "can't open mob definitions: " << filename << std::endl;
+	    OutputE << UF_S << "Impossible d'ouvrir la definition des unitee :" << filename << lEnd;
 		abort();
 	}
 	TiXmlHandle handle(&doc);
@@ -49,7 +50,7 @@ void EntityFactory::LoadUnits(const char* filename)
 		int id;
 		if (elem->QueryIntAttribute("id", &id) != TIXML_SUCCESS)
 		{
-			puts(" [UnitFactory] unit id missing");
+		    OutputE << UF_S << "Unit id missing" << lEnd;
 			abort();
 		}
 		UnitPattern* unit = &units_[id];
@@ -58,9 +59,7 @@ void EntityFactory::LoadUnits(const char* filename)
 		p = elem->Attribute("name");
 		if (p == NULL)
 		{
-#ifdef DEBUG
-			printf("[UnitFactory] unit %d doesn't have name attribute\n", id);
-#endif
+		    OutputD << UF_S << "L'unite " << id << " n'a pas d'attribut de nom" << lEnd;
 			p = DEFAULT_NAME;
 		}
 		unit->name = p;
@@ -69,9 +68,7 @@ void EntityFactory::LoadUnits(const char* filename)
 		int hp;
 		if (elem->QueryIntAttribute("hp", &hp) != TIXML_SUCCESS)
 		{
-#ifdef DEBUG
-			printf("[UnitFactory] unit %d doesn't have hp attribute\n", id);
-#endif
+            OutputD << UF_S << "L'unite " << id << " n'a pas d'attribut de hp" << lEnd;
 			hp = DEFAULT_HP;
 		}
 		unit->hp = hp;
@@ -80,9 +77,7 @@ void EntityFactory::LoadUnits(const char* filename)
 		int speed;
 		if (elem->QueryIntAttribute("speed", &speed) != TIXML_SUCCESS)
 		{
-#ifdef DEBUG
-			printf("[UnitFactory] unit %d doesn't have speed attribute\n", id);
-#endif
+		    OutputD << UF_S << "L'unite " << id << " n'a pas d'attribut de vitesse" << lEnd;
 			speed = DEFAULT_SPEED;
 		}
 		unit->speed = speed;
@@ -91,9 +86,7 @@ void EntityFactory::LoadUnits(const char* filename)
 		p = elem->Attribute("animation");
 		if (p == NULL)
 		{
-#ifdef DEBUG
-			printf("[UnitFactory] unit %d doesn't have animation attribute\n", id);
-#endif
+		    OutputD << UF_S << "L'unite " << id << " n'a pas d'attribut d'animation" << lEnd;
 			p = DEFAULT_ANIMATION;
 		}
 		unit->image = &media.GetImage(p);
@@ -114,7 +107,7 @@ void EntityFactory::LoadUnits(const char* filename)
 		anim_name += "_walk_right";
 		unit->anim[Entity::RIGHT] = &media.GetAnimation(anim_name.c_str());
 
-		printf("mob %s défini (id %d)\n", (unit->name).c_str(), id);
+        OutputD << "Mob " << (unit->name).c_str() << " defini (id " << id << ")" << lEnd;
 		elem = elem->NextSiblingElement();
 	}
 }
@@ -125,8 +118,8 @@ void EntityFactory::LoadDecors(const char* filename)
 	TiXmlDocument doc;
 	if (!doc.LoadFile(filename))
 	{
-		std::cerr << "can't open decor definitions: " << filename << std::endl;
-		std::cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << std::endl;
+        OutputE << UF_S << "Impossible d'ouvrir la definition des decors" << filename << lEnd;
+        OutputE << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << lEnd;
 		abort();
 	}
 
@@ -138,7 +131,7 @@ void EntityFactory::LoadDecors(const char* filename)
 		// decor id
 		if (elem->QueryIntAttribute("id", &int_attr) != TIXML_SUCCESS)
 		{
-			puts(" [UnitFactory] decor id missing");
+		    OutputE << UF_S << "Decor id manquant" << lEnd;
 			abort();
 		}
 		DecorPattern* decor  = &decors_[int_attr];
@@ -198,7 +191,8 @@ Unit* EntityFactory::BuildUnit(int id, const sf::Vector2f& position) const
 		mob->SetCenter(0, unit.anim[Entity::DOWN]->GetFrame(0).GetHeight());
 		return mob;
 	}
-	std::cerr << "can't spawn mob, bad id: " << id << std::endl;
+
+	OutputE << UF_S << "Impossible de faire apparaitre le mob, mauvaise id:" << id << lEnd;
 	return NULL;
 }
 
@@ -225,7 +219,7 @@ Decor* EntityFactory::BuildDecor(int id, const sf::Vector2i& position) const
 		decor->SetFloor(subrect.GetWidth(), decor_p.block * Tile::SIZE);
 		return decor;
 	}
-	std::cerr << "can't spawn decor, bad id: " << id << std::endl;
+	OutputE << UF_S << "Impossible de faire apparaitre le decor, mauvaise id:" << id << lEnd;
 	return NULL;
 }
 
