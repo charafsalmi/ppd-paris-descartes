@@ -10,6 +10,7 @@ namespace gui{
         Label(const ControlID id, const ControlPos& pos, const std::string& text);
         ~Label();
     private:
+        void Update();
 		void Render(sf::RenderTarget& app) const;
         BitmapString BStext_;
     };

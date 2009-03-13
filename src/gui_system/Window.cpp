@@ -9,6 +9,7 @@
 
 #include "../misc/MediaManager.hpp"
 #include "../misc/Misc.hpp"
+#include "../misc/Log.hpp"
 
 #include "../xml/tinyxml.h"
 
@@ -257,10 +258,10 @@ void Window::Render(sf::RenderTarget& app) const{
 
     app.Draw(background_);
     for(it=controls_.begin();it!=controls_.end();it++){
+        (*it)->Update();
         app.Draw(*(*it));
     }
 }
-
 
 Control* Window::GetUnderMouse(int x, int y)
 {
@@ -278,10 +279,18 @@ Control* Window::GetUnderMouse(int x, int y)
 	return NULL;
 }
 
-void Window::BindIntTo(Control::ControlID id, int *ptr){
-    //Control *c = GetFromID(id);
-    //Label *l;
+void Window::BindIntTo(Control::ControlID id, int *ptr)
+{
+    Control *c = GetFromID(id);
+    if(c != NULL){
+        c->LinkInt(ptr);
+    }
+}
 
-    //l = (Label *)c;
-    //l->LinkInt(ptr);
+void Window::BindCharTo(Control::ControlID id, char *ptr)
+{
+    Control *c = GetFromID(id);
+    if(c != NULL){
+        c->LinkChar(ptr);
+    }
 }

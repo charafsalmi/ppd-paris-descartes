@@ -1,7 +1,8 @@
 #include <iostream>
 
-#include "../misc/Log.hpp"
 #include "Label.hpp"
+#include "../misc/Misc.hpp"
+#include "../misc/Log.hpp"
 #include "../misc/MediaManager.hpp"
 
 using namespace gui;
@@ -11,13 +12,30 @@ Label::Label(const ControlID id, const ControlPos& pos, const std::string& text)
 	Control(id, pos, text),
 	BStext_(GET_BITMAP_FONT("mono12-white"))
 {
-	BStext_.SetText(text);
+	BStext_.SetText(text_);
 }
 
-Label::~Label(){
+Label::~Label()
+{
 
 }
 
-void Label::Render(sf::RenderTarget& app) const{
+void Label::Update()
+{
+    if(ptr_ == NULL)return;
+
+    switch(mode_){
+        case LINKED_INT:
+            text_ = str_sprintf("%d", *((int *)ptr_));
+            break;
+        case LINKED_CHAR:
+            text_ = str_sprintf("%s", (char *)ptr_);
+            break;
+    }
+    BStext_.SetText(text_);
+}
+
+void Label::Render(sf::RenderTarget& app) const
+{
     app.Draw(BStext_);
 }

@@ -11,9 +11,11 @@ public:
 private:
     /// Listing des fenêtres
     enum Windows{
-        ID_LABEL=105
+        ID_LABEL1=7000,
+        ID_LABEL2
     };
 
+    char *c_;
     int mavar_;
     int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2);
 };

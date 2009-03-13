@@ -1,6 +1,5 @@
-#include <iostream>
-
 #include "MyWin.hpp"
+#include "../misc/Log.hpp"
 
 using namespace gui;
 
@@ -11,20 +10,27 @@ MyWin::MyWin()
 
     mavar_ = 0;
 
+    c_ = new char[256];
+
+    strcpy(c_, "dynamic text");
+
     // Bind d'un int avec un label
-    BindIntTo(ID_LABEL, &mavar_);
+    BindIntTo(ID_LABEL1, &mavar_);
+    BindCharTo(ID_LABEL2, c_);
 }
 
 MyWin::~MyWin()
 {
-
+    delete[] c_;
 }
 
 int MyWin::WindowCallback(const Control::ControlID id, const int p1, void *p2)
 {
-    std::cout << "MyWin callback [id:" << id << "]" << std::endl;
+    Output << "MyWin callback [id:" << id << "]";
 
     mavar_ ++;
+
+    strcpy(c_, "other text");
     /*
     switch(id){
         case IDEXIT:

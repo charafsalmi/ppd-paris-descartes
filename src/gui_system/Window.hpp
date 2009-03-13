@@ -26,79 +26,57 @@ namespace gui{
         Window(const Window& other);
         virtual ~Window();
 
-        /**
-        * Callback du gestionnaire de fenêtre
-        */
+        /// Callback du gestionnaire de fenêtre
         virtual int WindowCallback(const Control::ControlID id, const int p1, void *p2){return 0;};
 
-        /**
-        * Gestion des evenements concernant la fenêtre
-        */
+        /// Gestion des evenements concernant la fenêtre
         int ManageEvent(const sf::Event& event);
 
-		/**
-		 * Détermine si un contrôle de la fenêtre a le focus
-		 * @return true si un contrôle a le focus, sinon false
-		 */
+        /// Détermine si un contrôle de la fenêtre a le focus
+        /// @return true si un contrôle a le focus, sinon false
 		bool HasFocus() const;
 
     protected:
-        /**
-        * Récupère un contrôle à partir de son id
-        */
+        /// Récupère un contrôle à partir de son id
         Control *GetFromID(Control::ControlID id);
 
-        /**
-        * Associe un entier à un label ou une progressbar
-        */
+        /// Associe un entier à un control
         void BindIntTo(Control::ControlID id, int *ptr);
 
-        /**
-        * Récupère le contenu du composant selon son type
-        */
+        /// Associe un char à un control
+        void BindCharTo(Control::ControlID id, char *ptr);
+
+        /// Récupère le contenu du composant selon son type
         void GetControlText(Control::ControlID id, std::string & s);
 
-        /**
-        * Charge une fenêtre à partir d'un fichier xml
-        * param[in] xmlfile Nom du fichier XML à ouvrir
-        */
+        /// Charge une fenêtre à partir d'un fichier xml
+        /// @param[in] xmlfile Nom du fichier XML à ouvrir
         void Load(const std::string& xmlfile);
 
-        /**
-        * Déchargement de tout les composants
-        */
+        /// Déchargement de tout les composants
         void UnLoad();
 
     private:
-		/**
-         * Affichage de la fenêtre
-         */
+        /// Affichage de la fenêtre
 		virtual void Render(sf::RenderTarget& app) const;
 
-		/**
-		 * Récupérer le contrôle sous la souris
-		 * @param[in] x: position absolue x
-		 * @param[in] y: position absolue y
-		 * @return le contrôle sous la souris, NULL si aucun
-		 */
+        /// Récupérer le contrôle sous la souris
+        /// @param[in] x: position absolue x
+        /// @param[in] y: position absolue y
+        /// @return le contrôle sous la souris, NULL si aucun
 		Control* GetUnderMouse(int x, int y);
 
-        /**
-        * Image de fond de la fenêtre
-        */
+        /// Image de fond de la fenêtre
         sf::Sprite background_;
 
-        /**
-        * Position de la fenêtre
-        */
+        /// Position de la fenêtre
         sf::IntRect rect_;
-        /**
-        * Composants de la fenêtre
-        */
+
+        /// Composants de la fenêtre
         std::vector<Control*> controls_;
-        // contrôle qui a le focus
+        /// contrôle qui a le focus
         Control* active_;
-        // contrôle sous la souris
+        /// contrôle sous la souris
         Control* hover_;
     };
 }

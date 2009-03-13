@@ -2,6 +2,7 @@
 <window x="20" y="10" w="100" h="120" background="interface/test/background" alpha="128">
 	<button id="7771" pic="interface/test/button1" OnHover="interface/test/button1_inv" x="10" y="10" />
 	<button id="7772" pic="interface/test/button2" x="10" y="45" />
-	<label x="105" y="5"></label>
+	<label id="7000" x="105" y="5" />
+	<label id="7001" x="150" y="5" />
 	<textbox id="42" x="10" y="75" w="150" />
 </window>

@@ -57,18 +57,16 @@ namespace gui{
         /// Change le sprite du contrôle qui le peu
         virtual void ChangeSprite(const sf::Sprite& nimg);
 
-		/**
-		 * Callback évènement texte saisi
-		 * @param[in] unicode: caractère reçu
-		 */
+        /// Callback évènement texte saisi
+        /// @param[in] unicode: caractère reçu
         virtual void OnTextEntered(sf::Uint32 unicode);
 
-		/**
-		 * Callback évènement touche pressée
-		 * @param[in] key: touche appuyée
-		 */
+        /// Callback évènement touche pressée
+        /// @param[in] key: touche appuyée
 		virtual void OnKeyPressed(sf::Key::Code key);
 
+		/// Mise à jour du control
+        virtual void Update(){}
     protected:
         /// Identifiant du contrôle
         ControlID id_;
@@ -94,7 +92,7 @@ namespace gui{
         void *ptr_;
 
         /// Texture du contrôle
-        std::string text_;
+        mutable std::string text_;
 	private:
 		virtual void Render(sf::RenderTarget& app) const = 0;
     };
