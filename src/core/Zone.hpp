@@ -3,20 +3,19 @@
 
 #include <list>
 #include <map>
+#include <SFML/Graphics.hpp>
 
-#include "../entities/Entity.hpp"
-#include "../entities/Item.hpp"
 #include "Tileset.hpp"
 #include "../xml/tinyxml.h"
 
-#ifdef DUMB_MUSIC
-#include "Music.hpp"
-#endif
+class Entity;
+class Decor;
+class Item;
 
 /**
  * Une zone de jeu, de la taille de l'écran
  */
-class Zone
+class Zone: public sf::Drawable
 {
 public:
 	enum
@@ -48,12 +47,6 @@ public:
 	 * @param[in] frametime: temps de la frame courante
 	 */
 	void Update(float frametime);
-
-	/**
-	 * Afficher la zone de jeu
-	 * @param[in, out] target: cible de rendu
-	 */
-	void Show(sf::RenderTarget& target) const;
 
 	/**
 	 * Ajouter une entité dans la zone de jeu
@@ -112,13 +105,10 @@ public:
 	 */
 	bool GetTeleport(int x, int y, Teleporter& tp) const;
 
-	/**
-	 * Obtenir l'image des tiles en arrière-plan
-	 * @return image de toutes les tiles de la zone
-	 */
-	const sf::Image* GetBackground() const;
-
 private:
+	// inherited
+	void Render(sf::RenderTarget& target) const;
+
 	/**
 	 * Ajouter un décor dans la zone de jeu
 	 * @param[in] decor: décor à ajouter
@@ -152,10 +142,6 @@ private:
 	sf::Sprite tiles_sprite_; // sprite associé aux tiles
 
 	std::vector<Tileset::AnimatedTile> animated_;
-
-#ifdef DUMB_MUSIC
-	int music_index_;
-#endif
 };
 
 #endif /* ZONE_HPP */

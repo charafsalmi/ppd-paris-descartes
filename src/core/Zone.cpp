@@ -7,9 +7,8 @@
 #include "Zone.hpp"
 #include "ZoneContainer.hpp"
 #include "Game.hpp"
-#include "../entities/Decor.hpp"
-#include "../entities/Player.hpp"
 #include "../entities/EntityFactory.hpp"
+#include "../entities/Player.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../gui/ControlPanel.hpp"
 
@@ -264,35 +263,6 @@ void Zone::Update(float frametime)
 }
 
 
-void Zone::Show(sf::RenderTarget& target) const
-{
-	// affichage des tiles
-	target.Draw(tiles_sprite_);
-
-	// affichage des tiles animées
-	for (std::vector<Tileset::AnimatedTile>::const_iterator it = animated_.begin();
-		it != animated_.end(); ++it)
-	{
-		target.Draw(it->sprite);
-	}
-
-	// affichage des items
-	ItemList::const_iterator it2;
-	for (it2 = items_.begin(); it2 != items_.end(); ++it2)
-	{
-		target.Draw(**it2);
-	}
-
-	// affichage des entités
-	entities_.sort(Entity::PtrComp);
-	EntityList::const_iterator it;
-	for (it = entities_.begin(); it != entities_.end(); ++it)
-	{
-		target.Draw(**it);
-	}
-}
-
-
 bool Zone::CanMove(const sf::FloatRect& rect) const
 {
 	// si hors de la zone
@@ -373,9 +343,32 @@ bool Zone::GetTeleport(int x, int y, Teleporter& tp) const
 }
 
 
-const sf::Image* Zone::GetBackground() const
+void Zone::Render(sf::RenderTarget& target) const
 {
-	return &tiles_img_;
+	// affichage des tiles
+	target.Draw(tiles_sprite_);
+
+	// affichage des tiles animées
+	for (std::vector<Tileset::AnimatedTile>::const_iterator it = animated_.begin();
+		it != animated_.end(); ++it)
+	{
+		target.Draw(it->sprite);
+	}
+
+	// affichage des items
+	ItemList::const_iterator it2;
+	for (it2 = items_.begin(); it2 != items_.end(); ++it2)
+	{
+		target.Draw(**it2);
+	}
+
+	// affichage des entités
+	entities_.sort(Entity::PtrComp);
+	EntityList::const_iterator it;
+	for (it = entities_.begin(); it != entities_.end(); ++it)
+	{
+		target.Draw(**it);
+	}
 }
 
 

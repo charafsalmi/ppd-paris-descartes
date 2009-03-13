@@ -14,6 +14,7 @@
 #define APP_BPP    32
 #define APP_FPS    60
 #define APP_TITLE  "PPD"
+#define APP_STYLE  sf::Style::Titlebar | sf::Style::Close
 
 #define CONFIG_FILE "config/config.css"
 #define KEY_SCREENSHOT sf::Key::F1
@@ -32,7 +33,7 @@ Game::Game() :
 	panel_(ControlPanel::GetInstance()),
 	message_(GET_BITMAP_FONT("retro"))
 {
-	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, APP_BPP), APP_TITLE);
+	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, APP_BPP), APP_TITLE, APP_STYLE);
 	app_.SetFramerateLimit(APP_FPS);
 
 	const sf::Image& icon = GET_IMG("icon");

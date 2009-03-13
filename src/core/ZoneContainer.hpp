@@ -114,8 +114,6 @@ private:
 	 */
 	struct ZoneScroller
 	{
-		sf::Sprite current;
-		sf::Sprite next;
 		Direction dir;
 		float timer;
 	};

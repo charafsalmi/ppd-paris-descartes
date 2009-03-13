@@ -107,12 +107,7 @@ void ZoneContainer::ChangeZone(Direction dir)
 		scrolling_ = true;
 		scroll_.dir = dir;
 		scroll_.timer = SCROLL_TIME;
-		scroll_.current.SetImage(*active_zone_->GetBackground());
-		scroll_.current.SetPosition(0, 0);
-		scroll_.current.FlipY(true); // HACK BUGFIX SFML 1.4
-		scroll_.next.SetImage(*next_zone_->GetBackground());
-		scroll_.next.SetPosition(0, 0);
-		scroll_.next.FlipY(true); // HACK BUGFIX SFML 1.4
+		next_zone_->SetPosition(0, 0);
 
 		Game::GetInstance().GetPlayer()->Lock();
 		printf(" [ZC] scrolling vers la zone [%d][%d]\n", y, x);
@@ -202,32 +197,27 @@ void ZoneContainer::Update(float frametime)
 	{
 		scroll_.timer -= frametime;
 		int coord;
-		Player* player = Game::GetInstance().GetPlayer();
 		switch (scroll_.dir)
 		{
 			case UP:
 				coord = (int)(Zone::HEIGHT_PX - (Zone::HEIGHT_PX * scroll_.timer / SCROLL_TIME));
-				scroll_.current.SetY(coord);
-				scroll_.next.SetY(-Zone::HEIGHT_PX + coord);
-				player->SetY(coord);
+				active_zone_->SetY(coord);
+				next_zone_->SetY(-Zone::HEIGHT_PX + coord);
 				break;
 			case DOWN:
 				coord = (int)(Zone::HEIGHT_PX * scroll_.timer / SCROLL_TIME);
-				scroll_.current.SetY(coord - Zone::HEIGHT_PX);
-				scroll_.next.SetY(coord);
-				player->SetY(coord);
+				active_zone_->SetY(coord - Zone::HEIGHT_PX);
+				next_zone_->SetY(coord);
 				break;
 			case LEFT:
 				coord = (int)(Zone::WIDTH_PX - (Zone::WIDTH_PX * scroll_.timer / SCROLL_TIME));
-				scroll_.current.SetX(coord);
-				scroll_.next.SetX(-Zone::WIDTH_PX + coord);
-				player->SetX(coord);
+				active_zone_->SetX(coord);
+				next_zone_->SetX(-Zone::WIDTH_PX + coord);
 				break;
 			case RIGHT:
 				coord = (int)(Zone::WIDTH_PX * scroll_.timer / SCROLL_TIME);
-				scroll_.current.SetX(coord - Zone::WIDTH_PX);
-				scroll_.next.SetX(coord);
-				player->SetX(coord);
+				active_zone_->SetX(coord - Zone::WIDTH_PX);
+				next_zone_->SetX(coord);
 				break;
 		}
 	}
@@ -266,9 +256,8 @@ void ZoneContainer::Render(sf::RenderTarget& target) const
 {
 	if (scrolling_)
 	{
-		target.Draw(scroll_.next);
-		target.Draw(scroll_.current);
-		target.Draw(*Game::GetInstance().GetPlayer());
+		target.Draw(*next_zone_);
+		target.Draw(*active_zone_);
 	}
 	else
 	{
@@ -277,13 +266,11 @@ void ZoneContainer::Render(sf::RenderTarget& target) const
 		{
 			active_zone_->RemoveEntity(Game::GetInstance().GetPlayer());
 			active_zone_ = next_zone_;
+			active_zone_->SetPosition(0, 0);
 			active_zone_->AddEntity(Game::GetInstance().GetPlayer());
 			Entity::SetActiveZone(active_zone_);
 		}
-		else
-		{
-			active_zone_->Show(target);
-		}
+		target.Draw(*active_zone_);
 	}
 }
 
