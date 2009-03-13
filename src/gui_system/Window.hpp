@@ -49,6 +49,16 @@ namespace gui{
         Control *GetFromID(Control::ControlID id);
 
         /**
+        * Associe un entier à un label ou une progressbar
+        */
+        void BindIntTo(Control::ControlID id, int *ptr);
+
+        /**
+        * Récupère le contenu du composant selon son type
+        */
+        void GetControlText(Control::ControlID id, std::string & s);
+
+        /**
         * Charge une fenêtre à partir d'un fichier xml
         * param[in] xmlfile Nom du fichier XML à ouvrir
         */
@@ -58,6 +68,7 @@ namespace gui{
         * Déchargement de tout les composants
         */
         void UnLoad();
+
     private:
 		/**
          * Affichage de la fenêtre

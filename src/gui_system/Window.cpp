@@ -94,6 +94,7 @@ int Window::ManageEvent(const sf::Event& event)
 	// pas de contrôle actif = rien à faire
 	if (active_ == NULL)
 	{
+	    // eventuel système de déplacement de fenêtre
 		return 0;
 	}
 
@@ -225,7 +226,13 @@ void Window::Load(const std::string& xmlfile){
 
             controls_.push_back(new Button(id, ctrl_pos, ctrl_size, temp1, temp2));
 	    }else if(s1 == "label"){
-	        controls_.push_back(new Label(id, ctrl_pos, controls_elem->GetText()));
+	        p = controls_elem->GetText();
+	        if(p == NULL){
+	            temp1 = "";
+	        }else{
+	            temp1 = p;
+	        }
+	        controls_.push_back(new Label(id, ctrl_pos, temp1));
 	    }
 	    else if (s1 == "textbox")
 	    {
@@ -269,4 +276,12 @@ Control* Window::GetUnderMouse(int x, int y)
 		}
 	}
 	return NULL;
+}
+
+void Window::BindIntTo(Control::ControlID id, int *ptr){
+    //Control *c = GetFromID(id);
+    //Label *l;
+
+    //l = (Label *)c;
+    //l->LinkInt(ptr);
 }
