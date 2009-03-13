@@ -9,10 +9,10 @@
 	- gérer les TileEffect (WATER, LAVA, HOLE, ...)
 	- revoir le format de tiles.xml (trop de redondance)
 	- vrai scrolling, avec toutes les entités des deux zones en cours de scrolling
-	
+
 * Audio
 	- moteur audio élémentaire, gérant N buffers pour les bruitages + musique d'ambiance
-	
+
 * Éditeur Python (report post-PPD)
 	- interface pour l'édition des entités dans editor
 	- visualisation des entités dans editor [WIP à l'arrache]
@@ -30,8 +30,8 @@
 
 * Window
 	- Passer la classe en forme canonique
-	- Compléter le système de label
-	- Ajout d'un système de bind de variable à une progress bar ou à un label
+    - Remplacer le controlpanel
+	- Compléter le système de label (différents fonts)
 	- Compléter le système de textbox (done ?)
 
 * Réseau (report post-PPD)
@@ -43,5 +43,5 @@
 	(le serveur ne fait aucun affichage, ce qui devrait laisser assez de ressources
 	pour calculer les collisions de plusieurs zones simultanément)
 
-	
+
 

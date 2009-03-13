@@ -4,6 +4,7 @@
 #include "Game.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../misc/ConfigParser.hpp"
+#include "../misc/Log.hpp"
 #include "../gui/Splash.hpp"
 #include "../gui/MiniMap.hpp"
 #include "../entities/Player.hpp"
@@ -52,7 +53,8 @@ Game::Game() :
 	ConfigParser config;
 	if (config.LoadFromFile(CONFIG_FILE))
 	{
-		printf("loading %s...\n", CONFIG_FILE);
+	    Output << "loading " << CONFIG_FILE << "...";
+
 		config.SeekSection("Settings");
 		config.ReadItem("panel_on_top", options_.panel_on_top);
 		if (!options_.panel_on_top)
@@ -62,7 +64,14 @@ Game::Game() :
 			event.Key.Code = sf::Key::PageDown;
 			InGameOnEvent(event);
 		}
+        /*
+        config.ReadItem("verbosity", options_.verbosity);
+        Log::SetVerboseLevel(options_.verbosity);
+        Output << "verbose: " << options_.verbosity << lEnd;
+        */
 	}
+
+	OutputW << "test" << lEnd;
 }
 
 
@@ -171,7 +180,7 @@ void Game::TakeScreenshot(const char* directory)
 	filename = str_sprintf("%s/%s.png", directory, currentTime, t);
 
 	app_.Capture().SaveToFile(filename);
-	std::cout << "Screenshot " << filename << " taken" << std::endl;
+	Output << "Screenshot " << filename << " taken" << lEnd;
 }
 
 
@@ -184,7 +193,8 @@ void Game::ChangeZone(ZoneContainer::Direction direction)
 
 void Game::ChangeZoneContainer(ZoneContainer::MapName map_name)
 {
-	puts(" [Game] changement de map");
+    Output << GAME_S << "Changement de map" << lEnd;
+
 	// on retire le joueur de la zone de l'ancien conteneur
 	Zone* active = zone_container_.GetActiveZone();
 	active->RemoveEntity(player_);
@@ -192,7 +202,7 @@ void Game::ChangeZoneContainer(ZoneContainer::MapName map_name)
 	zone_container_.Load(map_name);
 	if (!zone_container_.SetActiveZone(next_zone_cds_.x, next_zone_cds_.y, false))
 	{
-		puts(" impossible d'activer la zone du conteneur cible");
+	    OutputE << "Impossible d'activer la zone du conteneur cible" << lEnd;
 		abort();
 	}
 	// insertion du joueur dans le nouveau conteneur
@@ -216,17 +226,17 @@ void Game::Teleport(const Zone::Teleporter& tp)
 	ZoneContainer::MapName map_name = (ZoneContainer::MapName) tp.zone_container;
 	if (map_name != zone_container_.GetName())
 	{
-		puts(" [Game] téléportation inter-conteneurs");
+	    Output << GAME_S << "Teleportation inter-conteneurs" << lEnd;
 		next_map_name_ = map_name;
 		next_zone_cds_ = tp.zone_coords;
 	}
 	else
 	{
-		puts(" [Game] téléportation intra-conteneur");
+	    Output << GAME_S <<"Teleportation intra-conteneur" << lEnd;
 		// on informe le conteneur que la zone active doit changer à la prochaine itération
 		if (!zone_container_.SetActiveZone(tp.zone_coords.x, tp.zone_coords.y))
 		{
-			puts("bad coords");
+		    OutputE << GAME_S << "Mauvaise coordonnees pour SetActiveZone" << lEnd;
 			abort();
 		}
 	}
@@ -243,7 +253,7 @@ void Game::SetMusic(int value)
 	static Music* music_ = NULL;
 	static short current_music_index_ = -1;
 
-	std::cerr << " [Game] SetMusic\tCur: " << current_music_index_ << "\t New: " << val << "\n";
+    Output << GAME_S << " [Game] SetMusic\tCur: " << current_music_index_ << "\t New: " << val << lEnd;
 
 	if (val > 0 && val != current_music_index_)
 	{
@@ -272,8 +282,8 @@ void Game::EndGame()
 {
 	message_.SetText("Tu n'es pas le digne fils de Chuck Norris (Enter pour rejouer)");
 	message_.SetPosition(10, 250);
-	SetMode(GAME_OVER);
 
+	SetMode(GAME_OVER);
 }
 
 
@@ -286,33 +296,38 @@ void Game::SetMode(Mode mode)
 	switch (mode)
 	{
 		case IN_GAME:
-			puts("mode ingame");
+            Output << "Passage en mode INGAME" << lEnd;
+
 			on_event_meth_ = &Game::InGameOnEvent;
 			update_meth_ = &Game::DefaultUpdate;
 			render_meth_ = &Game::InGameShow;
 			player_->Unlock();
 			break;
 		case INVENTORY:
-			puts("mode inventory");
+            Output << "Passage en mode INVENTAIRE" << lEnd;
+
 			on_event_meth_ = &Game::InventoryOnEvent;
 			update_meth_ = &Game::DefaultUpdate;
 			render_meth_ = &Game::InventoryShow;
 			player_->Lock();
 			break;
 		case GAME_OVER:
-			puts("mode gameover");
+            Output << "Passage en mode GAMEOVER" << lEnd;
+
 			on_event_meth_ = &Game::GameOverOnEvent;
 			update_meth_ = &Game::GameOverUpdate;
 			render_meth_ = &Game::GameOverShow;
 			break;
         case PAUSE:
-            puts("Mode pause");
+            Output << "Passage en mode PAUSE" << lEnd;
+
             on_event_meth_ = &Game::PauseOnEvent;
 			update_meth_ = &Game::PauseUpdate;
 			render_meth_ = &Game::PauseShow;
             break;
 		case MINI_MAP:
-			puts("mode mini carte");
+            Output << "Passage en mode MINIMAP" << lEnd;
+
 			on_event_meth_ = &Game::MiniMapOnEvent;
 			update_meth_ = &Game::DefaultUpdate;
 			render_meth_ = &Game::MiniMapShow;

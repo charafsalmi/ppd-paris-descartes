@@ -120,6 +120,7 @@ private:
 	struct Options
 	{
 		bool panel_on_top;
+		int verbosity;
 	};
 	Options options_;
 

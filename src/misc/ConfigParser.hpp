@@ -16,7 +16,7 @@ class ConfigParser
 {
 public:
 	ConfigParser();
-	
+
 	/**
 	 * Ouvrir un fichier de configuration
 	 * @param[in] filename: nom du fichier à ouvrir
@@ -30,14 +30,14 @@ public:
 	 * @return true si le document a été écrit, sinon false
 	 */
 	bool SaveToFile(const char* filename) const;
-	
+
 	/**
 	 * Placer le curseur interne sur une section
 	 * Si la section n'existe pas, elle sera créée
 	 * @param[in] section: nom de la section
 	 */
 	void SeekSection(const char* section);
-	
+
 	/**
 	 * Récupérer la valeur d'un élément
 	 * @param[in] item: nom de l'élément
@@ -61,7 +61,7 @@ public:
 		iss >> value;
 		return true;
 	}
-	
+
 	/**
 	 * Modifier ou créer un élément
 	 * @param[in] item: nom de l'élément
@@ -75,25 +75,25 @@ public:
 		oss << value;
 		(*cursor_)[item] = oss.str();
 	}
-	
+
 private:
 	/**
 	 * Parcourir toutes les sections du documents
 	 * @param[in] content: tout le document
 	 */
 	void Parse(const std::string& content);
-	
+
 	typedef std::map<std::string, std::string> Properties;
-	
+
 	/**
 	 * Parcourir les propriétés d'une section du document
 	 * @param[in] content: contenu de la section
 	 * @param[ou] props: propriétés de la section
 	 */
 	void ParseProperties(const std::string& content, Properties& props);
-	
+
 	typedef std::map<std::string, Properties> Sections;
-	
+
 	Sections sections_;
 	Properties* cursor_;
 };

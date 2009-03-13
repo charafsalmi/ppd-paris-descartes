@@ -19,6 +19,9 @@ Log::Log(WARNING) << "message;"
 #define OutputW Log::W(L_WARNING)
 #define OutputE Log::W(L_ERROR)
 
+#define GAME_S "[Game]\t"
+#define lEnd "\n"
+
 enum MsgType{
     L_INFO=0,
     L_WARNING,
@@ -29,11 +32,13 @@ class Log
 {
 private:
     static MsgType t_;
+    static int verbosity_level_;
 public:
     virtual ~Log();
     static Log& W(MsgType t=L_INFO);
     template <class T> Log& operator <<(const T& ToLog);
     static void SetLogger(Log* pLogInterface);
+    static void SetVerboseLevel(int v);
 private:
     static Log* m_Instance;
     virtual void Write(MsgType t, const std::string& rMessage) = 0;
