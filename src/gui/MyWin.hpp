@@ -13,6 +13,7 @@ private:
     enum Windows{
         ID_LABEL=105
     };
+
     int mavar_;
     int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2);
 };

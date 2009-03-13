@@ -9,39 +9,52 @@ namespace gui{
     public:
 		enum { UNDEFINED = -1 };
 
-        /**
-        * Typedef
-        */
         typedef unsigned int ControlID;
         typedef sf::Vector2f ControlPos;
 
-        /**
-        * Etat du control
-        */
+        /// Etat du control
         enum State{
             NORMAL=0x100,
             ON_FOCUS=0x010,
             ON_HOVER=0x001
         };
 
-        Control(const ControlID id, const ControlPos& pos);
+        Control(const ControlID id, const ControlPos& pos, const std::string& s="");
         virtual ~Control();
 
-        /** Changement d'état du contrôle */
+        /// Récupère le texte du contrôle
+        /// @return Texte du control
+        virtual std::string GetText() const{
+            return text_;
+        }
+
+        /// Place un texte
+        virtual void SetText(const std::string s){
+            text_ = s;
+        }
+
+        /// Permet d'associé un int au control
+        void LinkInt(int *);
+
+        /// Permet d'associé un char au control
+        void LinkChar(char *);
+
+        /// Changement d'état du contrôle
+        /// @param[in] s Etat du contrôle
         inline void SetState(State s){
             curr_state_ = s;
         }
 
-        /** Récupère la zone du widget */
+        /// Récupère la zone du widget
         inline const sf::IntRect& GetRect() const {
             return rect_;
         }
-        /** Récupère son identifiant */
+        /// Récupère son identifiant
         inline ControlID GetID() const{
             return id_;
         }
 
-        /** Change le sprite du contrôle qui le peu */
+        /// Change le sprite du contrôle qui le peu
         virtual void ChangeSprite(const sf::Sprite& nimg);
 
 		/**
@@ -57,22 +70,31 @@ namespace gui{
 		virtual void OnKeyPressed(sf::Key::Code key);
 
     protected:
-        /** Identifiant du contrôle */
+        /// Identifiant du contrôle
         ControlID id_;
-        /**
-        * Zone du contrôle
-        */
+
+        /// Zone du contrôle
         sf::IntRect rect_;
 
-        /**
-        * Etat courant du contrôle
-        */
+        /// Etat courant du contrôle
         State curr_state_;
 
-        /**
-        * Etats réalisable par le contrôle
-        */
+        /// Etats réalisable par le contrôle
         int accepted_states_;
+
+        /// Mode du control
+        enum Mode{
+            PLAIN, LINKED_INT, LINKED_CHAR
+        };
+
+        /// Mode du label
+        Mode mode_;
+
+        /// Pointeur du mode linked
+        void *ptr_;
+
+        /// Texture du contrôle
+        std::string text_;
 	private:
 		virtual void Render(sf::RenderTarget& app) const = 0;
     };

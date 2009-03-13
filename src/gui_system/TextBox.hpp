@@ -15,12 +15,12 @@ public:
 	/**
 	 * Indiquer le texte de la textbox
 	 */
-	void SetText(const char* text);
+	void SetText(const std::string & s);
 
 	/**
 	 * Récupérer le contenu de la textbox
 	 */
-	const char* GetText() const;
+	std::string GetText() const;
 
 	// inherited
 	void OnTextEntered(sf::Uint32 unicode);
@@ -41,7 +41,7 @@ private:
 	sf::Shape background_;
 	sf::Shape cursor_;
 	int cursor_pos_;
-	BitmapString text_;
+	BitmapString BStext_;
 };
 
 }

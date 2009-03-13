@@ -9,13 +9,14 @@
 
 
 using namespace gui;
+using namespace std;
 
 
 TextBox::TextBox(ControlID id, const ControlPos& pos, int width) :
 	Control(id, pos),
-	text_(GET_BITMAP_FONT("mono12-black"))
+	BStext_(GET_BITMAP_FONT("mono12-black"))
 {
-	int height = text_.GetFont().GetCharHeight() + PADDING * 2;
+	int height = BStext_.GetFont().GetCharHeight() + PADDING * 2;
 	if (width == UNDEFINED)
 	{
 		width = DEFAULT_WIDTH;
@@ -28,23 +29,23 @@ TextBox::TextBox(ControlID id, const ControlPos& pos, int width) :
 	// postionnment relatif des éléments internes
 	background_ = sf::Shape::Rectangle(0, 0, width, height,
 		sf::Color::White, OUTLINE, sf::Color::Black);
-	text_.SetPosition(PADDING, PADDING);
+	BStext_.SetPosition(PADDING, PADDING);
 	cursor_ = sf::Shape::Line(PADDING, PADDING, PADDING, height - PADDING,
 		CURSOR_WIDTH, CURSOR_COLOR);
 	SetCursor(0);
 }
 
 
-void TextBox::SetText(const char* text)
+void TextBox::SetText(const string & s)
 {
-	text_.Clear();
-	text_.SetText(text);
+	BStext_.SetText(s.c_str());
 }
 
 
-const char* TextBox::GetText() const
+string TextBox::GetText() const
 {
-	return text_.GetText();
+    string s = BStext_.GetText();
+	return s;
 }
 
 
@@ -52,7 +53,7 @@ void TextBox::OnTextEntered(sf::Uint32 unicode)
 {
 	if (unicode >= BitmapFont::FIRST_CHAR && unicode <= BitmapFont::LAST_CHAR)
 	{
-		text_.InsertChar((char) unicode, cursor_pos_);
+		BStext_.InsertChar((char) unicode, cursor_pos_);
 		SetCursor(cursor_pos_ + 1);
 	}
 }
@@ -65,14 +66,14 @@ void TextBox::OnKeyPressed(sf::Key::Code key)
 		case sf::Key::Back:
 			if (cursor_pos_ > 0)
 			{
-				text_.RemoveChar(cursor_pos_);
+				BStext_.RemoveChar(cursor_pos_);
 				SetCursor(cursor_pos_ - 1);
 			}
 			break;
 		case sf::Key::Delete:
-			if (cursor_pos_ < text_.Length())
+			if (cursor_pos_ < BStext_.Length())
 			{
-				text_.RemoveChar(cursor_pos_ + 1);
+				BStext_.RemoveChar(cursor_pos_ + 1);
 			}
 			break;
 		case sf::Key::Left:
@@ -85,7 +86,7 @@ void TextBox::OnKeyPressed(sf::Key::Code key)
 			SetCursor(0);
 			break;
 		case sf::Key::End:
-			SetCursor(text_.Length());
+			SetCursor(BStext_.Length());
 			break;
 		default:
 			break;
@@ -96,16 +97,16 @@ void TextBox::OnKeyPressed(sf::Key::Code key)
 void TextBox::Render(sf::RenderTarget& app) const
 {
 	app.Draw(background_);
-	app.Draw(text_);
+	app.Draw(BStext_);
 	app.Draw(cursor_);
 }
 
 
 void TextBox::SetCursor(int position)
 {
-	if (position >= 0 && position < text_.Length() + 1)
+	if (position >= 0 && position < BStext_.Length() + 1)
 	{
 		cursor_pos_ = position;
-		cursor_.SetX(position * text_.GetFont().GetCharWidth());
+		cursor_.SetX(position * BStext_.GetFont().GetCharWidth());
 	}
 }

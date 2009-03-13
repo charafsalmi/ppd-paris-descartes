@@ -10,8 +10,7 @@ BitmapString::BitmapString(const BitmapFont& font)
 
 void BitmapString::SetText(const char* text)
 {
-	chars_.clear();
-	bitmaps_.clear();
+	Clear();
 	const char* p = text;
 	while (*p != '\0')
 	{
