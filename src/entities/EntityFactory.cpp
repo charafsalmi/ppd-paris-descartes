@@ -238,6 +238,9 @@ Item* EntityFactory::BuildItem(unsigned int id, const sf::Vector2f& position) co
 		case 10:
 			subrect = sf::IntRect(16, 0, 16 + 18, 0 + 32);
 			return new Equipment(id, position, subrect);
+        case 11:
+			subrect = sf::IntRect(35, 15, 35 + 32, 15 + 32);
+			return new Equipment(id, position, subrect);
 	}
 	return NULL;
 }

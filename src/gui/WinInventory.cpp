@@ -100,20 +100,26 @@ void WinInventory::OnEvent(const sf::Event& event)
                 break;
             case sf::Key::A:
                 if(((WIDTH*y)+x)<last_item_){
+                    if(items_[(WIDTH*y)+x]->GetTypeID()==item2_)item2_=item1_;
+                    if(items_[(WIDTH*y)+x]->GetTypeID()==item3_)item3_=item1_;
                     item1_=items_[(WIDTH*y)+x]->GetTypeID();
-                    cout << "[WinInventory]l'équipement d'ID" << item1_ << "à été associé au bouton A" << endl;
+                    cout << "[WinInventory]l'équipement d'ID " << item1_ << " à été associé au bouton A" << endl;
                 }
                 break;
             case sf::Key::Z:
                 if(((WIDTH*y)+x)<last_item_){
+                    if(items_[(WIDTH*y)+x]->GetTypeID()==item1_)item1_=item2_;
+                    if(items_[(WIDTH*y)+x]->GetTypeID()==item3_)item3_=item2_;
                     item2_=items_[(WIDTH*y)+x]->GetTypeID();
-                    cout << "[WinInventory]l'équipement d'ID" << item2_ << "à été associé au bouton Z" << endl;
+                    cout << "[WinInventory]l'équipement d'ID " << item2_ << " à été associé au bouton Z" << endl;
                 }
                 break;
             case sf::Key::E:
                 if(((WIDTH*y)+x)<last_item_){
+                    if(items_[(WIDTH*y)+x]->GetTypeID()==item1_)item1_=item3_;
+                    if(items_[(WIDTH*y)+x]->GetTypeID()==item2_)item2_=item3_;
                     item3_=items_[(WIDTH*y)+x]->GetTypeID();
-                    cout << "[WinInventory]l'équipement d'ID" << item3_ << "à été associé au bouton E" << endl;
+                    cout << "[WinInventory]l'équipement d'ID " << item3_ << " à été associé au bouton E" << endl;
                 }
                 break;
             default:

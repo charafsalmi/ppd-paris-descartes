@@ -67,8 +67,27 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 void Player::OnEvent(sf::Key::Code key)
 {
 	// <DEBUG HACK>
+	int obj;
 	switch (key)
 	{
+	    case sf::Key::A:
+            obj=ControlPanel::GetInstance().GetInventory()->GetItem1ID();
+            if(obj==0)break;
+			std::cout << "[Player]le joueur utilise l'objet " << obj << std::endl;
+			if(obj==11)ThrowHit();
+			break;
+        case sf::Key::Z:
+            obj=ControlPanel::GetInstance().GetInventory()->GetItem2ID();
+            if(obj==0)break;
+			std::cout << "[Player]le joueur utilise l'objet " << obj << std::endl;
+			if(obj==11)ThrowHit();
+			break;
+        case sf::Key::E:
+            obj=ControlPanel::GetInstance().GetInventory()->GetItem3ID();
+            if(obj==0)break;
+			std::cout << "[Player]le joueur utilise l'objet " << obj << std::endl;
+			if(obj==11)ThrowHit();
+			break;
 		case sf::Key::Space:
 			ThrowHit();
 			break;

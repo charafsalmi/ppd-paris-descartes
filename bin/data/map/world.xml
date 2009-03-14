@@ -23,6 +23,9 @@
 	<decors>
 		<decor id="3" x="4" y="8" />
 	</decors>
+	<items>
+		<item id="11" x="200" y="400" />
+	</items>
 </zone>
 <zone>
 	<tiles>
