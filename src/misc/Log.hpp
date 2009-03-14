@@ -57,6 +57,9 @@ private:
 };
 
 template <class T> Log& Log::operator <<(const T& ToLog){
+    if(Log::t_ < Log::verbosity_level_)
+        return W(Log::t_);
+
     std::ostringstream tmp;
     tmp << ToLog;
     if(tmp.str() == lEnd){

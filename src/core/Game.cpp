@@ -73,11 +73,10 @@ Game::Game() :
 			event.Key.Code = sf::Key::PageDown;
 			InGameOnEvent(event);
 		}
-        /*
+
         config.ReadItem("verbosity", options_.verbosity);
         Log::SetVerboseLevel(options_.verbosity);
         Output << "verbose: " << options_.verbosity << lEnd;
-        */
 	}
 }
 
@@ -88,6 +87,7 @@ Game::~Game()
 	ConfigParser config;
 	config.SeekSection("Settings");
 	config.WriteItem("panel_on_top", options_.panel_on_top ? 1 : 0);
+	config.WriteItem("verbosity", options_.verbosity);
 
 	config.SaveToFile(CONFIG_FILE);
 
