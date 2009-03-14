@@ -28,11 +28,9 @@ public:
 	 */
 	void SetHP(int value);
 
-	void SetRupees(int value);
+	void SetMoney(int value);
 
 	void AddLifeSlot();
-
-
 
 	inline WinInventory* GetInventory()
 	{
@@ -44,20 +42,19 @@ private:
 	ControlPanel(const ControlPanel& other);
 	~ControlPanel();
 
+	// inherited
 	void Render(sf::RenderTarget& app) const;
 
-	void DrawLives(sf::RenderTarget& app) const;
-	void DrawDigits(sf::RenderTarget& app) const;
+	static std::string ConvertToDigits(int value);
 
-	sf::IntRect& GetDigitRect(int digit) const;
+	//void DrawLives(sf::RenderTarget& app) const;
 
-	int lives_count_, lives_max_, rupees_count_, bombs_count_, arrows_count_;
+	//int lives_count_;
 	mutable float blink_timer_;
 	mutable bool blink_frame_;
 
 
-	mutable sf::Sprite lives_;
-	mutable sf::Sprite digits_;
+	//mutable sf::Sprite lives_;
 	sf::Sprite background_;
 
 	mutable sf::Sound blink_sound_;
@@ -68,6 +65,9 @@ private:
 	WinInventory* inventory_;
 	BitmapString info_text_;
 	float timer_info_text_;
+	const BitmapFont* font_digits_;
+	BitmapString digits_hp_;
+	BitmapString digits_money_;
 };
 
 #endif /* CONTROLPANEL_HPP */

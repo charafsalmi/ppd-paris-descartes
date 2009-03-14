@@ -4,7 +4,6 @@ inventory-slot.png
 items.png
 decors.png
 panel-background.png
-panel-digits.png
 panel-hearth.png
 player.png
 rodeur.png
@@ -29,3 +28,4 @@ bitmap-font/mono10-black.png
 bitmap-font/mono10-white.png
 bitmap-font/mono12-black.png
 bitmap-font/mono12-white.png
+bitmap-font/digits.png

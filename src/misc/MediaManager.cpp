@@ -283,6 +283,7 @@ MediaManager::MediaManager()
 	fonts_["mono12-white"] = new BitmapFont(images_["bitmap-font/mono12-white"], 10, 10);
 	fonts_["mono12-black"] = new BitmapFont(images_["bitmap-font/mono12-black"], 10, 10);
 	fonts_["retro"] = new BitmapFont(images_["bitmap-font/retro"], 10, 10);
+	fonts_["digits"] = new BitmapFont(images_["bitmap-font/digits"], 10, 1);
 }
 
 

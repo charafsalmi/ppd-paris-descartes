@@ -1,5 +1,8 @@
+#include <cstring>
+
 #include "MyWin.hpp"
 #include "../misc/Log.hpp"
+
 
 using namespace gui;
 
@@ -25,7 +28,7 @@ MyWin::~MyWin()
 
 int MyWin::WindowCallback(const Control::ControlID id, const int p1, void *p2)
 {
-    Output << "MyWin callback [id:" << id << "]";
+    Output << "MyWin callback [id:" << id << "]";
 
     mavar_ ++;
 

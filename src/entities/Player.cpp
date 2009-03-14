@@ -57,7 +57,7 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	falling_ = false;
 
 	panel_.SetHP(hp_);
-	panel_.SetRupees(money_);
+	panel_.SetMoney(money_);
 }
 
 
@@ -314,7 +314,7 @@ void Player::AddLife()
 void Player::AddMoney()
 {
 	++money_;
-	panel_.SetRupees(money_);
+	panel_.SetMoney(money_);
 }
 
 

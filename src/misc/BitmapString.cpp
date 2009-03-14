@@ -1,6 +1,13 @@
 #include "BitmapString.hpp"
 
 
+BitmapString::BitmapString()
+{
+	font_ = NULL;
+	char_width_ = 0;
+}
+
+
 BitmapString::BitmapString(const BitmapFont& font)
 {
 	font_ = &font;

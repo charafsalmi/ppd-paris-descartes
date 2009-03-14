@@ -1,27 +1,18 @@
-#ifdef DEBUG
-#include <iostream>
-#endif
+#include <sstream>
 
 #include "ControlPanel.hpp"
 #include "../misc/MediaManager.hpp"
 
 #include "../misc/Misc.hpp"
 
-#define RUPEES_ORIGIN	sf::Vector2f(132, 24)
-#define ARROWS_ORIGIN	sf::Vector2f(194, 24)
-#define BOMBS_ORIGIN	sf::Vector2f(242, 24)
-#define HEARTH_ORIGIN	sf::Vector2f(322, 24)
+
+//#define HEARTH_ORIGIN	sf::Vector2f(322, 24)
 #define INFOTEXT_ORIGIN sf::Vector2f(400, 24)
+#define HP_ORIGIN       sf::Vector2f(280, 24)
+#define MONEY_ORIGIN    sf::Vector2f(330, 24)
 
 #define INFOTEXT_DELAY 4.0f
 #define DRAW_OFFSET		 16	// Le même pour les sprites des vies et les chiffres
-
-// FIXME: ce n'est pas au control panel de tester les valeurs
-#define MAX_RUPEES		999
-#define MAX_ARROWS		 99
-#define MAX_BOMBS		 99
-#define MAX_LIVES		 18
-
 
 
 
@@ -29,26 +20,6 @@ ControlPanel& ControlPanel::GetInstance()
 {
 	static ControlPanel self;
 	return self;
-}
-
-
-void ControlPanel::SetHP(int value)
-{
-	/*if (value < 2 * lives_max_)
-	{
-		lives_count_ = value;
-	}
-	else
-	{
-#ifdef DEBUG
-		std::cerr << "value: " << value << ", lives_max: " << lives_max_ << "\n";
-#endif
-		lives_count_ =  2 * lives_max_;
-	}
-#ifdef DEBUG
-	dbg_ = true;
-#endif*/
-	lives_count_ = value;
 }
 
 
@@ -67,32 +38,27 @@ void ControlPanel::PrintInfoText(const std::string& text)
 
 void ControlPanel::AddLifeSlot()
 {
-	if (lives_max_ < MAX_LIVES)
+	/*if (lives_max_ < MAX_LIVES)
 	{
 		++lives_max_;
-	}
+	}*/
 }
 
 
-void ControlPanel::SetRupees(int value)
+void ControlPanel::SetHP(int value)
 {
-	if (value <= MAX_RUPEES)
-	{
-		rupees_count_ = value;
-	}
-	else
-	{
-		rupees_count_ = MAX_RUPEES;
-	}
+	digits_hp_.SetText(ConvertToDigits(value));
+}
+
+
+void ControlPanel::SetMoney(int value)
+{
+	digits_money_.SetText(ConvertToDigits(value));
 }
 
 
 void ControlPanel::Update(float frametime)
 {
-	if (lives_count_ == 1)
-	{
-		blink_timer_ -= frametime;
-	}
 	if (timer_info_text_ < INFOTEXT_DELAY)
 	{
 		sf::Uint8 rate = (sf::Uint8) (255 * timer_info_text_ / INFOTEXT_DELAY);
@@ -106,36 +72,37 @@ void ControlPanel::Render(sf::RenderTarget& app) const
 {
 	app.Draw(background_);
 	//DrawLives(app);
-	DrawDigits(app);
 	app.Draw(info_text_);
+	app.Draw(digits_money_);
+	app.Draw(digits_hp_);
 }
 
 
-ControlPanel::ControlPanel() :
-	info_text_(GET_BITMAP_FONT("mono12-black"))
+ControlPanel::ControlPanel()
 {
-	background_.SetImage(GET_IMG("panel-background"));
+	const MediaManager& media = MediaManager::GetInstance();
+
+	font_digits_ = &GET_BITMAP_FONT("digits");
+	digits_hp_.SetFont(*font_digits_);
+	digits_hp_.SetPosition(HP_ORIGIN);
+	digits_money_.SetFont(*font_digits_);
+	digits_money_.SetPosition(MONEY_ORIGIN);
+	info_text_.SetFont(media.GetBitmapFont("mono12-black"));
+	info_text_.SetPosition(INFOTEXT_ORIGIN);
+
+	background_.SetImage(media.GetImage("panel-background"));
 	background_.Resize(640, HEIGHT_PX);
 
-	lives_.SetImage(GET_IMG("panel-hearth"));
-	lives_.SetSubRect(sf::IntRect(0, 0, 14, 14));
-	lives_max_ = 1;
-	lives_count_ = bombs_count_ = arrows_count_ = 0;
-
-	digits_.SetImage(GET_IMG("panel-digits"));
+	/*lives_.SetImage(GET_IMG("panel-hearth"));
+	lives_.SetSubRect(sf::IntRect(0, 0, 14, 14));*/
 
 	blink_timer_ = 0.f;
 	blink_frame_ = true;
 	blink_sound_.SetBuffer(GET_SOUNDBUF("danger-beep"));
 
-#ifdef DEBUG
-	dbg_ = false;
-#endif
 	inventory_ = new WinInventory();
 
 	timer_info_text_ = 0;
-
-	info_text_.SetPosition(INFOTEXT_ORIGIN);
 }
 
 
@@ -146,7 +113,21 @@ ControlPanel::~ControlPanel()
 }
 
 
-void ControlPanel::DrawLives(sf::RenderTarget& app) const
+std::string ControlPanel::ConvertToDigits(int value)
+{
+	std::ostringstream oss;
+	oss << value;
+	std::string string(oss.str());
+	static int diff = '0' - BitmapFont::FIRST_CHAR;
+	for (int i = 0; i < string.size(); ++i)
+	{
+		string[i] = string[i] - diff;
+	}
+	return string;
+}
+
+
+/*void ControlPanel::DrawLives(sf::RenderTarget& app) const
 {
 	sf::Vector2f lives_pos_ = HEARTH_ORIGIN;
 	int to_draw;
@@ -251,95 +232,7 @@ void ControlPanel::DrawLives(sf::RenderTarget& app) const
 	dbg_ = false;
 #endif
 
-}
+}*/
 
 
-void ControlPanel::DrawDigits(sf::RenderTarget& app) const
-{
-	sf::Vector2f draw_pos = RUPEES_ORIGIN;
-	int i = rupees_count_;
-
-	// Rupees
-
-	digits_.SetPosition(draw_pos);
-	digits_.SetSubRect(GetDigitRect(i / 100));
-	app.Draw(digits_);
-
-	draw_pos.x += DRAW_OFFSET;
-	digits_.SetPosition(draw_pos);
-	i %= 100;
-	digits_.SetSubRect(GetDigitRect(i / 10));
-	app.Draw(digits_);
-
-	draw_pos.x += DRAW_OFFSET;
-	digits_.SetPosition(draw_pos);
-	i %= 10;
-	digits_.SetSubRect(GetDigitRect(i));
-	app.Draw(digits_);
-
-	// Arrows
-
-	i = arrows_count_;
-
-	draw_pos.x = ARROWS_ORIGIN.x;
-	digits_.SetPosition(draw_pos);
-	i %= 100;
-	digits_.SetSubRect(GetDigitRect(i / 10));
-	app.Draw(digits_);
-
-	draw_pos.x += DRAW_OFFSET;
-	digits_.SetPosition(draw_pos);
-	i %= 10;
-	digits_.SetSubRect(GetDigitRect(i));
-	app.Draw(digits_);
-
-	// Bombs
-
-	i = bombs_count_;
-
-	draw_pos.x = BOMBS_ORIGIN.x;
-	digits_.SetPosition(draw_pos);
-	i %= 100;
-	digits_.SetSubRect(GetDigitRect(i / 10));
-	app.Draw(digits_);
-
-	draw_pos.x += DRAW_OFFSET;
-	digits_.SetPosition(draw_pos);
-	i %= 10;
-	digits_.SetSubRect(GetDigitRect(i));
-	app.Draw(digits_);
-
-	// HP
-
-	i = lives_count_;
-
-	draw_pos.x = HEARTH_ORIGIN.x;
-	digits_.SetPosition(draw_pos);
-	i %= 100;
-	digits_.SetSubRect(GetDigitRect(i / 10));
-	app.Draw(digits_);
-
-	draw_pos.x += DRAW_OFFSET;
-	digits_.SetPosition(draw_pos);
-	i %= 10;
-	digits_.SetSubRect(GetDigitRect(i));
-	app.Draw(digits_);
-
-}
-
-
-sf::IntRect& ControlPanel::GetDigitRect(int digit) const
-{
-	static sf::IntRect rect(0, 0, 0, DRAW_OFFSET);
-	int x = 0;
-
-	while (--digit >= 0)
-	{
-		x += DRAW_OFFSET;
-	}
-	rect.Left = x;
-	rect.Right = x + DRAW_OFFSET;
-
-	return rect;
-}
 

@@ -11,6 +11,8 @@
 class BitmapString: public sf::Drawable
 {
 public:
+	BitmapString();
+
 	/**
 	 * @param[in] font: police bitmap
 	 */
