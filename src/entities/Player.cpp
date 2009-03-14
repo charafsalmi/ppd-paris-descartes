@@ -127,9 +127,9 @@ void Player::OnEvent(sf::Key::Code key)
 }
 
 
-void Player::Update(float frametime)
+void Player::AutoUpdate(float frametime)
 {
-	Unit::Update(frametime);
+	Unit::AutoUpdate(frametime);
 
 	if (locked_)
 		return;
@@ -323,6 +323,7 @@ void Player::Kill()
 	Entity::Kill();
 	Game::GetInstance().EndGame();
 }
+
 
 void Player::ThrowHit()
 {

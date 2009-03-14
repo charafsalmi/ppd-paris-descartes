@@ -19,9 +19,6 @@ public:
 	void OnEvent(sf::Key::Code key);
 
 	// inherited
-	void Update(float frametime);
-
-	// inherited
 	void OnCollide(Entity& entity);
 
 	/**
@@ -46,10 +43,13 @@ public:
 
 	// inherited
 	void Kill();
-	
+
 	//voir entity
 	void ThrowHit();
 private:
+	// inherited
+	void AutoUpdate(float frametime);
+
 	// Keycodes des mouvements
 	sf::Key::Code move_keys_[COUNT_DIRECTION];
 

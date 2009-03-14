@@ -11,9 +11,9 @@ Mob::Mob(const sf::Vector2f& pos, const sf::Image& image, int hp, int speed) :
 }
 
 
-void Mob::Update(float frametime)
+void Mob::AutoUpdate(float frametime)
 {
-	Unit::Update(frametime);
+	Unit::AutoUpdate(frametime);
 	const sf::Vector2f& pos = GetPosition();
 	sf::FloatRect rect;
 	rect.Left = pos.x + speed_ * frametime;
@@ -26,7 +26,7 @@ void Mob::Update(float frametime)
 		SetX(rect.Left);
 	}
 	else
-	{	//printf("speed = %d \n", speed_);
+	{
 		speed_ *= -1;
 		if (current_dir_ == LEFT)
 		{

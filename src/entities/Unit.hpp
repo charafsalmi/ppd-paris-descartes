@@ -9,29 +9,34 @@ class Unit: public Entity, public Animated
 {
 public:
 	Unit(const sf::Vector2f& pos, const sf::Image& image);
-	
-	// cf. Entity
-	void Update(float frametime) = 0;
-	
-	// cf. Entity
+
+	// inherited
+	void Update(float frametime) ;
+
+	// inherited
 	void TakeDamage(int damage);
-	
+
 	void SetHP(int hp);
 
 	void SetAnimation(Direction dir, const Animation* anim);
 
 protected:
+	virtual void AutoUpdate(float frametime) = 0;
+
 	// Animations de déplacement
 	const Animation* walk_anims_[COUNT_DIRECTION];
 	int hp_;
 
 private:
+	void DyingUpdate(float frametime);
+
 	enum Bleeding
 	{
 		BLEED_IN, BLEED_OUT, BLEED_STOP
 	};
 	Bleeding bleeding_;
-	float bleed_timer_;
+	float timer_;
+	void (Unit::*update_callback_)(float frametime);
 };
 
 
