@@ -15,6 +15,7 @@ Entity::Entity(const sf::Vector2f& pos, const sf::Image& image)
 	floor_width_ = image.GetWidth();
 	floor_height_ = image.GetHeight();
 	dead_ = false;
+	id_ = -1;
 }
 
 
@@ -79,7 +80,19 @@ void Entity::SetFloor(int width, int height)
 	floor_height_ = height;
 }
 
-void Entity::ThrowHit(){
+
+void Entity::ThrowHit()
+{
+}
 
 
+void Entity::SetID(int id)
+{
+	id_ = id;
+}
+
+
+int Entity::GetID() const
+{
+	return id_;
 }

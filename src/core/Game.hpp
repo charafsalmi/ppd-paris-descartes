@@ -23,6 +23,9 @@ class Game
 public:
 	static Game& GetInstance();
 
+	/**
+	 * Initialiser le jeu
+	 */
 	void Init();
 
 	/**
@@ -30,7 +33,14 @@ public:
 	 */
 	int Run();
 
+	/**
+	 * Changer la zone courante
+	 */
 	void ChangeZone(ZoneContainer::Direction direction);
+
+	/**
+	 * Changer la carte courante
+	 */
 	void ChangeZoneContainer(ZoneContainer::MapName map_name);
 
 	/**
@@ -38,6 +48,11 @@ public:
 	 * @param[in] teleporter: cible de la téléportation
 	 */
 	void Teleport(const Zone::Teleporter& tp);
+
+	/**
+	 * Stopper le déroulement de la partie
+	 */
+	void EndGame();
 
 	inline Player* GetPlayer() const
 	{
@@ -54,17 +69,15 @@ public:
 		return zone_container_.GetActiveZone();
 	}
 
-	/**
-	 * Stopper le déroulement de la partie
-	 */
-	void EndGame();
+	inline float GetElapsedTime() const
+	{
+		return clock_.GetElapsedTime();
+	}
 
 private:
 	Game();
 	Game(const Game&);
 	~Game();
-
-	bool running_;
 
 	// Prend une capture d'écran de la fenêtre
 	void TakeScreenshot(const char* directory);
@@ -128,6 +141,7 @@ private:
 	};
 	Options options_;
 
+	bool running_;
 	// un seul conteneur de zones est chargé à la fois
 	ZoneContainer zone_container_;
 	// nom du prochain conteneur à charger
@@ -139,6 +153,8 @@ private:
 	Player* player_;
 	ControlPanel& panel_;
 	BitmapString message_;
+
+	sf::Clock clock_;
 
 #ifdef CONSOLE_TEST
     LogConsole *log_;

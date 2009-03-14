@@ -3,7 +3,7 @@
 #include "../core/Zone.hpp"
 
 
-Hit::Hit(const sf::Vector2f& position, int damage, Direction dir) :
+Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id) :
 	Entity(position, GET_IMG("items"))
 {
 	damage_ = damage;
@@ -37,6 +37,8 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir) :
 	SetSubRect(sf::IntRect(34, 0, 34 + 30, 0 + 10));
 	SetFloor(30, 10);
 	SetCenter(0, 10);
+
+	emitter_id_ = emitter_id;
 }
 
 
@@ -53,14 +55,28 @@ void Hit::Update(float frametime)
 
 void Hit::OnCollide(Entity& entity)
 {
-	entity.TakeDamage(damage_);
-	Kill();
+	if (dynamic_cast<Hit*>(&entity) != NULL)
+	{
+		return;
+	}
+	// don't kill the owner !
+	if (entity.GetID() != emitter_id_)
+	{
+		entity.TakeDamage(damage_);
+		Kill();
+	}
 }
 
 
 void Hit::TakeDamage(int damage)
 {
 	(void) damage;
+}
+
+
+int Hit::GetEmitterID() const
+{
+	return emitter_id_;
 }
 
 

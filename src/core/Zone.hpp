@@ -142,6 +142,7 @@ private:
 	sf::Sprite tiles_sprite_; // sprite associé aux tiles
 
 	std::vector<Tileset::AnimatedTile> animated_;
+	int last_id_;
 };
 
 #endif /* ZONE_HPP */

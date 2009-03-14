@@ -11,7 +11,7 @@ class Player;
 class Item: public Entity
 {
 public:
-	Item(unsigned int code, const sf::Vector2f& pos, const sf::IntRect& subrect);
+	Item(int type_id_, const sf::Vector2f& pos, const sf::IntRect& subrect);
 
 	/**
 	 * Méthode callback en cas de collision avec le joueur
@@ -26,14 +26,12 @@ public:
 	}
 
 	/**
-	 * Code de l'objet
+	 * Identifiant du type de l'objet
 	 */
-	inline unsigned int getCode() const{
-		return code_;
-	}
+	int GetTypeID() const;
 
 private:
-	unsigned int code_;
+	int type_id_; // id du type de l'item (!= id de l'item lui-même)
 };
 
 #endif /* ITEM_HPP */

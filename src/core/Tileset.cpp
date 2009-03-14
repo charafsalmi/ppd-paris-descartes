@@ -52,9 +52,15 @@ Tileset::Tileset()
 			{
 				effect = flag ? Tile::TELEPORT : Tile::DEFAULT;
 			}
-
+			else if (elem->QueryIntAttribute("water", &flag) == TIXML_SUCCESS)
+			{
+				effect = flag ? Tile::WATER : Tile::DEFAULT;
+			}
 			// ajout de la nouvelle tile spéciale
-			specials_[tile_id] = effect;
+			if (effect != Tile::DEFAULT)
+			{
+				specials_[tile_id] = effect;
+			}
 		}
 		else
 		{

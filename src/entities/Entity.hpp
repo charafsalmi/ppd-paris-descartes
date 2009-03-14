@@ -121,7 +121,7 @@ public:
 	{
 		return dead_;
 	}
-	
+
 	virtual void ThrowHit();
 
 	/**
@@ -131,11 +131,22 @@ public:
 	 */
 	void SetFloor(int width, int height);
 
+	/**
+	 * Définir l'id de l'entité
+	 */
+	void SetID(int id);
+
+	/**
+	 * @return id de l'entité
+	 */
+	int GetID() const;
+
 protected:
 	// pour accéder rapidement à la zone active
 	static Zone* zone_;
 
 private:
+	int id_; // identifiant unique de l'entité dans sa zone
 	bool dead_;
 	int floor_width_;
 	int floor_height_;

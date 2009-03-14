@@ -115,6 +115,10 @@ ControlPanel::~ControlPanel()
 
 std::string ControlPanel::ConvertToDigits(int value)
 {
+	if (value < 0)
+	{
+		value = 0;
+	}
 	std::ostringstream oss;
 	oss << value;
 	std::string string(oss.str());

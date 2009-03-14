@@ -18,6 +18,7 @@
 Zone::Zone()
 {
 	loaded_ = false;
+	last_id_ = 1;
 }
 
 
@@ -304,12 +305,13 @@ void Zone::AddDecor(Entity* decor, int x, int y)
 			walkable_[y][x] = false;
 		}
 	}
-	entities_.push_front(decor);
+	AddEntity(decor);
 }
 
 
 void Zone::AddEntity(Entity* entity)
 {
+	entity->SetID(last_id_++);
 	entities_.push_front(entity);
 }
 
@@ -326,6 +328,7 @@ void Zone::AddItem(unsigned int id, int x, int y)
 	if(!panel.GetInventory()->HasItem(id))
 	{
 		Item* item = EntityFactory::GetInstance().BuildItem(id, sf::Vector2f(x, y));
+		item->SetID(last_id_++);
 		items_.push_front(item);
 	}
 }

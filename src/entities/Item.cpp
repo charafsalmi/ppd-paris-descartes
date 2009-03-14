@@ -4,30 +4,30 @@
 #include "../gui/ControlPanel.hpp"
 
 
-Item::Item(unsigned int code, const sf::Vector2f& position, const sf::IntRect& subrect) :
+Item::Item(int type_id, const sf::Vector2f& position, const sf::IntRect& subrect) :
 	Entity(position, GET_IMG("items"))
 {
 	SetSubRect(subrect);
 	SetFloor(subrect.GetWidth(), subrect.GetHeight());
 	SetCenter(0, subrect.GetHeight());
 
-	code_ = code;
+	type_id_ = type_id;
 }
 
 
 void Item::OnCollide(Player& player)
 {
 	static ControlPanel& panel = ControlPanel::GetInstance();
-	switch (code_)
+	switch (type_id_)
 	{
 		// money
-		case 01:
+		case 1:
 			player.AddMoney();
 			panel.PrintInfoText("argent ramasse");
 			Kill();
 			break;
 		// hearth
-		case 02:
+		case 2:
 			player.AddLife();
 			panel.PrintInfoText("coeur ramasse");
 			Kill();
@@ -35,3 +35,8 @@ void Item::OnCollide(Player& player)
 	}
 }
 
+
+int Item::GetTypeID() const
+{
+	return type_id_;
+}

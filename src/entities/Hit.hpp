@@ -3,6 +3,7 @@
 
 #include "Entity.hpp"
 
+
 class Hit: public Entity
 {
 public:
@@ -12,7 +13,7 @@ public:
 	};
 
 
-	Hit(const sf::Vector2f& position, int damage, Direction dir);
+	Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id_);
 
 	// inherited
 	void Update(float frametime);
@@ -22,8 +23,13 @@ public:
 
 	// inherited
 	void TakeDamage(int damage);
-private:
 
+	/**
+	 * Obtenir l'id de l'entité qui a émis le hit
+	 */
+	int GetEmitterID() const;
+
+private:
 	/**
 	 * Déplacement linéaire
 	 */
@@ -36,6 +42,7 @@ private:
 	Direction direction_;
 	int damage_;
 	float speed_;
+	int emitter_id_;
 };
 
 

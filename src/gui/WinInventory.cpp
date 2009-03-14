@@ -41,12 +41,19 @@ int WinInventory::AddItem(Equipment* item)
     last_item_ ++;
 }
 
-bool WinInventory::HasItem(int id){
-    for(int i=0; i<last_item_;i++){
-        if (items_[i]->getCode() == id) return true;
-    }
-    return false;
+
+bool WinInventory::HasItem(int id)
+{
+	for (int i = 0; i < last_item_; ++i)
+	{
+		if (items_[i]->GetTypeID() == id)
+		{
+			return true;
+		}
+	}
+	return false;
 }
+
 
 int WinInventory::WindowCallback(const Control::ControlID id, const int p1, void *p2)
 {

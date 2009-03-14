@@ -107,6 +107,7 @@ Game::~Game()
 
 void Game::Init()
 {
+	clock_.Reset();
 	player_ = new Player(sf::Vector2f(300, 300), app_.GetInput());
 
 	// chargement du conteneur de zones

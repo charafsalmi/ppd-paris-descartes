@@ -14,10 +14,16 @@ public:
 	// inherited
 	void OnCollide(Entity& entity);
 
+	void SetDirection(Direction dir);
+
 private:
 	// inherited
 	void AutoUpdate(float frametime);
 
+	// inherited
+	void ThrowHit();
+
+	float last_hit_;
 	int speed_;
 	Direction current_dir_;
 };

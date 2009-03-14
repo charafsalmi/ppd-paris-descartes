@@ -12,7 +12,8 @@
 
 #define SPEED         120
 #define FALL_DELAY    1
-#define DEFAULT_LIVES 20
+#define DEFAULT_LIVES 10
+#define FIRE_RATE     (1 / 2.f)   // (1 / tirs par seconde)
 
 
 Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
@@ -58,6 +59,8 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 
 	panel_.SetHP(hp_);
 	panel_.SetMoney(money_);
+
+	last_hit_ = 0;
 }
 
 
@@ -113,8 +116,6 @@ void Player::OnEvent(sf::Key::Code key)
 		// -1 hp (Ziane <3)
 		case sf::Key::F2:
 			TakeDamage(1);
-			ControlPanel::GetInstance().SetHP(hp_);
-			std::cout << " [Player] -1 hp\n";
 			break;
 		case sf::Key::F3:
 			AddLife();
@@ -305,7 +306,6 @@ void Player::AddLife()
 	if (hp_ < max_lives_)
 	{
 		++hp_;
-		std::cout << " [Player] +1 hp.\n";
 		panel_.SetHP(hp_);
 	}
 }
@@ -325,8 +325,20 @@ void Player::Kill()
 }
 
 
+void Player::TakeDamage(int damage)
+{
+	Unit::TakeDamage(damage);
+	panel_.SetHP(hp_);
+}
+
+
 void Player::ThrowHit()
 {
-	sf::Vector2f pos(GetPosition().x + GetSize().x / 2, GetPosition().y - GetSize().y / 2);
-	zone_->AddEntity(new PlayerHit(pos, 2, current_dir_));
+	float now = Game::GetInstance().GetElapsedTime();
+	if ((now - last_hit_) > FIRE_RATE)
+	{
+		sf::Vector2f pos(GetPosition().x + GetSize().x / 2, GetPosition().y - GetSize().y / 2);
+		zone_->AddEntity(new PlayerHit(pos, 2, current_dir_, GetID()));
+		last_hit_ = now;
+	}
 }

@@ -44,6 +44,9 @@ public:
 	// inherited
 	void Kill();
 
+	// inherited
+	void TakeDamage(int damage);
+
 	//voir entity
 	void ThrowHit();
 private:
@@ -65,6 +68,8 @@ private:
 
 	int max_lives_;
 	int money_;
+
+	float last_hit_; // temps en secondes
 };
 
 #endif /* PLAYER_HPP */

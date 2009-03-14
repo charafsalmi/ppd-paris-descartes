@@ -4,16 +4,14 @@
 #include "Player.hpp"
 
 
-PlayerHit::PlayerHit(const sf::Vector2f position, int damage, Direction dir) :
-	Hit(position, damage, dir)
+PlayerHit::PlayerHit(const sf::Vector2f position, int damage, Direction dir, int emitter_id_) :
+	Hit(position, damage, dir, emitter_id_)
 {
 }
 
 
 void PlayerHit::OnCollide(Entity& entity)
 {
-	if (typeid (entity) != typeid (Player))
-	{
-		Hit::OnCollide(entity);
-	}
+	Hit::OnCollide(entity);
+	// TODO: notifier le résultat à player ? (compteur de frags, etc.)
 }

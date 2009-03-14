@@ -12,7 +12,7 @@ class Animated
 {
 public:
 	Animated();
-	
+
 	Animated(const Animation* animation, sf::Sprite& sprite);
 
 	/**
@@ -21,14 +21,7 @@ public:
 	 * @param[out] sprite: sprite à mettre à jour
 	 */
 	void Update(float frametime, sf::Sprite& sprite);
-	
-	/**
-	 * Modifier la séquence de l'animation
-	 * @param[in] animation: nouvelle animation
-	 * @param[in] sprite: entité animée
-	 */
-	void Change(const Animation* animation, sf::Sprite& sprite);
-	
+
 	inline void Start()
 	{
 		stopped_ = false;
@@ -43,6 +36,14 @@ public:
 	{
 		return stopped_;
 	}
+
+protected:
+	/**
+	 * Modifier la séquence de l'animation
+	 * @param[in] animation: nouvelle animation
+	 * @param[in] sprite: entité animée
+	 */
+	void Change(const Animation* animation, sf::Sprite& sprite);
 
 private:
 	const Animation* animation_;

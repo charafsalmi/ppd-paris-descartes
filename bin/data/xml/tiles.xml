@@ -23,7 +23,9 @@
 	<tile id="212" block="1" />
 	<tile id="213" block="1" />
 	
-	<tile id="198" block="1" />
+	
+	<tile id="198" water="1" />
+	
 	<!-- falaises -->
 	<tile id="69" block="1" />
 	<tile id="70" block="1" />
