@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "WinInventory.hpp"
+#include "../misc/MediaManager.hpp"
 #include "../entities/Equipment.hpp"
 
 #include "../gui_system/Button.hpp"
@@ -15,6 +16,10 @@ WinInventory::WinInventory()
 
     last_item_ = 0;
     items_ = new Equipment*[ITEM_N+1];
+    cursor_.coords.x = 0;
+	cursor_.coords.y = 0;
+    cursor_.sprite.SetImage(GET_IMG("inventory-cursor"));
+    cursor_.sprite.SetPosition(OFFSET_X, OFFSET_Y);
 }
 
 WinInventory::~WinInventory()
@@ -62,4 +67,43 @@ int WinInventory::WindowCallback(const Control::ControlID id, const int p1, void
         return WinInventory::_CLOSE;
     }
     return 0;
+}
+
+void WinInventory::Render(sf::RenderTarget& app) const{
+    this->Window::Render(app);
+    app.Draw(cursor_.sprite);
+}
+
+void WinInventory::OnEvent(const sf::Event& event)
+{
+    sf::Key::Code key = event.Key.Code;
+	int x = cursor_.coords.x;
+	int y = cursor_.coords.y;
+	bool valid = false;
+	if (event.Type == sf::Event::KeyPressed){
+        switch (key)
+        {
+            case sf::Key::Up:
+                valid = (--y >= 0);
+                break;
+            case sf::Key::Down:
+                valid = (++y < HEIGHT);
+                break;
+            case sf::Key::Left:
+                valid = (--x >= 0);
+                break;
+            case sf::Key::Right:
+                valid = (++x < WIDTH);
+                break;
+            default:
+                break;
+        }
+        if (valid)
+        {
+            cursor_.coords.x = x;
+            cursor_.coords.y = y;
+            cursor_.sprite.SetX(x * (SLOT_SIZE+PADDX) + OFFSET_X);
+            cursor_.sprite.SetY(y * (SLOT_SIZE+PADDY) + OFFSET_Y);
+        }
+	}
 }

@@ -28,14 +28,31 @@ public:
     */
     bool HasItem(int id);
 
+    void OnEvent(const sf::Event&);
+
+
 private:
+    void Render(sf::RenderTarget&) const;
+
+
+
+
+
+
     int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2);
 
     /** Identifiant du slot principale */
-    enum{
-        ID_SLOT=9000, ITEM_N=15
-    };
 
+
+    enum{
+        ID_SLOT=9000, ITEM_N=15, WIDTH = 5, HEIGHT = 3, SLOT_SIZE = 60, OFFSET_X=20, OFFSET_Y=40, PADDX=15, PADDY=15
+    };
+    struct Cursor
+	{
+		sf::Sprite sprite;
+		sf::Vector2i coords;
+	};
+	Cursor cursor_;
     /** Liste des équipements */
 	Equipment** items_;
     int last_item_;

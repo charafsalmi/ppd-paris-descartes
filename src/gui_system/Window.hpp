@@ -63,9 +63,11 @@ namespace gui{
         /// Déchargement de tout les composants
         void UnLoad();
 
-    private:
         /// Affichage de la fenêtre
 		virtual void Render(sf::RenderTarget& app) const;
+
+    private:
+
 
         /// Récupérer le contrôle sous la souris
         /// @param[in] x: position absolue x

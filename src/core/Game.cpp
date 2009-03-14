@@ -428,6 +428,7 @@ void Game::InventoryOnEvent(const sf::Event& event)
 
 	if(panel_.GetInventory()->ManageEvent(event) == WinInventory::_CLOSE)
 	    SetMode(IN_GAME);
+    panel_.GetInventory()->OnEvent(event);
 }
 
 
