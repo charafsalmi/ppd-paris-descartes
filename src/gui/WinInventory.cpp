@@ -20,6 +20,9 @@ WinInventory::WinInventory()
 	cursor_.coords.y = 0;
     cursor_.sprite.SetImage(GET_IMG("inventory-cursor"));
     cursor_.sprite.SetPosition(OFFSET_X, OFFSET_Y);
+    item1_=0;
+    item2_=0;
+    item3_=0;
 }
 
 WinInventory::~WinInventory()
@@ -95,6 +98,24 @@ void WinInventory::OnEvent(const sf::Event& event)
             case sf::Key::Right:
                 valid = (++x < WIDTH);
                 break;
+            case sf::Key::A:
+                if(((WIDTH*y)+x)<last_item_){
+                    item1_=items_[(WIDTH*y)+x]->GetTypeID();
+                    cout << "[WinInventory]l'équipement d'ID" << item1_ << "à été associé au bouton A" << endl;
+                }
+                break;
+            case sf::Key::Z:
+                if(((WIDTH*y)+x)<last_item_){
+                    item2_=items_[(WIDTH*y)+x]->GetTypeID();
+                    cout << "[WinInventory]l'équipement d'ID" << item2_ << "à été associé au bouton Z" << endl;
+                }
+                break;
+            case sf::Key::E:
+                if(((WIDTH*y)+x)<last_item_){
+                    item3_=items_[(WIDTH*y)+x]->GetTypeID();
+                    cout << "[WinInventory]l'équipement d'ID" << item3_ << "à été associé au bouton E" << endl;
+                }
+                break;
             default:
                 break;
         }
@@ -107,3 +128,16 @@ void WinInventory::OnEvent(const sf::Event& event)
         }
 	}
 }
+
+int WinInventory::GetItem1ID(){
+    return item1_;
+}
+
+int WinInventory::GetItem2ID(){
+    return item2_;
+}
+
+int WinInventory::GetItem3ID(){
+    return item3_;
+}
+

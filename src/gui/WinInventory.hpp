@@ -28,7 +28,30 @@ public:
     */
     bool HasItem(int id);
 
+    /**
+    * Gère les évenements claviers relatifs au curseur et à l'assignation des touches
+    * @param[in]event :l'évenement clavier
+    */
     void OnEvent(const sf::Event&);
+
+    /**
+    * Permet de connaitre l'ID du premier objet assignable
+    * @return: l'ID ou si non assigné
+    */
+    int GetItem1ID();
+
+     /**
+    * Permet de connaitre l'ID du deuxième objet assignable
+    * @return: l'ID ou si non assigné
+    */
+    int GetItem2ID();
+
+    /**
+    * Permet de connaitre l'ID du troisième objet assignable
+    * @return: l'ID ou si non assigné
+    */
+    int GetItem3ID();
+
 
 
 private:
@@ -56,6 +79,9 @@ private:
     /** Liste des équipements */
 	Equipment** items_;
     int last_item_;
+    int item1_;
+    int item2_;
+    int item3_;
 };
 
 #endif
