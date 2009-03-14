@@ -107,7 +107,6 @@ void EntityFactory::LoadUnits(const char* filename)
 		anim_name += "_walk_right";
 		unit->anim[Entity::RIGHT] = &media.GetAnimation(anim_name.c_str());
 
-        OutputD << "Mob " << (unit->name).c_str() << " defini (id " << id << ")" << lEnd;
 		elem = elem->NextSiblingElement();
 	}
 }

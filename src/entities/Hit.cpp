@@ -45,7 +45,8 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id
 void Hit::Update(float frametime)
 {
 	(this->*update_callback_)(frametime);
-	const sf::FloatRect& rect = GetRect();
+	sf::FloatRect rect;
+	GetRect(rect);
 	if (!zone_->CanMove(rect))
 	{
 		Kill();

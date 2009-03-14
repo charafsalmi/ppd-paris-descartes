@@ -6,15 +6,14 @@ Animated::Animated()
 	animation_ = NULL;
 	timer_ = 0;
 	frame_ = 0;
-	stopped_ = false;
 }
+
 
 Animated::Animated(const Animation* animation, sf::Sprite& sprite)
 {
 	animation_ = animation;
 	timer_ = animation_->GetDelay();
 	frame_ = 0;
-	stopped_ = false;
 	sprite.SetSubRect(animation_->GetFrame(0));
 }
 
@@ -24,20 +23,15 @@ void Animated::Change(const Animation* animation, sf::Sprite& sprite)
 	animation_ = animation;
 	timer_ = animation_->GetDelay();
 	frame_ = 0;
-	
+
 	sprite.SetSubRect(animation_->GetFrame(0));
 }
 
 
 void Animated::Update(float frametime, sf::Sprite& sprite)
 {
-	if (stopped_)
-	{
-		return;
-	}
-	
 	timer_ -= frametime;
-	
+
 	if (timer_ <= 0)
 	{
 		timer_ = animation_->GetDelay();

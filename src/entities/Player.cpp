@@ -35,10 +35,10 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	fall_anim_ = &GET_ANIM("player_fall");
 
 	// Subrects d'immobilité
-	subrects_not_moving_[UP]	= sf::IntRect(0,   0, 32,  48);
-	subrects_not_moving_[DOWN]	= sf::IntRect(0,  48, 32,  96);
-	subrects_not_moving_[LEFT]	= sf::IntRect(0,  96, 32, 144);
-	subrects_not_moving_[RIGHT]	= sf::IntRect(0, 144, 32, 192);
+	subrects_not_moving_[UP]	= sf::IntRect(0,  0, 32,  48);
+	subrects_not_moving_[DOWN]	= sf::IntRect(32, 0, 64,  48);
+	subrects_not_moving_[LEFT]	= sf::IntRect(64, 0, 96,  48);
+	subrects_not_moving_[RIGHT]	= sf::IntRect(96, 0, 128, 48);
 
 	// attribution des touches de déplacement
 	move_keys_[UP] = sf::Key::Up;

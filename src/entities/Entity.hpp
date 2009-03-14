@@ -81,14 +81,12 @@ public:
 		rect.Top = pos.y - floor_height_;
 	}
 
-	inline sf::FloatRect GetRect() const
+	inline void GetRect(sf::FloatRect& rect) const
 	{
-		sf::FloatRect rect;
 		rect.Left = GetPosition().x;
 		rect.Bottom = GetPosition().y;
 		rect.Right = rect.Left + GetSize().x;
 		rect.Top = rect.Bottom - GetSize().y;
-		return rect;
 	}
 
 	/**

@@ -7,8 +7,6 @@
 
 * Tileset
 	- gérer les TileEffect (WATER, LAVA, HOLE, ...)
-	- revoir le format de tiles.xml (trop de redondance)
-	- vrai scrolling, avec toutes les entités des deux zones en cours de scrolling
 
 * Audio
 	- moteur audio élémentaire, gérant N buffers pour les bruitages + musique d'ambiance

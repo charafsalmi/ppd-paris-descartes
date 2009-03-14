@@ -22,21 +22,6 @@ public:
 	 */
 	void Update(float frametime, sf::Sprite& sprite);
 
-	inline void Start()
-	{
-		stopped_ = false;
-	}
-
-	inline void Halt()
-	{
-		stopped_ = true;
-	}
-
-	inline bool Halted() const
-	{
-		return stopped_;
-	}
-
 protected:
 	/**
 	 * Modifier la séquence de l'animation
@@ -49,7 +34,6 @@ private:
 	const Animation* animation_;
 	int frame_;
 	float timer_;
-	bool stopped_;
 };
 
 #endif /* ANIMATED_HPP */

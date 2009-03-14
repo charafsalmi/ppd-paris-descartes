@@ -1,110 +1,111 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <tiles>
-<definitions>
-	<tile id="6" block="1" />
-	<tile id="8" block="1" />
-	<tile id="9" block="1" />
-	<tile id="10" block="1" />
-	<tile id="21" block="1" />
-	<tile id="22" block="1" />
-	<tile id="24" block="1" />
-	<tile id="25" block="1" />
-	<tile id="26" block="1" />
-	<tile id="40" block="1" />
-	<tile id="41" block="1" />
-	<tile id="56" block="1" />
-	<tile id="57" block="1" />
-	<tile id="179" block="1" />
-	<tile id="180" block="1" />
-	<tile id="195" block="1" />
-	<tile id="196" block="1" />
-	<tile id="197" block="1" />
-	<tile id="211" block="1" />
-	<tile id="212" block="1" />
-	<tile id="213" block="1" />
-	
-	
-	<tile id="198" water="1" />
-	
-	<!-- falaises -->
-	<tile id="69" block="1" />
-	<tile id="70" block="1" />
-	<tile id="71" block="1" />
-	<tile id="72" block="1" />
-	<tile id="73" block="1" />
-	<tile id="74" block="1" />
-	<tile id="75" block="1" />
-	<tile id="85" block="1" />
-	<tile id="86" block="1" />
-	<tile id="87" block="1" />
-	<tile id="88" block="1" />
-	<tile id="89" block="1" />
-	<tile id="90" block="1" />
-	<tile id="91" block="1" />
-	<tile id="101" block="1" />
-	<tile id="102" block="1" />
-	<tile id="103" block="1" />
-	<tile id="104" block="1" />
-	<tile id="105" block="1" />
-	<tile id="106" block="1" />
-	<tile id="107" block="1" />
-	<tile id="117" block="1" />
-	<tile id="118" block="1" />
-	<tile id="119" block="1" />
-	<tile id="120" block="1" />
-	<tile id="121" block="1" />
-	<tile id="122" block="1" />
-	<tile id="133" block="1" />
-	<tile id="134" block="1" />
-	<tile id="135" block="1" />
-	<tile id="136" block="1" />
-	<tile id="137" block="1" />
-	<tile id="138" block="1" />
-	<tile id="149" block="1" />
-	<tile id="150" block="1" />
-	<tile id="151" block="1" />
-	<tile id="152" block="1" />
-	<tile id="153" block="1" />
-	<tile id="154" block="1" />
-
-	<!-- dungeon -->
-	<tile id="224" block="1" />
-	<tile id="225" block="1" />
-	<tile id="226" block="1" />
-	<tile id="227" block="1" />
-	<tile id="228" block="1" />
-	<tile id="232" block="1" />
-	<tile id="240" block="1" />
-	<tile id="241" block="1" />
-	<tile id="242" block="1" />
-	<tile id="243" block="1" />
-	<tile id="244" block="1" />
-	<tile id="246" block="1" />
-	<tile id="247" block="1" />
-	<tile id="248" block="1" />
-	<tile id="257" block="1" />
-	<tile id="259" block="1" />
-	<tile id="260" block="1" />
-	<tile id="277" block="1" />
-	<tile id="279" block="1" />
-	<tile id="288" block="1" />
-	<tile id="289" block="1" />
-	<tile id="293" block="1" />
-	<tile id="304" block="1" />
-	<tile id="305" block="1" />
-	<tile id="309" block="1" />
-	
-	<tile id="35" hole="1" />
-	<tile id="42" hole="1" />
-	<tile id="258" hole="1" />
-	<tile id="273" hole="1" />
-	<tile id="274" hole="1" />
-	<tile id="275" hole="1" />
-	
-	<tile id="216" teleport="1" />
-	<tile id="310" teleport="1" />
-	<tile id="294" teleport="1" />
-	
+	<definitions>
+		<group effect="block">
+			<tile id="6" />
+			<tile id="8" />
+			<tile id="9" />
+			<tile id="10" />
+			<tile id="21" />
+			<tile id="22" />
+			<tile id="24" />
+			<tile id="25" />
+			<tile id="26" />
+			<tile id="40" />
+			<tile id="41" />
+			<tile id="56" />
+			<tile id="57" />
+			<tile id="179" />
+			<tile id="180" />
+			<tile id="195" />
+			<tile id="196" />
+			<tile id="197" />
+			<tile id="211" />
+			<tile id="212" />
+			<tile id="213" />
+			<!-- falaises -->
+			<tile id="69" />
+			<tile id="70" />
+			<tile id="71" />
+			<tile id="72" />
+			<tile id="73" />
+			<tile id="74" />
+			<tile id="75" />
+			<tile id="85" />
+			<tile id="86" />
+			<tile id="87" />
+			<tile id="88" />
+			<tile id="89" />
+			<tile id="90" />
+			<tile id="91" />
+			<tile id="101" />
+			<tile id="102" />
+			<tile id="103" />
+			<tile id="104" />
+			<tile id="105" />
+			<tile id="106" />
+			<tile id="107" />
+			<tile id="117" />
+			<tile id="118" />
+			<tile id="119" />
+			<tile id="120" />
+			<tile id="121" />
+			<tile id="122" />
+			<tile id="133" />
+			<tile id="134" />
+			<tile id="135" />
+			<tile id="136" />
+			<tile id="137" />
+			<tile id="138" />
+			<tile id="149" />
+			<tile id="150" />
+			<tile id="151" />
+			<tile id="152" />
+			<tile id="153" />
+			<tile id="154" />
+			<!-- dungeon -->
+			<tile id="224" />
+			<tile id="225" />
+			<tile id="226" />
+			<tile id="227" />
+			<tile id="228" />
+			<tile id="232" />
+			<tile id="240" />
+			<tile id="241" />
+			<tile id="242" />
+			<tile id="243" />
+			<tile id="244" />
+			<tile id="246" />
+			<tile id="247" />
+			<tile id="248" />
+			<tile id="257" />
+			<tile id="259" />
+			<tile id="260" />
+			<tile id="277" />
+			<tile id="279" />
+			<tile id="288" />
+			<tile id="289" />
+			<tile id="293" />
+			<tile id="304" />
+			<tile id="305" />
+			<tile id="309" />
+		</group>
+		<group effect="water">
+			<tile id="198" />
+		</group>
+		<group effect="hole">
+			<tile id="35" />
+			<tile id="42" />
+			<tile id="258" />
+			<tile id="273" />
+			<tile id="274" />
+			<tile id="275" />
+		</group>
+		<group effect="teleport">
+			<tile id="216" />
+			<tile id="310" />
+			<tile id="294" />
+		</group>
 	</definitions>
 	<animated>
 		<tile from="198" to="201" />

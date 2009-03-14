@@ -30,49 +30,50 @@ Tileset::Tileset()
 
 	TiXmlHandle handle(&doc);
 	handle = handle.FirstChildElement();
-	TiXmlElement* elem = handle.FirstChildElement("definitions").FirstChildElement().Element();
+	TiXmlNode* node = handle.FirstChildElement("definitions").FirstChildElement().Node();
 
-	int tile_id;
-	while (elem != NULL)
+	while (node != NULL)
 	{
-		if (elem->QueryIntAttribute("id", &tile_id) == TIXML_SUCCESS)
+		TiXmlElement* group = node->ToElement();
+		std::string effect_name = group->Attribute("effect");
+		Tile::Effect effect = Tile::DEFAULT;
+		if (effect_name == "hole")
 		{
-			// parsing des propriétés de la tile
-			Tile::Effect effect = Tile::DEFAULT;
-			int flag;
-			if (elem->QueryIntAttribute("block", &flag) == TIXML_SUCCESS)
-			{
-				effect = flag ? Tile::BLOCK : Tile::DEFAULT;
-			}
-			else if (elem->QueryIntAttribute("hole", &flag) == TIXML_SUCCESS)
-			{
-				effect = flag ? Tile::HOLE : Tile::DEFAULT;
-			}
-			else if (elem->QueryIntAttribute("teleport", &flag) == TIXML_SUCCESS)
-			{
-				effect = flag ? Tile::TELEPORT : Tile::DEFAULT;
-			}
-			else if (elem->QueryIntAttribute("water", &flag) == TIXML_SUCCESS)
-			{
-				effect = flag ? Tile::WATER : Tile::DEFAULT;
-			}
-			// ajout de la nouvelle tile spéciale
-			if (effect != Tile::DEFAULT)
+			effect = Tile::HOLE;
+		}
+		else if (effect_name == "water")
+		{
+			effect = Tile::WATER;
+		}
+		else if (effect_name == "block")
+		{
+			effect = Tile::BLOCK;
+		}
+		else if (effect_name == "teleport")
+		{
+			effect = Tile::TELEPORT;
+		}
+
+		TiXmlElement* elem = node->FirstChildElement();
+		int tile_id;
+		while (elem != NULL)
+		{
+			if (elem->QueryIntAttribute("id", &tile_id) == TIXML_SUCCESS)
 			{
 				specials_[tile_id] = effect;
 			}
+			else
+			{
+				OutputE << TILE_S << "Tile id manquant" << lEnd;
+			}
+			elem = elem->NextSiblingElement();
 		}
-		else
-		{
-		    OutputE << TILE_S << "Tile id manquant" << lEnd;
-		}
-
-		elem = elem->NextSiblingElement();
+		node = node->NextSibling();
 	}
 
 	// tiles animées
 	int from_id, to_id;
-	elem = handle.FirstChildElement("animated").FirstChildElement().Element();
+	TiXmlElement* elem = handle.FirstChildElement("animated").FirstChildElement().Element();
 	while (elem != NULL)
 	{
 		bool ok = true;
@@ -81,7 +82,6 @@ Tileset::Tileset()
 		if (ok)
 		{
 			animated_[from_id] = to_id;
-			OutputD << TILE_S << from_id << " est animee" << lEnd;
 		}
 		else
 		{
@@ -173,3 +173,4 @@ bool Tileset::IsAnimated(int tile_id) const
 	AnimatedIndexer::const_iterator it = animated_.find(tile_id);
 	return it != animated_.end();
 }
+
