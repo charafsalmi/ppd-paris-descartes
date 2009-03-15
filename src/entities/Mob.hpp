@@ -14,6 +14,9 @@ public:
 	// inherited
 	void OnCollide(Entity& entity);
 
+	// inherited
+	void Kill();
+
 	void SetDirection(Direction dir);
 
 private:

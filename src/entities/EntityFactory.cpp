@@ -223,7 +223,7 @@ Decor* EntityFactory::BuildDecor(int id, const sf::Vector2i& position) const
 }
 
 
-Item* EntityFactory::BuildItem(unsigned int id, const sf::Vector2f& position) const
+Item* EntityFactory::BuildItem(int id, const sf::Vector2f& position) const
 {
 	sf::IntRect subrect;
 	// TODO définition en XML

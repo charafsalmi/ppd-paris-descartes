@@ -120,6 +120,11 @@ public:
 		return dead_;
 	}
 
+	/**
+	 * @return true si l'entité est sur le point d'être supprimée et doit être ignorée
+	 */
+	virtual bool IsDying() const;
+
 	virtual void ThrowHit();
 
 	/**

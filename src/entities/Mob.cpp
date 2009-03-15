@@ -1,3 +1,5 @@
+#include <SFML/System.hpp>
+
 #include "Mob.hpp"
 #include "Hit.hpp"
 #include "Player.hpp"
@@ -5,6 +7,7 @@
 #include "../core/Game.hpp"
 
 #define FIRE_RATE     (1 / 1.f)   // (1 / tirs par seconde)
+#define DROP_LUCK     33          // percent
 
 
 Mob::Mob(const sf::Vector2f& pos, const sf::Image& image, int hp, int speed) :
@@ -20,7 +23,6 @@ Mob::Mob(const sf::Vector2f& pos, const sf::Image& image, int hp, int speed) :
 
 void Mob::AutoUpdate(float frametime)
 {
-	//Unit::AutoUpdate(frametime);
 	sf::Vector2f pos = GetPosition();
 	sf::FloatRect rect;
 	rect.Left = pos.x + speed_ * frametime;
@@ -59,6 +61,10 @@ void Mob::AutoUpdate(float frametime)
 
 void Mob::OnCollide(Entity& entity)
 {
+	if (IsDying())
+	{
+		return;
+	}
 	if (dynamic_cast<Hit*>(&entity) == NULL)
 	{
 		speed_ *= -1;
@@ -72,6 +78,24 @@ void Mob::OnCollide(Entity& entity)
 		}
 		Animated::Change(walk_anims_[current_dir_], *this);
 	}
+}
+
+
+void Mob::Kill()
+{
+	// roll the dice!
+	if (sf::Randomizer::Random(0, 100) < DROP_LUCK)
+	{
+		// TODO: définir quels sont les items dropables par un mob
+		// TODO 2: pondérer certains items ayant plus de chances d'être droppés que d'autres
+		// TODO 3: définir ça dans Item, puis définir la liste des items droppables pour
+		// chaque mob dans son profil XML (?)
+		// -> post-PPD (?)
+		int item_id = sf::Randomizer::Random(1, 2); // coeur de vie ou argent
+
+		zone_->AddItem(item_id, GetPosition().x, GetPosition().y);
+	}
+	Entity::Kill();
 }
 
 

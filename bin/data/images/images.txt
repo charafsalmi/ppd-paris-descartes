@@ -3,6 +3,7 @@ inventory-cursor.png
 inventory-slot.png
 items.png
 decors.png
+hits.png
 panel-background.png
 panel-hearth.png
 player.png

@@ -24,6 +24,9 @@ public:
 	// inherited
 	void TakeDamage(int damage);
 
+	// inherited
+	bool IsDying() const;
+
 	/**
 	 * Obtenir l'id de l'entité qui a émis le hit
 	 */
@@ -37,8 +40,12 @@ private:
 
 	void MoveCircular(float frametime);
 
+	void DyingUpdate(float update);
+
 	void (Hit::*update_callback_)(float frametime);
 
+	float timer_;
+	bool rotate_when_dying_;
 	Direction direction_;
 	int damage_;
 	float speed_;

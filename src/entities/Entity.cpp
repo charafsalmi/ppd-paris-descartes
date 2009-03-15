@@ -74,6 +74,12 @@ void Entity::Kill()
 }
 
 
+bool Entity::IsDying() const
+{
+	return false;
+}
+
+
 void Entity::SetFloor(int width, int height)
 {
 	floor_width_ = width;

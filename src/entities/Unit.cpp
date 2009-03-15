@@ -1,7 +1,7 @@
 #include "Unit.hpp"
 
 #define BLEED_DELAY 0.5f
-#define DYING_DELAY 3.f
+#define DYING_DELAY 3.5f
 
 
 Unit::Unit(const sf::Vector2f& position, const sf::Image& image) :
@@ -49,6 +49,7 @@ void Unit::Update(float frametime)
 		}
 		timer_ += frametime;
 	}
+
 	// comportement spécifique à l'unité
 	(this->*update_callback_)(frametime);
 }
@@ -66,6 +67,12 @@ void Unit::TakeDamage(int damage)
 			update_callback_ = &Unit::DyingUpdate;
 		}
 	}
+}
+
+
+bool Unit::IsDying() const
+{
+	return update_callback_ == &Unit::DyingUpdate;
 }
 
 

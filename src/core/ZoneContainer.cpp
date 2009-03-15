@@ -113,7 +113,6 @@ void ZoneContainer::ChangeZone(Direction dir)
 		next_zone_->SetPosition(0, 0);
 
 		Game::GetInstance().GetPlayer()->Lock();
-		Output << ZC_S << "Scrolling vers la zone [" << y << "] [" << x << "]" << lEnd;
 	}
 }
 

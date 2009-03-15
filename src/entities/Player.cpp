@@ -357,10 +357,11 @@ void Player::UseBowUpdate(float frametime)
 
 void Player::OnCollide(Entity& entity)
 {
-	if (typeid (entity) == typeid (Mob))
+	if (typeid (entity) == typeid (Mob) && !entity.IsDying())
 	{
 		TakeDamage(1);
-		panel_.SetHP(hp_);
+		// TODO sortir de la zone de collision
+		// Ou bien rendre le joueur invincible un cours laps de temps
 	}
 }
 

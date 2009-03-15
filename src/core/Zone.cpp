@@ -30,8 +30,7 @@ Zone::~Zone()
 
 void Zone::Load(const TiXmlHandle& handle)
 {
-    OutputT << "Chargement des tiles" << lEnd;
-
+	// chargement des tiles
 	sf::RenderWindow& app = Game::GetInstance().GetApp();
 	static const Tileset& tileset = Tileset::GetInstance();
 	const TiXmlElement* elem = handle.FirstChildElement("tiles").Element();
@@ -175,7 +174,7 @@ void Zone::Load(const TiXmlHandle& handle)
 	// création de l'image des tiles
 	if (!tiles_img_.CopyScreen(app, ZONE_SUBRECT))
 	{
-	    OutputE << ZONE_S << "Echec de creation image des tiles" << lEnd;
+	    OutputW << ZONE_S << "Echec de creation image des tiles" << lEnd;
 	}
 	tiles_sprite_.SetImage(tiles_img_);
 	tiles_sprite_.FlipY(true); // HACK BUGFIX SFML 1.4
@@ -322,7 +321,7 @@ void Zone::RemoveEntity(Entity* entity)
 }
 
 
-void Zone::AddItem(unsigned int id, int x, int y)
+void Zone::AddItem(int id, int x, int y)
 {
 	ControlPanel& panel = ControlPanel::GetInstance();
 	if(!panel.GetInventory()->HasItem(id))

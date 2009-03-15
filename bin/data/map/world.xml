@@ -99,6 +99,12 @@
  17  18 113 114 198 112  16  17  17   1   2 114 198 168 198 112  16  17  17 150 
 	</tiles>
 	<music>default</music>
+	<entities>
+		<entity id="1" x="404" y="250" />
+		<entity id="0" x="400" y="184" />
+		<entity id="1" x="300" y="350" />
+		<entity id="0" x="254" y="300" />
+	</entities>
 </zone>
 <zone>
 	<tiles>

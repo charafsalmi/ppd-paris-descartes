@@ -33,7 +33,7 @@ public:
 	 * Allouer un objet
 	 * @param[in] id: identifiant du type d'objet
 	 */
-	Item* BuildItem(unsigned int id, const sf::Vector2f& position) const;
+	Item* BuildItem(int id, const sf::Vector2f& position) const;
 
 private:
 	EntityFactory();

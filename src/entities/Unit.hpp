@@ -16,6 +16,9 @@ public:
 	// inherited
 	void TakeDamage(int damage);
 
+	// inherited
+	bool IsDying() const;
+
 	void SetHP(int hp);
 
 	void SetAnimation(Direction dir, const Animation* anim);

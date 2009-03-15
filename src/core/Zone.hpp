@@ -73,7 +73,7 @@ public:
 	 * @param[in] x: position x en pixels
 	 * @param[in] y: position y en pixels
 	 */
-	void AddItem(unsigned int id, int x, int y);
+	void AddItem(int id, int x, int y);
 
 	/**
 	 * Obtenir le type d'une tile
