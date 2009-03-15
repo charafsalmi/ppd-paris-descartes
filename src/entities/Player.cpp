@@ -61,6 +61,12 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	panel_.SetMoney(money_);
 
 	last_hit_ = 0;
+
+	// on suppose que tirer une flèche prend autant de temps, quelque que soit la direction
+	use_bow_duration_ = GET_ANIM("player_bow_up").GetDuration();
+	falling_duration_ = GET_ANIM("player_fall").GetDuration();
+
+	strategy_callback_ = &Player::WalkUpdate;
 }
 
 
@@ -70,26 +76,50 @@ void Player::OnEvent(sf::Key::Code key)
 	int obj;
 	switch (key)
 	{
-	    case sf::Key::A:
-            obj=ControlPanel::GetInstance().GetInventory()->GetItem1ID();
-            if(obj==0)break;
+		case sf::Key::A:
+			obj = panel_.GetInventory()->GetItem1ID();
+			if (obj == 0)
+				break;
 			std::cout << "[Player]le joueur utilise l'objet " << obj << std::endl;
-			if(obj==11)ThrowHit();
+			if (obj == 11)
+				ThrowHit();
 			break;
-        case sf::Key::Z:
-            obj=ControlPanel::GetInstance().GetInventory()->GetItem2ID();
-            if(obj==0)break;
+		case sf::Key::Z:
+			obj = panel_.GetInventory()->GetItem2ID();
+			if (obj == 0)
+				break;
 			std::cout << "[Player]le joueur utilise l'objet " << obj << std::endl;
-			if(obj==11)ThrowHit();
+			if (obj == 11)
+				ThrowHit();
 			break;
-        case sf::Key::E:
-            obj=ControlPanel::GetInstance().GetInventory()->GetItem3ID();
-            if(obj==0)break;
+		case sf::Key::E:
+            obj = panel_.GetInventory()->GetItem3ID();
+            if (obj == 0)
+				break;
 			std::cout << "[Player]le joueur utilise l'objet " << obj << std::endl;
-			if(obj==11)ThrowHit();
+			if (obj == 11)
+				ThrowHit();
 			break;
 		case sf::Key::Space:
-			ThrowHit();
+			switch (current_dir_)
+			{
+			case UP:
+				Animated::Change(&GET_ANIM("player_bow_up"), *this);
+				break;
+			case DOWN:
+				Animated::Change(&GET_ANIM("player_bow_down"), *this);
+				break;
+			case LEFT:
+				Animated::Change(&GET_ANIM("player_bow_left"), *this);
+				break;
+			case RIGHT:
+				Animated::Change(&GET_ANIM("player_bow_right"), *this);
+				break;
+			default:
+				break;
+			}
+			strategy_callback_ = &Player::UseBowUpdate;
+			started_action_ = Game::GetInstance().GetElapsedTime();
 			break;
 		// position
 		case sf::Key::P:
@@ -149,15 +179,19 @@ void Player::OnEvent(sf::Key::Code key)
 
 void Player::AutoUpdate(float frametime)
 {
-	Unit::AutoUpdate(frametime);
+	//Unit::AutoUpdate(frametime);
+	(this->*strategy_callback_)(frametime);
+}
 
+
+void Player::WalkUpdate(float frametime)
+{
 	if (locked_)
 		return;
 
 	static Game& game = Game::GetInstance();
 	static int tile;
 	static float fall_timer;
-
 	int i = (int) GetPosition().x + GetFloorWidth() / 2;
 	int j = (int) GetPosition().y - GetFloorHeight() / 2;
 
@@ -294,6 +328,29 @@ void Player::AutoUpdate(float frametime)
 			Animated::Change(walk_anims_[current_dir_], *this);
 			falling_ = false;
 		}
+	}
+}
+
+
+void Player::FallingUpdate(float frametime)
+{
+	// TODO: virer le code de chûte de WalkUpdate ici.
+}
+
+
+void Player::UseBowUpdate(float frametime)
+{
+	float now = Game::GetInstance().GetElapsedTime();
+	if ((now - started_action_) > use_bow_duration_)
+	{
+		ThrowHit();
+		Animated::Change(walk_anims_[current_dir_], *this);
+		SetSubRect(subrects_not_moving_[current_dir_]);
+		strategy_callback_ = &Player::WalkUpdate;
+	}
+	else
+	{
+		Animated::Update(frametime, *this);
 	}
 }
 

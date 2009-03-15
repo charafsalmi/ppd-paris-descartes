@@ -36,6 +36,7 @@ private:
 	};
 	Bleeding bleeding_;
 	float timer_;
+
 	void (Unit::*update_callback_)(float frametime);
 };
 

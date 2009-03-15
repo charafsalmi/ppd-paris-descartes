@@ -53,6 +53,14 @@ private:
 	// inherited
 	void AutoUpdate(float frametime);
 
+	void WalkUpdate(float frametime);
+
+	void UseBowUpdate(float frametime);
+
+	void FallingUpdate(float frametime);
+
+	void (Player::*strategy_callback_)(float frametime);
+
 	// Keycodes des mouvements
 	sf::Key::Code move_keys_[COUNT_DIRECTION];
 
@@ -69,6 +77,9 @@ private:
 	int max_lives_;
 	int money_;
 
+	float started_action_;
+	float falling_duration_;
+	float use_bow_duration_;
 	float last_hit_; // temps en secondes
 };
 

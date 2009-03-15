@@ -7,6 +7,12 @@ Animation::Animation()
 }
 
 
+void Animation::SetDelay(float delay)
+{
+	delay_ = delay;
+}
+
+
 void Animation::AddFrame(const sf::IntRect& subrect)
 {
 	subrects_.push_back(subrect);
@@ -19,8 +25,7 @@ void Animation::AddFrame(int left, int top, int width, int height)
 }
 
 
-void Animation::SetDelay(float delay)
+float Animation::GetDuration() const
 {
-	delay_ = delay;
+	return delay_ * subrects_.size();
 }
-

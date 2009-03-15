@@ -21,39 +21,6 @@ Unit::Unit(const sf::Vector2f& position, const sf::Image& image) :
 
 void Unit::Update(float frametime)
 {
-	(this->*update_callback_)(frametime);
-}
-
-
-void Unit::TakeDamage(int damage)
-{
-	if (hp_ > 0)
-	{
-		hp_ -= damage;
-		timer_ = 0;
-		bleeding_ = BLEED_IN;
-		if (hp_ <= 0)
-		{
-			update_callback_ = &Unit::DyingUpdate;
-		}
-	}
-}
-
-
-void Unit::SetHP(int hp)
-{
-	hp_ = hp;
-}
-
-
-void Unit::SetAnimation(Direction dir, const Animation* anim)
-{
-	walk_anims_[dir] = anim;
-}
-
-
-void Unit::AutoUpdate(float frametime)
-{
 	// dégradé vers le rouge (255, 0, 0) puis retour à (255, 255, 255)
 	if (bleeding_ != BLEED_STOP)
 	{
@@ -82,6 +49,35 @@ void Unit::AutoUpdate(float frametime)
 		}
 		timer_ += frametime;
 	}
+	// comportement spécifique à l'unité
+	(this->*update_callback_)(frametime);
+}
+
+
+void Unit::TakeDamage(int damage)
+{
+	if (hp_ > 0)
+	{
+		hp_ -= damage;
+		timer_ = 0;
+		bleeding_ = BLEED_IN;
+		if (hp_ <= 0)
+		{
+			update_callback_ = &Unit::DyingUpdate;
+		}
+	}
+}
+
+
+void Unit::SetHP(int hp)
+{
+	hp_ = hp;
+}
+
+
+void Unit::SetAnimation(Direction dir, const Animation* anim)
+{
+	walk_anims_[dir] = anim;
 }
 
 

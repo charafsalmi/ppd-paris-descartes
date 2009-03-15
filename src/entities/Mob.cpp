@@ -20,7 +20,7 @@ Mob::Mob(const sf::Vector2f& pos, const sf::Image& image, int hp, int speed) :
 
 void Mob::AutoUpdate(float frametime)
 {
-	Unit::AutoUpdate(frametime);
+	//Unit::AutoUpdate(frametime);
 	sf::Vector2f pos = GetPosition();
 	sf::FloatRect rect;
 	rect.Left = pos.x + speed_ * frametime;

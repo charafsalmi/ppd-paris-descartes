@@ -33,7 +33,7 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id
 	}
 	update_callback_ = &Hit::MoveLinear;
 	direction_ = dir;
-	speed_ = 250;
+	speed_ = 320;
 	SetSubRect(sf::IntRect(34, 0, 34 + 30, 0 + 10));
 	SetFloor(30, 10);
 	SetCenter(0, 10);
