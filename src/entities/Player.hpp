@@ -61,6 +61,8 @@ private:
 
 	void (Player::*strategy_callback_)(float frametime);
 
+    void UseItem(int);
+
 	// Keycodes des mouvements
 	sf::Key::Code move_keys_[COUNT_DIRECTION];
 

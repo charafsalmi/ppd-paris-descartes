@@ -81,24 +81,21 @@ void Player::OnEvent(sf::Key::Code key)
 			if (obj == 0)
 				break;
 			std::cout << "[Player]le joueur utilise l'objet " << obj << std::endl;
-			if (obj == 11)
-				ThrowHit();
+			UseItem(obj);
 			break;
 		case sf::Key::Z:
 			obj = panel_.GetInventory()->GetItem2ID();
 			if (obj == 0)
 				break;
 			std::cout << "[Player]le joueur utilise l'objet " << obj << std::endl;
-			if (obj == 11)
-				ThrowHit();
+			UseItem(obj);
 			break;
 		case sf::Key::E:
             obj = panel_.GetInventory()->GetItem3ID();
             if (obj == 0)
 				break;
 			std::cout << "[Player]le joueur utilise l'objet " << obj << std::endl;
-			if (obj == 11)
-				ThrowHit();
+			UseItem(obj);
 			break;
 		case sf::Key::Space:
 			switch (current_dir_)
@@ -418,4 +415,35 @@ void Player::ThrowHit()
 		zone_->AddEntity(new PlayerHit(pos, 2, current_dir_, GetID()));
 		last_hit_ = now;
 	}
+}
+
+void Player::UseItem(int code){
+    switch(code)
+    {
+        case 10:
+            break;
+        case 11:
+            switch (current_dir_)
+			{
+                case UP:
+                    Animated::Change(&GET_ANIM("player_bow_up"), *this);
+                    break;
+                case DOWN:
+                    Animated::Change(&GET_ANIM("player_bow_down"), *this);
+                    break;
+                case LEFT:
+                    Animated::Change(&GET_ANIM("player_bow_left"), *this);
+                    break;
+                case RIGHT:
+                    Animated::Change(&GET_ANIM("player_bow_right"), *this);
+                    break;
+                default:
+                    break;
+			}
+			strategy_callback_ = &Player::UseBowUpdate;
+			started_action_ = Game::GetInstance().GetElapsedTime();
+			break;
+        default:
+            break;
+    }
 }
