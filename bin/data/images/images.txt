@@ -4,8 +4,9 @@ inventory-slot.png
 items.png
 decors.png
 hits.png
-panel-background.png
-panel-hearth.png
+panel-background.jpg
+panel-gold.png
+panel-hp.png
 player.png
 rodeur.png
 splash-paris-descartes.jpg

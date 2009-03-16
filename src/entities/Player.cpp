@@ -6,12 +6,12 @@
 #include "PlayerHit.hpp"
 #include "Mob.hpp"
 #include "../core/Game.hpp"
+#include "../core/SoundSystem.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../core/Tileset.hpp"
 #include "../core/Zone.hpp"
 
 #define SPEED         120
-#define FALL_DELAY    1
 #define DEFAULT_LIVES 10
 #define FIRE_RATE     (1 / 2.f)   // (1 / tirs par seconde)
 
@@ -51,15 +51,14 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	was_moving_ = false;
 	SetSubRect(subrects_not_moving_[DOWN]);
 
-	hp_ = DEFAULT_LIVES;
+	SetHP(DEFAULT_LIVES);
 	max_lives_ = DEFAULT_LIVES;
+	panel_.SetHP(DEFAULT_LIVES);
+
 	money_ = 42;
+	panel_.SetGold(money_);
+
 	locked_ = false;
-	falling_ = false;
-
-	panel_.SetHP(hp_);
-	panel_.SetMoney(money_);
-
 	last_hit_ = 0;
 
 	// on suppose que tirer une flèche prend autant de temps, quelque que soit la direction
@@ -122,12 +121,6 @@ void Player::OnEvent(sf::Key::Code key)
 		case sf::Key::P:
 			std::cout << " [Player] position: " << GetPosition().x << ", " << GetPosition().y << ";\n";
 			break;
-		// + 1 slot
-		case sf::Key::S:
-			++max_lives_;
-			ControlPanel::GetInstance().AddLifeSlot();
-			std::cout << " [Player] added life slot to panel.\n";
-			break;
 		// afficher la tile sous nos pieds
 		case sf::Key::T:
 		{
@@ -176,7 +169,6 @@ void Player::OnEvent(sf::Key::Code key)
 
 void Player::AutoUpdate(float frametime)
 {
-	//Unit::AutoUpdate(frametime);
 	(this->*strategy_callback_)(frametime);
 }
 
@@ -188,150 +180,140 @@ void Player::WalkUpdate(float frametime)
 
 	static Game& game = Game::GetInstance();
 	static int tile;
-	static float fall_timer;
-	int i = (int) GetPosition().x + GetFloorWidth() / 2;
-	int j = (int) GetPosition().y - GetFloorHeight() / 2;
+	int i, j;
+	GetTilePosition(i, j);
 
-	i /= Tile::SIZE;
-	j /= Tile::SIZE;
-
-	if (!falling_)
+	// A t-on marché dans un trou ?
+	tile = zone_->GetTileAt(i, j);
+	Tile::Effect effect = Tileset::GetInstance().GetEffect(tile);
+	if (effect == Tile::HOLE)
 	{
-		bool moved = false;
-		int dx, dy;
-		sf::FloatRect rect;
+		Animated::Change(fall_anim_, *this);
+		started_action_ = game.GetElapsedTime();
+		strategy_callback_ = &Player::FallingUpdate;
+		return;
+	}
 
-		// Chûte-t'on ?
-		tile = zone_->GetTileAt(i, j);
-		Tile::Effect effect = Tileset::GetInstance().GetEffect(tile);
-		if (effect == Tile::HOLE)
+	// A t-on marché dans un téléporteur ?
+	if (effect == Tile::TELEPORT)
+	{
+		Zone::Teleporter tp;
+		if (zone_->GetTeleport(i, j, tp))
 		{
-			puts(" [Player] falling...");
-			falling_ = true;
-			Animated::Change(fall_anim_, *this);
-			fall_timer = FALL_DELAY;
+			puts(" [Player] a activé un téléporteur !");
+			game.Teleport(tp);
 			return;
 		}
+	}
 
-		if (effect == Tile::TELEPORT)
+	// déplacement selon les touches appuyées
+	bool moved = false;
+	int dx, dy;
+	sf::FloatRect rect;
+	Direction new_dir;
+	for (int dir = 0; dir < COUNT_DIRECTION; ++dir)
+	{
+		if (input_.IsKeyDown(move_keys_[dir]))
 		{
-			Zone::Teleporter tp;
-			if (zone_->GetTeleport(i, j, tp))
+			moved = true;
+			new_dir = (Direction) dir;
+			dx = dy = 0;
+			switch (dir)
 			{
-				puts(" [Player] a activé un téléporteur !");
-				game.Teleport(tp);
-				return;
+				case UP:
+					dy = -SPEED;
+					break;
+				case DOWN:
+					dy = SPEED;
+					break;
+				case LEFT:
+					dx = -SPEED;
+					break;
+				case RIGHT:
+					dx = SPEED;
+					break;
+				default:
+					break;
 			}
-		}
+			sf::Vector2f pos = GetPosition();
+			pos.x += dx * frametime;
+			pos.y += dy * frametime;
 
-		// déplacement
-		Direction new_dir;
-		for (int dir = 0; dir < COUNT_DIRECTION; ++dir)
-		{
-			if (input_.IsKeyDown(move_keys_[dir]))
+			rect.Left = pos.x;
+			rect.Bottom = pos.y;
+			rect.Right = pos.x + GetFloorWidth();
+			rect.Top = pos.y - GetFloorHeight();
+
+			// on vérifie si on doit changer de zone
+			if (rect.Left < 0)
 			{
-				moved = true;
-				new_dir = (Direction) dir;
-				dx = dy = 0;
-				switch (dir)
-				{
-					case UP:
-						dy = -SPEED;
-						break;
-					case DOWN:
-						dy = SPEED;
-						break;
-					case LEFT:
-						dx = -SPEED;
-						break;
-					case RIGHT:
-						dx = SPEED;
-						break;
-					default:
-						break;
-				}
-				sf::Vector2f pos = GetPosition();
-				pos.x += dx * frametime;
-				pos.y += dy * frametime;
-
-				rect.Left = pos.x;
-				rect.Bottom = pos.y;
-				rect.Right = pos.x + GetFloorWidth();
-				rect.Top = pos.y - GetFloorHeight();
-
-				// on vérifie si on doit changer de zone
-				if (rect.Left < 0)
-				{
-					game.ChangeZone(ZoneContainer::LEFT);
-					break;
-				}
-				else if (rect.Top < 0)
-				{
-					game.ChangeZone(ZoneContainer::UP);
-					break;
-				}
-				else if (rect.Right > Zone::WIDTH * Tile::SIZE)
-				{
-					game.ChangeZone(ZoneContainer::RIGHT);
-					break;
-				}
-				else if (rect.Bottom > Zone::HEIGHT * Tile::SIZE)
-				{
-					game.ChangeZone(ZoneContainer::DOWN);
-					break;
-				}
-
-				if (zone_->CanMove(rect))
-				{
-					SetPosition(pos);
-				}
+				game.ChangeZone(ZoneContainer::LEFT);
+				break;
 			}
-		}
-		// si on a bougé
-		if (moved)
-		{
-			if (new_dir != current_dir_)
+			else if (rect.Top < 0)
 			{
-				current_dir_ = new_dir;
-				Animated::Change(walk_anims_[new_dir], *this);
+				game.ChangeZone(ZoneContainer::UP);
+				break;
 			}
-			Animated::Update(frametime, *this);
-			was_moving_ = true;
-		}
-		else if (was_moving_)
-		{
-			was_moving_ = false;
-			SetSubRect(subrects_not_moving_[current_dir_]);
+			else if (rect.Right > Zone::WIDTH * Tile::SIZE)
+			{
+				game.ChangeZone(ZoneContainer::RIGHT);
+				break;
+			}
+			else if (rect.Bottom > Zone::HEIGHT * Tile::SIZE)
+			{
+				game.ChangeZone(ZoneContainer::DOWN);
+				break;
+			}
+
+			if (zone_->CanMove(rect))
+			{
+				SetPosition(pos);
+			}
 		}
 	}
-	else
+	// si on a bougé
+	if (moved)
 	{
-		// En cours de chûte...
-		fall_timer -= frametime;
-		Animated::Update(frametime, *this);
-		if (fall_timer <= 0)
+		if (new_dir != current_dir_)
 		{
-			Zone::Teleporter tp;
-			if (zone_->GetTeleport(i, j, tp))
-			{
-				game.Teleport(tp);
-			}
-			else
-			{
-				--hp_;
-				panel_.SetHP(hp_);
-				SetPosition(Tile::SIZE, 8 * Tile::SIZE);
-			}
-			Animated::Change(walk_anims_[current_dir_], *this);
-			falling_ = false;
+			current_dir_ = new_dir;
+			Animated::Change(walk_anims_[new_dir], *this);
 		}
+		Animated::Update(frametime, *this);
+		was_moving_ = true;
+	}
+	else if (was_moving_)
+	{
+		was_moving_ = false;
+		SetSubRect(subrects_not_moving_[current_dir_]);
 	}
 }
 
 
 void Player::FallingUpdate(float frametime)
 {
-	// TODO: virer le code de chûte de WalkUpdate ici.
+	Animated::Update(frametime, *this);
+	float now = Game::GetInstance().GetElapsedTime();
+	if ((now - started_action_) > falling_duration_)
+	{
+		// chûte terminée, soit c'est un téléporteur, soit c'est un trou normal
+		Zone::Teleporter tp;
+		int i, j;
+		GetTilePosition(i, j);
+		if (zone_->GetTeleport(i, j, tp))
+		{
+			Game::GetInstance().Teleport(tp);
+		}
+		else
+		{
+			TakeDamage(1);
+			SetPosition(Tile::SIZE, 8 * Tile::SIZE);
+		}
+		Animated::Change(walk_anims_[current_dir_], *this);
+		SetSubRect(subrects_not_moving_[current_dir_]); // ?
+		strategy_callback_ = &Player::WalkUpdate;
+	}
 }
 
 
@@ -342,7 +324,7 @@ void Player::UseBowUpdate(float frametime)
 	{
 		ThrowHit();
 		Animated::Change(walk_anims_[current_dir_], *this);
-		SetSubRect(subrects_not_moving_[current_dir_]);
+		SetSubRect(subrects_not_moving_[current_dir_]); // ?
 		strategy_callback_ = &Player::WalkUpdate;
 	}
 	else
@@ -377,10 +359,12 @@ void Player::Unlock()
 
 void Player::AddLife()
 {
-	if (hp_ < max_lives_)
+	int hp = GetHP();
+	if (hp < max_lives_)
 	{
-		++hp_;
-		panel_.SetHP(hp_);
+		++hp;
+		SetHP(hp);
+		panel_.SetHP(hp);
 	}
 }
 
@@ -388,7 +372,7 @@ void Player::AddLife()
 void Player::AddMoney()
 {
 	++money_;
-	panel_.SetMoney(money_);
+	panel_.SetGold(money_);
 }
 
 
@@ -401,8 +385,12 @@ void Player::Kill()
 
 void Player::TakeDamage(int damage)
 {
-	Unit::TakeDamage(damage);
-	panel_.SetHP(hp_);
+	if (!IsDying())
+	{
+		Unit::TakeDamage(damage);
+		panel_.SetHP(GetHP());
+		SoundSystem::GetInstance().PlaySound("player-damage");
+	}
 }
 
 
@@ -414,10 +402,13 @@ void Player::ThrowHit()
 		sf::Vector2f pos(GetPosition().x + GetSize().x / 2, GetPosition().y - GetSize().y / 2);
 		zone_->AddEntity(new PlayerHit(pos, 2, current_dir_, GetID()));
 		last_hit_ = now;
+		SoundSystem::GetInstance().PlaySound("bow-shot");
 	}
 }
 
-void Player::UseItem(int code){
+
+void Player::UseItem(int code)
+{
     switch(code)
     {
         case 10:
@@ -446,4 +437,11 @@ void Player::UseItem(int code){
         default:
             break;
     }
+}
+
+
+void Player::GetTilePosition(int& i, int& j)
+{
+	i = ((int) GetPosition().x + GetFloorWidth() / 2) / Tile::SIZE;;
+	j = ((int) GetPosition().y - GetFloorHeight() / 2) / Tile::SIZE;
 }

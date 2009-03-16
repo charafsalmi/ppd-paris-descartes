@@ -1,7 +1,6 @@
 #ifndef CONTROLPANEL_HPP
 #define CONTROLPANEL_HPP
 
-#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
 #include "WinInventory.hpp"
@@ -28,7 +27,7 @@ public:
 	 */
 	void SetHP(int value);
 
-	void SetMoney(int value);
+	void SetGold(int value);
 
 	void AddLifeSlot();
 
@@ -45,29 +44,23 @@ private:
 	// inherited
 	void Render(sf::RenderTarget& app) const;
 
+	/**
+	 * Convertir un nombre en une chaîne exploitable par BitmapString
+	 */
 	static std::string ConvertToDigits(int value);
 
-	//void DrawLives(sf::RenderTarget& app) const;
-
-	//int lives_count_;
-	mutable float blink_timer_;
-	mutable bool blink_frame_;
-
-
-	//mutable sf::Sprite lives_;
-	sf::Sprite background_;
-
-	mutable sf::Sound blink_sound_;
-
-#ifdef DEBUG
-	mutable bool dbg_;
-#endif
 	WinInventory* inventory_;
+
 	BitmapString info_text_;
 	float timer_info_text_;
+	sf::Sprite background_;
 	const BitmapFont* font_digits_;
+
 	BitmapString digits_hp_;
-	BitmapString digits_money_;
+	sf::Sprite icon_hp_;
+
+	BitmapString digits_gold_;
+	sf::Sprite icon_gold_;
 };
 
 #endif /* CONTROLPANEL_HPP */

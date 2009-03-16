@@ -7,6 +7,7 @@
 #include "Zone.hpp"
 #include "ZoneContainer.hpp"
 #include "Game.hpp"
+#include "SoundSystem.hpp"
 #include "../entities/EntityFactory.hpp"
 #include "../entities/Player.hpp"
 #include "../misc/MediaManager.hpp"
@@ -255,6 +256,7 @@ void Zone::Update(float frametime)
 			(**it3).GetFloorRect(item_rect);
 			if (item_rect.Intersects(player_rect))
 			{
+				SoundSystem::GetInstance().PlaySound("item-found");
 				(**it3).OnCollide(*player);
 				break;
 			}

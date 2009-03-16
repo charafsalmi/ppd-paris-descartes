@@ -6,10 +6,11 @@
 #include "../misc/Misc.hpp"
 
 
-//#define HEARTH_ORIGIN	sf::Vector2f(322, 24)
 #define INFOTEXT_ORIGIN sf::Vector2f(400, 24)
-#define HP_ORIGIN       sf::Vector2f(280, 24)
-#define MONEY_ORIGIN    sf::Vector2f(330, 24)
+#define HP_ICON_ORIGIN  sf::Vector2f(200, 16)
+#define HP_ORIGIN       sf::Vector2f(240, 24)
+#define GOLD_ICON_ORIGIN sf::Vector2f(300, 16)
+#define GOLD_ORIGIN    sf::Vector2f(340, 24)
 
 #define INFOTEXT_DELAY 4.0f
 #define DRAW_OFFSET		 16	// Le même pour les sprites des vies et les chiffres
@@ -36,24 +37,15 @@ void ControlPanel::PrintInfoText(const std::string& text)
 }
 
 
-void ControlPanel::AddLifeSlot()
-{
-	/*if (lives_max_ < MAX_LIVES)
-	{
-		++lives_max_;
-	}*/
-}
-
-
 void ControlPanel::SetHP(int value)
 {
 	digits_hp_.SetText(ConvertToDigits(value));
 }
 
 
-void ControlPanel::SetMoney(int value)
+void ControlPanel::SetGold(int value)
 {
-	digits_money_.SetText(ConvertToDigits(value));
+	digits_gold_.SetText(ConvertToDigits(value));
 }
 
 
@@ -71,10 +63,12 @@ void ControlPanel::Update(float frametime)
 void ControlPanel::Render(sf::RenderTarget& app) const
 {
 	app.Draw(background_);
-	//DrawLives(app);
 	app.Draw(info_text_);
-	app.Draw(digits_money_);
+
+	app.Draw(icon_hp_);
 	app.Draw(digits_hp_);
+	app.Draw(icon_gold_);
+	app.Draw(digits_gold_);
 }
 
 
@@ -82,23 +76,23 @@ ControlPanel::ControlPanel()
 {
 	const MediaManager& media = MediaManager::GetInstance();
 
-	font_digits_ = &GET_BITMAP_FONT("digits");
+	font_digits_ = &media.GetBitmapFont("digits");
+	// hp
+	icon_hp_.SetImage(media.GetImage("panel-hp"));
+	icon_hp_.SetPosition(HP_ICON_ORIGIN);
 	digits_hp_.SetFont(*font_digits_);
 	digits_hp_.SetPosition(HP_ORIGIN);
-	digits_money_.SetFont(*font_digits_);
-	digits_money_.SetPosition(MONEY_ORIGIN);
+
+	// gold
+	icon_gold_.SetImage(media.GetImage("panel-gold"));
+	icon_gold_.SetPosition(GOLD_ICON_ORIGIN);
+	digits_gold_.SetFont(*font_digits_);
+	digits_gold_.SetPosition(GOLD_ORIGIN);
+
 	info_text_.SetFont(media.GetBitmapFont("mono12-black"));
 	info_text_.SetPosition(INFOTEXT_ORIGIN);
 
 	background_.SetImage(media.GetImage("panel-background"));
-	background_.Resize(640, HEIGHT_PX);
-
-	/*lives_.SetImage(GET_IMG("panel-hearth"));
-	lives_.SetSubRect(sf::IntRect(0, 0, 14, 14));*/
-
-	blink_timer_ = 0.f;
-	blink_frame_ = true;
-	blink_sound_.SetBuffer(GET_SOUNDBUF("danger-beep"));
 
 	inventory_ = new WinInventory();
 
@@ -108,7 +102,6 @@ ControlPanel::ControlPanel()
 
 ControlPanel::~ControlPanel()
 {
-	blink_sound_.Stop();
 	delete inventory_;
 }
 

@@ -82,6 +82,12 @@ void Unit::SetHP(int hp)
 }
 
 
+int Unit::GetHP() const
+{
+	return hp_;
+}
+
+
 void Unit::SetAnimation(Direction dir, const Animation* anim)
 {
 	walk_anims_[dir] = anim;

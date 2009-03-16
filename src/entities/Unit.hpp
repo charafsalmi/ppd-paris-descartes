@@ -19,16 +19,17 @@ public:
 	// inherited
 	bool IsDying() const;
 
-	void SetHP(int hp);
-
 	void SetAnimation(Direction dir, const Animation* anim);
+
+	void SetHP(int hp);
 
 protected:
 	virtual void AutoUpdate(float frametime) = 0;
 
 	// Animations de déplacement
 	const Animation* walk_anims_[COUNT_DIRECTION];
-	int hp_;
+
+	int GetHP() const;
 
 private:
 	void DyingUpdate(float frametime);
@@ -39,6 +40,7 @@ private:
 	};
 	Bleeding bleeding_;
 	float timer_;
+	int hp_;
 
 	void (Unit::*update_callback_)(float frametime);
 };

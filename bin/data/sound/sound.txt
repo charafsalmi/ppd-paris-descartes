@@ -1,1 +1,4 @@
-danger-beep.ogg
+bow-shot.wav
+player-damage.wav
+mob-damage.wav
+item-found.wav

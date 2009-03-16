@@ -17,6 +17,9 @@ public:
 	// inherited
 	void Kill();
 
+	// inherited
+	void TakeDamage(int damage);
+
 	void SetDirection(Direction dir);
 
 private:

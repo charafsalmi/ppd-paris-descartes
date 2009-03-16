@@ -10,10 +10,9 @@ Zone* Entity::zone_ = NULL;
 Entity::Entity(const sf::Vector2f& pos, const sf::Image& image)
 {
 	SetImage(image);
-	SetCenter(0, image.GetHeight()); // coin bas-gauche
 	SetPosition(pos);
-	floor_width_ = image.GetWidth();
-	floor_height_ = image.GetHeight();
+	floor_width_ = 0;
+	floor_height_ = 0;
 	dead_ = false;
 	id_ = -1;
 }

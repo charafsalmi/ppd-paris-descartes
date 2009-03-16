@@ -302,9 +302,7 @@
 	</tiles>
 	<music>default</music>
 	<decors>
-		<decor id="0" x="14" y="10" />
 		<decor id="0" x="11" y="14" />
-		<decor id="0" x="15" y="13" />
 	</decors>
 </zone>
 <zone>
@@ -410,6 +408,15 @@
  17  17  34 113   5 113 113 113 113 113 113  16  17  17  20  17  17  17  17  17 
 	</tiles>
 	<music>default</music>
+	<decors>
+		<decor id="0" x="2" y="9" />
+		<decor id="0" x="5" y="6" />
+		<decor id="0" x="14" y="10" />
+		<decor id="0" x="12" y="14" />
+		<decor id="0" x="15" y="13" />
+		<decor id="1" x="7" y="11" />
+		<decor id="2" x="9" y="11" />
+	</decors>
 </zone>
 <zone>
 	<tiles>

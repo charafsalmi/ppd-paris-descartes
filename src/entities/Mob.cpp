@@ -4,6 +4,7 @@
 #include "Hit.hpp"
 #include "Player.hpp"
 #include "../core/Zone.hpp"
+#include "../core/SoundSystem.hpp"
 #include "../core/Game.hpp"
 
 #define FIRE_RATE     (1 / 1.f)   // (1 / tirs par seconde)
@@ -13,7 +14,7 @@
 Mob::Mob(const sf::Vector2f& pos, const sf::Image& image, int hp, int speed) :
 	Unit(pos, image)
 {
-	hp_ = hp;
+	SetHP(hp);
 	speed_ = speed;
 	current_dir_ = RIGHT;
 	last_hit_ = 0;
@@ -96,6 +97,13 @@ void Mob::Kill()
 		zone_->AddItem(item_id, GetPosition().x, GetPosition().y);
 	}
 	Entity::Kill();
+}
+
+
+void Mob::TakeDamage(int damage)
+{
+	SoundSystem::GetInstance().PlaySound("mob-damage");
+	Unit::TakeDamage(damage);
 }
 
 

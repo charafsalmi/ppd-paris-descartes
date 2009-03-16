@@ -47,9 +47,14 @@ public:
 	// inherited
 	void TakeDamage(int damage);
 
-	//voir entity
+	//inherited
 	void ThrowHit();
 private:
+	/**
+	 * Convertir la position en pixels en position de tile
+	 */
+	void GetTilePosition(int& i, int& j);
+
 	// inherited
 	void AutoUpdate(float frametime);
 
@@ -72,7 +77,7 @@ private:
 	sf::IntRect subrects_not_moving_[COUNT_DIRECTION];
 	Direction current_dir_;
 	bool was_moving_;
-	bool locked_, falling_;
+	bool locked_;
 	const sf::Input& input_;
 	ControlPanel& panel_;
 
