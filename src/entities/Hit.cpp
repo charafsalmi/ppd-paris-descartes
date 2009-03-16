@@ -56,7 +56,7 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id
 void Hit::Update(float frametime)
 {
 	sf::FloatRect rect;
-	GetRect(rect);
+	GetCollideRect(rect);
 	if (!zone_->CanMove(rect))
 	{
 		update_callback_ = &Hit::DyingUpdate;

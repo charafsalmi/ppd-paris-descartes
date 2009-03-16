@@ -69,7 +69,7 @@ public:
 	}
 
 	/**
-	 * Obtenir le rectangle de contact avec le sol
+	 * Obtenir le rectangle à utiliser pour les déplacements
 	 * @param[out] rect: rectangle à définir
 	 */
 	inline void GetFloorRect(sf::FloatRect& rect) const
@@ -81,7 +81,10 @@ public:
 		rect.Top = pos.y - floor_height_;
 	}
 
-	inline void GetRect(sf::FloatRect& rect) const
+	/**
+	 * Obtenir le rectangle à utiliser pour les collisions
+	 */
+	virtual inline void GetCollideRect(sf::FloatRect& rect) const
 	{
 		rect.Left = GetPosition().x;
 		rect.Bottom = GetPosition().y;

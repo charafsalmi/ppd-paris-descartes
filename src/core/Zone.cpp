@@ -224,11 +224,11 @@ void Zone::Update(float frametime)
 	for (it1 = entities_.begin(); it1 != it_end; ++it1)
 	{
 		(**it1).Update(frametime);
-		(**it1).GetRect(rect1);
+		(**it1).GetCollideRect(rect1);
 		it2 = it1;
 		for (++it2; it2 != it_end; ++it2)
 		{
-			(**it2).GetRect(rect2);
+			(**it2).GetCollideRect(rect2);
 			if (rect1.Intersects(rect2))
 			{
 				(**it1).OnCollide(**it2);

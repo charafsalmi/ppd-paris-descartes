@@ -11,10 +11,14 @@ class Decor: public Entity
 public:
 	Decor(const sf::Vector2f& pos, const sf::Image& image);
 
+	// inherited
 	inline void TakeDamage(int damage)
 	{
 		(void) damage;
 	}
+
+	// inherited
+	void GetCollideRect(sf::FloatRect& rect) const;
 };
 
 #endif /* DECOR_HPP */
