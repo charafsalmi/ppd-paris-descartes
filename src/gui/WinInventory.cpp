@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "WinInventory.hpp"
+#include "ControlPanel.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../entities/Equipment.hpp"
 
@@ -20,9 +21,9 @@ WinInventory::WinInventory()
 	cursor_.coords.y = 0;
     cursor_.sprite.SetImage(GET_IMG("inventory-cursor"));
     cursor_.sprite.SetPosition(OFFSET_X, OFFSET_Y);
-    item1_=0;
-    item2_=0;
-    item3_=0;
+    item1_=-1;
+    item2_=-1;
+    item3_=-1;
 }
 
 WinInventory::~WinInventory()
@@ -100,26 +101,53 @@ void WinInventory::OnEvent(const sf::Event& event)
                 break;
             case sf::Key::A:
                 if(((WIDTH*y)+x)<last_item_){
-                    if(items_[(WIDTH*y)+x]->GetTypeID()==item2_)item2_=item1_;
-                    if(items_[(WIDTH*y)+x]->GetTypeID()==item3_)item3_=item1_;
-                    item1_=items_[(WIDTH*y)+x]->GetTypeID();
-                    cout << "[WinInventory]l'équipement d'ID " << item1_ << " à été associé au bouton A" << endl;
+                    if((WIDTH*y)+x==item2_){
+                        if(item1_!=(-1)) ControlPanel::GetInstance().SetItem2Rect(items_[item1_]->GetSubRect());
+                        else ControlPanel::GetInstance().SetItem2Rect(sf::IntRect(0,0,1,1));
+                        item2_=item1_;
+                    }
+                    if((WIDTH*y)+x==item3_){
+                        if(item1_!=(-1)) ControlPanel::GetInstance().SetItem3Rect(items_[item1_]->GetSubRect());
+                        else ControlPanel::GetInstance().SetItem3Rect(sf::IntRect(0,0,1,1));
+                        item3_=item1_;
+                    }
+                    item1_=(WIDTH*y)+x;
+                    ControlPanel::GetInstance().SetItem1Rect(items_[item1_]->GetSubRect());
+                    cout << "[WinInventory]l'équipement d'ID " << items_[item1_]->GetTypeID() << " à été associé au bouton A" << endl;
                 }
                 break;
             case sf::Key::Z:
                 if(((WIDTH*y)+x)<last_item_){
-                    if(items_[(WIDTH*y)+x]->GetTypeID()==item1_)item1_=item2_;
-                    if(items_[(WIDTH*y)+x]->GetTypeID()==item3_)item3_=item2_;
-                    item2_=items_[(WIDTH*y)+x]->GetTypeID();
-                    cout << "[WinInventory]l'équipement d'ID " << item2_ << " à été associé au bouton Z" << endl;
+                    if((WIDTH*y)+x==item1_){
+                        if(item2_!=(-1)) ControlPanel::GetInstance().SetItem1Rect(items_[item2_]->GetSubRect());
+                        else ControlPanel::GetInstance().SetItem1Rect(sf::IntRect(0,0,1,1));
+                        item1_=item2_;
+                    }
+                    if((WIDTH*y)+x==item3_){
+                        if(item2_!=(-1)) ControlPanel::GetInstance().SetItem3Rect(items_[item2_]->GetSubRect());
+                        else ControlPanel::GetInstance().SetItem3Rect(sf::IntRect(0,0,1,1));
+                        item3_=item2_;
+                    }
+                    item2_=(WIDTH*y)+x;
+                    ControlPanel::GetInstance().SetItem2Rect(items_[item2_]->GetSubRect());
+                    cout << "[WinInventory]l'équipement d'ID " << items_[item2_]->GetTypeID() << " à été associé au bouton A" << endl;
                 }
                 break;
             case sf::Key::E:
                 if(((WIDTH*y)+x)<last_item_){
-                    if(items_[(WIDTH*y)+x]->GetTypeID()==item1_)item1_=item3_;
-                    if(items_[(WIDTH*y)+x]->GetTypeID()==item2_)item2_=item3_;
-                    item3_=items_[(WIDTH*y)+x]->GetTypeID();
-                    cout << "[WinInventory]l'équipement d'ID " << item3_ << " à été associé au bouton E" << endl;
+                    if((WIDTH*y)+x==item1_){
+                        if(item3_!=(-1)) ControlPanel::GetInstance().SetItem1Rect(items_[item3_]->GetSubRect());
+                        else ControlPanel::GetInstance().SetItem1Rect(sf::IntRect(0,0,1,1));
+                        item1_=item3_;
+                    }
+                    if((WIDTH*y)+x==item2_){
+                        if(item3_!=(-1)) ControlPanel::GetInstance().SetItem2Rect(items_[item3_]->GetSubRect());
+                        else ControlPanel::GetInstance().SetItem2Rect(sf::IntRect(0,0,1,1));
+                        item2_=item3_;
+                    }
+                    item3_=(WIDTH*y)+x;
+                    ControlPanel::GetInstance().SetItem3Rect(items_[item3_]->GetSubRect());
+                    cout << "[WinInventory]l'équipement d'ID " << items_[item3_]->GetTypeID() << " à été associé au bouton A" << endl;
                 }
                 break;
             default:
@@ -136,14 +164,17 @@ void WinInventory::OnEvent(const sf::Event& event)
 }
 
 int WinInventory::GetItem1ID(){
-    return item1_;
+    if(item1_!=(-1)) return items_[item1_]->GetTypeID();
+    return 0;
 }
 
 int WinInventory::GetItem2ID(){
-    return item2_;
+    if(item2_!=(-1)) return items_[item2_]->GetTypeID();
+    return 0;
 }
 
 int WinInventory::GetItem3ID(){
-    return item3_;
+    if(item3_!=(-1)) return items_[item3_]->GetTypeID();
+    return 0;
 }
 

@@ -31,6 +31,12 @@ public:
 
 	void AddLifeSlot();
 
+	void SetItem1Rect(sf::IntRect);
+
+	void SetItem2Rect(sf::IntRect);
+
+	void SetItem3Rect(sf::IntRect);
+
 	inline WinInventory* GetInventory()
 	{
 		return inventory_;
@@ -61,6 +67,10 @@ private:
 
 	BitmapString digits_gold_;
 	sf::Sprite icon_gold_;
+
+	sf::Sprite item1_;
+	sf::Sprite item2_;
+	sf::Sprite item3_;
 };
 
 #endif /* CONTROLPANEL_HPP */

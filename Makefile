@@ -15,7 +15,7 @@ else
 endif
 
 # test gui_system
-WINDOW_TEST=yes
+WINDOW_TEST=no
 ifeq ($(WINDOW_TEST), yes)
 	CFLAGS += -DWINDOW_TEST
 endif
