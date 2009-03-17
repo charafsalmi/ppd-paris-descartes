@@ -2,6 +2,6 @@
 <mobs>
 	<mob id="0" name="Squelette" animation="squelette" hp="3" speed="60" />
 	<mob id="1" name="Rôdeur" animation="rodeur" hp="5" speed="80" />
-	<mob id="2" name="Mandarine géante" animation="mandarine" hp="10" speed="100" />
+	<mob id="2" name="Mandarine géante" animation="mandarine" hp="8" speed="100" />
 </mobs>
 

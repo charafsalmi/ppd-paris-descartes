@@ -55,7 +55,7 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	max_lives_ = DEFAULT_LIVES;
 	panel_.SetHP(DEFAULT_LIVES);
 
-	money_ = 42;
+	money_ = 0;
 	panel_.SetGold(money_);
 
 	locked_ = false;

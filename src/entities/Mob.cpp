@@ -7,8 +7,10 @@
 #include "../core/SoundSystem.hpp"
 #include "../core/Game.hpp"
 
-#define FIRE_RATE     (1 / 1.f)   // (1 / tirs par seconde)
-#define DROP_LUCK     33          // percent
+#define FIRE_RATE          (1 / 1.f)   // (1 / tirs par seconde)
+#define DROP_LUCK          33          // percent
+#define WALK_MIN_DURATION  2.f
+#define WALK_MAX_DURATION  4.f
 
 
 Mob::Mob(const sf::Vector2f& pos, const sf::Image& image, int hp, int speed) :
@@ -16,44 +18,81 @@ Mob::Mob(const sf::Vector2f& pos, const sf::Image& image, int hp, int speed) :
 {
 	SetHP(hp);
 	speed_ = speed;
-	current_dir_ = RIGHT;
 	last_hit_ = 0;
-	// warning: animations non initialisées (rôle rempli par EntityFactory)
 }
 
 
 void Mob::AutoUpdate(float frametime)
 {
+	static const Game& game = Game::GetInstance();
 	sf::Vector2f pos = GetPosition();
+	int dx = 0, dy = 0;
+	sf::FloatRect player;
 	sf::FloatRect rect;
-	rect.Left = pos.x + speed_ * frametime;
+	game.GetPlayer()->GetCollideRect(player);
+	GetCollideRect(rect);
+	bool shot = false;
+	switch (current_dir_)
+	{
+		case UP:
+			dy = -speed_;
+			if (player.Bottom < rect.Top
+				&& ((player.Left < rect.Right && player.Left > rect.Left)
+				|| (player.Right < rect.Right && player.Right > rect.Left)))
+			{
+				shot = true;
+			}
+			break;
+		case DOWN:
+			if (player.Top > rect.Bottom
+				&& ((player.Left < rect.Right && player.Left > rect.Left)
+				|| (player.Right < rect.Right && player.Right > rect.Left)))
+			{
+				shot = true;
+			}
+			dy = speed_;
+			break;
+		case LEFT:
+			if (player.Right < rect.Left
+				&& ((player.Top < rect.Bottom && player.Top > rect.Top)
+				|| (player.Bottom < rect.Bottom && player.Bottom > rect.Top)))
+			{
+				shot = true;
+			}
+			dx = -speed_;
+			break;
+		case RIGHT:
+			if (player.Left > rect.Right
+				&& ((player.Top < rect.Bottom && player.Top > rect.Top)
+				|| (player.Bottom < rect.Bottom && player.Bottom > rect.Top)))
+			{
+				shot = true;
+			}
+			dx = speed_;
+			break;
+		default:
+			break;
+	}
+
+	pos.x += dx * frametime;
+	pos.y += dy * frametime;
+
+	rect.Left = pos.x;
 	rect.Bottom = pos.y;
 	rect.Right = rect.Left + GetFloorWidth();
 	rect.Top = rect.Bottom - GetFloorHeight();
-	if (zone_->CanMove(rect))
+	if (!zone_->CanMove(rect) ||
+		(game.GetElapsedTime() - started_at_) > walk_duration_)
 	{
-		Animated::Update(frametime, *this);
-		SetX(rect.Left);
-	}
-	else
-	{
-		speed_ *= -1;
-		if (current_dir_ == LEFT)
-		{
-			current_dir_ = RIGHT;
-		}
-		else
-		{
-			current_dir_ = LEFT;
-		}
-		Animated::Change(walk_anims_[current_dir_], *this);
+		// bloqué ou temps écoulé, on change de direciton
+		ChooseDirection();
 		return;
 	}
 
-	static const Game& game = Game::GetInstance();
-	Player* player = game.GetPlayer();
-	pos = player->GetPosition();
-	if ((pos.y < rect.Bottom && pos.y > rect.Top) || (pos.x > rect.Left && pos.x < rect.Right))
+	Animated::Update(frametime, *this);
+	SetPosition(pos.x, pos.y);
+	// doit-on tirer ?
+	if (shot)
 	{
 		ThrowHit();
 	}
@@ -68,16 +107,7 @@ void Mob::OnCollide(Entity& entity)
 	}
 	if (dynamic_cast<Hit*>(&entity) == NULL)
 	{
-		speed_ *= -1;
-		if (current_dir_ == LEFT)
-		{
-			current_dir_ = RIGHT;
-		}
-		else
-		{
-			current_dir_ = LEFT;
-		}
-		Animated::Change(walk_anims_[current_dir_], *this);
+		ChooseDirection();
 	}
 }
 
@@ -107,20 +137,22 @@ void Mob::TakeDamage(int damage)
 }
 
 
-void Mob::SetDirection(Direction dir)
-{
-	current_dir_ = dir;
-	Animated::Change(walk_anims_[current_dir_], *this);
-}
-
-
 void Mob::ThrowHit()
 {
 	float now = Game::GetInstance().GetElapsedTime();
 	if ((now - last_hit_) > FIRE_RATE)
 	{
 		sf::Vector2f pos(GetPosition().x + GetSize().x / 2, GetPosition().y - GetSize().y / 2);
-		zone_->AddEntity(new Hit(pos, 2, current_dir_, GetID()));
+		zone_->AddEntity(new Hit(pos, 1, current_dir_, GetID()));
 		last_hit_ = now;
 	}
+}
+
+
+void Mob::ChooseDirection()
+{
+	started_at_ = Game::GetInstance().GetElapsedTime();
+	current_dir_ = (Direction) sf::Randomizer::Random(0, COUNT_DIRECTION - 1);
+	walk_duration_ = sf::Randomizer::Random(WALK_MIN_DURATION, WALK_MAX_DURATION);
+	Animated::Change(walk_anims_[current_dir_], *this);
 }

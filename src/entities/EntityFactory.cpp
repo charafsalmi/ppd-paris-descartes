@@ -186,8 +186,8 @@ Unit* EntityFactory::BuildUnit(int id, const sf::Vector2f& position) const
 		{
 			mob->SetAnimation((Entity::Direction) i, unit.anim[i]);
 		}
-		mob->SetDirection(Entity::RIGHT);
 		mob->SetCenter(0, unit.anim[Entity::DOWN]->GetFrame(0).GetHeight());
+		mob->ChooseDirection();
 		return mob;
 	}
 

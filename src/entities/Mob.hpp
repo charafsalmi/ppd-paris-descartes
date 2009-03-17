@@ -20,7 +20,10 @@ public:
 	// inherited
 	void TakeDamage(int damage);
 
-	void SetDirection(Direction dir);
+	/**
+	 * Choisir une direction au hasard
+	 */
+	void ChooseDirection();
 
 private:
 	// inherited
@@ -30,6 +33,8 @@ private:
 	void ThrowHit();
 
 	float last_hit_;
+	float walk_duration_;
+	float started_at_;
 	int speed_;
 	Direction current_dir_;
 };

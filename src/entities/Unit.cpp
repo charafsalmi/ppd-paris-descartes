@@ -1,7 +1,7 @@
 #include "Unit.hpp"
 
 #define BLEED_DELAY 0.5f
-#define DYING_DELAY 3.5f
+#define DYING_DELAY 3.0f
 
 
 Unit::Unit(const sf::Vector2f& position, const sf::Image& image) :
