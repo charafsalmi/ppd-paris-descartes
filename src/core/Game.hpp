@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "ZoneContainer.hpp"
+#include "InputController.hpp"
 #include "../gui/ControlPanel.hpp"
 #include "../gui/MyWin.hpp"
 #include "../gui/WinPause.hpp"
@@ -89,30 +90,30 @@ private:
 	// callbacks
 
 	// méthodes InGame
-	void InGameOnEvent(const sf::Event& event);
+	void InGameOnEvent(const sf::Event& event, input::Action action);
 	void InGameShow();
 
 	// méthodes Inventory
-	void InventoryOnEvent(const sf::Event& event);
+	void InventoryOnEvent(const sf::Event& event, input::Action action);
 	void InventoryShow();
 
 	// méthode menu principal
-	void MainMenuOnEvent(const sf::Event& event);
+	void MainMenuOnEvent(const sf::Event& event, input::Action action);
 	void MainMenuUpdate(float frametime);
 	void MainMenuShow();
 
     // méthodes Pause
-	void PauseOnEvent(const sf::Event& event);
+	void PauseOnEvent(const sf::Event& event, input::Action action);
 	void PauseUpdate(float frametime);
 	void PauseShow();
 
 	// méthodes GameOver
-	void GameOverOnEvent(const sf::Event& event);
+	void GameOverOnEvent(const sf::Event& event, input::Action action);
 	void GameOverUpdate(float frametime);
 	void GameOverShow();
 
 	// méthodes MiniMap
-	void MiniMapOnEvent(const sf::Event& event);
+	void MiniMapOnEvent(const sf::Event& event, input::Action action);
 	void MiniMapShow();
 
 	// update générique
@@ -128,7 +129,7 @@ private:
 	void SetMode(Mode mode);
 
 	// pointeur de la méthode de gestion des évènements
-	void (Game::*on_event_meth_)(const sf::Event& event);
+	void (Game::*on_event_meth_)(const sf::Event& event, input::Action action);
 	// pointeur de la méthode de mise à jour
 	void (Game::*update_meth_)(float frametime);
 	// pointeur de la méthode d'affichage'
@@ -164,6 +165,7 @@ private:
 #endif
 	MiniMap* mini_map_;
 	sf::RenderWindow app_;
+	InputController& controller_;
 };
 
 #endif /* GAME_HPP */

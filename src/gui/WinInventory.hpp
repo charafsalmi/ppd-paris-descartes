@@ -2,10 +2,12 @@
 #define WININVENTORY_HPP
 
 #include "../gui_system/Window.hpp"
+#include "../core/InputController.hpp"
 
 class Equipment;
 
-class WinInventory : public gui::Window{
+class WinInventory : public gui::Window
+{
 public:
     WinInventory();
     ~WinInventory();
@@ -32,7 +34,7 @@ public:
     * Gère les évenements claviers relatifs au curseur et à l'assignation des touches
     * @param[in]event :l'évenement clavier
     */
-    void OnEvent(const sf::Event&);
+    void OnEvent(input::Action action);
 
     /**
     * Permet de connaitre l'ID du premier objet assignable
@@ -56,10 +58,6 @@ public:
 
 private:
     void Render(sf::RenderTarget&) const;
-
-
-
-
 
 
     int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2);

@@ -1,6 +1,7 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
+#include "../core/InputController.hpp"
 #include "../gui/ControlPanel.hpp"
 #include "Unit.hpp"
 
@@ -10,13 +11,13 @@
 class Player: public Unit
 {
 public:
-	Player(const sf::Vector2f& pos, const sf::Input& input);
+	Player(const sf::Vector2f& pos);
 
 	/**
 	 * Gérer un évènement clavier
 	 * @param[in] key: touche pressée
 	 */
-	void OnEvent(sf::Key::Code key);
+	void OnEvent(input::Action action);
 
 	/// inherited
 	void OnCollide(Entity& entity, const sf::FloatRect& overlap);
@@ -74,7 +75,7 @@ private:
     void UseItem(int);
 
 	// Keycodes des mouvements
-	sf::Key::Code move_keys_[COUNT_DIRECTION];
+	input::Action move_keys_[COUNT_DIRECTION];
 
 	const Animation* fall_anim_;
 
@@ -83,7 +84,6 @@ private:
 	Direction current_dir_;
 	bool was_moving_;
 	bool locked_;
-	const sf::Input& input_;
 	ControlPanel& panel_;
 
 	int max_lives_;

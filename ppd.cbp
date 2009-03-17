@@ -60,6 +60,8 @@
 		<Unit filename="src/core/Animation.hpp" />
 		<Unit filename="src/core/Game.cpp" />
 		<Unit filename="src/core/Game.hpp" />
+		<Unit filename="src/core/InputController.cpp" />
+		<Unit filename="src/core/InputController.hpp" />
 		<Unit filename="src/core/Main.cpp" />
 		<Unit filename="src/core/SoundSystem.cpp" />
 		<Unit filename="src/core/SoundSystem.hpp" />

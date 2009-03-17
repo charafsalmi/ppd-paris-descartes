@@ -20,9 +20,6 @@
 #define APP_STYLE  sf::Style::Titlebar | sf::Style::Close
 
 #define CONFIG_FILE "config/config.css"
-#define KEY_SCREENSHOT sf::Key::F1
-#define KEY_PAUSE      sf::Key::F11
-#define KEY_MINIMAP    sf::Key::F10
 
 
 Game& Game::GetInstance()
@@ -34,7 +31,8 @@ Game& Game::GetInstance()
 
 Game::Game() :
 	panel_(ControlPanel::GetInstance()),
-	message_(GET_BITMAP_FONT("retro"))
+	message_(GET_BITMAP_FONT("retro")),
+	controller_(InputController::GetInstance())
 {
 	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, APP_BPP), APP_TITLE, APP_STYLE);
 	app_.SetFramerateLimit(APP_FPS);
@@ -70,8 +68,8 @@ Game::Game() :
 		{
 			sf::Event event;
 			event.Type = sf::Event::KeyPressed;
-			event.Key.Code = sf::Key::PageDown;
-			InGameOnEvent(event);
+			event.Key.Code = sf::Key::PageDown; //dummy!
+			InGameOnEvent(event, input::PANEL_DOWN);
 		}
 
         config.ReadItem("verbosity", options_.verbosity);
@@ -108,7 +106,7 @@ Game::~Game()
 void Game::Init()
 {
 	clock_.Reset();
-	player_ = new Player(sf::Vector2f(300, 300), app_.GetInput());
+	player_ = new Player(sf::Vector2f(300, 300));
 
 	// chargement du conteneur de zones
 	zone_container_.Load(ZoneContainer::WORLD);
@@ -134,6 +132,7 @@ void Game::Init()
 int Game::Run()
 {
 	sf::Event event;
+	input::Action action;
 	float frametime;
     running_ = true;
 
@@ -146,27 +145,22 @@ int Game::Run()
 		// POLLING
 		while (app_.GetEvent(event))
 		{
-			(this->*on_event_meth_)(event);
-
 			// global events
-			if (event.Type == sf::Event::Closed)
+			if (controller_.GetAction(event, action))
 			{
-				running_ = false;
-			}
-			else if (event.Type == sf::Event::KeyPressed)
-			{
-				switch (event.Key.Code)
+				switch (action)
 				{
-					case KEY_SCREENSHOT:
-						TakeScreenshot("screenshot");
-						break;
-					case sf::Key::Escape:
+					case input::EXIT_APP:
 						running_ = false;
+						break;
+					case input::TAKE_SCREENSHOT:
+						TakeScreenshot("screenshot");
 						break;
 					default:
 						break;
 				}
 			}
+			(this->*on_event_meth_)(event, action);
 		}
 
 		// UPDATE
@@ -358,44 +352,41 @@ void Game::DefaultUpdate(float frametime)
 
 // IN_GAME
 
-void Game::InGameOnEvent(const sf::Event& event)
+void Game::InGameOnEvent(const sf::Event& event, input::Action action)
 {
 	sf::Key::Code key = event.Key.Code;
 #ifdef WINDOW_TEST
 	fen_.ManageEvent(event);
 #endif
-
-	if (event.Type == sf::Event::KeyPressed)
+	if (zone_container_.Scrolling())
 	{
-		if (zone_container_.Scrolling())
-		{
-			return;
-		}
-		switch (key)
-		{
-			case sf::Key::Return:
-				SetMode(INVENTORY);
-				break;
-			case sf::Key::PageUp:
-				panel_.SetPosition(0, 0);
-				zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
-				options_.panel_on_top = true;
-				break;
-			case sf::Key::PageDown:
-				panel_.SetPosition(0, Zone::HEIGHT_PX);
-				zone_container_.SetPosition(0, 0);
-				options_.panel_on_top = false;
-				break;
-			case KEY_PAUSE:
-				SetMode(PAUSE);
-				break;
-			case KEY_MINIMAP:
-				SetMode(MINI_MAP);
-				break;
-			default:
-				player_->OnEvent(key);
-				break;
-		}
+		return;
+	}
+
+	switch (action)
+	{
+		case input::SHOW_INVENTORY:
+			SetMode(INVENTORY);
+			break;
+		case input::PANEL_UP:
+			panel_.SetPosition(0, 0);
+			zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
+			options_.panel_on_top = true;
+			break;
+		case input::PANEL_DOWN:
+			panel_.SetPosition(0, Zone::HEIGHT_PX);
+			zone_container_.SetPosition(0, 0);
+			options_.panel_on_top = false;
+			break;
+		case input::PAUSE:
+			SetMode(PAUSE);
+			break;
+		case input::SHOW_MINIMAP:
+			SetMode(MINI_MAP);
+			break;
+		default:
+			player_->OnEvent(action);
+			break;
 	}
 }
 
@@ -420,15 +411,16 @@ void Game::InGameShow()
 
 // INVENTORY
 
-void Game::InventoryOnEvent(const sf::Event& event)
+void Game::InventoryOnEvent(const sf::Event& event, input::Action action)
 {
     // TODO: Evenement à déporter dans le gestionnaire de fenêtre
-	if ((event.Key.Code == sf::Key::Return) && (event.Type == sf::Event::KeyPressed))
+	if (action == input::SHOW_INVENTORY)
+	{
 		SetMode(IN_GAME);
-
+	}
 	if(panel_.GetInventory()->ManageEvent(event) == WinInventory::_CLOSE)
 	    SetMode(IN_GAME);
-    panel_.GetInventory()->OnEvent(event);
+    panel_.GetInventory()->OnEvent(action);
 }
 
 
@@ -441,18 +433,16 @@ void Game::InventoryShow()
 
 // PAUSE
 
-void Game::PauseOnEvent(const sf::Event& event)
+void Game::PauseOnEvent(const sf::Event& event, input::Action action)
 {
-	if (event.Type == sf::Event::KeyPressed)
+	if (action == input::PAUSE)
 	{
-		if (event.Key.Code == KEY_PAUSE)
-		{
-			SetMode(IN_GAME);
-			return;
-		}
+		SetMode(IN_GAME);
 	}
 	if (pause_.ManageEvent(event) == WinPause::_EXIT)
+	{
 		running_ = false;
+	}
 }
 
 
@@ -470,7 +460,7 @@ void Game::PauseShow()
 
 // GAME_OVER
 
-void Game::GameOverOnEvent(const sf::Event& event)
+void Game::GameOverOnEvent(const sf::Event& event, input::Action action)
 {
 	if (event.Type == sf::Event::KeyPressed)
 	{
@@ -483,9 +473,8 @@ void Game::GameOverOnEvent(const sf::Event& event)
 }
 
 
-void Game::GameOverUpdate(float frametime)
+void Game::GameOverUpdate(float)
 {
-	(void) frametime;
 }
 
 
@@ -497,14 +486,11 @@ void Game::GameOverShow()
 
 // MINI_MAP
 
-void Game::MiniMapOnEvent(const sf::Event& event)
+void Game::MiniMapOnEvent(const sf::Event& event, input::Action action)
 {
-	if (event.Type == sf::Event::KeyPressed)
+	if (action == input::SHOW_MINIMAP)
 	{
-		if (event.Key.Code == KEY_MINIMAP)
-		{
-			SetMode(IN_GAME);
-		}
+		SetMode(IN_GAME);
 	}
 }
 

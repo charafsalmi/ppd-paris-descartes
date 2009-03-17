@@ -16,9 +16,8 @@
 #define FIRE_RATE     (1 / 2.f)   // (1 / tirs par seconde)
 
 
-Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
+Player::Player(const sf::Vector2f& pos) :
 	Unit(pos, GET_IMG("player")),
-	input_(input),
 	panel_(ControlPanel::GetInstance())
 {
 	// valeurs magiques... surface de contact au sol
@@ -41,10 +40,10 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	subrects_not_moving_[RIGHT]	= sf::IntRect(96, 0, 128, 48);
 
 	// attribution des touches de déplacement
-	move_keys_[UP] = sf::Key::Up;
-	move_keys_[DOWN] = sf::Key::Down;
-	move_keys_[LEFT] = sf::Key::Left;
-	move_keys_[RIGHT] = sf::Key::Right;
+	move_keys_[UP] = input::MOVE_UP;
+	move_keys_[DOWN] = input::MOVE_DOWN;
+	move_keys_[LEFT] = input::MOVE_LEFT;
+	move_keys_[RIGHT] = input::MOVE_RIGHT;
 
 	// le joueur est de face par défaut
 	current_dir_ = DOWN;
@@ -72,19 +71,23 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 }
 
 
-void Player::OnEvent(sf::Key::Code key)
+void Player::OnEvent(input::Action action)
 {
 	// <DEBUG HACK>
 	int obj;
-	switch (key)
+	switch (action)
 	{
-		case sf::Key::A:
+
+		case input::USE_ITEM_1:
 			obj = panel_.GetInventory()->GetItem1ID();
 			if (obj == 0)
+			{
 				break;
+			}
 			std::cout << "[Player]le joueur utilise l'objet " << obj << std::endl;
 			UseItem(obj);
 			break;
+		/*
 		case sf::Key::Z:
 			obj = panel_.GetInventory()->GetItem2ID();
 			if (obj == 0)
@@ -99,29 +102,9 @@ void Player::OnEvent(sf::Key::Code key)
 			std::cout << "[Player]le joueur utilise l'objet " << obj << std::endl;
 			UseItem(obj);
 			break;
-		case sf::Key::Space:
-			switch (current_dir_)
-			{
-			case UP:
-				Animated::Change(&GET_ANIM("player_bow_up"), *this);
-				break;
-			case DOWN:
-				Animated::Change(&GET_ANIM("player_bow_down"), *this);
-				break;
-			case LEFT:
-				Animated::Change(&GET_ANIM("player_bow_left"), *this);
-				break;
-			case RIGHT:
-				Animated::Change(&GET_ANIM("player_bow_right"), *this);
-				break;
-			default:
-				break;
-			}
-			strategy_callback_ = &Player::UseBowUpdate;
-			started_action_ = Game::GetInstance().GetElapsedTime();
-			break;
+		*/
 		// position
-		case sf::Key::P:
+		/*case sf::Key::P:
 			std::cout << " [Player] position: " << GetPosition().x << ", " << GetPosition().y << ";\n";
 			break;
 		// afficher la tile sous nos pieds
@@ -164,7 +147,7 @@ void Player::OnEvent(sf::Key::Code key)
 			break;
 		default:
 			break;
-
+*/
 	}
 	// </DEBUG HACK>
 }
@@ -182,6 +165,7 @@ void Player::WalkUpdate(float frametime)
 		return;
 
 	static Game& game = Game::GetInstance();
+	static const InputController& input_ = InputController::GetInstance();
 	static int tile;
 	int i, j;
 	GetTilePosition(i, j);
@@ -216,7 +200,7 @@ void Player::WalkUpdate(float frametime)
 	Direction new_dir;
 	for (int dir = 0; dir < COUNT_DIRECTION; ++dir)
 	{
-		if (input_.IsKeyDown(move_keys_[dir]))
+		if (input_.HasInput(move_keys_[dir]))
 		{
 			moved = true;
 			new_dir = (Direction) dir;

@@ -1,10 +1,13 @@
 Quelques touches pour utiliser le jeu :
 
-Flèches directionnelles : Déplacer le joueur
-Espace : Lancer une flèche
+Flèches directionnelles : Déplacer le joueur, naviguer dans l'inventaire
+Espace : Utiliser l'objet 1
+A : Utiliser l'objet 2
+Z : Utiliser l'objet 3
 
 F1 : Prendre une capture d'écran
-F10 : Ouvrir la mini-carte
-F11 : Ouvrir le menu pause
+C : Ouvrir la mini-Carte
+P : Ouvrir le menu Pause
+I : Ouvrir l'Inventaire
 Escape : Quitter
 
