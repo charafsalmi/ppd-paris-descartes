@@ -7,13 +7,8 @@
 class Hit: public Entity
 {
 public:
-	enum Movement // ?
-	{
-		LINEAR, CIRCULAR
-	};
 
-
-	Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id_);
+	Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id_, HitType type);
 
 	// inherited
 	void Update(float frametime);
@@ -47,6 +42,7 @@ private:
 	float timer_;
 	bool rotate_when_dying_;
 	Direction direction_;
+	HitType hittype_;
 	int damage_;
 	float speed_;
 	int emitter_id_;

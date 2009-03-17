@@ -8,20 +8,23 @@
 #define SLOW_FACTOR       0.9
 
 
-Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id) :
+Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id, HitType type) :
 	Entity(position, GET_IMG("hits"))
 {
 	damage_ = damage;
-	/*
-	switch (move)
+    puts("creationhit");
+	switch (type)
 	{
 		case LINEAR:
+            puts("fleche");
 			update_callback_ = &Hit::MoveLinear;
 			break;
 		case CIRCULAR:
+            puts("epee");
 			update_callback_ = &Hit::MoveCircular;
 			break;
-	}*/
+	}
+
 	sf::IntRect subrect;
 	switch (dir)
 	{
@@ -41,8 +44,9 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id
 	default:
 		break;
 	}
-	update_callback_ = &Hit::MoveLinear;
+	//update_callback_ = &Hit::MoveLinear;
 	direction_ = dir;
+	hittype_=type;
 	speed_ = SPEED;
 	SetSubRect(subrect);
 	SetFloor(subrect.GetWidth(), subrect.GetHeight());
@@ -128,7 +132,23 @@ void Hit::MoveLinear(float frametime)
 
 void Hit::MoveCircular(float frametime)
 {
-	// TODO
+    switch (direction_)
+	{
+	case UP:
+		Rotate(ANGLE_PER_SECOND/2 * frametime);
+		break;
+	case DOWN:
+		Rotate(ANGLE_PER_SECOND/2 * frametime);
+		break;
+	case LEFT:
+		Rotate(ANGLE_PER_SECOND/2 * frametime);
+		break;
+	case RIGHT:
+		Rotate(ANGLE_PER_SECOND/2 * frametime);
+		break;
+	default:
+		break;
+	}
 }
 
 

@@ -16,6 +16,11 @@ public:
 		UP, DOWN, LEFT, RIGHT, COUNT_DIRECTION
 	};
 
+	enum HitType
+	{
+	    CIRCULAR, LINEAR
+	};
+
 	/**
 	 * @param[in] pos: position de l'entité (pixels)
 	 * @param[in] image: image du sprite

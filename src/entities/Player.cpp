@@ -309,6 +309,7 @@ void Player::UseBowUpdate(float frametime)
 	float now = Game::GetInstance().GetElapsedTime();
 	if ((now - started_action_) > use_bow_duration_)
 	{
+        hittype_ = CIRCULAR;
 		ThrowHit();
 		Animated::Change(walk_anims_[current_dir_], *this);
 		SetSubRect(subrects_not_moving_[current_dir_]); // ?
@@ -394,7 +395,7 @@ void Player::ThrowHit()
 	if ((now - last_hit_) > FIRE_RATE)
 	{
 		sf::Vector2f pos(GetPosition().x + GetSize().x / 2, GetPosition().y - GetSize().y / 2);
-		zone_->AddEntity(new PlayerHit(pos, 2, current_dir_, GetID()));
+		zone_->AddEntity(new PlayerHit(pos, 2, current_dir_, GetID(), hittype_));
 		last_hit_ = now;
 		SoundSystem::GetInstance().PlaySound("bow-shot");
 	}
