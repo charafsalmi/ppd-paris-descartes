@@ -10,6 +10,7 @@ panel-hp.png
 panel-frags.png
 player.png
 rodeur.png
+blast.png
 splash-paris-descartes.jpg
 squelette.png
 tileset.png

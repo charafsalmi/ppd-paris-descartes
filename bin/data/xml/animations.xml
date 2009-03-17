@@ -29,4 +29,10 @@
 	<anim name="mandarine_walk_down" width="32" height="40" count="3" delay="0.2" x_offset="0" y_offset="40" />
 	<anim name="mandarine_walk_left" width="32" height="40" count="3" delay="0.2" x_offset="0" y_offset="80" />
 	<anim name="mandarine_walk_right" width="32" height="40" count="3" delay="0.2" x_offset="0" y_offset="120" />
+	
+	<!-- blast -->
+	<anim name="blast_walk_up" width="26.3" height="21" count="3" delay="0.2" x_offset="0" y_offset="0" />
+	<anim name="blast_walk_down" width="26.3" height="21" count="3" delay="0.2" x_offset="0" y_offset="21" />
+	<anim name="blast_walk_left" width="26.3" height="21" count="3" delay="0.2" x_offset="0" y_offset="42" />
+	<anim name="blast_walk_right" width="26.3" height="21" count="3" delay="0.2" x_offset="0" y_offset="63" />
 </animations>

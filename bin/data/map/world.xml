@@ -49,7 +49,7 @@
 	<music>default</music>
 	<entities>
 		<entity id="0" x="192" y="454" />
-		<entity id="0" x="400" y="320" />
+		<entity id="3" x="400" y="320" />
 	</entities>
 </zone>
 <zone>
