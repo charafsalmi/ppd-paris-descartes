@@ -19,7 +19,7 @@ public:
 	void Update(float frametime);
 
 	// inherited
-	virtual void OnCollide(Entity& entity);
+	virtual void OnCollide(Entity& entity, const sf::FloatRect& overlap);
 
 	// inherited
 	void TakeDamage(int damage);

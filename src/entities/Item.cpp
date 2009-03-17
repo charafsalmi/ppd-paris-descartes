@@ -1,4 +1,5 @@
 #include "Item.hpp"
+#include "EntityFactory.hpp"
 #include "Player.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../gui/ControlPanel.hpp"
@@ -20,19 +21,17 @@ void Item::OnCollide(Player& player)
 	static ControlPanel& panel = ControlPanel::GetInstance();
 	switch (type_id_)
 	{
-		// money
 		case 1:
-			player.AddMoney();
-			panel.PrintInfoText("argent ramasse");
-			Kill();
+			player.AddGold(1);
 			break;
-		// hearth
 		case 2:
-			player.AddLife();
-			panel.PrintInfoText("coeur ramasse");
-			Kill();
+			player.AddHP();
 			break;
 	}
+	std::string message = "trouve : ";
+	message += EntityFactory::GetInstance().GetItemName(type_id_);
+	panel.PrintInfoText(message);
+	Kill();
 }
 
 

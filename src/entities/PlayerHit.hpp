@@ -11,8 +11,8 @@ class PlayerHit: public Hit
 public:
 	PlayerHit(const sf::Vector2f position, int damage, Direction dir, int emitter_id_);
 
-	// inherited
-	void OnCollide(Entity& entity);
+	/// inherited
+	void OnCollide(Entity& entity, const sf::FloatRect& overlap);
 
 private:
 

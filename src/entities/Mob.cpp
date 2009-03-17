@@ -99,9 +99,9 @@ void Mob::AutoUpdate(float frametime)
 }
 
 
-void Mob::OnCollide(Entity& entity)
+void Mob::OnCollide(Entity& entity, const sf::FloatRect& overlap)
 {
-	if (IsDying())
+	if (IsDying() || entity.IsDying())
 	{
 		return;
 	}

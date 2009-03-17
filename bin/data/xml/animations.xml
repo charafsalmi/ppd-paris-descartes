@@ -7,10 +7,10 @@
 	<anim name="player_walk_right" width="32" height="48" count="8" delay="0.125" x_offset="0" y_offset="192" />
 	<anim name="player_fall" width="48" height="48" count="6" delay="0.2" x_offset="0" y_offset="432" />
 	
-	<anim name="player_bow_up" width="48" height="48" count="3" delay="0.2" x_offset="256" y_offset="48" />
-	<anim name="player_bow_down" width="48" height="48" count="3" delay="0.2" x_offset="256" y_offset="96" />
-	<anim name="player_bow_left" width="48" height="48" count="3" delay="0.2" x_offset="256" y_offset="144" />
-	<anim name="player_bow_right" width="48" height="48" count="3" delay="0.2" x_offset="256" y_offset="192" />
+	<anim name="player_bow_up" width="48" height="48" count="3" delay="0.15" x_offset="256" y_offset="48" />
+	<anim name="player_bow_down" width="48" height="48" count="3" delay="0.15" x_offset="256" y_offset="96" />
+	<anim name="player_bow_left" width="48" height="48" count="3" delay="0.15" x_offset="256" y_offset="144" />
+	<anim name="player_bow_right" width="48" height="48" count="3" delay="0.15" x_offset="256" y_offset="192" />
 	
 	<!-- squelette -->
 	<anim name="squelette_walk_up" width="32" height="52" count="2" delay="0.2" x_offset="0" y_offset="0" />

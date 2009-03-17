@@ -11,13 +11,13 @@ class Mob: public Unit
 public:
 	Mob(const sf::Vector2f& pos, const sf::Image& image, int hp, int speed);
 
-	// inherited
-	void OnCollide(Entity& entity);
+	/// inherited
+	void OnCollide(Entity& entity, const sf::FloatRect& overlap);
 
-	// inherited
+	/// inherited
 	void Kill();
 
-	// inherited
+	/// inherited
 	void TakeDamage(int damage);
 
 	/**
@@ -26,10 +26,10 @@ public:
 	void ChooseDirection();
 
 private:
-	// inherited
+	/// inherited
 	void AutoUpdate(float frametime);
 
-	// inherited
+	/// inherited
 	void ThrowHit();
 
 	float last_hit_;

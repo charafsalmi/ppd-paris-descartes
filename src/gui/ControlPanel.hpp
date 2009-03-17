@@ -23,19 +23,26 @@ public:
 	void Update(float frametime);
 
 	/**
-	 * Indiquer le nombre de points de vie affiché
+	 * Indiquer le nombre de points de vie à afficher
 	 */
 	void SetHP(int value);
 
+	/**
+	 * Indiquer le montant d'or à afficher
+	 */
 	void SetGold(int value);
 
-	void AddLifeSlot();
+	/**
+	 * Indiquer le nombre de frags
+	 * @param[in] frag_count: total de frag
+	 */
+	void SetFragCount(int frag_count);
 
-	void SetItem1Rect(sf::IntRect);
+	void SetItem1Rect(const sf::IntRect& rect);
 
-	void SetItem2Rect(sf::IntRect);
+	void SetItem2Rect(const sf::IntRect& rect);
 
-	void SetItem3Rect(sf::IntRect);
+	void SetItem3Rect(const sf::IntRect& rect);
 
 	inline WinInventory* GetInventory()
 	{
@@ -67,6 +74,9 @@ private:
 
 	BitmapString digits_gold_;
 	sf::Sprite icon_gold_;
+
+	BitmapString digits_frags_;
+	sf::Sprite icon_frags_;
 
 	sf::Sprite item1_;
 	sf::Sprite item2_;

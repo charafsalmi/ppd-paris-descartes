@@ -49,7 +49,7 @@ namespace gui{
         /// Récupère le contenu du composant selon son type
         /// @param[in] id Identifiant du contrôle
         /// @return Texte à récuperer
-        std::string & GetControlText(Control::ControlID id);
+        std::string GetControlText(Control::ControlID id);
 
         /// Change le contenu d'un composant
         /// @param[in] id Identifiant du contrôle

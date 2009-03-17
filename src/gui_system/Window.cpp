@@ -305,14 +305,8 @@ void Window::SetControlText(Control::ControlID id, const string &s){
     }
 }
 
-string & Window::GetControlText(Control::ControlID id){
-    string s;
+std::string Window::GetControlText(Control::ControlID id){
     Control *c = GetFromID(id);
 
-    if(c != NULL){
-        s = c->GetText();
-    }else{
-        s = "";
-    }
-    return s;
+    return c != NULL ? c->GetText() : "";
 }

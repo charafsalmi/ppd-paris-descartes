@@ -18,15 +18,13 @@ Entity::Entity(const sf::Vector2f& pos, const sf::Image& image)
 }
 
 
-void Entity::Update(float frametime)
+void Entity::Update(float)
 {
-	(void) frametime;
 }
 
 
-void Entity::OnCollide(Entity& entity)
+void Entity::OnCollide(Entity&, const sf::FloatRect&)
 {
-	(void) entity;
 }
 
 
@@ -62,7 +60,7 @@ void Entity::SetActiveZone(Zone* zone)
 
 /*bool Entity::MoveRandomly(float frametime)
 {
-	return Move((Direction) sf::Randomizer::Random(0, COUNT_DIRECTION),
+	return Move((Direction) sf::Randomizer::Random(0, COUNT_DIRECTION - 1),
 		frametime);
 }*/
 

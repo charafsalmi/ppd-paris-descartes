@@ -7,6 +7,7 @@ hits.png
 panel-background.jpg
 panel-gold.png
 panel-hp.png
+panel-frags.png
 player.png
 rodeur.png
 splash-paris-descartes.jpg

@@ -1,4 +1,5 @@
 #include "Equipment.hpp"
+#include "EntityFactory.hpp"
 #include "../gui/ControlPanel.hpp"
 
 
@@ -15,6 +16,8 @@ void Equipment::OnCollide(Player& player)
 	(void) player;
 	Equipment* clone = new Equipment(*this);
 	panel.GetInventory()->AddItem(clone);
-	panel.PrintInfoText("Equipement trouve");
+	std::string message = "equipement trouve : ";
+	message += EntityFactory::GetInstance().GetItemName(GetTypeID());
+	panel.PrintInfoText(message);
 	Kill();
 }

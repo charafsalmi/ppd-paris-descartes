@@ -65,7 +65,7 @@ void Hit::Update(float frametime)
 }
 
 
-void Hit::OnCollide(Entity& entity)
+void Hit::OnCollide(Entity& entity, const sf::FloatRect&)
 {
 	if (IsDying() || entity.IsDying())
 	{

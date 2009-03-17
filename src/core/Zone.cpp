@@ -221,7 +221,7 @@ void Zone::Update(float frametime)
 
 	// collisions avec les entités
 	it_end = entities_.end();
-	sf::FloatRect rect1, rect2;
+	sf::FloatRect rect1, rect2, overlap;
 	for (it1 = entities_.begin(); it1 != it_end; ++it1)
 	{
 		(**it1).Update(frametime);
@@ -230,10 +230,10 @@ void Zone::Update(float frametime)
 		for (++it2; it2 != it_end; ++it2)
 		{
 			(**it2).GetCollideRect(rect2);
-			if (rect1.Intersects(rect2))
+			if (rect1.Intersects(rect2, &overlap))
 			{
-				(**it1).OnCollide(**it2);
-				(**it2).OnCollide(**it1);
+				(**it1).OnCollide(**it2, overlap);
+				(**it2).OnCollide(**it1, overlap);
 			}
 		}
 	}

@@ -6,15 +6,20 @@
 #include "../misc/Misc.hpp"
 
 
-#define INFOTEXT_ORIGIN sf::Vector2f(400, 24)
-#define HP_ICON_ORIGIN  sf::Vector2f(200, 16)
-#define HP_ORIGIN       sf::Vector2f(240, 24)
-#define GOLD_ICON_ORIGIN sf::Vector2f(300, 16)
-#define GOLD_ORIGIN    sf::Vector2f(340, 24)
+#define INFOTEXT_ORIGIN  sf::Vector2f(422, 24)
+
+#define HP_ICON_ORIGIN    sf::Vector2f(160, 16)
+#define HP_TEXT_ORIGIN    sf::Vector2f(200, 24)
+#define GOLD_ICON_ORIGIN  sf::Vector2f(250, 16)
+#define GOLD_TEXT_ORIGIN  sf::Vector2f(290, 24)
+#define FRAGS_ICON_ORIGIN sf::Vector2f(340, 16)
+#define FRAGS_TEXT_ORIGIN sf::Vector2f(380, 24)
+
 #define ITEM_X         40
 #define ITEM_Y         24
+#define ITEM_SPACING   34
 
-#define INFOTEXT_DELAY 4.0f
+#define INFOTEXT_DELAY 	 5.0f
 #define DRAW_OFFSET		 16	// Le même pour les sprites des vies et les chiffres
 
 
@@ -51,6 +56,12 @@ void ControlPanel::SetGold(int value)
 }
 
 
+void ControlPanel::SetFragCount(int frag_count)
+{
+	digits_frags_.SetText(ConvertToDigits(frag_count));
+}
+
+
 void ControlPanel::Update(float frametime)
 {
 	if (timer_info_text_ < INFOTEXT_DELAY)
@@ -74,6 +85,8 @@ void ControlPanel::Render(sf::RenderTarget& app) const
 	app.Draw(digits_hp_);
 	app.Draw(icon_gold_);
 	app.Draw(digits_gold_);
+	app.Draw(icon_frags_);
+	app.Draw(digits_frags_);
 }
 
 
@@ -86,28 +99,34 @@ ControlPanel::ControlPanel()
 	icon_hp_.SetImage(media.GetImage("panel-hp"));
 	icon_hp_.SetPosition(HP_ICON_ORIGIN);
 	digits_hp_.SetFont(*font_digits_);
-	digits_hp_.SetPosition(HP_ORIGIN);
+	digits_hp_.SetPosition(HP_TEXT_ORIGIN);
 
 	// gold
 	icon_gold_.SetImage(media.GetImage("panel-gold"));
 	icon_gold_.SetPosition(GOLD_ICON_ORIGIN);
 	digits_gold_.SetFont(*font_digits_);
-	digits_gold_.SetPosition(GOLD_ORIGIN);
+	digits_gold_.SetPosition(GOLD_TEXT_ORIGIN);
 
-	info_text_.SetFont(media.GetBitmapFont("mono12-black"));
+	// frags
+	icon_frags_.SetImage(media.GetImage("panel-frags"));
+	icon_frags_.SetPosition(FRAGS_ICON_ORIGIN);
+	digits_frags_.SetFont(*font_digits_);
+	digits_frags_.SetPosition(FRAGS_TEXT_ORIGIN);
+
+	info_text_.SetFont(media.GetBitmapFont("mono12-white"));
 	info_text_.SetPosition(INFOTEXT_ORIGIN);
 
 	background_.SetImage(media.GetImage("panel-background"));
 
-    sf::IntRect rect(0,0,1,1);
+    sf::IntRect rect(0, 0, 1, 1);
 	item1_.SetImage(media.GetImage("items"));
-	item1_.SetPosition(ITEM_X,ITEM_Y);
+	item1_.SetPosition(ITEM_X, ITEM_Y);
 	item1_.SetSubRect(rect);
 	item2_.SetImage(media.GetImage("items"));
-	item2_.SetPosition(ITEM_X+34,ITEM_Y);
+	item2_.SetPosition(ITEM_X + ITEM_SPACING, ITEM_Y);
 	item2_.SetSubRect(rect);
 	item3_.SetImage(media.GetImage("items"));
-	item3_.SetPosition(ITEM_X+68,ITEM_Y);
+	item3_.SetPosition(ITEM_X + ITEM_SPACING * 2, ITEM_Y);
 	item3_.SetSubRect(rect);
 
 	inventory_ = new WinInventory();
@@ -121,15 +140,21 @@ ControlPanel::~ControlPanel()
 	delete inventory_;
 }
 
-void ControlPanel::SetItem1Rect(sf::IntRect rect){
+
+void ControlPanel::SetItem1Rect(const sf::IntRect& rect)
+{
     item1_.SetSubRect(rect);
 }
 
-void ControlPanel::SetItem2Rect(sf::IntRect rect){
+
+void ControlPanel::SetItem2Rect(const sf::IntRect& rect)
+{
     item2_.SetSubRect(rect);
 }
 
-void ControlPanel::SetItem3Rect(sf::IntRect rect){
+
+void ControlPanel::SetItem3Rect(const sf::IntRect& rect)
+{
     item3_.SetSubRect(rect);
 }
 

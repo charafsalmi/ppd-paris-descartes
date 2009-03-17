@@ -30,9 +30,10 @@ public:
 
 	/**
 	 * Callback de détection de collision
-	 * @param[in, out] entity: entité à modifer suite à la collision
+	 * @param[in, out] entity: entité entrée en collision
+	 * @param[in] overlap: surface de la collision
 	 */
-	virtual void OnCollide(Entity& entity);
+	virtual void OnCollide(Entity& entity, const sf::FloatRect& overlap);
 
 	/**
 	 * Déplacer l'entité selon un angle donné

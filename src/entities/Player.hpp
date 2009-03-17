@@ -18,8 +18,8 @@ public:
 	 */
 	void OnEvent(sf::Key::Code key);
 
-	// inherited
-	void OnCollide(Entity& entity);
+	/// inherited
+	void OnCollide(Entity& entity, const sf::FloatRect& overlap);
 
 	/**
 	 * Verrouiller le joueur (plus de mises à jour possibles)
@@ -32,22 +32,27 @@ public:
 	void Unlock();
 
 	/**
-	 * Ajouter une vie
+	 * Ajouter un point de vie
 	 */
-	void AddLife();
+	void AddHP();
 
 	/**
-	 * Augmenter l'argent d'une unité
+	 * Incrémenter le compteur de frags
 	 */
-	void AddMoney();
+	void AddFrag();
 
-	// inherited
+	/**
+	 * Augmenter l'or du joueur
+	 */
+	void AddGold(int amount = 1);
+
+	/// inherited
 	void Kill();
 
-	// inherited
+	/// inherited
 	void TakeDamage(int damage);
 
-	//inherited
+	/// inherited
 	void ThrowHit();
 private:
 	/**
@@ -55,7 +60,7 @@ private:
 	 */
 	void GetTilePosition(int& i, int& j);
 
-	// inherited
+	/// inherited
 	void AutoUpdate(float frametime);
 
 	void WalkUpdate(float frametime);
@@ -83,6 +88,7 @@ private:
 
 	int max_lives_;
 	int money_;
+	int frags_;
 
 	float started_action_;
 	float falling_duration_;

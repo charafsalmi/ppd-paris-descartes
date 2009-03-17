@@ -191,7 +191,7 @@ Unit* EntityFactory::BuildUnit(int id, const sf::Vector2f& position) const
 		return mob;
 	}
 
-	OutputE << UF_S << "Impossible de faire apparaitre le mob, mauvaise id:" << id << lEnd;
+	OutputE << UF_S << "Impossible de faire apparaitre le mob, mauvais id:" << id << lEnd;
 	return NULL;
 }
 
@@ -218,15 +218,15 @@ Decor* EntityFactory::BuildDecor(int id, const sf::Vector2i& position) const
 		decor->SetFloor(subrect.GetWidth(), decor_p.block * Tile::SIZE);
 		return decor;
 	}
-	OutputE << UF_S << "Impossible de faire apparaitre le decor, mauvaise id:" << id << lEnd;
+	OutputE << UF_S << "Impossible de faire apparaitre le decor, mauvais id:" << id << lEnd;
 	return NULL;
 }
 
 
 Item* EntityFactory::BuildItem(int id, const sf::Vector2f& position) const
 {
+	// TODO: définition en XML
 	sf::IntRect subrect;
-	// TODO définition en XML
 	switch (id)
 	{
 		case 1:
@@ -242,5 +242,24 @@ Item* EntityFactory::BuildItem(int id, const sf::Vector2f& position) const
 			subrect = sf::IntRect(35, 15, 35 + 32, 15 + 32);
 			return new Equipment(id, position, subrect);
 	}
+	abort();
 	return NULL;
+}
+
+
+const char* EntityFactory::GetItemName(int id) const
+{
+	// TODO: définition en XML
+	switch (id)
+	{
+		case 1:
+			return "rubis";
+		case 2:
+			return "coeur de vie";
+		case 10:
+			return "epee";
+		case 11:
+			return "arc";
+	}
+	return "<no name>";
 }

@@ -58,6 +58,9 @@ Player::Player(const sf::Vector2f& pos, const sf::Input& input) :
 	money_ = 0;
 	panel_.SetGold(money_);
 
+	frags_ = 0;
+	panel_.SetFragCount(frags_);
+
 	locked_ = false;
 	last_hit_ = 0;
 
@@ -157,7 +160,7 @@ void Player::OnEvent(sf::Key::Code key)
 			TakeDamage(1);
 			break;
 		case sf::Key::F3:
-			AddLife();
+			AddHP();
 			break;
 		default:
 			break;
@@ -334,7 +337,7 @@ void Player::UseBowUpdate(float frametime)
 }
 
 
-void Player::OnCollide(Entity& entity)
+void Player::OnCollide(Entity& entity, const sf::FloatRect& overlap)
 {
 	if (typeid (entity) == typeid (Mob) && !entity.IsDying())
 	{
@@ -357,7 +360,7 @@ void Player::Unlock()
 }
 
 
-void Player::AddLife()
+void Player::AddHP()
 {
 	int hp = GetHP();
 	if (hp < max_lives_)
@@ -369,10 +372,17 @@ void Player::AddLife()
 }
 
 
-void Player::AddMoney()
+void Player::AddGold(int amount)
 {
-	++money_;
+	money_ += amount;
 	panel_.SetGold(money_);
+}
+
+
+void Player::AddFrag()
+{
+	++frags_;
+	panel_.SetFragCount(frags_);
 }
 
 

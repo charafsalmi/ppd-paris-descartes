@@ -1,7 +1,7 @@
-#include <typeinfo>
-
 #include "PlayerHit.hpp"
 #include "Player.hpp"
+#include "Mob.hpp"
+#include "../core/Game.hpp"
 
 
 PlayerHit::PlayerHit(const sf::Vector2f position, int damage, Direction dir, int emitter_id_) :
@@ -10,8 +10,15 @@ PlayerHit::PlayerHit(const sf::Vector2f position, int damage, Direction dir, int
 }
 
 
-void PlayerHit::OnCollide(Entity& entity)
+void PlayerHit::OnCollide(Entity& entity, const sf::FloatRect& overlap)
 {
-	Hit::OnCollide(entity);
-	// TODO: notifier le résultat à player ? (compteur de frags, etc.)
+	if (IsDying() || entity.IsDying())
+	{
+		return;
+	}
+	Hit::OnCollide(entity, overlap);
+	if (dynamic_cast<Mob*>(&entity) != NULL && entity.IsDying())
+	{
+		Game::GetInstance().GetPlayer()->AddFrag();
+	}
 }

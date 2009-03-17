@@ -191,8 +191,8 @@ void Game::TakeScreenshot(const char* directory)
 
 	filename = str_sprintf("%s/%s.png", directory, currentTime, t);
 
+	panel_.PrintInfoText("capture d'ecran prise");
 	app_.Capture().SaveToFile(filename);
-	Output << "Screenshot " << filename << " taken" << lEnd;
 }
 
 

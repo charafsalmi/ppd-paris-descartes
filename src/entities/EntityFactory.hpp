@@ -35,6 +35,11 @@ public:
 	 */
 	Item* BuildItem(int id, const sf::Vector2f& position) const;
 
+	/**
+	 * Obtenir le nom d'un item
+	 */
+	const char* GetItemName(int id) const;
+
 private:
 	EntityFactory();
 	EntityFactory(const EntityFactory& other);

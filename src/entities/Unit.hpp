@@ -10,13 +10,13 @@ class Unit: public Entity, public Animated
 public:
 	Unit(const sf::Vector2f& pos, const sf::Image& image);
 
-	// inherited
+	/// inherited
 	void Update(float frametime) ;
 
-	// inherited
+	/// inherited
 	void TakeDamage(int damage);
 
-	// inherited
+	/// inherited
 	bool IsDying() const;
 
 	void SetAnimation(Direction dir, const Animation* anim);
