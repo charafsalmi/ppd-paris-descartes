@@ -2,8 +2,6 @@
 #define GAME_HPP
 
 #include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-#include <unistd.h>
 
 #include "ZoneContainer.hpp"
 #include "InputController.hpp"
@@ -77,13 +75,6 @@ public:
 		return clock_.GetElapsedTime();
 	}
 
-	inline sf::Music& GetOgg()
-	{
-		return ogg_;
-	}
-
-	bool UpdateMusic(std::string filename);
-
 private:
 	Game();
 	Game(const Game&);
@@ -133,8 +124,6 @@ private:
 		IN_GAME, GAME_OVER, INVENTORY, PAUSE, MINI_MAP
 	};
 
-    //Mode mode_;
-
 	void SetMode(Mode mode);
 
 	// pointeur de la méthode de gestion des évènements
@@ -175,10 +164,6 @@ private:
 	MiniMap* mini_map_;
 	sf::RenderWindow app_;
 	InputController& controller_;
-
-	std::string currentMusicFileName_;
-	sf::Music ogg_;
-
 };
 
 #endif /* GAME_HPP */

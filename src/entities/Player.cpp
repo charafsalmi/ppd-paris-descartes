@@ -404,7 +404,7 @@ void Player::ThrowHit()
 
 void Player::UseItem(int code)
 {
-    switch(code)
+    switch (code)
     {
         case 10:
             break;

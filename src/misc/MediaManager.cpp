@@ -41,13 +41,21 @@ static void load_or_die(sf::SoundBuffer& buffer, const char* filename)
 }
 
 
+static void load_or_die(sf::Music*& music, const char* filename)
+{
+	std::string path(MUSIC_PATH);
+	music = new sf::Music;
+	if (!music->OpenFromFile(path + filename))
+	{
+		abort();
+	}
+	music->SetLoop(true);
+}
+
 // charger un buffer lié a une instance de la lib dumb ou un postfx
 static void load_or_die(std::string& out_name, const char* filename)
 {
-	out_name = filename; // WTF ?
-	/* TODO: Les objets Music et PostFX doivent être DANS le media manager,
-	comme pour les images et les buffers audio
-	*/
+	out_name = filename;
 }
 
 
@@ -120,12 +128,25 @@ const sf::SoundBuffer& MediaManager::GetSoundBuf(const char* key) const
 	return it->second;
 }
 
-#ifdef DUMB_MUSIC
-Music* MediaManager::GetMusic(const char* key) const
+
+sf::Music* MediaManager::GetMusic(const char* key)
 {
-	std::map<std::string, std::string>::const_iterator it;
+	std::map<std::string, sf::Music*>::iterator it;
 	it = musics_.find(key);
 	if (it == musics_.end())
+	{
+		std::cerr << "can't give you music file " << key << std::endl;
+		abort();
+	}
+	return it->second;
+}
+
+#ifdef DUMB_MUSIC
+Music* MediaManager::GetDumbMusic(const char* key) const
+{
+	std::map<std::string, std::string>::const_iterator it;
+	it = dumb_musics_.find(key);
+	if (it == dumb_musics_.end())
 	{
 		std::cerr << "can't give you music file " << key << std::endl;
 		abort();
@@ -135,28 +156,6 @@ Music* MediaManager::GetMusic(const char* key) const
 	Music* mus = new Music((path + it->second).c_str());
 	return mus;
 }
-
-
-/*Music* MediaManager::GetMusic(int id) const
-{
-	if(id > musics_.size())
-	{
-		puts("Music: off-bounded index");
-		abort();
-	}
-
-	std::map<std::string, std::string>::const_iterator it;
-	for (it = musics_.begin(); it != musics_.end() && --id; ++it) ;
-	if (it == musics_.end())
-	{
-		puts ("Whoops");
-		abort();
-	}
-
-	std::string path(MUSIC_PATH);
-	Music* mus = new Music((path + it->second).c_str());
-	return mus;
-}*/
 #endif
 
 const std::string& MediaManager::GetPostFX(const char* key) const
@@ -217,14 +216,13 @@ MediaManager::MediaManager()
 		abort();
 	}
 
-#ifdef DUMB_MUSIC
 	// chargement des musiques
 	if (!load_from_list(MUSIC_LIST, musics_))
 	{
 		std::cerr << "can't open music list: " << MUSIC_LIST << std::endl;
 		abort();
 	}
-#endif
+
 	// chargement des postfx
 	if (!load_from_list(FX_LIST, post_fx_))
 	{
@@ -294,5 +292,12 @@ MediaManager::~MediaManager()
 	{
 		delete it->second;
 		it->second = NULL;
+	}
+
+	std::map<std::string, sf::Music*>::iterator it2;
+	for (it2 = musics_.begin(); it2 != musics_.end(); ++it2)
+	{
+		delete it2->second;
+		it2->second = NULL;
 	}
 }

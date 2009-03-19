@@ -2,7 +2,7 @@ CC=g++
 CFLAGS= -Wall -Wextra -Wwrite-strings -ansi -pedantic
 LDFLAGS= -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
-EXEC=bin/ppd.exe
+EXEC=bin/ppd
 SRC= $(wildcard src/*/*.cpp)
 OBJ= $(SRC:.cpp=.o)
 

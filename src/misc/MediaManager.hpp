@@ -39,15 +39,20 @@ public:
 	 */
 	const sf::SoundBuffer& GetSoundBuf(const char* key) const;
 
+	/**
+	 * Récupérer une musique
+	 * @param[in] key: identifiant de la musique
+	 * @return adresse de la musique
+	 */
+	sf::Music* GetMusic(const char* key);
+
 #ifdef DUMB_MUSIC
 	/**
 	 * Obtenir une musique
 	 * @param[in] key: identifiant de la musique
 	 * @return pointeur sur la musique
 	 */
-	Music* GetMusic(const char* key) const;
-
-	//Music* GetMusic(int id) const;
+	Music* GetDumbMusic(const char* key) const;
 #endif
 
 	const std::string& GetPostFX(const char* key) const;
@@ -77,8 +82,9 @@ private:
 	std::map<std::string, sf::SoundBuffer> sounds_;
 	std::map<std::string, Animation> animations_;
 	std::map<std::string, BitmapFont*> fonts_;
+	std::map<std::string, sf::Music*> musics_;
 #ifdef DUMB_MUSIC
-	std::map<std::string, std::string> musics_;
+	std::map<std::string, std::string> dumb_musics_;
 #endif
 	std::map<std::string, std::string> post_fx_;
 };
@@ -97,15 +103,10 @@ inline const sf::SoundBuffer& GET_SOUNDBUF(const char* key)
 }
 
 #ifdef DUMB_MUSIC
-inline Music* GET_MUSIC(const char* key)
+inline Music* GET_DUMB_MUSIC(const char* key)
 {
 	return MediaManager::GetInstance().GetMusic(key);
 }
-
-/*inline Music* GET_MUSIC(int id)
-{	// Plus compact, pour utilisation dans les zones. Premier index: 1.
-	return MediaManager::GetInstance().GetMusic(id);
-}*/
 #endif
 
 

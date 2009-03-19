@@ -13,7 +13,7 @@
 #define BUFFER_SIZE    SAMPLING_RATE / BUFFER_LENGTH
 
 /**
- * Musique chargee avec libdumb (.mod, .xm, .s3m, .it)
+ * Musique chargée avec libdumb (.mod, .xm, .s3m, .it)
  */
 class Music : public sf::SoundStream
 {

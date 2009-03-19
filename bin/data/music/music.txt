@@ -1,3 +1,2 @@
-zelda-chiptune.mod
-zelda-tavern.xm
-116.ogg
+game-over.ogg
+ingame.ogg
