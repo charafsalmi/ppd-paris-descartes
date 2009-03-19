@@ -127,14 +127,8 @@ int Game::Run() {
 	running_ = true;
 
 #ifdef DUMB_MUSIC
-	SetMusic(active_zone_->GetMusic());
+	//SetMusic(active_zone_->GetMusic());
 #endif
-	sf::Music ogg;
-	ogg.setLoop(true);
-	if (!ogg.OpenFromFile("data/music/116.ogg")) {
-		return -1;
-	}
-	ogg.Play();
 	while (running_) {
 		// POLLING
 		while (app_.GetEvent(event)) {
@@ -152,6 +146,7 @@ int Game::Run() {
 				}
 			}
 			(this ->* on_event_meth_)(event, action);
+			UpdateMusic("data/music/116.ogg");
 		}
 
 		// UPDATE

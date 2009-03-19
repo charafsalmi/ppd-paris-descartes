@@ -2,6 +2,8 @@
 #define GAME_HPP
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+#include <unistd.h>
 
 #include "ZoneContainer.hpp"
 #include "InputController.hpp"
@@ -73,6 +75,25 @@ public:
 	inline float GetElapsedTime() const
 	{
 		return clock_.GetElapsedTime();
+	}
+
+	inline bool UpdateMusic(std::string filename)
+	{
+		if(access(filename.c_str(), R_OK))
+			return false;
+
+		if(filename != currentMusicFileName_)
+		{
+			if(ogg_.OpenFromFile(filename))
+			{
+				ogg_.SetLoop(true);
+				ogg_.Play();
+				currentMusicFileName_ = filename;
+				std::cout << "[Music] Play : " << filename << std::endl;
+				return true;
+			}
+
+		}
 	}
 
 private:
@@ -166,6 +187,10 @@ private:
 	MiniMap* mini_map_;
 	sf::RenderWindow app_;
 	InputController& controller_;
+
+	std::string currentMusicFileName_;
+	sf::Music ogg_;
+
 };
 
 #endif /* GAME_HPP */
