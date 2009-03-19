@@ -146,7 +146,7 @@ int Game::Run() {
 				}
 			}
 			(this ->* on_event_meth_)(event, action);
-			UpdateMusic("data/music/116.ogg");
+			UpdateMusic("data/music/001.ogg");
 		}
 
 		// UPDATE
@@ -227,6 +227,25 @@ void Game::Teleport(const Zone::Teleporter& tp) {
 	player_->SetPosition(x, y);
 }
 
+bool Game::UpdateMusic(std::string filename)
+{
+	if(access(filename.c_str(), R_OK))
+		return false;
+
+	if(filename != currentMusicFileName_)
+	{
+		if(ogg_.OpenFromFile(filename))
+		{
+			ogg_.SetLoop(true);
+			ogg_.Play();
+			currentMusicFileName_ = filename;
+			std::cout << "[Music] Play : " << filename << std::endl;
+			return true;
+		}
+
+	}
+}
+
 #ifdef DUMB_MUSIC
 void Game::SetMusic(int value)
 {
@@ -258,6 +277,7 @@ void Game::SetMusic(int value)
 #endif
 
 void Game::EndGame() {
+	UpdateMusic("data/music/116.ogg");
 	message_.SetText(
 			"Tu n'es pas le digne fils de Chuck Norris (Enter pour rejouer)");
 	message_.SetPosition(10, 250);

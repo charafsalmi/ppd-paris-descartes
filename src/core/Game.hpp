@@ -77,24 +77,12 @@ public:
 		return clock_.GetElapsedTime();
 	}
 
-	inline bool UpdateMusic(std::string filename)
+	inline sf::Music& GetOgg()
 	{
-		if(access(filename.c_str(), R_OK))
-			return false;
-
-		if(filename != currentMusicFileName_)
-		{
-			if(ogg_.OpenFromFile(filename))
-			{
-				ogg_.SetLoop(true);
-				ogg_.Play();
-				currentMusicFileName_ = filename;
-				std::cout << "[Music] Play : " << filename << std::endl;
-				return true;
-			}
-
-		}
+		return ogg_;
 	}
+
+	bool UpdateMusic(std::string filename);
 
 private:
 	Game();
