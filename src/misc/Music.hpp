@@ -13,18 +13,18 @@
 #define BUFFER_SIZE    SAMPLING_RATE / BUFFER_LENGTH
 
 /**
- * Musique chargée avec libdumb (.mod, .xm, .s3m, .it)
+ * Musique chargee avec libdumb (.mod, .xm, .s3m, .it)
  */
 class Music : public sf::SoundStream
 {
 public:
 	Music(const char* filename);
 	~Music();
-	
+
 	bool OnStart();
-	
+
 	bool OnGetData(Chunk& data);
-	
+
 private:
 	sf::Int16 samples_[BUFFER_SIZE * N_CHANNELS];
 
