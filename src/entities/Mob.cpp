@@ -145,6 +145,7 @@ void Mob::ThrowHit()
 		sf::Vector2f pos(GetPosition().x + GetSize().x / 2, GetPosition().y - GetSize().y / 2);
 		zone_->AddEntity(new Hit(pos, 1, current_dir_, GetID(), LINEAR));
 		last_hit_ = now;
+		SoundSystem::GetInstance().PlaySound("arrow-shot");
 	}
 }
 

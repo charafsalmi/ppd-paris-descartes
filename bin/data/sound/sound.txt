@@ -2,3 +2,4 @@ bow-shot.wav
 player-damage.wav
 mob-damage.wav
 item-found.wav
+arrow-shot.wav

@@ -274,6 +274,7 @@ void Player::WalkUpdate(float frametime)
 	{
 		was_moving_ = false;
 		SetSubRect(subrects_not_moving_[current_dir_]);
+		//Son : on s'arrete
 	}
 }
 
@@ -397,7 +398,7 @@ void Player::ThrowHit()
 		sf::Vector2f pos(GetPosition().x + GetSize().x / 2, GetPosition().y - GetSize().y / 2);
 		zone_->AddEntity(new PlayerHit(pos, 2, current_dir_, GetID(), hittype_));
 		last_hit_ = now;
-		SoundSystem::GetInstance().PlaySound("bow-shot");
+		SoundSystem::GetInstance().PlaySound("arrow-shot");
 	}
 }
 
