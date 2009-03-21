@@ -78,9 +78,15 @@ private:
 	BitmapString digits_frags_;
 	sf::Sprite icon_frags_;
 
+    sf::Shape  item1_cadre_;
 	sf::Sprite item1_;
+	sf::Shape  item2_cadre_;
 	sf::Sprite item2_;
+	sf::Shape  item3_cadre_;
 	sf::Sprite item3_;
+
+	/// Visage du personnage (pour meubler)
+	sf::Sprite head_;
 };
 
 #endif /* CONTROLPANEL_HPP */

@@ -39,7 +39,6 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="-Wextra" />
-			<Add option="-DSTART_ON_MENU" />
 		</Compiler>
 		<Linker>
 			<Add option="-lsfml-graphics" />

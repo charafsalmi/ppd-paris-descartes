@@ -76,9 +76,14 @@ void ControlPanel::Update(float frametime)
 void ControlPanel::Render(sf::RenderTarget& app) const
 {
 	app.Draw(background_);
+
+	app.Draw(item1_cadre_);
 	app.Draw(item1_);
+	app.Draw(item2_cadre_);
 	app.Draw(item2_);
+	app.Draw(item3_cadre_);
 	app.Draw(item3_);
+
 	app.Draw(info_text_);
 
 	app.Draw(icon_hp_);
@@ -122,12 +127,18 @@ ControlPanel::ControlPanel()
 	item1_.SetImage(media.GetImage("items"));
 	item1_.SetPosition(ITEM_X, ITEM_Y);
 	item1_.SetSubRect(rect);
+	// TODO: Enlever les nombres magiques
+	item1_cadre_ = sf::Shape::Rectangle(ITEM_X, ITEM_Y,ITEM_X+25, ITEM_Y+25,sf::Color::Color(128,64, 0), 1, sf::Color::Black);
+
 	item2_.SetImage(media.GetImage("items"));
 	item2_.SetPosition(ITEM_X + ITEM_SPACING, ITEM_Y);
 	item2_.SetSubRect(rect);
+	item2_cadre_ = sf::Shape::Rectangle(ITEM_X + ITEM_SPACING, ITEM_Y, ITEM_X+ ITEM_SPACING + 25, ITEM_Y+25,sf::Color::Color(128,64, 0), 1, sf::Color::Black);
+
 	item3_.SetImage(media.GetImage("items"));
 	item3_.SetPosition(ITEM_X + ITEM_SPACING * 2, ITEM_Y);
 	item3_.SetSubRect(rect);
+	item3_cadre_ = sf::Shape::Rectangle(ITEM_X + ITEM_SPACING * 2, ITEM_Y,ITEM_X + ITEM_SPACING * 2 + 25, ITEM_Y+25,sf::Color::Color(128,64, 0), 1, sf::Color::Black);
 
 	inventory_ = new WinInventory();
 
