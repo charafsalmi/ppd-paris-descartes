@@ -127,7 +127,6 @@ void Game::Init()
 
 	// InGame
 	SetMode(IN_GAME);
-	SoundSystem::GetInstance().PlayMusic("ingame");
 }
 
 
@@ -273,6 +272,7 @@ void Game::SetMode(Mode mode)
 			on_event_meth_ = &Game::InGameOnEvent;
 			update_meth_ = &Game::DefaultUpdate;
 			render_meth_ = &Game::InGameShow;
+
 			player_->Unlock();
 			break;
 		case INVENTORY:

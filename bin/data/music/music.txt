@@ -1,2 +1,6 @@
 game-over.ogg
 ingame.ogg
+default.ogg
+cave.ogg
+title.ogg
+waves.wav

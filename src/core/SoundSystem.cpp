@@ -50,7 +50,6 @@ void SoundSystem::PlayMusic(const char* music_name)
 	}
 }
 
-
 void SoundSystem::StopMusic()
 {
 	music_->Stop();

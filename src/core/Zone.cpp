@@ -36,6 +36,11 @@ void Zone::Load(const TiXmlHandle& handle)
 	static const Tileset& tileset = Tileset::GetInstance();
 	const TiXmlElement* elem = handle.FirstChildElement("tiles").Element();
 
+	//musique
+	music_name_ = handle.FirstChildElement("music").Element()->GetText();
+	std::cout << "[Zone] Chargement de zone, musique : " << music_name_ << std::endl;
+	SoundSystem::GetInstance().PlayMusic(music_name_.c_str());
+
 	std::istringstream all_tiles(elem->GetText());
 	for (int i = 0; i < HEIGHT; ++i)
 	{

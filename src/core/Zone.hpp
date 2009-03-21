@@ -31,7 +31,8 @@ public:
 	~Zone();
 
 	/**
-	 * Charger le contenu de la zone
+	 * Charger le contenu de la zone depuis un TiXMLHandle pointant sur son
+	 * fichier de configuration
 	 * @param[in] handle: nœud XML décrivant la zone
 	 */
 	void Load(const TiXmlHandle& handle);
@@ -83,6 +84,16 @@ public:
 	inline int GetTileAt(int x, int y) const
 	{
 		return tiles_[y][x];
+	}
+
+	/**
+	 * Obtenir le nom de la musique correspondant a cette zone depuis le fichier
+	 * de configuration XML
+	 * @return std::string
+	 */
+	inline std::string GetMusicName()
+	{
+		return music_name_;
 	}
 
 	/**
@@ -143,6 +154,8 @@ private:
 
 	std::vector<Tileset::AnimatedTile> animated_;
 	int last_id_;
+
+	std::string music_name_;
 };
 
 #endif /* ZONE_HPP */
