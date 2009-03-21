@@ -92,6 +92,8 @@ Game::~Game()
 
 	delete mini_map_;
 
+	// delete player_; ?
+
 	app_.Close();
 
 #ifdef DUMB_MUSIC
@@ -126,7 +128,11 @@ void Game::Init()
 	mini_map_->SetPlayerPosition(zone_container_.GetPlayerPosition());
 
 	// InGame
+	#ifdef START_ON_MENU
+	SetMode(MAIN_MENU);
+	#else
 	SetMode(IN_GAME);
+	#endif
 }
 
 
@@ -266,6 +272,13 @@ void Game::SetMode(Mode mode)
 	// initialisation des callbacks
 	switch (mode)
 	{
+	    case MAIN_MENU:
+            Output << "Passage en mode MAIN_MENU" << lEnd;
+
+            on_event_meth_ = &Game::MainMenuOnEvent;
+			update_meth_ = &Game::MainMenuUpdate;
+			render_meth_ = &Game::MainMenuShow;
+            break;
 		case IN_GAME:
 			Output << "Passage en mode INGAME" << lEnd;
 
@@ -315,7 +328,7 @@ void Game::DefaultUpdate(float frametime) {
 	zone_container_.Update(frametime);
 }
 
-// IN_GAME
+// IN_GAME /////////////////////////////////////////////////////////
 
 void Game::InGameOnEvent(const sf::Event& event, input::Action action)
 {
@@ -374,7 +387,7 @@ void Game::InGameShow()
 #endif
 }
 
-// INVENTORY
+// INVENTORY /////////////////////////////////////////////////////////
 
 void Game::InventoryOnEvent(const sf::Event& event, input::Action action)
 {
@@ -398,7 +411,7 @@ void Game::InventoryShow()
 	app_.Draw(*panel_.GetInventory());
 }
 
-// PAUSE
+// PAUSE /////////////////////////////////////////////////////////
 
 void Game::PauseOnEvent(const sf::Event& event, input::Action action)
 {
@@ -423,7 +436,7 @@ void Game::PauseShow()
 	app_.Draw(pause_);
 }
 
-// GAME_OVER
+// GAME_OVER /////////////////////////////////////////////////////////
 
 void Game::GameOverOnEvent(const sf::Event& event, input::Action action)
 {
@@ -449,7 +462,7 @@ void Game::GameOverShow()
 	app_.Draw(message_);
 }
 
-// MINI_MAP
+// MINI_MAP /////////////////////////////////////////////////////////
 
 void Game::MiniMapOnEvent(const sf::Event& event, input::Action action)
 {
@@ -465,4 +478,33 @@ void Game::MiniMapShow()
 	app_.Draw(zone_container_);
 	app_.Draw(panel_);
 	app_.Draw(*mini_map_);
+}
+
+// MAIN_MENU /////////////////////////////////////////////////////////
+
+void Game::MainMenuOnEvent(const sf::Event& event, input::Action action)
+{
+	int x = mmenu_.ManageEvent(event);
+
+	switch(x){
+	    case MainMenu::START_GAME:
+            OutputD << "Lancement du jeu !" << lEnd;
+            SetMode(IN_GAME);
+            break;
+        case MainMenu::EXIT_GAME:
+            OutputD << "On quitte le programme ..." << lEnd;
+            SetMode(IN_GAME);
+            running_ = false;
+            break;
+	}
+}
+
+void Game::MainMenuUpdate(float frametime)
+{
+
+}
+
+void Game::MainMenuShow()
+{
+	app_.Draw(mmenu_);
 }

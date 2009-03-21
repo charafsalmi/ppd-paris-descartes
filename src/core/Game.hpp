@@ -8,6 +8,7 @@
 #include "../gui/ControlPanel.hpp"
 #include "../gui/MyWin.hpp"
 #include "../gui/WinPause.hpp"
+#include "../gui/MainMenu.hpp"
 #include "../misc/Misc.hpp"
 #include "../misc/BitmapString.hpp"
 #include "../misc/Log.hpp"
@@ -97,9 +98,12 @@ private:
 	void InventoryOnEvent(const sf::Event& event, input::Action action);
 	void InventoryShow();
 
-	// méthode menu principal
+    /// Methode appelé lors d'un evenement dans le mode MAIN_MENU
+	/// @param[in] event Evenement a traiter
+	/// @param[in] action Action du joueur
 	void MainMenuOnEvent(const sf::Event& event, input::Action action);
 	void MainMenuUpdate(float frametime);
+	/// Methode appelé lors du rendu dans le mode MAIN_MENU
 	void MainMenuShow();
 
     // méthodes Pause
@@ -112,16 +116,20 @@ private:
 	void GameOverUpdate(float frametime);
 	void GameOverShow();
 
-	// méthodes MiniMap
+	/// Methode appelé lors d'un evenement dans le mode MINI_MAP
+	/// @param[in] event Evenement a traiter
+	/// @param[in] action Action du joueur
 	void MiniMapOnEvent(const sf::Event& event, input::Action action);
+	/// Methode appelé lors du rendu dans le mode MINI_MAP
 	void MiniMapShow();
 
-	// update générique
+	/// Mise à jour générique
 	void DefaultUpdate(float frametime);
 
+    /// Differents etats possible du jeu
 	enum Mode
 	{
-		IN_GAME, GAME_OVER, INVENTORY, PAUSE, MINI_MAP
+		MAIN_MENU, IN_GAME, GAME_OVER, INVENTORY, PAUSE, MINI_MAP
 	};
 
 	void SetMode(Mode mode);
@@ -148,6 +156,7 @@ private:
 	// coordonnées de la zone à activer si changement de conteneur
 	sf::Vector2i next_zone_cds_;
 
+    MainMenu mmenu_;
     WinPause pause_;
 	Player* player_;
 	ControlPanel& panel_;
