@@ -13,8 +13,11 @@
 #define APP_WIDTH  Zone::WIDTH_PX
 #define APP_HEIGHT (Zone::HEIGHT_PX + ControlPanel::HEIGHT_PX)
 #define APP_TITLE  "Epik"
-#define APP_STYLE  sf::Style::Titlebar | sf::Style::Close
+#define APP_STYLE  (sf::Style::Titlebar | sf::Style::Close)
+#define APP_BPP    32
+#define APP_FPS    60
 
+#define DEFAULT_VERBOSITY 5
 #define CONFIG_FILE "config/config.css"
 
 
@@ -29,11 +32,10 @@ Game::Game() :
 	message_(GET_BITMAP_FONT("retro")),
 	controller_(InputController::GetInstance())
 {
-    Log::SetLogger(new LogDebug());
-    if(LoadConfig(CONFIG_FILE))
-        abort();
+	Log::SetLogger(new LogDebug());
+	LoadConfig(CONFIG_FILE);
 
-	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, options_.bpp), APP_TITLE,APP_STYLE);
+	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, options_.bpp), APP_TITLE, APP_STYLE);
 	app_.SetFramerateLimit(options_.fps);
 
 	const sf::Image& icon = GET_IMG("icon");
@@ -49,13 +51,13 @@ Game::Game() :
 	Log::SetLogger(log_);
 #endif
 
-	zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
-    if (!options_.panel_on_top)
+	if (options_.panel_on_top)
+	{
+		zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
+	}
+    else
     {
-        sf::Event event;
-        event.Type = sf::Event::KeyPressed;
-        event.Key.Code = sf::Key::PageDown; //dummy!
-        InGameOnEvent(event, input::PANEL_DOWN);
+		panel_.SetPosition(0, Zone::HEIGHT_PX);
     }
 }
 
@@ -65,38 +67,35 @@ Game::~Game()
     SaveConfig(CONFIG_FILE);
 
 	delete mini_map_;
-
-	// delete player_; ?
-
 	app_.Close();
-
-#ifdef DUMB_MUSIC
-	SetMusic(-1);
-#endif
-
 #ifdef CONSOLE_TEST
 	delete log_;
 #endif
 }
 
-int Game::LoadConfig(const std::string & str)
-{
-    ConfigParser config;
 
-    Output << "loading " << CONFIG_FILE << "..." << lEnd;
-	if(!config.LoadFromFile(str.c_str()))
+bool Game::LoadConfig(const std::string & str)
+{
+	options_.bpp = APP_BPP;
+	options_.fps = APP_FPS;
+	options_.style = 0;
+	options_.verbosity = DEFAULT_VERBOSITY;
+
+	options_.panel_on_top = 1;
+
+	ConfigParser config;
+	Output << "loading " << CONFIG_FILE << "..." << lEnd;
+	if (!config.LoadFromFile(str.c_str()))
 	{
-	    OutputE << "Impossible de charger le fichier de configuration " << str.c_str() << lEnd;
-	    return 1;
+		OutputW << "utilisation de la configuration par défaut" << lEnd;
+		return false;
 	}
 
     // Engine options
     config.SeekSection("Engine");
-
     config.ReadItem("bpp", options_.bpp);
     config.ReadItem("style", options_.style);
     config.ReadItem("fps", options_.fps);
-
     config.ReadItem("verbosity", options_.verbosity);
     Log::SetVerboseLevel(options_.verbosity);
 
@@ -106,8 +105,9 @@ int Game::LoadConfig(const std::string & str)
     config.SeekSection("Settings");
     config.ReadItem("panel_on_top", options_.panel_on_top);
 
-	return 0;
+	return true;
 }
+
 
 void Game::SaveConfig(const std::string & str)
 {

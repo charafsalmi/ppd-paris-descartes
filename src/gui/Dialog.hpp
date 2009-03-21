@@ -1,7 +1,7 @@
 #ifndef DIALOG_HPP
 #define DIALOG_HPP
 
-#include "../gui_system/window.hpp"
+#include "../gui_system/Window.hpp"
 
 class Dialog : public gui::Window{
 public:

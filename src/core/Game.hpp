@@ -83,7 +83,7 @@ private:
 
 	/// Charge un fichier de configuration système
 	/// @param[in] str Nom du fichier de configuration
-	int LoadConfig(const std::string & str);
+	bool LoadConfig(const std::string & str);
 
     /// Sauvegarde un fichier de configuration système
 	/// @param[in] str Nom du fichier de configuration
