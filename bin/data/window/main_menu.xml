@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<window x="20" y="10" w="100" h="170" background="interface/test/background" alpha="128">
-	<button id="7771" pic="interface/test/button1" OnHover="interface/test/button1_inv" x="10" y="10" />
-	<button id="7772" pic="interface/test/button2" OnHover="interface/test/button2_inv" x="10" y="30" />
+<window x="0" y="0" w="640" h="572" background="interface/mmenu/background" alpha="128">
+	<button id="7771" pic="interface/mmenu/go" OnHover="interface/mmenu/go_h" x="224" y="245" w="270" h="49"/>
+	<button id="7772" pic="interface/mmenu/exit" OnHover="interface/mmenu/exit_h" x="222" y="321" />
 </window>

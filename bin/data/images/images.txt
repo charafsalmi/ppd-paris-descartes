@@ -27,6 +27,11 @@ interface/pause/boptions.png
 interface/pause/boptions_inv.png
 interface/pause/bquitter.png
 interface/pause/bquitter_inv.png
+interface/mmenu/background.png
+interface/mmenu/go.png
+interface/mmenu/go_h.png
+interface/mmenu/exit.png
+interface/mmenu/exit_h.png
 bitmap-font/retro.png
 bitmap-font/mono10-black.png
 bitmap-font/mono10-white.png
