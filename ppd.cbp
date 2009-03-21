@@ -49,8 +49,10 @@
 		</Linker>
 		<Unit filename="bin\config\config.css" />
 		<Unit filename="bin\data\images\images.txt" />
+		<Unit filename="bin\data\scripts\test.xml" />
 		<Unit filename="bin\data\window\console.xml" />
 		<Unit filename="bin\data\window\controlpanel.xml" />
+		<Unit filename="bin\data\window\dialog.xml" />
 		<Unit filename="bin\data\window\inventory.xml" />
 		<Unit filename="bin\data\window\main_menu.xml" />
 		<Unit filename="bin\data\window\pause.xml" />
@@ -65,6 +67,8 @@
 		<Unit filename="src\core\InputController.cpp" />
 		<Unit filename="src\core\InputController.hpp" />
 		<Unit filename="src\core\Main.cpp" />
+		<Unit filename="src\core\Script.cpp" />
+		<Unit filename="src\core\Script.hpp" />
 		<Unit filename="src\core\SoundSystem.cpp" />
 		<Unit filename="src\core\SoundSystem.hpp" />
 		<Unit filename="src\core\Tileset.cpp" />
@@ -95,6 +99,8 @@
 		<Unit filename="src\entities\Unit.hpp" />
 		<Unit filename="src\gui\ControlPanel.cpp" />
 		<Unit filename="src\gui\ControlPanel.hpp" />
+		<Unit filename="src\gui\Dialog.cpp" />
+		<Unit filename="src\gui\Dialog.hpp" />
 		<Unit filename="src\gui\Inventory.cpp" />
 		<Unit filename="src\gui\Inventory.hpp" />
 		<Unit filename="src\gui\MainMenu.cpp" />
