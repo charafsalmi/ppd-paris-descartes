@@ -15,9 +15,7 @@
 
 #define APP_WIDTH  Zone::WIDTH_PX
 #define APP_HEIGHT (Zone::HEIGHT_PX + ControlPanel::HEIGHT_PX)
-#define APP_BPP    32
-#define APP_FPS    60
-#define APP_TITLE  "PPD"
+#define APP_TITLE  "Epik"
 #define APP_STYLE  sf::Style::Titlebar | sf::Style::Close
 
 #define CONFIG_FILE "config/config.css"
@@ -29,14 +27,17 @@ Game& Game::GetInstance()
 	return self;
 }
 
-
 Game::Game() :
 	panel_(ControlPanel::GetInstance()),
 	message_(GET_BITMAP_FONT("retro")),
 	controller_(InputController::GetInstance())
 {
-	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, APP_BPP), APP_TITLE,APP_STYLE);
-	app_.SetFramerateLimit(APP_FPS);
+    Log::SetLogger(new LogDebug());
+    if(LoadConfig(CONFIG_FILE))
+        abort();
+
+	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, options_.bpp), APP_TITLE,APP_STYLE);
+	app_.SetFramerateLimit(options_.fps);
 
 	const sf::Image& icon = GET_IMG("icon");
 	app_.SetIcon(icon.GetWidth(), icon.GetHeight(), icon.GetPixelsPtr());
@@ -49,46 +50,22 @@ Game::Game() :
 #ifdef CONSOLE_TEST
 	log_ = new LogConsole();
 	Log::SetLogger(log_);
-#else
-	Log::SetLogger(new LogDebug());
 #endif
 
-	// default: panel on top
 	zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
-	options_.panel_on_top = true;
-
-	// load options
-	ConfigParser config;
-	if (config.LoadFromFile(CONFIG_FILE))
-	{
-		Output << "loading " << CONFIG_FILE << "..." << lEnd;
-
-		config.SeekSection("Settings");
-		config.ReadItem("panel_on_top", options_.panel_on_top);
-		if (!options_.panel_on_top)
-		{
-			sf::Event event;
-			event.Type = sf::Event::KeyPressed;
-			event.Key.Code = sf::Key::PageDown; //dummy!
-			InGameOnEvent(event, input::PANEL_DOWN);
-		}
-
-		config.ReadItem("verbosity", options_.verbosity);
-		Log::SetVerboseLevel(options_.verbosity);
-		Output << "verbose: " << options_.verbosity << lEnd;
-	}
+    if (!options_.panel_on_top)
+    {
+        sf::Event event;
+        event.Type = sf::Event::KeyPressed;
+        event.Key.Code = sf::Key::PageDown; //dummy!
+        InGameOnEvent(event, input::PANEL_DOWN);
+    }
 }
 
 
 Game::~Game()
 {
-	// writing options
-	ConfigParser config;
-	config.SeekSection("Settings");
-	config.WriteItem("panel_on_top", options_.panel_on_top ? 1 : 0);
-	config.WriteItem("verbosity", options_.verbosity);
-
-	config.SaveToFile(CONFIG_FILE);
+    SaveConfig(CONFIG_FILE);
 
 	delete mini_map_;
 
@@ -105,6 +82,51 @@ Game::~Game()
 #endif
 }
 
+int Game::LoadConfig(const std::string & str)
+{
+    ConfigParser config;
+
+    Output << "loading " << CONFIG_FILE << "..." << lEnd;
+	if(!config.LoadFromFile(str.c_str()))
+	{
+	    OutputE << "Impossible de charger le fichier de configuration " << str.c_str() << lEnd;
+	    return 1;
+	}
+
+    // Engine options
+    config.SeekSection("Engine");
+
+    config.ReadItem("bpp", options_.bpp);
+    config.ReadItem("style", options_.style);
+    config.ReadItem("fps", options_.fps);
+
+    config.ReadItem("verbosity", options_.verbosity);
+    Log::SetVerboseLevel(options_.verbosity);
+
+    Output << "verbose: " << options_.verbosity << lEnd;
+
+	// Game options
+    config.SeekSection("Settings");
+    config.ReadItem("panel_on_top", options_.panel_on_top);
+
+	return 0;
+}
+
+void Game::SaveConfig(const std::string & str)
+{
+    // writing options
+	ConfigParser config;
+	config.SeekSection("Settings");
+	config.WriteItem("panel_on_top", options_.panel_on_top ? 1 : 0);
+
+	config.SeekSection("Engine");
+	config.WriteItem("style", options_.style);
+	config.WriteItem("fps", options_.fps);
+	config.WriteItem("bpp", options_.bpp);
+	config.WriteItem("verbosity", options_.verbosity);
+
+	config.SaveToFile(str.c_str());
+}
 
 void Game::Init()
 {

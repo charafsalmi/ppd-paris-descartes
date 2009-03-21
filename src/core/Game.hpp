@@ -81,6 +81,14 @@ private:
 	Game(const Game&);
 	~Game();
 
+	/// Charge un fichier de configuration système
+	/// @param[in] str Nom du fichier de configuration
+	int LoadConfig(const std::string & str);
+
+    /// Sauvegarde un fichier de configuration système
+	/// @param[in] str Nom du fichier de configuration
+	void SaveConfig(const std::string & str);
+
 	// Prend une capture d'écran de la fenêtre
 	void TakeScreenshot(const char* directory);
 
@@ -132,6 +140,8 @@ private:
 		MAIN_MENU, IN_GAME, GAME_OVER, INVENTORY, PAUSE, MINI_MAP
 	};
 
+    /// Passe le jeu dans un mode différent
+    /// @param[in] mode Mode de jeu dans lequel passer
 	void SetMode(Mode mode);
 
 	// pointeur de la méthode de gestion des évènements
@@ -145,6 +155,12 @@ private:
 	{
 		bool panel_on_top;
 		int verbosity;
+
+		// Engine
+		int bpp;
+		int fps;
+		int style;
+
 	};
 	Options options_;
 
