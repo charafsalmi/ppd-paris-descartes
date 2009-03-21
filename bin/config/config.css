@@ -1,0 +1,13 @@
+Engine
+{
+	bpp: 32;
+	fps: 60;
+	style: 0;
+	verbosity: 5;
+}
+
+Settings
+{
+	panel_on_top: 1;
+}
+
