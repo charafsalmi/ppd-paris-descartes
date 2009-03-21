@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <iostream>
 #include <sstream>
 #include <cassert>
 #include <cstring>
@@ -12,6 +11,7 @@
 #include "../entities/Player.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../gui/ControlPanel.hpp"
+#include "../misc/Log.hpp"
 
 #define ZONE_SUBRECT sf::IntRect(0, ControlPanel::HEIGHT_PX, WIDTH_PX, ControlPanel::HEIGHT_PX + HEIGHT_PX)
 
@@ -38,7 +38,7 @@ void Zone::Load(const TiXmlHandle& handle)
 
 	//musique
 	music_name_ = handle.FirstChildElement("music").Element()->GetText();
-	std::cout << "[Zone] Chargement de zone, musique : " << music_name_ << std::endl;
+    Output << ZONE_S << "Chargement de zone, musique : " << music_name_ << lEnd;
 	SoundSystem::GetInstance().PlayMusic(music_name_.c_str());
 
 	std::istringstream all_tiles(elem->GetText());

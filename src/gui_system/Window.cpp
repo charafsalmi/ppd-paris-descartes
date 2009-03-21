@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "Window.hpp"
 
 #include "Button.hpp"
@@ -75,7 +73,7 @@ int Window::ManageEvent(const sf::Event& event)
 		Control* new_active = GetUnderMouse(event.MouseButton.X, event.MouseButton.Y);
         if (new_active != NULL && new_active != active_)
         {
-        	printf(" nouveau controle actif : %u\n", new_active->GetID());
+        	Output << WINDOW_S << "Nouveau controle actif : " << new_active->GetID() << lEnd;
         	if  (active_ != NULL)
         	{
 				active_->SetState(Control::NORMAL);
@@ -86,7 +84,7 @@ int Window::ManageEvent(const sf::Event& event)
         else if (new_active == NULL && active_ != NULL)
         {
         	// active_ a perdu focus
-        	printf(" le controle %d a perdu le focus\n", active_->GetID());
+        	OutputD << WINDOW_S << "Le controle " << active_->GetID() << " a perdu le focus" << lEnd;
         	active_->SetState(Control::NORMAL);
         	active_ = NULL;
         }
@@ -139,7 +137,7 @@ void Window::Load(const std::string& xmlfile){
     TiXmlNode *node;
 
     if (!doc.LoadFile(xmlfile.c_str())){
-		std::cerr << "can't open window definitions: " << xmlfile << std::endl;
+		OutputE << WINDOW_S << "can't open window definitions: " << xmlfile << lEnd;
 		abort();
 	}
 
@@ -147,16 +145,16 @@ void Window::Load(const std::string& xmlfile){
     elem = node->ToElement();
     if(elem != NULL){
         if (elem->QueryIntAttribute("x", &x) != TIXML_SUCCESS){
-		    cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
+		    OutputE << WINDOW_S << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << lEnd;
 		}
         if (elem->QueryIntAttribute("y", &y) != TIXML_SUCCESS){
-		    cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
+		    OutputE << WINDOW_S << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << lEnd;
 		}
         if (elem->QueryIntAttribute("w", &w) != TIXML_SUCCESS){
-		    cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
+		    OutputE << WINDOW_S << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << lEnd;
 		}
         if (elem->QueryIntAttribute("h", &h) != TIXML_SUCCESS){
-		    cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
+		    OutputE << WINDOW_S << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << lEnd;
 		}
 		if (elem->QueryIntAttribute("alpha", &alpha) != TIXML_SUCCESS){
 		    alpha = -1;
@@ -183,18 +181,18 @@ void Window::Load(const std::string& xmlfile){
 
         // id du widget
         if(controls_elem->QueryIntAttribute("id", &id) != TIXML_SUCCESS){
-            cout << "Warning: Aucun identifiant pour ce widget" << endl;
+            OutputW << WINDOW_S << " Aucun identifiant pour ce widget" << lEnd;
             id = 0;
         }
 
 	    // Position du widget (nécéssaire à tout les contrôles)
 		if (controls_elem->QueryIntAttribute("x", &x) != TIXML_SUCCESS){
-		    cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
+		    OutputE << WINDOW_S << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << lEnd;
 			x = 0;
 			break;
 		}
 		if (controls_elem->QueryIntAttribute("y", &y) != TIXML_SUCCESS){
-		    cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << endl;
+		    OutputE << WINDOW_S << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << lEnd;
 			y = 0;
 			break;
 		}

@@ -1,7 +1,5 @@
 #include "ProgressBar.hpp"
 
-#include <iostream>
-
 #define OUTLINE   1
 #define BAR_COLOR sf::Color::Green
 

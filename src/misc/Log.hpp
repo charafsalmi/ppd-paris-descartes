@@ -21,9 +21,11 @@ Log::Log(WARNING) << "message;"
 #define OutputD Log::W(L_DEVEL)
 #define OutputT Log::W(L_TITLE)
 
+#define PLAYER_S "[Player]\t"
 #define GAME_S "[Game]\t"
 #define TILE_S "[Tileset]\t"
 #define ZONE_S "[Zone]\t"
+#define WINDOW_S "[Window]\t"
 #define UF_S "[UnitFactory]\t"
 #define ZC_S "[ZoneContainer]\t"
 

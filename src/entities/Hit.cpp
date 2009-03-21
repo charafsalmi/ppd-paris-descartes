@@ -1,6 +1,7 @@
 #include "Hit.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../core/Zone.hpp"
+#include "../misc/Log.hpp"
 
 #define SPEED             320
 #define DYING_DELAY       1.0f
@@ -12,15 +13,15 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id
 	Entity(position, GET_IMG("hits"))
 {
 	damage_ = damage;
-    puts("creationhit");
+	OutputD << "creationhit" << lEnd;
 	switch (type)
 	{
 		case LINEAR:
-            puts("fleche");
+            OutputD << "fleche" << lEnd;
 			update_callback_ = &Hit::MoveLinear;
 			break;
 		case CIRCULAR:
-            puts("epee");
+            OutputD << "epee" << lEnd;
 			update_callback_ = &Hit::MoveCircular;
 			break;
 	}

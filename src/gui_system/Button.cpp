@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "Button.hpp"
 #include "../misc/MediaManager.hpp"
 

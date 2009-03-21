@@ -1,4 +1,3 @@
-#include <iostream>
 #include <cassert>
 
 #include "Tileset.hpp"
@@ -23,8 +22,7 @@ Tileset::Tileset()
 	// chargement des propriétés
 	if (!doc.LoadFile(TILES_DEFINITION))
 	{
-		std::cerr << " [Tileset] erreur lors du chargement de "
-			<< TILES_DEFINITION << " (" << doc.ErrorDesc() << ")" << std::endl;
+	    OutputE << TILE_S << "Erreur lors du chargement de " << TILES_DEFINITION << " (" << doc.ErrorDesc() << " )" << lEnd;
 		abort();
 	}
 

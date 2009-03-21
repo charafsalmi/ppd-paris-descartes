@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "MediaManager.hpp"
+#include "Log.hpp"
 #include "../xml/tinyxml.h"
 
 #define IMG_LIST "data/images/images.txt"

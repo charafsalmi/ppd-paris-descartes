@@ -1,4 +1,3 @@
-#include <iostream>
 #include <cstring>
 #include <typeinfo>
 
@@ -10,6 +9,7 @@
 #include "../misc/MediaManager.hpp"
 #include "../core/Tileset.hpp"
 #include "../core/Zone.hpp"
+#include "../misc/Log.hpp"
 
 #define SPEED         120
 #define DEFAULT_LIVES 10
@@ -84,7 +84,7 @@ void Player::OnEvent(input::Action action)
 			{
 				break;
 			}
-			std::cout << "[Player]le joueur utilise l'objet " << obj << std::endl;
+			Output << PLAYER_S << "Joueur utilise l'objet" << obj << lEnd;
 			UseItem(obj);
 			break;
 		/*
@@ -187,7 +187,7 @@ void Player::WalkUpdate(float frametime)
 		Zone::Teleporter tp;
 		if (zone_->GetTeleport(i, j, tp))
 		{
-			puts(" [Player] a activé un téléporteur !");
+		    Output << PLAYER_S << "Joueur active un teleporteur" << lEnd;
 			game.Teleport(tp);
 			return;
 		}

@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "Label.hpp"
 #include "../misc/Misc.hpp"
 #include "../misc/Log.hpp"

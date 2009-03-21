@@ -1,18 +1,15 @@
-#include <iostream>
-
 #include "WinInventory.hpp"
 #include "ControlPanel.hpp"
+#include "../misc/Log.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../entities/Equipment.hpp"
-
-#include "../gui_system/Button.hpp"
 
 using namespace gui;
 using namespace std;
 
 WinInventory::WinInventory()
 {
-    /* Chargement du descriptif XML */
+    // Chargement du descriptif XML
     Load("data/window/inventory.xml");
 
     last_item_ = 0;
@@ -36,12 +33,12 @@ WinInventory::~WinInventory()
 int WinInventory::AddItem(Equipment* item)
 {
     if(last_item_ > ITEM_N){
-        puts("inventaire plein");
+        OutputD << "Inventaire plein" << lEnd;
         return 1;
     }
     Control *c = GetFromID(last_item_+ID_SLOT);
     if(c == NULL){
-        puts("mauvaise id");
+        OutputD << "Mauvaise id du control charge" << lEnd;
         return 0;
     }
 
@@ -66,7 +63,7 @@ bool WinInventory::HasItem(int id)
 
 int WinInventory::WindowCallback(const Control::ControlID id, const int p1, void *p2)
 {
-    cout << "Inventory callback [id:" << id << "]" << endl;
+    OutputD << "Inventory callback [id:" << id << "]" << lEnd;
     if(id == ID_SLOT+14){
         return WinInventory::_CLOSE;
     }
@@ -124,7 +121,7 @@ void WinInventory::OnEvent(input::Action action)
 				}
 				item1_ = current_item;
 				ControlPanel::GetInstance().SetItem1Rect(items_[item1_]->GetSubRect());
-				cout << "[WinInventory]l'équipement d'ID " << items_[item1_]->GetTypeID() << " à été associé au bouton n°1" << endl;
+				Output << "[WinInventory]l'équipement d'ID " << items_[item1_]->GetTypeID() << " à été associé au bouton n°1" << lEnd;
 			}
 			break;
 

@@ -1,11 +1,9 @@
-#include <iostream>
-
 #include "WinPause.hpp"
 
 using namespace gui;
 
 WinPause::WinPause(){
-    /* Chargement du descriptif XML */
+    // Chargement du descriptif XML
     Load("data/window/pause.xml");
 }
 

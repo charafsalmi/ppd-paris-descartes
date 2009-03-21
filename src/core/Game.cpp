@@ -1,6 +1,3 @@
-#include <cstring>
-#include <iostream>
-
 #include "Game.hpp"
 #include "SoundSystem.hpp"
 #include "../misc/MediaManager.hpp"

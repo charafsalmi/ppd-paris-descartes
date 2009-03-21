@@ -1,7 +1,6 @@
 #include "Splash.hpp"
 #include "../misc/MediaManager.hpp"
-
-#include <iostream>
+#include "../misc/Log.hpp"
 
 #define INITIAL_COLOR  0.f, 0.f, 0.f
 #define WAIT_DELAY     2.f  // attente entre les fades (secondes)
@@ -18,13 +17,13 @@ void Splash::Run()
 	bool running = true;
 	if (!sf::PostFX::CanUsePostFX())
 	{
-		std::cerr << "info: can't launch PostFX splash screen" << std::endl;
+	    OutputW << "Can't launch PostFX splash screen" << lEnd;
 		return;
 	}
 
 	if (!fx_.LoadFromFile(GET_FX("colorize")))
 	{
-		puts("Cant load postfx");
+	    OutputW << "Cant load postfx" << lEnd;
 		app_.Display();
 		return;
 	}
@@ -104,4 +103,3 @@ void Splash::Draw()
 	app_.Draw(sprite_);
 	app_.Draw(fx_);
 }
-
