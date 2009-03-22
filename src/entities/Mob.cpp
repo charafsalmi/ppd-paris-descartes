@@ -4,8 +4,8 @@
 #include "Hit.hpp"
 #include "Player.hpp"
 #include "../core/Zone.hpp"
-#include "../core/SoundSystem.hpp"
 #include "../core/Game.hpp"
+#include "../core/SoundSystem.hpp"
 
 #define FIRE_RATE          (1 / 1.f)   // (1 / tirs par seconde)
 #define DROP_LUCK          33          // percent
@@ -145,7 +145,6 @@ void Mob::ThrowHit()
 		sf::Vector2f pos(GetPosition().x + GetSize().x / 2, GetPosition().y - GetSize().y / 2);
 		zone_->AddEntity(new Hit(pos, 1, current_dir_, GetID(), LINEAR));
 		last_hit_ = now;
-		SoundSystem::GetInstance().PlaySound("arrow-shot");
 	}
 }
 

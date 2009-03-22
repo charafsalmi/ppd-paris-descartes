@@ -127,6 +127,10 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 		    Output << ZC_S << "Deja en zone [" << y << "][" << x << "], rien a faire" << lEnd;
 			return true;
 		}
+		if (active_zone_ != NULL)
+		{
+			active_zone_->ClearHits();
+		}
 		next_zone_ = &zones_[y][x];
 		cds_zone_.x = x;
 		cds_zone_.y = y;

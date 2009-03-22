@@ -9,6 +9,7 @@
 #include "SoundSystem.hpp"
 #include "../entities/EntityFactory.hpp"
 #include "../entities/Player.hpp"
+#include "../entities/Hit.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../gui/ControlPanel.hpp"
 #include "../misc/Log.hpp"
@@ -325,6 +326,23 @@ void Zone::AddEntity(Entity* entity)
 void Zone::RemoveEntity(Entity* entity)
 {
 	entities_.remove(entity);
+}
+
+
+void Zone::ClearHits()
+{
+	EntityList::iterator it;
+	for (it = entities_.begin(); it != entities_.end();)
+	{
+		if (dynamic_cast<Hit*>(*it) != NULL)
+		{
+			it = entities_.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }
 
 

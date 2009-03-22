@@ -310,8 +310,7 @@ void Player::UseBowUpdate(float frametime)
 	float now = Game::GetInstance().GetElapsedTime();
 	if ((now - started_action_) > use_bow_duration_)
 	{
-        hittype_ = CIRCULAR;
-		ThrowHit();
+		ThrowHit(LINEAR);
 		Animated::Change(walk_anims_[current_dir_], *this);
 		SetSubRect(subrects_not_moving_[current_dir_]); // ?
 		strategy_callback_ = &Player::WalkUpdate;
@@ -390,15 +389,14 @@ void Player::TakeDamage(int damage)
 }
 
 
-void Player::ThrowHit()
+void Player::ThrowHit(HitType type)
 {
 	float now = Game::GetInstance().GetElapsedTime();
 	if ((now - last_hit_) > FIRE_RATE)
 	{
 		sf::Vector2f pos(GetPosition().x + GetSize().x / 2, GetPosition().y - GetSize().y / 2);
-		zone_->AddEntity(new PlayerHit(pos, 2, current_dir_, GetID(), hittype_));
+		zone_->AddEntity(new PlayerHit(pos, 2, current_dir_, GetID(), type));
 		last_hit_ = now;
-		SoundSystem::GetInstance().PlaySound("arrow-shot");
 	}
 }
 
@@ -408,6 +406,7 @@ void Player::UseItem(int code)
     switch (code)
     {
         case 10:
+			ThrowHit(CIRCULAR);
             break;
         case 11:
             switch (current_dir_)

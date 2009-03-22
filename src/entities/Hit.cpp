@@ -1,5 +1,6 @@
 #include "Hit.hpp"
 #include "../misc/MediaManager.hpp"
+#include "../core/SoundSystem.hpp"
 #include "../core/Zone.hpp"
 #include "../misc/Log.hpp"
 
@@ -13,45 +14,50 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id
 	Entity(position, GET_IMG("hits"))
 {
 	damage_ = damage;
-	OutputD << "creationhit" << lEnd;
+	sf::IntRect subrect;
 	switch (type)
 	{
 		case LINEAR:
             OutputD << "fleche" << lEnd;
 			update_callback_ = &Hit::MoveLinear;
+			switch (dir)
+			{
+			case UP:
+				// left / top / right /bottom
+				subrect = sf::IntRect(30, 0, 40, 30);
+				break;
+			case DOWN:
+				subrect = sf::IntRect(40, 0, 50, 30);
+				break;
+			case RIGHT:
+				subrect = sf::IntRect(0, 10, 30, 20);
+				break;
+			case LEFT:
+				subrect = sf::IntRect(0, 0, 30, 10);
+				break;
+			default:
+				break;
+			}
+			SoundSystem::GetInstance().PlaySound("arrow-shot");
+			timed_ = false;
+			SetCenter(0, subrect.GetHeight());
 			break;
 		case CIRCULAR:
+			// hack temporaire, en attendant d'avoir un vrai sprite de coup d'épée
+			SetImage(GET_IMG("items"));
             OutputD << "epee" << lEnd;
 			update_callback_ = &Hit::MoveCircular;
+			subrect = sf::IntRect(16, 0, 16 + 18, 0 + 32);
+			timed_ = true;
+			time_to_live_ = 1.0f;
+			SetCenter(0, 0);
 			break;
 	}
-
-	sf::IntRect subrect;
-	switch (dir)
-	{
-	case UP:
-		// left / top / right /bottom
-		subrect = sf::IntRect(30, 0, 40, 30);
-		break;
-	case DOWN:
-		subrect = sf::IntRect(40, 0, 50, 30);
-		break;
-	case RIGHT:
-		subrect = sf::IntRect(0, 10, 30, 20);
-		break;
-	case LEFT:
-		subrect = sf::IntRect(0, 0, 30, 10);
-		break;
-	default:
-		break;
-	}
-	//update_callback_ = &Hit::MoveLinear;
 	direction_ = dir;
-	hittype_=type;
 	speed_ = SPEED;
 	SetSubRect(subrect);
 	SetFloor(subrect.GetWidth(), subrect.GetHeight());
-	SetCenter(0, subrect.GetHeight());
+
 	timer_ = 0;
 	rotate_when_dying_ = false;
 	emitter_id_ = emitter_id;
@@ -65,6 +71,14 @@ void Hit::Update(float frametime)
 	if (!zone_->CanMove(rect))
 	{
 		update_callback_ = &Hit::DyingUpdate;
+	}
+	else if (timed_)
+	{
+		time_to_live_ -= frametime;
+		if (time_to_live_ <= 0)
+		{
+			Kill();
+		}
 	}
 	(this->*update_callback_)(frametime);
 }

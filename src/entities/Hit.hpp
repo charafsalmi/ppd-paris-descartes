@@ -42,10 +42,11 @@ private:
 	float timer_;
 	bool rotate_when_dying_;
 	Direction direction_;
-	HitType hittype_;
 	int damage_;
 	float speed_;
 	int emitter_id_;
+	bool timed_;
+	float time_to_live_;
 };
 
 

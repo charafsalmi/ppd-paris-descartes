@@ -31,8 +31,7 @@ public:
 	~Zone();
 
 	/**
-	 * Charger le contenu de la zone depuis un TiXMLHandle pointant sur son
-	 * fichier de configuration
+	 * Charger le contenu de la zone
 	 * @param[in] handle: nœud XML décrivant la zone
 	 */
 	void Load(const TiXmlHandle& handle);
@@ -62,6 +61,11 @@ public:
 	void RemoveEntity(Entity* entity);
 
 	/**
+	 * Supprimer tous les coups de la zone
+	 */
+	void ClearHits();
+
+	/**
 	 * Détermine si un mouvement est possible
 	 * @param[in] rect: rectangle de la position issue du mouvement à tester
 	 * @return true si le mouvement est possible, sinon false
@@ -87,11 +91,10 @@ public:
 	}
 
 	/**
-	 * Obtenir le nom de la musique correspondant a cette zone depuis le fichier
-	 * de configuration XML
-	 * @return std::string
+	 * Obtenir le nom de la musique correspondant à cette zone
+	 * @return nom de la musique
 	 */
-	inline std::string GetMusicName()
+	inline const std::string& GetMusicName() const
 	{
 		return music_name_;
 	}
