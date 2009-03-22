@@ -59,6 +59,11 @@ Game::Game() :
     {
 		panel_.SetPosition(0, Zone::HEIGHT_PX);
     }
+
+    if (!options_.enable_music)
+    {
+    	SoundSystem::GetInstance().EnableMusic(false);
+    }
 }
 
 
@@ -76,12 +81,14 @@ Game::~Game()
 
 bool Game::LoadConfig(const std::string & str)
 {
+	// default options
 	options_.bpp = APP_BPP;
 	options_.fps = APP_FPS;
 	options_.style = 0;
 	options_.verbosity = DEFAULT_VERBOSITY;
 
 	options_.panel_on_top = 1;
+	options_.enable_music = 1;
 
 	ConfigParser config;
 	Output << "loading " << CONFIG_FILE << "..." << lEnd;
@@ -104,7 +111,7 @@ bool Game::LoadConfig(const std::string & str)
 	// Game options
     config.SeekSection("Settings");
     config.ReadItem("panel_on_top", options_.panel_on_top);
-
+	config.ReadItem("enable_music", options_.enable_music);
 	return true;
 }
 
@@ -115,6 +122,7 @@ void Game::SaveConfig(const std::string & str)
 	ConfigParser config;
 	config.SeekSection("Settings");
 	config.WriteItem("panel_on_top", options_.panel_on_top ? 1 : 0);
+	config.WriteItem("enable_music", options_.enable_music ? 1 : 0);
 
 	config.SeekSection("Engine");
 	config.WriteItem("style", options_.style);
@@ -124,6 +132,7 @@ void Game::SaveConfig(const std::string & str)
 
 	config.SaveToFile(str.c_str());
 }
+
 
 void Game::Init()
 {
@@ -146,7 +155,6 @@ void Game::Init()
 		(APP_HEIGHT - mini_map_->GetHeight()) / 2);
 	mini_map_->SetPlayerPosition(zone_container_.GetPlayerPosition());
 
-	// InGame
 	#ifdef START_ON_MENU
 	SetMode(MAIN_MENU);
 	#else

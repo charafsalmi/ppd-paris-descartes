@@ -7,17 +7,15 @@
 #include "../core/Game.hpp"
 #include "../core/SoundSystem.hpp"
 
-#define FIRE_RATE          (1 / 1.f)   // (1 / tirs par seconde)
-#define DROP_LUCK          33          // percent
+#define FIRE_RATE          (1.f / 0.8f) // tirs par seconde
+#define DROP_LUCK          33         // chance de dropper un item (en pourcent)
 #define WALK_MIN_DURATION  2.f
 #define WALK_MAX_DURATION  4.f
 
 
 Mob::Mob(const sf::Vector2f& pos, const sf::Image& image, int hp, int speed) :
-	Unit(pos, image)
+	Unit(pos, image, hp, speed)
 {
-	SetHP(hp);
-	speed_ = speed;
 	last_hit_ = 0;
 }
 
@@ -32,16 +30,16 @@ void Mob::AutoUpdate(float frametime)
 	game.GetPlayer()->GetCollideRect(player);
 	GetCollideRect(rect);
 	bool shot = false;
-	switch (current_dir_)
+	switch (GetDirection())
 	{
 		case UP:
-			dy = -speed_;
 			if (player.Bottom < rect.Top
 				&& ((player.Left < rect.Right && player.Left > rect.Left)
 				|| (player.Right < rect.Right && player.Right > rect.Left)))
 			{
 				shot = true;
 			}
+			dy = -GetSpeed();
 			break;
 		case DOWN:
 			if (player.Top > rect.Bottom
@@ -50,7 +48,7 @@ void Mob::AutoUpdate(float frametime)
 			{
 				shot = true;
 			}
-			dy = speed_;
+			dy = GetSpeed();
 			break;
 		case LEFT:
 			if (player.Right < rect.Left
@@ -59,7 +57,7 @@ void Mob::AutoUpdate(float frametime)
 			{
 				shot = true;
 			}
-			dx = -speed_;
+			dx = -GetSpeed();
 			break;
 		case RIGHT:
 			if (player.Left > rect.Right
@@ -68,7 +66,7 @@ void Mob::AutoUpdate(float frametime)
 			{
 				shot = true;
 			}
-			dx = speed_;
+			dx = GetSpeed();
 			break;
 		default:
 			break;
@@ -95,19 +93,6 @@ void Mob::AutoUpdate(float frametime)
 	if (shot)
 	{
 		ThrowHit();
-	}
-}
-
-
-void Mob::OnCollide(Entity& entity, const sf::FloatRect& overlap)
-{
-	if (IsDying() || entity.IsDying())
-	{
-		return;
-	}
-	if (dynamic_cast<Hit*>(&entity) == NULL)
-	{
-		ChooseDirection();
 	}
 }
 
@@ -143,7 +128,7 @@ void Mob::ThrowHit()
 	if ((now - last_hit_) > FIRE_RATE)
 	{
 		sf::Vector2f pos(GetPosition().x + GetSize().x / 2, GetPosition().y - GetSize().y / 2);
-		zone_->AddEntity(new Hit(pos, 1, current_dir_, GetID(), LINEAR));
+		zone_->AddEntity(new Hit(pos, 1, GetDirection(), GetID(), LINEAR));
 		last_hit_ = now;
 	}
 }
@@ -152,7 +137,6 @@ void Mob::ThrowHit()
 void Mob::ChooseDirection()
 {
 	started_at_ = Game::GetInstance().GetElapsedTime();
-	current_dir_ = (Direction) sf::Randomizer::Random(0, COUNT_DIRECTION - 1);
 	walk_duration_ = sf::Randomizer::Random(WALK_MIN_DURATION, WALK_MAX_DURATION);
-	Animated::Change(walk_anims_[current_dir_], *this);
+	SetDirection((Direction) sf::Randomizer::Random(0, COUNT_DIRECTION - 1));
 }

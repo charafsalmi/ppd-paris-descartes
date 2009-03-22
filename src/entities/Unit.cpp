@@ -1,10 +1,16 @@
 #include "Unit.hpp"
+#include "Hit.hpp"
+#include "../core/Game.hpp"
+#include "../core/Zone.hpp"
 
-#define BLEED_DELAY 0.5f
-#define DYING_DELAY 3.0f
+#define BLEED_DELAY         0.5f
+#define DYING_DELAY         3.0f
+#define KNOCK_DELAY         0.8f
+#define KNOCK_INITIAL_SPEED 400
+#define KNOCK_SLOW_FACTOR   0.9
 
 
-Unit::Unit(const sf::Vector2f& position, const sf::Image& image) :
+Unit::Unit(const sf::Vector2f& position, const sf::Image& image, int hp, float speed) :
 	Entity(position, image)
 {
 	SetFloor(32, 32); // FIXME: magic
@@ -16,6 +22,9 @@ Unit::Unit(const sf::Vector2f& position, const sf::Image& image) :
 	timer_ = 0;
 	bleeding_ = BLEED_STOP;
 	update_callback_ = &Unit::AutoUpdate;
+	is_knocked_ = false;
+	speed_ = speed;
+	hp_ = hp;
 }
 
 
@@ -49,7 +58,15 @@ void Unit::Update(float frametime)
 		}
 		timer_ += frametime;
 	}
-
+	if (is_knocked_)
+	{
+		if ((Game::GetInstance().GetElapsedTime() - knocked_start_) > KNOCK_DELAY)
+		{
+			is_knocked_ = false;
+		}
+		Move(knocked_dir_, knocked_speed_ * frametime, Tile::DEFAULT);
+		knocked_speed_ *= KNOCK_SLOW_FACTOR;
+	}
 	// comportement spécifique à l'unité
 	(this->*update_callback_)(frametime);
 }
@@ -70,9 +87,74 @@ void Unit::TakeDamage(int damage)
 }
 
 
+void Unit::OnCollide(Entity& entity, const sf::FloatRect& overlap)
+{
+	if (IsDying() || entity.IsDying())
+	{
+		return;
+	}
+	// repoussement
+	if (dynamic_cast<Unit*>(&entity) != NULL)
+	{
+		// horizontal ?
+		if (overlap.GetHeight() < overlap.GetWidth())
+		{
+			// vers le haut ou le bas
+			knocked_dir_ = entity.GetPosition().y > GetPosition().y ? UP : DOWN;
+		}
+		else // vertical
+		{
+			// vers la gauche ou la droite
+			knocked_dir_ = entity.GetPosition().x > GetPosition().x ? LEFT : RIGHT;
+		}
+		knocked_start_ = Game::GetInstance().GetElapsedTime();
+		knocked_speed_ = KNOCK_INITIAL_SPEED;
+		is_knocked_ = true;
+	}
+}
+
+
 bool Unit::IsDying() const
 {
 	return update_callback_ == &Unit::DyingUpdate;
+}
+
+
+void Unit::Move(Direction dir, int distance, int tiles)
+{
+	sf::FloatRect rect;
+	GetFloorRect(rect);
+	switch (dir)
+	{
+	case UP:
+		rect.Top -= distance;
+		rect.Bottom -= distance;
+		break;
+	case DOWN:
+		rect.Top += distance;
+		rect.Bottom += distance;
+		break;
+	case LEFT:
+		rect.Left -= distance;
+		rect.Right -= distance;
+		break;
+	case RIGHT:
+		rect.Left += distance;
+		rect.Right += distance;
+		break;
+	default:
+		break;
+	}
+	if (zone_->CanMove(rect, tiles))
+	{
+		SetPosition(rect.Left, rect.Bottom);
+	}
+}
+
+
+void Unit::SetAnimation(Direction dir, const Animation* anim)
+{
+	walk_anims_[dir] = anim;
 }
 
 
@@ -88,9 +170,16 @@ int Unit::GetHP() const
 }
 
 
-void Unit::SetAnimation(Direction dir, const Animation* anim)
+Entity::Direction Unit::GetDirection() const
 {
-	walk_anims_[dir] = anim;
+	return current_dir_;
+}
+
+
+void Unit::SetDirection(Direction dir)
+{
+	current_dir_ = dir;
+	Animated::Change(walk_anims_[dir], *this);
 }
 
 

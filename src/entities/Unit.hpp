@@ -8,7 +8,13 @@
 class Unit: public Entity, public Animated
 {
 public:
-	Unit(const sf::Vector2f& pos, const sf::Image& image);
+	/**
+	 * @param[in] pos: position en pixels
+	 * @param[in] image: image du charset
+	 * @param[in] hp: points de vie
+	 * @param[in] speed: vitesse en pixels/seconde
+	 */
+	Unit(const sf::Vector2f& pos, const sf::Image& image, int hp, float speed);
 
 	/// inherited
 	void Update(float frametime) ;
@@ -17,20 +23,44 @@ public:
 	void TakeDamage(int damage);
 
 	/// inherited
+	virtual void OnCollide(Entity& entity, const sf::FloatRect& overlap);
+
+	/// inherited
 	bool IsDying() const;
 
 	void SetAnimation(Direction dir, const Animation* anim);
 
-	void SetHP(int hp);
+	/**
+	 * Déplacer l'unité dans une direction (si possible)
+	 * @param[in] dir: direction souhaitée
+	 * @param[in] distance: distance en pixels
+	 * @param[in] tiles: types de tiles que l'on peut franchir
+	 */
+	void Move(Direction dir, int distance, int tiles);
 
 protected:
 	virtual void AutoUpdate(float frametime) = 0;
 
-	// Animations de déplacement
-	const Animation* walk_anims_[COUNT_DIRECTION];
-
 	int GetHP() const;
 
+	void SetHP(int hp);
+
+	Direction GetDirection() const;
+
+	void SetDirection(Direction dir);
+
+	inline float GetSpeed() const
+	{
+		return speed_;
+	}
+
+	inline void SetSpeed(float speed)
+	{
+		speed_ = speed;
+	}
+
+	// Animations de déplacement
+	const Animation* walk_anims_[COUNT_DIRECTION];
 private:
 	void DyingUpdate(float frametime);
 
@@ -41,7 +71,12 @@ private:
 	Bleeding bleeding_;
 	float timer_;
 	int hp_;
-
+	float speed_;
+	Direction current_dir_;
+	bool is_knocked_;
+	Direction knocked_dir_;
+	float knocked_speed_;
+	float knocked_start_;
 	void (Unit::*update_callback_)(float frametime);
 };
 

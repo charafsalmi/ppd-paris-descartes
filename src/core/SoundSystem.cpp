@@ -15,6 +15,7 @@ SoundSystem::SoundSystem()
 {
 	last_used_ = 0;
 	music_ = NULL;
+	enable_music_ = true;
 }
 
 
@@ -27,7 +28,7 @@ SoundSystem::~SoundSystem()
 			sounds_[i].Stop();
 		}
 	}
-	if (music_->GetStatus() == sf::Sound::Playing)
+	if (music_ != NULL && music_->GetStatus() == sf::Sound::Playing)
 	{
 		music_->Stop();
 	}
@@ -50,7 +51,7 @@ void SoundSystem::PlaySound(const char* sound_name)
 void SoundSystem::PlayMusic(const char* music_name)
 {
 	sf::Music* next = MediaManager::GetInstance().GetMusic(music_name);
-	if (next != music_)
+	if (enable_music_ && next != music_)
 	{
 		if (music_ != NULL)
 		{
@@ -71,4 +72,10 @@ void SoundSystem::PlayMusic(const std::string& music_name)
 void SoundSystem::StopMusic()
 {
 	music_->Stop();
+}
+
+
+void SoundSystem::EnableMusic(bool enabled)
+{
+	enable_music_ = enabled;
 }

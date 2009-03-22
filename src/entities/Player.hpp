@@ -81,7 +81,6 @@ private:
 
 	// Subrects du sprite immobile
 	sf::IntRect subrects_not_moving_[COUNT_DIRECTION];
-	Direction current_dir_;
 	bool was_moving_;
 	bool locked_;
 	ControlPanel& panel_;

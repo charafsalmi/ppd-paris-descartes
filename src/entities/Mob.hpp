@@ -12,9 +12,6 @@ public:
 	Mob(const sf::Vector2f& pos, const sf::Image& image, int hp, int speed);
 
 	/// inherited
-	void OnCollide(Entity& entity, const sf::FloatRect& overlap);
-
-	/// inherited
 	void Kill();
 
 	/// inherited
@@ -35,8 +32,6 @@ private:
 	float last_hit_;
 	float walk_duration_;
 	float started_at_;
-	int speed_;
-	Direction current_dir_;
 };
 
 #endif /* MOB_HPP */

@@ -11,15 +11,15 @@
 #include "../core/Zone.hpp"
 #include "../misc/Log.hpp"
 
-#define SPEED         120
-#define DEFAULT_LIVES 10
-#define FIRE_RATE     (1 / 2.f)   // (1 / tirs par seconde)
+#define SPEED      120
+#define DEFAULT_HP 10
+#define FIRE_RATE  (1 / 2.f)   // (1 / tirs par seconde)
 
 #define ACCEPTED_TILES (Tile::DEFAULT | Tile::WATER | Tile::TELEPORT | Tile::HOLE)
 
 
 Player::Player(const sf::Vector2f& pos) :
-	Unit(pos, GET_IMG("player")),
+	Unit(pos, GET_IMG("player"), DEFAULT_HP, SPEED),
 	panel_(ControlPanel::GetInstance())
 {
 	// valeurs magiques... surface de contact au sol
@@ -30,7 +30,6 @@ Player::Player(const sf::Vector2f& pos) :
 	walk_anims_[DOWN]	= &GET_ANIM("player_walk_down");
 	walk_anims_[LEFT]	= &GET_ANIM("player_walk_left");
 	walk_anims_[RIGHT]	= &GET_ANIM("player_walk_right");
-	Animated::Change(walk_anims_[DOWN], *this);
 	SetCenter(0, walk_anims_[DOWN]->GetFrame(0).GetHeight());
 
 	fall_anim_ = &GET_ANIM("player_fall");
@@ -48,13 +47,12 @@ Player::Player(const sf::Vector2f& pos) :
 	move_keys_[RIGHT] = input::MOVE_RIGHT;
 
 	// le joueur est de face par défaut
-	current_dir_ = DOWN;
+	SetDirection(DOWN);
 	was_moving_ = false;
 	SetSubRect(subrects_not_moving_[DOWN]);
 
-	SetHP(DEFAULT_LIVES);
-	max_lives_ = DEFAULT_LIVES;
-	panel_.SetHP(DEFAULT_LIVES);
+	max_lives_ = DEFAULT_HP;
+	panel_.SetHP(DEFAULT_HP);
 
 	money_ = 0;
 	panel_.SetGold(money_);
@@ -264,10 +262,9 @@ void Player::WalkUpdate(float frametime)
 	// si on a bougé
 	if (moved)
 	{
-		if (new_dir != current_dir_)
+		if (new_dir != GetDirection())
 		{
-			current_dir_ = new_dir;
-			Animated::Change(walk_anims_[new_dir], *this);
+			SetDirection(new_dir);
 		}
 		Animated::Update(frametime, *this);
 		was_moving_ = true;
@@ -275,7 +272,7 @@ void Player::WalkUpdate(float frametime)
 	else if (was_moving_)
 	{
 		was_moving_ = false;
-		SetSubRect(subrects_not_moving_[current_dir_]);
+		SetSubRect(subrects_not_moving_[GetDirection()]);
 		//Son : on s'arrete
 	}
 }
@@ -300,8 +297,8 @@ void Player::FallingUpdate(float frametime)
 			TakeDamage(1);
 			SetPosition(Tile::SIZE, 8 * Tile::SIZE);
 		}
-		Animated::Change(walk_anims_[current_dir_], *this);
-		SetSubRect(subrects_not_moving_[current_dir_]); // ?
+		Animated::Change(walk_anims_[GetDirection()], *this);
+		SetSubRect(subrects_not_moving_[GetDirection()]); // ?
 		strategy_callback_ = &Player::WalkUpdate;
 	}
 }
@@ -313,8 +310,8 @@ void Player::UseBowUpdate(float frametime)
 	if ((now - started_action_) > use_bow_duration_)
 	{
 		ThrowHit(LINEAR);
-		Animated::Change(walk_anims_[current_dir_], *this);
-		SetSubRect(subrects_not_moving_[current_dir_]); // ?
+		Animated::Change(walk_anims_[GetDirection()], *this);
+		SetSubRect(subrects_not_moving_[GetDirection()]); // ?
 		strategy_callback_ = &Player::WalkUpdate;
 	}
 	else
@@ -326,6 +323,7 @@ void Player::UseBowUpdate(float frametime)
 
 void Player::OnCollide(Entity& entity, const sf::FloatRect& overlap)
 {
+	Unit::OnCollide(entity, overlap);
 	if (typeid (entity) == typeid (Mob) && !entity.IsDying())
 	{
 		TakeDamage(1);
@@ -397,7 +395,7 @@ void Player::ThrowHit(HitType type)
 	if ((now - last_hit_) > FIRE_RATE)
 	{
 		sf::Vector2f pos(GetPosition().x + GetSize().x / 2, GetPosition().y - GetSize().y / 2);
-		zone_->AddEntity(new PlayerHit(pos, 2, current_dir_, GetID(), type));
+		zone_->AddEntity(new PlayerHit(pos, 2, GetDirection(), GetID(), type));
 		last_hit_ = now;
 	}
 }
@@ -411,7 +409,7 @@ void Player::UseItem(int code)
 			ThrowHit(CIRCULAR);
             break;
         case 11:
-            switch (current_dir_)
+            switch (GetDirection())
 			{
                 case UP:
                     Animated::Change(&GET_ANIM("player_bow_up"), *this);

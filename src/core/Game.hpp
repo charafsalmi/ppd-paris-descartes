@@ -153,14 +153,15 @@ private:
 
 	struct Options
 	{
+		// Settings
+		bool enable_music;
 		bool panel_on_top;
-		int verbosity;
 
 		// Engine
 		int bpp;
 		int fps;
 		int style;
-
+		int verbosity;
 	};
 	Options options_;
 

@@ -20,7 +20,15 @@ public:
 	void PlayMusic(const char* music_name);
 	void PlayMusic(const std::string& music_name);
 
+	/**
+	 * Stopper la lecture de la musique
+	 */
 	void StopMusic();
+
+	/**
+	 * Activer/Désactiver la musique
+	 */
+	void EnableMusic(bool enabled);
 
 private:
 	SoundSystem();
@@ -32,6 +40,7 @@ private:
 	sf::Sound sounds_[MAX_SOUNDS];
 	int last_used_;
 	sf::Music* music_;
+	bool enable_music_;
 };
 
 

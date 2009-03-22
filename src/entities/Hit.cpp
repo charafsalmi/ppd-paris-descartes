@@ -1,5 +1,4 @@
 #include "Hit.hpp"
-#include "Unit.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../core/SoundSystem.hpp"
 #include "../core/Zone.hpp"
