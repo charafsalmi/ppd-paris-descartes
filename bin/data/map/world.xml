@@ -74,7 +74,7 @@
 	<music>default</music>
 	<entities>
 		<entity id="0" x="192" y="404" />
-		<entity id="0" x="300" y="184" />
+		<entity id="0" x="370" y="204" />
 		<entity id="0" x="400" y="254" />
 		<entity id="0" x="50" y="300" />
 	</entities>
@@ -358,7 +358,7 @@
 		<item id="2" x="200" y="350" />
 	</items>
 	<entities>
-		<entity id="0" x="290" y="98" />
+		<entity id="0" x="290" y="198" />
 	</entities>
 </zone>
 <zone>
@@ -420,6 +420,11 @@
 		<decor id="1" x="7" y="11" />
 		<decor id="2" x="9" y="11" />
 	</decors>
+	<entities>
+		<entity id="3" x="300" y="320" />
+		<entity id="3" x="100" y="70" />
+		<entity id="3" x="400" y="120" />
+	</entities>
 </zone>
 <zone>
 	<tiles>

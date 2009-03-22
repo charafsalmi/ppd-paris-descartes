@@ -15,6 +15,8 @@
 #define DEFAULT_LIVES 10
 #define FIRE_RATE     (1 / 2.f)   // (1 / tirs par seconde)
 
+#define ACCEPTED_TILES (Tile::DEFAULT | Tile::WATER | Tile::TELEPORT | Tile::HOLE)
+
 
 Player::Player(const sf::Vector2f& pos) :
 	Unit(pos, GET_IMG("player")),
@@ -253,7 +255,7 @@ void Player::WalkUpdate(float frametime)
 				break;
 			}
 
-			if (zone_->CanMove(rect))
+			if (zone_->CanMove(rect, ACCEPTED_TILES))
 			{
 				SetPosition(pos);
 			}

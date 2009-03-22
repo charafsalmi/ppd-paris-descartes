@@ -1,13 +1,17 @@
 #include "Hit.hpp"
+#include "Unit.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../core/SoundSystem.hpp"
 #include "../core/Zone.hpp"
+#include "../core/Tileset.hpp"
 #include "../misc/Log.hpp"
 
 #define SPEED             320
 #define DYING_DELAY       1.0f
 #define ANGLE_PER_SECOND  720
 #define SLOW_FACTOR       0.9
+
+#define ACCEPTED_TILES (Tile::DEFAULT | Tile::WATER | Tile::TELEPORT | Tile::HOLE)
 
 
 Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id, HitType type) :
@@ -68,7 +72,7 @@ void Hit::Update(float frametime)
 {
 	sf::FloatRect rect;
 	GetCollideRect(rect);
-	if (!zone_->CanMove(rect))
+	if (!zone_->CanMove(rect, ACCEPTED_TILES))
 	{
 		update_callback_ = &Hit::DyingUpdate;
 	}

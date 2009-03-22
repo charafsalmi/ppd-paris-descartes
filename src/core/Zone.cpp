@@ -49,7 +49,7 @@ void Zone::Load(const TiXmlHandle& handle)
 
 			int tile_id;
 			all_tiles >> tile_id;
-			walkable_[i][j] = tileset.IsWalkable(tile_id);
+			walkable_[i][j] = tileset.GetEffect(tile_id);
 			tiles_[i][j] = tile_id;
 
 			// création et dessin du sprite
@@ -270,7 +270,7 @@ void Zone::Update(float frametime)
 }
 
 
-bool Zone::CanMove(const sf::FloatRect& rect) const
+bool Zone::CanMove(const sf::FloatRect& rect, int accepted) const
 {
 	// si hors de la zone
 	if (rect.Top < 0 || rect.Left < 0 || rect.Bottom > Tile::SIZE * HEIGHT
@@ -285,9 +285,12 @@ bool Zone::CanMove(const sf::FloatRect& rect) const
 	int right = (int) rect.Right / Tile::SIZE;
 	int bottom = (int) rect.Bottom / Tile::SIZE;
 
-	// si collision avec un élément statique
-	if (!walkable_[top][left] || !walkable_[top][right]
-		|| !walkable_[bottom][left] || !walkable_[bottom][right])
+
+	// si collision avec une tile non accpetée
+	if (!(walkable_[top][left] & accepted)
+		|| !(walkable_[top][right] & accepted)
+		|| !(walkable_[bottom][left] & accepted)
+		|| !(walkable_[bottom][right] & accepted))
 	{
 		return false;
 	}
@@ -307,7 +310,7 @@ void Zone::AddDecor(Entity* decor, int x, int y)
 	{
 		for (x = xcopy; x < right_x; ++x)
 		{
-			walkable_[y][x] = false;
+			walkable_[y][x] = Tile::BLOCK;
 		}
 	}
 	AddEntity(decor);

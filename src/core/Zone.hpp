@@ -68,9 +68,10 @@ public:
 	/**
 	 * Détermine si un mouvement est possible
 	 * @param[in] rect: rectangle de la position issue du mouvement à tester
+	 * @param[in] accepted: masque de bits des types de tiles pouvant être franchis
 	 * @return true si le mouvement est possible, sinon false
 	 */
-	bool CanMove(const sf::FloatRect& rect) const;
+	bool CanMove(const sf::FloatRect& rect, int accepted = Tile::DEFAULT) const;
 
 	/**
 	 * Ajouter un objet
@@ -151,7 +152,7 @@ private:
 	bool loaded_;
 	int tiles_[HEIGHT][WIDTH];
 	// indique là on l'on peut marcher (pour ne pas le recalculer)
-	bool walkable_[HEIGHT][WIDTH];
+	Tile::Effect walkable_[HEIGHT][WIDTH];
 	sf::Image tiles_img_; // image des tiles de la zone
 	sf::Sprite tiles_sprite_; // sprite associé aux tiles
 

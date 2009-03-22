@@ -13,11 +13,11 @@ namespace Tile
 	};
 	enum Effect
 	{
-		DEFAULT, // aucun effet
-		BLOCK,
-		WATER,
-		HOLE,
-		TELEPORT
+		DEFAULT  = 1 << 0, // aucun effet
+		BLOCK    = 1 << 1,
+		WATER    = 1 << 2,
+		HOLE     = 1 << 3,
+		TELEPORT = 1 << 4
 	};
 }
 
