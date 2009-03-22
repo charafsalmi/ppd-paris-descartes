@@ -9,9 +9,16 @@ class SoundSystem
 public:
 	static SoundSystem& GetInstance();
 
+	/**
+	 * Jouer un son
+	 */
 	void PlaySound(const char* sound_name);
 
+	/**
+	 * Jouer une musique (une musique à la fois)
+	 */
 	void PlayMusic(const char* music_name);
+	void PlayMusic(const std::string& music_name);
 
 	void StopMusic();
 

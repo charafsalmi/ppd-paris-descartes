@@ -61,6 +61,13 @@ void SoundSystem::PlayMusic(const char* music_name)
 	}
 }
 
+
+void SoundSystem::PlayMusic(const std::string& music_name)
+{
+	PlayMusic(music_name.c_str());
+}
+
+
 void SoundSystem::StopMusic()
 {
 	music_->Stop();

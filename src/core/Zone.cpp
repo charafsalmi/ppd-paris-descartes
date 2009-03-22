@@ -5,8 +5,8 @@
 
 #include "Zone.hpp"
 #include "ZoneContainer.hpp"
-#include "Game.hpp"
 #include "SoundSystem.hpp"
+#include "Game.hpp"
 #include "../entities/EntityFactory.hpp"
 #include "../entities/Player.hpp"
 #include "../entities/Hit.hpp"
@@ -32,15 +32,13 @@ Zone::~Zone()
 
 void Zone::Load(const TiXmlHandle& handle)
 {
+	// chargement de la musique
+	music_name_ = handle.FirstChildElement("music").Element()->GetText();
+
 	// chargement des tiles
 	sf::RenderWindow& app = Game::GetInstance().GetApp();
 	static const Tileset& tileset = Tileset::GetInstance();
 	const TiXmlElement* elem = handle.FirstChildElement("tiles").Element();
-
-	//musique
-	music_name_ = handle.FirstChildElement("music").Element()->GetText();
-    Output << ZONE_S << "Chargement de zone, musique : " << music_name_ << lEnd;
-	SoundSystem::GetInstance().PlayMusic(music_name_.c_str());
 
 	std::istringstream all_tiles(elem->GetText());
 	for (int i = 0; i < HEIGHT; ++i)

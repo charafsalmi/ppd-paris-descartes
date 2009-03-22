@@ -2,6 +2,7 @@
 
 #include "ZoneContainer.hpp"
 #include "Game.hpp"
+#include "SoundSystem.hpp"
 #include "../entities/Player.hpp"
 #include "../misc/Log.hpp"
 
@@ -127,6 +128,7 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 		    Output << ZC_S << "Deja en zone [" << y << "][" << x << "], rien a faire" << lEnd;
 			return true;
 		}
+
 		if (active_zone_ != NULL)
 		{
 			active_zone_->ClearHits();
@@ -149,6 +151,7 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 			Output << ZC_S << "Chargement de la zone [" << y << "][" << x << "]" << lEnd;
 			next_zone_->Load(handle);
 		}
+		SoundSystem::GetInstance().PlayMusic(next_zone_->GetMusicName());
 
 		// changement immédiat ?
 		if (!wait)
