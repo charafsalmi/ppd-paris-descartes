@@ -70,9 +70,14 @@ private:
 
 	void FallingUpdate(float frametime);
 
-	void (Player::*strategy_callback_)(float frametime);
+	void SwimmingUpdate(float frametime);
+
+	void HandleInput(float frametime);
 
     void UseItem(int);
+
+	// pointeur de la méthode de mise à jour
+	void (Player::*strategy_callback_)(float frametime);
 
 	// Keycodes des mouvements
 	input::Action move_keys_[COUNT_DIRECTION];
@@ -83,6 +88,7 @@ private:
 	sf::IntRect subrects_not_moving_[COUNT_DIRECTION];
 	bool was_moving_;
 	bool locked_;
+	bool can_use_item_;
 	ControlPanel& panel_;
 
 	int max_lives_;

@@ -12,6 +12,11 @@
 	<anim name="player_bow_left" width="48" height="48" count="3" delay="0.15" x_offset="256" y_offset="144" />
 	<anim name="player_bow_right" width="48" height="48" count="3" delay="0.15" x_offset="256" y_offset="192" />
 	
+	<anim name="player_swim_up" width="32" height="48" count="5" delay="0.15" x_offset="0" y_offset="240" />
+	<anim name="player_swim_down" width="32" height="48" count="5" delay="0.15" x_offset="0" y_offset="288" />
+	<anim name="player_swim_left" width="48" height="48" count="5" delay="0.15" x_offset="0" y_offset="336" />
+	<anim name="player_swim_right" width="48" height="48" count="5" delay="0.15" x_offset="0" y_offset="384" />
+	
 	<!-- squelette -->
 	<anim name="squelette_walk_up" width="32" height="52" count="2" delay="0.2" x_offset="0" y_offset="0" />
 	<anim name="squelette_walk_down" width="32" height="52" count="2" delay="0.2" x_offset="0" y_offset="52" />
