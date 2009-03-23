@@ -2,6 +2,7 @@
 #define SOUNDSYSTEM_HPP
 
 #include <string>
+#include <iostream>
 #include <SFML/Audio.hpp>
 
 class SoundSystem
