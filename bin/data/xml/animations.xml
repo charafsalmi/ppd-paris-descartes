@@ -12,6 +12,11 @@
 	<anim name="player_bow_left" width="48" height="48" count="3" delay="0.15" x_offset="256" y_offset="144" />
 	<anim name="player_bow_right" width="48" height="48" count="3" delay="0.15" x_offset="256" y_offset="192" />
 	
+	<anim name="player_sword_down" width="63" height="63" count="5" delay="0.10" x_offset="413" y_offset="50" />
+	<anim name="player_sword_left" width="63" height="63" count="5" delay="0.10" x_offset="413" y_offset="113" />
+	<anim name="player_sword_right" width="63" height="63" count="5" delay="0.10" x_offset="413" y_offset="176" />
+	<anim name="player_sword_up" width="63" height="63" count="5" delay="0.10" x_offset="413" y_offset="239" />
+	
 	<anim name="player_swim_up" width="32" height="48" count="5" delay="0.15" x_offset="0" y_offset="240" />
 	<anim name="player_swim_down" width="32" height="48" count="5" delay="0.15" x_offset="0" y_offset="288" />
 	<anim name="player_swim_left" width="48" height="48" count="5" delay="0.15" x_offset="0" y_offset="336" />

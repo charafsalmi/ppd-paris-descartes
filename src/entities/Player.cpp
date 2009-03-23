@@ -68,6 +68,7 @@ Player::Player(const sf::Vector2f& pos) :
 	can_use_item_ = true;
 	// on suppose que tirer une flèche prend autant de temps, quelque que soit la direction
 	use_bow_duration_ = GET_ANIM("player_bow_up").GetDuration();
+	use_sword_duration_ = GET_ANIM("player_sword_up").GetDuration();
 	falling_duration_ = GET_ANIM("player_fall").GetDuration();
 
 	strategy_callback_ = &Player::WalkUpdate;
@@ -331,6 +332,23 @@ void Player::UseBowUpdate(float frametime)
 }
 
 
+void Player::UseSwordUpdate(float frametime)
+{
+	float now = Game::GetInstance().GetElapsedTime();
+	if ((now - started_action_) > use_sword_duration_)
+	{
+		ThrowHit(CIRCULAR);
+		Animated::Change(walk_anims_[GetDirection()], *this);
+		SetSubRect(subrects_not_moving_[GetDirection()]); // ?
+		strategy_callback_ = &Player::WalkUpdate;
+	}
+	else
+	{
+		Animated::Update(frametime, *this);
+	}
+}
+
+
 void Player::OnCollide(Entity& entity, const sf::FloatRect& overlap)
 {
 	Unit::OnCollide(entity, overlap);
@@ -418,7 +436,25 @@ void Player::UseItem(int code)
 	switch (code)
 	{
 		case 10:
-			ThrowHit(CIRCULAR);
+			switch (GetDirection())
+			{
+				case UP:
+					Animated::Change(&GET_ANIM("player_sword_up"), *this);
+					break;
+				case DOWN:
+					Animated::Change(&GET_ANIM("player_sword_down"), *this);
+					break;
+				case LEFT:
+					Animated::Change(&GET_ANIM("player_sword_left"), *this);
+					break;
+				case RIGHT:
+					Animated::Change(&GET_ANIM("player_sword_right"), *this);
+					break;
+				default:
+					break;
+			}
+			strategy_callback_ = &Player::UseSwordUpdate;
+			started_action_ = Game::GetInstance().GetElapsedTime();
 			break;
 		case 11:
 			switch (GetDirection())

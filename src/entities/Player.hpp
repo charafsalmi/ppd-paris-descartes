@@ -67,6 +67,8 @@ private:
 	void WalkUpdate(float frametime);
 
 	void UseBowUpdate(float frametime);
+	
+	void UseSwordUpdate(float frametime);
 
 	void FallingUpdate(float frametime);
 
@@ -98,6 +100,7 @@ private:
 	float started_action_;
 	float falling_duration_;
 	float use_bow_duration_;
+	float use_sword_duration_;
 	float last_hit_; // temps en secondes
 };
 

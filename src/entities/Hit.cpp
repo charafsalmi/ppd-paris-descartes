@@ -153,16 +153,16 @@ void Hit::MoveCircular(float frametime)
     switch (direction_)
 	{
 	case UP:
-		Rotate(ANGLE_PER_SECOND/2 * frametime);
+		Rotate(ANGLE_PER_SECOND * frametime);
 		break;
 	case DOWN:
-		Rotate(ANGLE_PER_SECOND/2 * frametime);
+		Rotate(ANGLE_PER_SECOND * frametime);
 		break;
 	case LEFT:
-		Rotate(ANGLE_PER_SECOND/2 * frametime);
+		Rotate(ANGLE_PER_SECOND * frametime);
 		break;
 	case RIGHT:
-		Rotate(ANGLE_PER_SECOND/2 * frametime);
+		Rotate(ANGLE_PER_SECOND * frametime);
 		break;
 	default:
 		break;
