@@ -196,6 +196,8 @@ int Game::Run()
 		// UPDATE
 		frametime = app_.GetFrameTime();
 		(this ->* update_meth_)(frametime);
+			// SON
+		SoundSystem::GetInstance().UpdateVolume(frametime);
 
 		// RENDER
 		(this ->* render_meth_)();

@@ -1,8 +1,8 @@
 #include <cstring>
 
+#include "Game.hpp"
 #include "SoundSystem.hpp"
 #include "../misc/MediaManager.hpp"
-
 
 SoundSystem& SoundSystem::GetInstance()
 {
@@ -16,6 +16,10 @@ SoundSystem::SoundSystem()
 	last_used_ = 0;
 	music_ = NULL;
 	enable_music_ = true;
+	volume_ = 100;
+	update_volume_to_ = 0;
+	fade_delay_ = 3.f;
+	timer_ = fade_delay_;
 }
 
 
@@ -48,8 +52,28 @@ void SoundSystem::PlaySound(const char* sound_name)
 }
 
 
+void SoundSystem::UpdateVolume(float frametime)
+{
+	if (timer_ < fade_delay_)
+	{
+		float
+			pourcentage = timer_ / fade_delay_, // progression jusqu'a fin du timer
+			taux = (volume_ - update_volume_to_) * pourcentage // valeur absolue jusqu'au nouveau volume
+			;
+
+		music_->SetVolume((volume_ - taux));
+		//std::cout << "[SoundSystem] Fondu de volume de " << volume_ << "% a " << taux << "% en " << fade_delay_ << "s" << std::endl;
+		timer_ += frametime;
+	}
+	else
+	{
+		volume_ = update_volume_to_;
+	}
+}
+
 void SoundSystem::PlayMusic(const char* music_name)
 {
+	float vol = volume_;
 	sf::Music* next = MediaManager::GetInstance().GetMusic(music_name);
 	if (enable_music_ && next != music_)
 	{
@@ -58,7 +82,9 @@ void SoundSystem::PlayMusic(const char* music_name)
 			music_->Stop();
 		}
 		music_ = next;
+		FadeMusicVolumeTo(0, 1);
 		music_->Play();
+		FadeMusicVolumeTo(vol, 1);
 	}
 }
 

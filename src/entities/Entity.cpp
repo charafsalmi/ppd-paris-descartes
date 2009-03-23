@@ -34,37 +34,6 @@ void Entity::SetActiveZone(Zone* zone)
 }
 
 
-/*bool Entity::Move(Direction dir, float frametime)
-{
-	static const int MAGIC = 42;// vitesse
-	int dx, dy;
-	switch (dir)
-	{
-		case UP:
-			dy = -MAGIC * frametime;
-			break;
-		case DOWN:
-			dy = MAGIC * frametime;
-			break;
-		case LEFT:
-			dx = -MAGIC * frametime;
-			break;
-		case RIGHT:
-			dx = MAGIC * frametime;
-			break;
-	}
-	Move(dx, dy);
-	return false;
-}*/
-
-
-/*bool Entity::MoveRandomly(float frametime)
-{
-	return Move((Direction) sf::Randomizer::Random(0, COUNT_DIRECTION - 1),
-		frametime);
-}*/
-
-
 void Entity::Kill()
 {
 	dead_ = true;
