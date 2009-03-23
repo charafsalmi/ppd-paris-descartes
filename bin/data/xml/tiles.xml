@@ -66,6 +66,8 @@
 			<tile id="152" />
 			<tile id="153" />
 			<tile id="154" />
+			<tile id="182" />
+			
 			<!-- dungeon -->
 			<tile id="224" />
 			<tile id="225" />
@@ -95,7 +97,6 @@
 		</group>
 		<group effect="water">
 			<tile id="6" />
-			<tile id="7" />
 			<tile id="198" />
 			<tile id="217" />
 			<tile id="233" />
@@ -109,17 +110,21 @@
 			<tile id="275" />
 		</group>
 		<group effect="teleport">
-			<tile id="216" />
+			<tile id="59" />
 			<tile id="310" />
 			<tile id="294" />
 		</group>
 	</definitions>
 	<animated>
+		<tile from="6" to="7" />
 		<tile from="198" to="201" />
 		<tile from="182" to="183" />
+		<tile from="217" to="218" />
+		<tile from="233" to="234" />
 		<tile from="11" to="14" />
 		<tile from="27" to="30" />
 		<tile from="43" to="46" />
+		<tile from="59" to="62" />
 	</animated>
 </tiles>
 
