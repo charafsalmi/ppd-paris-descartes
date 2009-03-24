@@ -19,7 +19,7 @@ WinInventory::WinInventory()
 	cursor_.coords.y = 0;
     cursor_.sprite.SetImage(GET_IMG("inventory-cursor"));
     cursor_.sprite.SetPosition(OFFSET_X, OFFSET_Y);
-	cursor_.sprite.SetColor(sf::Color(255, 255, 255, 128));
+	cursor_.sprite.SetColor(sf::Color(255, 255, 255));
 
     item1_=-1;
     item2_=-1;
