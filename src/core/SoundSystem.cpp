@@ -62,7 +62,6 @@ void SoundSystem::UpdateVolume(float frametime)
 			;
 
 		music_->SetVolume((volume_ - taux));
-		//std::cout << "[SoundSystem] Fondu de volume de " << volume_ << "% a " << taux << "% en " << fade_delay_ << "s" << std::endl;
 		timer_ += frametime;
 	}
 	else

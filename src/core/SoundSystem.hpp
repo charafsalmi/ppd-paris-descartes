@@ -16,7 +16,7 @@ public:
 	void PlaySound(const char* sound_name);
 
 	/**
-	 * Jouer une musique (une musique à la fois)
+	 * Jouer une musique (une musique Ã  la fois)
 	 */
 	void PlayMusic(const char* music_name);
 	void PlayMusic(const std::string& music_name);
@@ -32,7 +32,7 @@ public:
 	void EnableMusic(bool enabled);
 
 	/**
-	 * Changer le volume du son (de 0 � 100)
+	 * Changer le volume du son (de 0  100)
 	 */
 	inline void SetMusicVolume(float v)
 	{
@@ -40,7 +40,7 @@ public:
 		music_->SetVolume(v);
 	}
 	/**
-	 * Obtenir le volume du son (de 0 � 100)
+	 * Obtenir le volume du son (de 0  100)
 	 */
 	inline float GetMusicVolume() const
 	{
@@ -66,7 +66,6 @@ public:
 		timer_ = 0;
 		update_volume_to_ = to_volume;
 		fade_delay_ = delay;
-		std::cout << "[SoundSystem] Fondu de volume de " << volume_ << "% a " << to_volume << "% en " << delay << "s" << std::endl;
 	}
 
 	/**

@@ -58,6 +58,7 @@ Game::Game() :
     else
     {
 		panel_.SetPosition(0, Zone::HEIGHT_PX);
+		panel_.OnTop(false);
     }
 
     if (!options_.enable_music)

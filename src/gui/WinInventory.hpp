@@ -38,21 +38,21 @@ public:
 
     /**
     * Permet de connaitre l'ID du premier objet assignable
-    * @return: l'ID ou si non assigné
+    * @return: l'ID ou 0 si non assigné
     */
-    int GetItem1ID();
+    int GetItem1ID() const;
 
      /**
     * Permet de connaitre l'ID du deuxième objet assignable
-    * @return: l'ID ou si non assigné
+    * @return: l'ID ou 0 si non assigné
     */
-    int GetItem2ID();
+    int GetItem2ID() const;
 
     /**
     * Permet de connaitre l'ID du troisième objet assignable
-    * @return: l'ID ou si non assigné
+    * @return: l'ID ou 0 si non assigné
     */
-    int GetItem3ID();
+    int GetItem3ID() const;
 
 
 

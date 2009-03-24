@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<window x="180" y="216" w="310" h="212" background="interface/pause/background" alpha="230">
+<window x="180" y="190" w="310" h="280" background="interface/pause/background" alpha="230">
     <label x="85" y="10" font="bretro">Options</label>
-	<button id="7000" pic="interface/pause/button" x="40" y="50" />
+	<button id="7000" pic="interface/pause/button" OnHover="interface/pause/button_o" x="40" y="50" />
 	<label x="65" y="65" font="bretro">Music O/F</label>
 
-	<button id="7002" pic="interface/pause/button" x="-71" y="120" />
+	<button id="7002" pic="interface/pause/button" OnHover="interface/pause/button_o" x="-71" y="120" />
 	<label x="24" y="138" font="bretro">-</label>
-    <button id="7001" pic="interface/pause/button" x="155" y="120" />
+    <button id="7001" pic="interface/pause/button" OnHover="interface/pause/button_o" x="155" y="120" />
     <label x="250" y="138" font="bretro">+</label>
 
-	<button id="7771" pic="interface/pause/button" x="40" y="190" />
+	<button id="7771" pic="interface/pause/button" OnHover="interface/pause/button_o" x="40" y="190" />
 	<label x="85" y="210" font="bretro">Fermer</label>
 </window>

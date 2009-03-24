@@ -21,7 +21,6 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id
 	switch (type)
 	{
 		case LINEAR:
-            OutputD << "fleche" << lEnd;
 			update_callback_ = &Hit::MoveLinear;
 			switch (dir)
 			{
@@ -46,14 +45,12 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id
 			SetCenter(0, subrect.GetHeight());
 			break;
 		case CIRCULAR:
-			// hack temporaire, en attendant d'avoir un vrai sprite de coup d'épée
-			SetImage(GET_IMG("items"));
-            OutputD << "epee" << lEnd;
+			// hit invisible
 			update_callback_ = &Hit::MoveCircular;
-			subrect = sf::IntRect(16, 0, 16 + 18, 0 + 32);
+			subrect = sf::IntRect(50, 0, 120, 70);
+			Move(GetSize().x / 2, -GetSize().y / 2);
 			timed_ = true;
 			time_to_live_ = 1.0f;
-			SetCenter(0, 0);
 			break;
 	}
 	direction_ = dir;

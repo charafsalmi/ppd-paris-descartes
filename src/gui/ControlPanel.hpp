@@ -49,6 +49,8 @@ public:
 		return inventory_;
 	}
 
+	void OnTop(bool top);
+
 private:
 	ControlPanel();
 	ControlPanel(const ControlPanel& other);

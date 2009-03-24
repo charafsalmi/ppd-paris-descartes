@@ -82,29 +82,25 @@ void Player::OnEvent(input::Action action)
 	{
 		case input::USE_ITEM_1:
 			obj = panel_.GetInventory()->GetItem1ID();
-			if (obj == 0)
+			if (obj != 0)
 			{
-				break;
+				UseItem(obj);
 			}
-			Output << PLAYER_S << "Joueur utilise l'objet" << obj << lEnd;
-			UseItem(obj);
 			break;
-		/*
 		case input::USE_ITEM_2:
 			obj = panel_.GetInventory()->GetItem2ID();
-			if (obj == 0)
-				break;
-			std::cout << "[Player]le joueur utilise l'objet " << obj << std::endl;
-			UseItem(obj);
+			if (obj != 0)
+			{
+				UseItem(obj);
+			}
 			break;
 		case input::USE_ITEM_3:
             obj = panel_.GetInventory()->GetItem3ID();
-            if (obj == 0)
-				break;
-			std::cout << "[Player]le joueur utilise l'objet " << obj << std::endl;
-			UseItem(obj);
+            if (obj != 0)
+            {
+				UseItem(obj);
+            }
 			break;
-		*/
 		default:
 			break;
 	}

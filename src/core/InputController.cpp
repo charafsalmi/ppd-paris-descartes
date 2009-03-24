@@ -23,6 +23,8 @@ InputController::InputController()
 	keyboard_binds_[MOVE_LEFT] = sf::Key::Left;
 	keyboard_binds_[MOVE_RIGHT] = sf::Key::Right;
 	keyboard_binds_[USE_ITEM_1] = sf::Key::Space;
+	keyboard_binds_[USE_ITEM_2] = sf::Key::A;
+	keyboard_binds_[USE_ITEM_3] = sf::Key::Z;
 	keyboard_binds_[SHOW_MINIMAP] = sf::Key::C;
 	keyboard_binds_[SHOW_INVENTORY] = sf::Key::I;
 	keyboard_binds_[TAKE_SCREENSHOT] = sf::Key::F1;
@@ -34,7 +36,9 @@ InputController::InputController()
 	joystick_binds_[SHOW_INVENTORY] = 0;
 	joystick_binds_[SHOW_MINIMAP] = 1;
 	joystick_binds_[USE_ITEM_1] = 6;
-	joystick_binds_[PAUSE] = 3;
+	joystick_binds_[USE_ITEM_2] = 2;
+	joystick_binds_[USE_ITEM_3] = 3;
+	joystick_binds_[PAUSE] = 4;
 }
 
 

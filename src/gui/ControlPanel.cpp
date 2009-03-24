@@ -76,6 +76,22 @@ void ControlPanel::Update(float frametime)
 }
 
 
+void ControlPanel::OnTop(bool top)
+{
+	// quick & dirty bugfix
+	if (top)
+	{
+		info_text_.SetPosition(INFOTEXT_ORIGIN);
+		head_.SetPosition(HEAD_X, HEAD_Y);
+	}
+	else
+	{
+		info_text_.SetPosition(422, -20);
+		head_.SetPosition(HEAD_X, -(HEAD_Y + 20));
+	}
+}
+
+
 void ControlPanel::Render(sf::RenderTarget& app) const
 {
 	app.Draw(background_);

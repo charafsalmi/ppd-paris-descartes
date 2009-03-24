@@ -69,7 +69,7 @@ void Game::SetMode(Mode mode)
 	}
 }
 
-// méthodes callbacks
+// mÃ©thodes callbacks
 
 void Game::DefaultUpdate(float frametime) {
 	panel_.Update(frametime);
@@ -96,10 +96,12 @@ void Game::InGameOnEvent(const sf::Event& event, input::Action action)
 			break;
 		case input::PANEL_UP:
 			panel_.SetPosition(0, 0);
+			panel_.OnTop(true);
 			zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
 			options_.panel_on_top = true;
 			break;
 		case input::PANEL_DOWN:
+			panel_.OnTop(false);
 			panel_.SetPosition(0, Zone::HEIGHT_PX);
 			zone_container_.SetPosition(0, 0);
 			options_.panel_on_top = false;
@@ -139,7 +141,7 @@ void Game::InGameShow()
 
 void Game::InventoryOnEvent(const sf::Event& event, input::Action action)
 {
-	// TODO: Evenement à déporter dans le gestionnaire de fenêtre
+	// TODO: Evenement Ã  dÃ©porter dans le gestionnaire de fenÃªtre
 	if (action == input::SHOW_INVENTORY)
 	{
 		SetMode(IN_GAME);
@@ -249,8 +251,7 @@ void Game::MainMenuOnEvent(const sf::Event& event, input::Action action)
             OutputD << "Lancement du jeu !" << lEnd;
             SetMode(IN_GAME);
 
-            // HACK: Pour lancer la musique du jeu
-            SoundSystem::GetInstance().PlayMusic("default");
+            SoundSystem::GetInstance().PlayMusic(zone_container_.GetActiveZone()->GetMusicName());
             break;
         case MainMenu::EXIT_GAME:
             OutputD << "On quitte le programme ..." << lEnd;
