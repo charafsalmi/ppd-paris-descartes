@@ -18,6 +18,9 @@ Button::Button(ControlID id, const ControlPos& pos, const ControlPos& size, cons
             s.x = img_.GetSize().x;
             s.y = img_.GetSize().y;
         }
+        hidden_ = false;
+    }else{
+        hidden_ = true;
     }
 
     // Système OnHover
@@ -42,7 +45,8 @@ void Button::Render(sf::RenderTarget& app) const
     if((accepted_states_ & ON_HOVER)&&(curr_state_ == ON_HOVER)){
         app.Draw(img_hover_);
     }else{
-        app.Draw(img_);
+        if(!hidden_)
+            app.Draw(img_);
     }
 }
 
@@ -53,4 +57,6 @@ void Button::ChangeSprite(const sf::Sprite& nimg)
     img_ = nimg;
     img_.Resize(rect_.Right-rect_.Left, rect_.Bottom-rect_.Top);
     img_.SetPosition(p.x, p.y+img_.GetSize().y);
+
+    hidden_ = false;
 }

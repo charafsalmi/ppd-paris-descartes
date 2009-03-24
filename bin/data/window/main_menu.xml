@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <window x="0" y="0" w="640" h="572" background="interface/mmenu/background" alpha="128">
-	<button id="7771" pic="interface/mmenu/go" OnHover="interface/mmenu/go_h" x="224" y="245" w="270" h="49"/>
-	<button id="7772" pic="interface/mmenu/exit" OnHover="interface/mmenu/exit_h" x="222" y="321" />
+	<button id="7771" pic="interface/mmenu/button" OnHover="interface/mmenu/button_o" x="224" y="245" w="270" h="49"/>
+	<button id="7772" pic="interface/mmenu/button" OnHover="interface/mmenu/button_o" x="222" y="321" />
+    <label font="gretro" x="285" y="263">Jouer</label>
+    <label font="gretro" x="268" y="338">Quitter</label>
 </window>

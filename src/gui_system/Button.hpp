@@ -16,6 +16,8 @@ namespace gui{
         /** Medias */
         sf::Sprite img_;
         sf::Sprite img_hover_;
+
+        bool hidden_;
     };
 }
 

@@ -6,16 +6,11 @@
 using namespace gui;
 using namespace std;
 
-Label::Label(const ControlID id, const ControlPos& pos, const std::string& text) :
+Label::Label(const ControlID id, const ControlPos& pos, const std::string& text, const std::string& font) :
 	Control(id, pos, text),
-	BStext_(GET_BITMAP_FONT("mono12-white"))
+	BStext_(GET_BITMAP_FONT(font.c_str()))
 {
 	BStext_.SetText(text_);
-}
-
-Label::~Label()
-{
-
 }
 
 void Label::Update()
@@ -33,7 +28,8 @@ void Label::Update()
     BStext_.SetText(text_);
 }
 
-void Label::SetText(const std::string s){
+void Label::SetText(const std::string s)
+{
     text_ = s;
     BStext_.SetText(s);
 }

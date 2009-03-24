@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<window x="121" y="149" w="400" h="270" background="interface/inventory/background">
+<window x="121" y="149" w="400" h="270" background="interface/inventory/background" alpha="230">
 	<button id="9000" x="19" y="39" w="60" h="60" />
 	<button id="9001" x="97" y="39" w="60" h="60" />
 	<button id="9002" x="170" y="39" w="60" h="60" />
@@ -17,5 +17,7 @@
 	<button id="9012" x="170" y="190" w="60" h="60" />
 	<button id="9013" x="245" y="190" w="60" h="60" />
 	<button id="9014" x="320" y="190" w="60" h="60" />
+
+	<label x="105" y="8" font="bretro">Inventaire</label>
 </window>
 

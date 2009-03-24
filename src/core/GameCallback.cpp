@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "SoundSystem.hpp"
 #include "../misc/Log.hpp"
 #include "../gui/Splash.hpp"
 #include "../gui/MiniMap.hpp"
@@ -10,6 +11,9 @@ void Game::SetMode(Mode mode)
 	switch (mode)
 	{
 	    case MAIN_MENU:
+            // HACK: Pour lancer la musique du menu au menu
+            SoundSystem::GetInstance().PlayMusic("title");
+
             Output << "Passage en mode MAIN_MENU" << lEnd;
 
             on_event_meth_ = &Game::MainMenuOnEvent;
@@ -46,6 +50,13 @@ void Game::SetMode(Mode mode)
 			on_event_meth_ = &Game::PauseOnEvent;
 			update_meth_ = &Game::PauseUpdate;
 			render_meth_ = &Game::PauseShow;
+			break;
+        case OPTION:
+            Output << "Passage en mode OPTION" << lEnd;
+
+            on_event_meth_ = &Game::OptionOnEvent;
+			update_meth_ = &Game::OptionUpdate;
+			render_meth_ = &Game::OptionShow;
 			break;
 		case MINI_MAP:
 			Output << "Passage en mode MINIMAP" << lEnd;
@@ -152,13 +163,21 @@ void Game::InventoryShow()
 
 void Game::PauseOnEvent(const sf::Event& event, input::Action action)
 {
+    int x = pause_.ManageEvent(event);
+
 	if (action == input::PAUSE)
 	{
 		SetMode(IN_GAME);
+		return;
 	}
-	if (pause_.ManageEvent(event) == WinPause::_EXIT)
-	{
-		running_ = false;
+
+	switch(x){
+	    case WinPause::_EXIT:
+            running_ = false;
+            break;
+        case WinPause::_OPTION:
+            SetMode(OPTION);
+            break;
 	}
 }
 
@@ -167,9 +186,11 @@ void Game::PauseUpdate(float)
 {
 }
 
-
 void Game::PauseShow()
 {
+    app_.Draw(zone_container_);
+	app_.Draw(panel_);
+
 	app_.Draw(pause_);
 }
 
@@ -227,6 +248,9 @@ void Game::MainMenuOnEvent(const sf::Event& event, input::Action action)
 	    case MainMenu::START_GAME:
             OutputD << "Lancement du jeu !" << lEnd;
             SetMode(IN_GAME);
+
+            // HACK: Pour lancer la musique du jeu
+            SoundSystem::GetInstance().PlayMusic("default");
             break;
         case MainMenu::EXIT_GAME:
             OutputD << "On quitte le programme ..." << lEnd;
@@ -244,4 +268,29 @@ void Game::MainMenuUpdate(float frametime)
 void Game::MainMenuShow()
 {
 	app_.Draw(mmenu_);
+}
+
+// OPTION /////////////////////////////////////////////////
+
+void Game::OptionOnEvent(const sf::Event& event, input::Action action)
+{
+	int x = option_win_->ManageEvent(event);
+
+	switch(x){
+	    case Option::_EXIT:
+            SetMode(PAUSE);
+            break;
+	}
+}
+
+void Game::OptionUpdate(float frametime)
+{
+
+}
+
+void Game::OptionShow()
+{
+    app_.Draw(zone_container_);
+	app_.Draw(panel_);
+	app_.Draw(*option_win_);
 }

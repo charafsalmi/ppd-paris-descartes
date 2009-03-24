@@ -10,10 +10,16 @@ public:
     /** Retours de l'inventaire */
     enum
     {
-        _EXIT=101
+        _OPTION=101, _EXIT
     };
 
 private:
+    /** Liste des fenêtres */
+    enum
+    {
+        ID_OPTION=7001
+    };
+
     int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2);
 };
 

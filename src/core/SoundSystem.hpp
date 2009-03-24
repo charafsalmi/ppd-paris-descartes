@@ -48,6 +48,15 @@ public:
 	}
 
 	/**
+	 * Permet d'augmenter ou diminuer le volume
+	 */
+    inline void AddMusicVolume(float v)
+    {
+        volume_ += v;
+        music_->SetVolume(volume_);
+    }
+
+	/**
 	 * Changer le volume du son de facon douce (fondu)
 	 * @param[in] float nouveau volume
 	 * @param[in] float delay (en secondes)

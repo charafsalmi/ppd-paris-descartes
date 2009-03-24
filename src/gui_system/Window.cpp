@@ -181,7 +181,8 @@ void Window::Load(const std::string& xmlfile){
 
         // id du widget
         if(controls_elem->QueryIntAttribute("id", &id) != TIXML_SUCCESS){
-            OutputW << WINDOW_S << " Aucun identifiant pour ce widget" << lEnd;
+            // FIXME: Plantage à l'appel de cette fonction
+            // OutputW << WINDOW_S << " Aucun identifiant pour ce widget" << lEnd;
             id = 0;
         }
 
@@ -225,13 +226,20 @@ void Window::Load(const std::string& xmlfile){
 
             controls_.push_back(new Button(id, ctrl_pos, ctrl_size, temp1, temp2));
 	    }else if(s1 == "label"){
+	        p = controls_elem->Attribute("font");
+	        if(p == NULL){
+	            temp2 = "mono12-white";
+	        }else{
+	            temp2 = p;
+	        }
+
 	        p = controls_elem->GetText();
 	        if(p == NULL){
 	            temp1 = "";
 	        }else{
 	            temp1 = p;
 	        }
-	        controls_.push_back(new Label(id, ctrl_pos, temp1));
+	        controls_.push_back(new Label(id, ctrl_pos, temp1, temp2));
 	    }
 	    else if (s1 == "textbox")
 	    {

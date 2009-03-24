@@ -14,10 +14,12 @@ WinInventory::WinInventory()
 
     last_item_ = 0;
     items_ = new Equipment*[ITEM_N+1];
+
     cursor_.coords.x = 0;
 	cursor_.coords.y = 0;
     cursor_.sprite.SetImage(GET_IMG("inventory-cursor"));
     cursor_.sprite.SetPosition(OFFSET_X, OFFSET_Y);
+
     item1_=-1;
     item2_=-1;
     item3_=-1;

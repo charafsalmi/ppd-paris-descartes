@@ -9,6 +9,7 @@
 #include "../gui/MyWin.hpp"
 #include "../gui/WinPause.hpp"
 #include "../gui/MainMenu.hpp"
+#include "../gui/Option.hpp"
 #include "../misc/Misc.hpp"
 #include "../misc/BitmapString.hpp"
 #include "../misc/Log.hpp"
@@ -119,6 +120,11 @@ private:
 	void PauseUpdate(float frametime);
 	void PauseShow();
 
+    // méthodes Option
+	void OptionOnEvent(const sf::Event& event, input::Action action);
+	void OptionUpdate(float frametime);
+	void OptionShow();
+
 	// méthodes GameOver
 	void GameOverOnEvent(const sf::Event& event, input::Action action);
 	void GameOverUpdate(float frametime);
@@ -137,7 +143,7 @@ private:
     /// Differents etats possible du jeu
 	enum Mode
 	{
-		MAIN_MENU, IN_GAME, GAME_OVER, INVENTORY, PAUSE, MINI_MAP
+		MAIN_MENU, IN_GAME, GAME_OVER, INVENTORY, PAUSE, MINI_MAP, OPTION
 	};
 
     /// Passe le jeu dans un mode différent
@@ -175,6 +181,7 @@ private:
 
     MainMenu mmenu_;
     WinPause pause_;
+    Option *option_win_;
 	Player* player_;
 	ControlPanel& panel_;
 	BitmapString message_;

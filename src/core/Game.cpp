@@ -64,6 +64,8 @@ Game::Game() :
     {
     	SoundSystem::GetInstance().EnableMusic(false);
     }
+
+    option_win_ = new Option;
 }
 
 
@@ -71,6 +73,7 @@ Game::~Game()
 {
     SaveConfig(CONFIG_FILE);
 
+    delete option_win_;
 	delete mini_map_;
 	app_.Close();
 #ifdef CONSOLE_TEST
@@ -155,7 +158,7 @@ void Game::Init()
 		(APP_HEIGHT - mini_map_->GetHeight()) / 2);
 	mini_map_->SetPlayerPosition(zone_container_.GetPlayerPosition());
 
-	#ifdef START_ON_MENU
+	#ifndef NO_START_MENU
 	SetMode(MAIN_MENU);
 	#else
 	SetMode(IN_GAME);

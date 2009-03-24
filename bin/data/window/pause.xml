@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<window x="216" y="216" w="270" h="181" background="interface/pause/background">
-	<button id="7772" pic="interface/pause/boptions" OnHover="interface/pause/boptions_inv" x="21" y="30" />
-	<button id="7771" pic="interface/pause/bquitter" OnHover="interface/pause/bquitter_inv" x="21" y="100" />
+<window x="180" y="216" w="310" h="212" background="interface/pause/background" alpha="230">
+    <label x="105" y="10" font="bretro">Pause</label>
+	<button id="7001" pic="interface/pause/button" OnHover="interface/pause/button_o" x="40" y="53" />
+	<button id="7771" pic="interface/pause/button" OnHover="interface/pause/button_o" x="40" y="120"/>
+	<label x="85" y="70" font="bretro">Options</label>
+	<label x="85" y="137" font="bretro">Quitter</label>
 </window>

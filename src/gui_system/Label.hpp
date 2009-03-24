@@ -7,8 +7,7 @@
 namespace gui{
     class Label : public Control{
     public:
-        Label(const ControlID id, const ControlPos& pos, const std::string& text);
-        ~Label();
+        Label(const ControlID id, const ControlPos& pos, const std::string& text, const std::string &font);
 
         void SetText(const std::string s);
     private:
