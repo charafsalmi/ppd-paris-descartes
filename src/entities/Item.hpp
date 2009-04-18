@@ -11,7 +11,7 @@ class Player;
 class Item: public Entity
 {
 public:
-	Item(int type_id_, const sf::Vector2f& pos, const sf::IntRect& subrect);
+	Item(int type_id, const sf::Vector2f& pos, const sf::IntRect& subrect);
 
 	/**
 	 * Méthode callback en cas de collision avec le joueur
@@ -29,6 +29,11 @@ public:
 	 * Identifiant du type de l'objet
 	 */
 	int GetTypeID() const;
+
+	/**
+	 * Obtenir le nom de l'objet
+	 */
+	const char* GetName() const;
 
 private:
 	int type_id_; // id du type de l'item (!= id de l'item lui-même)

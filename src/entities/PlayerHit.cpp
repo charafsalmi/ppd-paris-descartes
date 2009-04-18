@@ -4,7 +4,7 @@
 #include "../core/Game.hpp"
 
 
-PlayerHit::PlayerHit(const sf::Vector2f position, int damage, Direction dir, int emitter_id_, HitType type) :
+PlayerHit::PlayerHit(const sf::Vector2f position, int damage, Direction dir, int emitter_id_, Hit::Type type) :
 	Hit(position, damage, dir, emitter_id_, type)
 {
 }

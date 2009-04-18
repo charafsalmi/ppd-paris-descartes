@@ -5,10 +5,12 @@ LogConsole::LogConsole()
     Window::Load("data/window/console.xml");
 }
 
+
 LogConsole::~LogConsole()
 {
 
 }
+
 
 void LogConsole::Write(MsgType t, const std::string& rMessage)
 {

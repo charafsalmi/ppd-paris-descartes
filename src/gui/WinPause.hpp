@@ -3,11 +3,11 @@
 
 #include "../gui_system/Window.hpp"
 
-class WinPause : public gui::Window{
+class WinPause: public gui::Window
+{
 public:
     WinPause();
 
-    /** Retours de l'inventaire */
     enum
     {
         _OPTION=101, _EXIT

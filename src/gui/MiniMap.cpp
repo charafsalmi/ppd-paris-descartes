@@ -1,11 +1,12 @@
 #include "MiniMap.hpp"
 
-#define DISCOVERED_COLOR   sf::Color(0xC0, 0xC0, 0xFF)
-#define UNDISCOVERED_COLOR sf::Color(0x40, 0x40, 0x40)
+#define DISCOVERED_COLOR   sf::Color(0xC0, 0xC0, 0xFF, 128)
+#define UNDISCOVERED_COLOR sf::Color(0x40, 0x40, 0x40, 128)
+#define PLAYER_COLOR       sf::Color(0xFF, 0,    0,    128)
 #define OUTLINE 3
 
-#define WIDTH_PX   200
-#define HEIGHT_PX  200
+#define WIDTH_PX   160
+#define HEIGHT_PX  160
 
 
 MiniMap::MiniMap(const ZoneContainer& zones)
@@ -16,15 +17,17 @@ MiniMap::MiniMap(const ZoneContainer& zones)
 	int square_size = std::min(WIDTH_PX / width_, HEIGHT_PX / height_);
 
 	preview_ = new sf::Shape* [height_];
-	for (int y = 0; y < height_; ++y)
+	for (int i = 0; i < height_; ++i)
 	{
-		preview_[y] = new sf::Shape [width_];
-		for (int x = 0; x < width_; ++x)
+		preview_[i] = new sf::Shape [width_];
+		for (int j = 0; j < width_; ++j)
 		{
-			preview_[y][x] = sf::Shape::Rectangle(x * square_size, y * square_size,
-				(x * square_size) + square_size, (y * square_size) + square_size,
+			int x = j * (square_size + OUTLINE);
+			int y = i * (square_size + OUTLINE);
+			preview_[i][j] = sf::Shape::Rectangle(x, y,
+				x + square_size, y + square_size,
 				sf::Color::White, OUTLINE, sf::Color::Black);
-			preview_[y][x].SetColor(UNDISCOVERED_COLOR);
+			preview_[i][j].SetColor(UNDISCOVERED_COLOR);
 		}
 	}
 	player_pos_ = NULL;
@@ -56,14 +59,12 @@ int MiniMap::GetHeight() const
 
 void MiniMap::SetPlayerPosition(const sf::Vector2i& coords)
 {
-	int y = coords.y * square_size_;
-	int x = coords.x * square_size_;
 	if (player_pos_ != NULL)
 	{
 		player_pos_->SetColor(DISCOVERED_COLOR);
 	}
 	player_pos_ = &preview_[coords.y][coords.x];
-	player_pos_->SetColor(sf::Color::Red);
+	player_pos_->SetColor(PLAYER_COLOR);
 }
 
 
@@ -71,6 +72,7 @@ void MiniMap::Update(float frametime)
 {
 	// TODO
 }
+
 
 void MiniMap::Render(sf::RenderTarget& target) const
 {

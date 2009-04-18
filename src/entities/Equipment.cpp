@@ -1,11 +1,10 @@
 #include "Equipment.hpp"
-#include "EntityFactory.hpp"
 #include "../gui/ControlPanel.hpp"
 
 
-Equipment::Equipment(unsigned int code, const sf::Vector2f& position,
+Equipment::Equipment(int type_id, const sf::Vector2f& position,
 	const sf::IntRect& subrect) :
-	Item(code, position, subrect)
+	Item(type_id, position, subrect)
 {
 }
 
@@ -13,11 +12,11 @@ Equipment::Equipment(unsigned int code, const sf::Vector2f& position,
 void Equipment::OnCollide(Player& player)
 {
 	ControlPanel& panel = ControlPanel::GetInstance();
-	(void) player;
-	Equipment* clone = new Equipment(*this);
-	panel.GetInventory()->AddItem(clone);
-	std::string message = "equipement trouve : ";
-	message += EntityFactory::GetInstance().GetItemName(GetTypeID());
-	panel.PrintInfoText(message);
-	Kill();
+
+	if (!panel.GetInventory()->HasItem(GetTypeID()))
+	{
+		Equipment* clone = new Equipment(*this);
+		panel.GetInventory()->AddItem(clone);
+		Item::OnCollide(player);
+	}
 }

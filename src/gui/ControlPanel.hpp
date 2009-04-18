@@ -49,8 +49,6 @@ public:
 		return inventory_;
 	}
 
-	void OnTop(bool top);
-
 private:
 	ControlPanel();
 	ControlPanel(const ControlPanel& other);
@@ -86,9 +84,6 @@ private:
 	sf::Sprite item2_;
 	sf::Shape  item3_cadre_;
 	sf::Sprite item3_;
-
-	/// Visage du personnage (pour meubler)
-	sf::Sprite head_;
 };
 
 #endif /* CONTROLPANEL_HPP */

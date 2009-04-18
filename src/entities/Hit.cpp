@@ -5,7 +5,7 @@
 #include "../core/Tileset.hpp"
 #include "../misc/Log.hpp"
 
-#define SPEED             320
+#define SPEED             340
 #define DYING_DELAY       1.0f
 #define ANGLE_PER_SECOND  720
 #define SLOW_FACTOR       0.9
@@ -13,14 +13,14 @@
 #define ACCEPTED_TILES (Tile::DEFAULT | Tile::WATER | Tile::TELEPORT | Tile::HOLE)
 
 
-Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id, HitType type) :
+Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id, Type type) :
 	Entity(position, GET_IMG("hits"))
 {
 	damage_ = damage;
 	sf::IntRect subrect;
 	switch (type)
 	{
-		case LINEAR:
+		case ARROW:
 			update_callback_ = &Hit::MoveLinear;
 			switch (dir)
 			{
@@ -44,10 +44,12 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id
 			timed_ = false;
 			SetCenter(0, subrect.GetHeight());
 			break;
-		case CIRCULAR:
+		case SWORD:
 			// hit invisible
 			update_callback_ = &Hit::MoveCircular;
 			subrect = sf::IntRect(50, 0, 120, 70);
+			SetColor(sf::Color(255, 255, 255, 128));
+			SetBlendMode(sf::Blend::Add);//debug
 			Move(GetSize().x / 2, -GetSize().y / 2);
 			timed_ = true;
 			time_to_live_ = 1.0f;

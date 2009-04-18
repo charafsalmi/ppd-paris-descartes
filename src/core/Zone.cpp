@@ -5,13 +5,11 @@
 
 #include "Zone.hpp"
 #include "ZoneContainer.hpp"
-#include "SoundSystem.hpp"
 #include "Game.hpp"
 #include "../entities/EntityFactory.hpp"
 #include "../entities/Player.hpp"
 #include "../entities/Hit.hpp"
 #include "../misc/MediaManager.hpp"
-#include "../gui/ControlPanel.hpp"
 #include "../misc/Log.hpp"
 
 #define ZONE_SUBRECT sf::IntRect(0, ControlPanel::HEIGHT_PX, WIDTH_PX, ControlPanel::HEIGHT_PX + HEIGHT_PX)
@@ -260,7 +258,6 @@ void Zone::Update(float frametime)
 			(**it3).GetFloorRect(item_rect);
 			if (item_rect.Intersects(player_rect))
 			{
-				SoundSystem::GetInstance().PlaySound("item-found");
 				(**it3).OnCollide(*player);
 				break;
 			}
@@ -349,13 +346,9 @@ void Zone::ClearHits()
 
 void Zone::AddItem(int id, int x, int y)
 {
-	ControlPanel& panel = ControlPanel::GetInstance();
-	if(!panel.GetInventory()->HasItem(id))
-	{
-		Item* item = EntityFactory::GetInstance().BuildItem(id, sf::Vector2f(x, y));
-		item->SetID(last_id_++);
-		items_.push_front(item);
-	}
+	Item* item = EntityFactory::GetInstance().BuildItem(id, sf::Vector2f(x, y));
+	item->SetID(last_id_++);
+	items_.push_front(item);
 }
 
 

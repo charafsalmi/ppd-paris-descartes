@@ -21,8 +21,7 @@ namespace input
 		PANEL_DOWN,
 		PAUSE,
 		EXIT_APP,
-		_COUNT_ACTION, // do not use
-		NONE
+		_COUNT_ACTION // do not use
 	};
 }
 
@@ -33,9 +32,10 @@ public:
 	static InputController& GetInstance();
 
 	/**
-	 * Dépiler les évènements
-	 * @param[out] action: évènement à récupérer
-	 * @return true si la pile d'évènements est vide, sinon false
+	 * Transformer un évènement en action
+	 * @param event: évènement à tester
+	 * @param action: action à récupérer
+	 * @return true si l'évènement correspond à une action
 	 */
 	bool GetAction(const sf::Event& event, input::Action& action);
 
@@ -45,24 +45,32 @@ public:
 	bool HasInput(input::Action action) const;
 
 	/**
-	 * Récupérer le boutondu joystick associée à une action
-	 */
-	unsigned int GetJoystickBinding(input::Action action) const;
-
-	/**
-	 * Récupérer la touche clavier associée à une action
+	 * Obtenir la touche clavier associée à une action
+	 * @param action: action demandée
+	 * @return code de la touche associée
 	 */
 	sf::Key::Code GetKeyboardBinding(input::Action action) const;
 
 	/**
-	 * Associer un bouton du joystick à une action
+	 * Obtenir le bouton du joystick associé à une action
+	 * @param action: action demandée
+	 * @return id du bouton associé (-1 si action non gérée par le joystick)
 	 */
-	void BindJoystickButton(input::Action action, unsigned int button);
+	unsigned int GetJoystickBinding(input::Action action) const;
 
 	/**
 	 * Associer une touche du clavier à une action
+	 * @param action: action à lier
+	 * @param key: code de la touche à associer
 	 */
-	void BindKey(input::Action, sf::Key::Code key);
+	void BindKey(input::Action action, sf::Key::Code key);
+
+	/**
+	 * Associer un bouton du joystick à une action
+	 * @param action: action à lier
+	 * @param button: id du bouton à associer
+	 */
+	void BindJoystickButton(input::Action action, unsigned int button);
 
 private:
 	InputController();
@@ -71,8 +79,8 @@ private:
 
 	sf::Key::Code keyboard_binds_[input::_COUNT_ACTION];
 
-	typedef std::map<input::Action, unsigned int> JoyBindMap;
-	mutable JoyBindMap joystick_binds_;
+	typedef std::map<input::Action, unsigned int> JoystickMap;
+	mutable JoystickMap joystick_binds_;
 };
 
 

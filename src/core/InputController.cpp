@@ -32,7 +32,8 @@ InputController::InputController()
 	keyboard_binds_[PANEL_UP] = sf::Key::PageUp;
 	keyboard_binds_[PANEL_DOWN] = sf::Key::PageDown;
 	keyboard_binds_[EXIT_APP] = sf::Key::Escape;
-	// joystick par défaut
+
+	// joystick par défaut (note: les flèches ne sont pas des boutons)
 	joystick_binds_[SHOW_INVENTORY] = 0;
 	joystick_binds_[SHOW_MINIMAP] = 1;
 	joystick_binds_[USE_ITEM_1] = 6;
@@ -49,14 +50,8 @@ InputController::~InputController()
 
 bool InputController::GetAction(const sf::Event& event, Action& action)
 {
-	action = NONE;
+	action = _COUNT_ACTION; // pour ne pas laisser la valeur initialisée
 
-	// CLOSE
-	if (event.Type == sf::Event::Closed)
-	{
-		action = EXIT_APP;
-		return true;
-	}
 	// KEY PRESSED
 	if (event.Type == sf::Event::KeyPressed)
 	{
@@ -68,12 +63,11 @@ bool InputController::GetAction(const sf::Event& event, Action& action)
 				return true;
 			}
 		}
-		return false;
 	}
 	// JOYBUTTON PRESSED
 	else if (event.Type == sf::Event::JoyButtonPressed)
 	{
-		for (JoyBindMap::const_iterator it = joystick_binds_.begin();
+		for (JoystickMap::const_iterator it = joystick_binds_.begin();
 			it != joystick_binds_.end(); ++it)
 		{
 			if (it->second == event.JoyButton.Button)
@@ -82,7 +76,6 @@ bool InputController::GetAction(const sf::Event& event, Action& action)
 				return true;
 			}
 		}
-		return false;
 	}
 	// JOYAXIS MOVED
 	else if (event.Type == sf::Event::JoyMoved)
@@ -99,7 +92,6 @@ bool InputController::GetAction(const sf::Event& event, Action& action)
 				action = MOVE_LEFT;
 				return true;
 			}
-			return false;
 		}
 		else if (event.JoyMove.Axis == sf::Joy::AxisY)
 		{
@@ -113,18 +105,21 @@ bool InputController::GetAction(const sf::Event& event, Action& action)
 				action = MOVE_UP;
 				return true;
 			}
-			return false;
 		}
-		return false;
+	}
+	// CLOSE
+	else if (event.Type == sf::Event::Closed)
+	{
+		action = EXIT_APP;
+		return true;
 	}
 	return false;
 }
 
 
-
 bool InputController::HasInput(Action action) const
 {
-	const sf::Input& input = Game::GetInstance().GetApp().GetInput();
+	static const sf::Input& input = Game::GetInstance().GetApp().GetInput();
 	if (input.IsKeyDown(keyboard_binds_[action]))
 	{
 		return true;
@@ -153,28 +148,31 @@ bool InputController::HasInput(Action action) const
 }
 
 
-unsigned int InputController::GetJoystickBinding(Action action) const
+sf::Key::Code InputController::GetKeyboardBinding(Action action) const
 {
-	//TODO
+	return keyboard_binds_[action];
 }
 
 
-sf::Key::Code InputController::GetKeyboardBinding(Action action) const
+unsigned int InputController::GetJoystickBinding(Action action) const
 {
-	//TODO
+	JoystickMap::const_iterator it = joystick_binds_.find(action);
+	if (it != joystick_binds_.end())
+	{
+		return it->second;
+	}
+	return -1;
+}
+
+
+void InputController::BindKey(Action action, sf::Key::Code key)
+{
+	keyboard_binds_[action] = key;
 }
 
 
 void InputController::BindJoystickButton(Action action, unsigned int button)
 {
-	//TODO
+	joystick_binds_[action] = button;
 }
-
-
-void InputController::BindKey(Action, sf::Key::Code key)
-{
-	//TODO
-}
-
-
 

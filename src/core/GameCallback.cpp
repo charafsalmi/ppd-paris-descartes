@@ -11,69 +11,72 @@ void Game::SetMode(Mode mode)
 	switch (mode)
 	{
 	    case MAIN_MENU:
-            // HACK: Pour lancer la musique du menu au menu
+            Output << "Passage en mode MAIN_MENU" << lEnd;
             SoundSystem::GetInstance().PlayMusic("title");
 
-            Output << "Passage en mode MAIN_MENU" << lEnd;
-
             on_event_meth_ = &Game::MainMenuOnEvent;
-			update_meth_ = &Game::MainMenuUpdate;
+			update_meth_ = &Game::NoUpdate;
 			render_meth_ = &Game::MainMenuShow;
             break;
 		case IN_GAME:
 			Output << "Passage en mode INGAME" << lEnd;
+			player_->Unlock();
 
 			on_event_meth_ = &Game::InGameOnEvent;
 			update_meth_ = &Game::DefaultUpdate;
 			render_meth_ = &Game::InGameShow;
-
-			player_->Unlock();
 			break;
 		case INVENTORY:
 			Output << "Passage en mode INVENTAIRE" << lEnd;
+			player_->Lock();
 
 			on_event_meth_ = &Game::InventoryOnEvent;
 			update_meth_ = &Game::DefaultUpdate;
 			render_meth_ = &Game::InventoryShow;
-			player_->Lock();
 			break;
 		case GAME_OVER:
 			Output << "Passage en mode GAMEOVER" << lEnd;
 
 			on_event_meth_ = &Game::GameOverOnEvent;
-			update_meth_ = &Game::GameOverUpdate;
+			update_meth_ = &Game::NoUpdate;
 			render_meth_ = &Game::GameOverShow;
 			break;
 		case PAUSE:
 			Output << "Passage en mode PAUSE" << lEnd;
 
 			on_event_meth_ = &Game::PauseOnEvent;
-			update_meth_ = &Game::PauseUpdate;
+			update_meth_ = &Game::NoUpdate;
 			render_meth_ = &Game::PauseShow;
 			break;
         case OPTION:
             Output << "Passage en mode OPTION" << lEnd;
 
             on_event_meth_ = &Game::OptionOnEvent;
-			update_meth_ = &Game::OptionUpdate;
+			update_meth_ = &Game::NoUpdate;
 			render_meth_ = &Game::OptionShow;
 			break;
 		case MINI_MAP:
 			Output << "Passage en mode MINIMAP" << lEnd;
 
-			on_event_meth_ = &Game::MiniMapOnEvent;
+			on_event_meth_ = &Game::InGameOnEvent;
 			update_meth_ = &Game::DefaultUpdate;
 			render_meth_ = &Game::MiniMapShow;
-			player_->Lock();
 			break;
 	}
+	mode_ = mode;
 }
 
 // méthodes callbacks
 
-void Game::DefaultUpdate(float frametime) {
+void Game::DefaultUpdate(float frametime)
+{
 	panel_.Update(frametime);
 	zone_container_.Update(frametime);
+}
+
+
+void Game::NoUpdate(float)
+{
 }
 
 // IN_GAME /////////////////////////////////////////////////////////
@@ -96,12 +99,10 @@ void Game::InGameOnEvent(const sf::Event& event, input::Action action)
 			break;
 		case input::PANEL_UP:
 			panel_.SetPosition(0, 0);
-			panel_.OnTop(true);
 			zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
 			options_.panel_on_top = true;
 			break;
 		case input::PANEL_DOWN:
-			panel_.OnTop(false);
 			panel_.SetPosition(0, Zone::HEIGHT_PX);
 			zone_container_.SetPosition(0, 0);
 			options_.panel_on_top = false;
@@ -110,7 +111,7 @@ void Game::InGameOnEvent(const sf::Event& event, input::Action action)
 			SetMode(PAUSE);
 			break;
 		case input::SHOW_MINIMAP:
-			SetMode(MINI_MAP);
+			SetMode(mode_ == MINI_MAP ? IN_GAME : MINI_MAP);
 			break;
 		default:
 			player_->OnEvent(action);
@@ -165,28 +166,24 @@ void Game::InventoryShow()
 
 void Game::PauseOnEvent(const sf::Event& event, input::Action action)
 {
-    int x = pause_.ManageEvent(event);
-
 	if (action == input::PAUSE)
 	{
 		SetMode(IN_GAME);
-		return;
 	}
-
-	switch(x){
-	    case WinPause::_EXIT:
-            running_ = false;
-            break;
-        case WinPause::_OPTION:
-            SetMode(OPTION);
-            break;
+	else
+	{
+		switch (pause_.ManageEvent(event))
+		{
+			case WinPause::_EXIT:
+				running_ = false;
+				break;
+			case WinPause::_OPTION:
+				SetMode(OPTION);
+				break;
+		}
 	}
 }
 
-
-void Game::PauseUpdate(float)
-{
-}
 
 void Game::PauseShow()
 {
@@ -211,11 +208,6 @@ void Game::GameOverOnEvent(const sf::Event& event, input::Action action)
 }
 
 
-void Game::GameOverUpdate(float)
-{
-}
-
-
 void Game::GameOverShow()
 {
 	app_.Clear();
@@ -224,19 +216,9 @@ void Game::GameOverShow()
 
 // MINI_MAP /////////////////////////////////////////////////////////
 
-void Game::MiniMapOnEvent(const sf::Event& event, input::Action action)
-{
-	if (action == input::SHOW_MINIMAP)
-	{
-		SetMode(IN_GAME);
-	}
-}
-
-
 void Game::MiniMapShow()
 {
-	app_.Draw(zone_container_);
-	app_.Draw(panel_);
+	InGameShow();
 	app_.Draw(*mini_map_);
 }
 
@@ -244,27 +226,22 @@ void Game::MiniMapShow()
 
 void Game::MainMenuOnEvent(const sf::Event& event, input::Action action)
 {
-	int x = mmenu_.ManageEvent(event);
+	switch (mmenu_.ManageEvent(event))
+	{
+		case MainMenu::START_GAME:
+			OutputD << "Lancement du jeu !" << lEnd;
+			SetMode(IN_GAME);
 
-	switch(x){
-	    case MainMenu::START_GAME:
-            OutputD << "Lancement du jeu !" << lEnd;
-            SetMode(IN_GAME);
-
-            SoundSystem::GetInstance().PlayMusic(zone_container_.GetActiveZone()->GetMusicName());
-            break;
-        case MainMenu::EXIT_GAME:
-            OutputD << "On quitte le programme ..." << lEnd;
-            SetMode(IN_GAME);
-            running_ = false;
-            break;
+			SoundSystem::GetInstance().PlayMusic(zone_container_.GetActiveZone()->GetMusicName());
+			break;
+		case MainMenu::EXIT_GAME:
+			OutputD << "On quitte le programme ..." << lEnd;
+			SetMode(IN_GAME);
+			running_ = false;
+			break;
 	}
 }
 
-void Game::MainMenuUpdate(float frametime)
-{
-
-}
 
 void Game::MainMenuShow()
 {
@@ -275,19 +252,14 @@ void Game::MainMenuShow()
 
 void Game::OptionOnEvent(const sf::Event& event, input::Action action)
 {
-	int x = option_win_->ManageEvent(event);
-
-	switch(x){
-	    case Option::_EXIT:
-            SetMode(PAUSE);
-            break;
+	switch (option_win_->ManageEvent(event))
+	{
+		case Option::_EXIT:
+			SetMode(PAUSE);
+			break;
 	}
 }
 
-void Game::OptionUpdate(float frametime)
-{
-
-}
 
 void Game::OptionShow()
 {

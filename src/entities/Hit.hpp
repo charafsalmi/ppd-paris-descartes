@@ -7,8 +7,12 @@
 class Hit: public Entity
 {
 public:
+	enum Type
+	{
+		SWORD, ARROW
+	};
 
-	Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id_, HitType type);
+	Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id_, Type type);
 
 	// inherited
 	void Update(float frametime);

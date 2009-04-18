@@ -128,7 +128,7 @@ void Mob::ThrowHit()
 	if ((now - last_hit_) > FIRE_RATE)
 	{
 		sf::Vector2f pos(GetPosition().x + GetSize().x / 2, GetPosition().y - GetSize().y / 2);
-		zone_->AddEntity(new Hit(pos, 1, GetDirection(), GetID(), LINEAR));
+		zone_->AddEntity(new Hit(pos, 1, GetDirection(), GetID(), Hit::ARROW));
 		last_hit_ = now;
 	}
 }

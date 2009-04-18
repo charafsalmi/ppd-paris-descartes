@@ -72,18 +72,15 @@ void SoundSystem::UpdateVolume(float frametime)
 
 void SoundSystem::PlayMusic(const char* music_name)
 {
-	float vol = volume_;
 	sf::Music* next = MediaManager::GetInstance().GetMusic(music_name);
-	if (enable_music_ && next != music_)
+	if (next != music_)
 	{
-		if (music_ != NULL)
-		{
-			music_->Stop();
-		}
+		StopMusic();
 		music_ = next;
-		FadeMusicVolumeTo(0, 1);
-		music_->Play();
-		FadeMusicVolumeTo(vol, 1);
+		if (enable_music_)
+		{
+			music_->Play();
+		}
 	}
 }
 
@@ -96,11 +93,28 @@ void SoundSystem::PlayMusic(const std::string& music_name)
 
 void SoundSystem::StopMusic()
 {
-	music_->Stop();
+	if (music_ != NULL)
+	{
+		music_->Stop();
+	}
 }
 
 
 void SoundSystem::EnableMusic(bool enabled)
 {
 	enable_music_ = enabled;
+	if (enabled && music_ != NULL)
+	{
+		music_->Play();
+	}
+	else if (!enabled)
+	{
+		StopMusic();
+	}
+}
+
+
+bool SoundSystem::IsMusicEnabled() const
+{
+	return enable_music_;
 }

@@ -1,9 +1,10 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
+#include "Unit.hpp"
+#include "Hit.hpp"
 #include "../core/InputController.hpp"
 #include "../gui/ControlPanel.hpp"
-#include "Unit.hpp"
 
 /**
  * Joueur contrôlable par l'utilisateur
@@ -54,7 +55,7 @@ public:
 	void TakeDamage(int damage);
 
 	/// inherited
-	void ThrowHit(HitType type);
+	void ThrowHit(Hit::Type type);
 private:
 	/**
 	 * Convertir la position en pixels en position de tile
@@ -67,7 +68,7 @@ private:
 	void WalkUpdate(float frametime);
 
 	void UseBowUpdate(float frametime);
-	
+
 	void UseSwordUpdate(float frametime);
 
 	void FallingUpdate(float frametime);

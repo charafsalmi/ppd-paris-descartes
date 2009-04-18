@@ -14,20 +14,23 @@
 using namespace std;
 using namespace gui;
 
-Window::Window(){
+Window::Window()
+{
 	active_ = NULL;
 	hover_ = NULL;
 }
 
-Window::Window(const Window& other){
-
+Window::Window(const Window&)
+{
 }
 
-Window::~Window(){
+Window::~Window()
+{
     UnLoad();
 }
 
-Control *Window::GetFromID(Control::ControlID id){
+Control *Window::GetFromID(Control::ControlID id)
+{
     std::vector<Control*>::const_iterator it;
     for(it=controls_.begin();it!=controls_.end();it++){
         if((*it)->GetID() == id){

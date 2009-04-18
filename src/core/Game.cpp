@@ -20,6 +20,8 @@
 #define DEFAULT_VERBOSITY 5
 #define CONFIG_FILE "config/config.css"
 
+#define MINIMAP_X 30
+#define MINIMAP_Y 30
 
 Game& Game::GetInstance()
 {
@@ -58,12 +60,6 @@ Game::Game() :
     else
     {
 		panel_.SetPosition(0, Zone::HEIGHT_PX);
-		panel_.OnTop(false);
-    }
-
-    if (!options_.enable_music)
-    {
-    	SoundSystem::GetInstance().EnableMusic(false);
     }
 
     option_win_ = new Option;
@@ -92,7 +88,6 @@ bool Game::LoadConfig(const std::string & str)
 	options_.verbosity = DEFAULT_VERBOSITY;
 
 	options_.panel_on_top = 1;
-	options_.enable_music = 1;
 
 	ConfigParser config;
 	Output << "loading " << CONFIG_FILE << "..." << lEnd;
@@ -115,7 +110,12 @@ bool Game::LoadConfig(const std::string & str)
 	// Game options
     config.SeekSection("Settings");
     config.ReadItem("panel_on_top", options_.panel_on_top);
-	config.ReadItem("enable_music", options_.enable_music);
+	bool music = false;
+	if (config.ReadItem("enable_music", music) && !music)
+	{
+		SoundSystem::GetInstance().EnableMusic(false);
+	}
+
 	return true;
 }
 
@@ -126,7 +126,7 @@ void Game::SaveConfig(const std::string & str)
 	ConfigParser config;
 	config.SeekSection("Settings");
 	config.WriteItem("panel_on_top", options_.panel_on_top ? 1 : 0);
-	config.WriteItem("enable_music", options_.enable_music ? 1 : 0);
+	config.WriteItem("enable_music", SoundSystem::GetInstance().IsMusicEnabled() ? 1 : 0);
 
 	config.SeekSection("Engine");
 	config.WriteItem("style", options_.style);
@@ -153,12 +153,10 @@ void Game::Init()
 
 	// initialisation de la mini map
 	mini_map_ = new MiniMap(zone_container_);
-	// centrée dans la fenêtre
 	mini_map_->SetPosition(
-		(APP_WIDTH - mini_map_->GetWidth()) / 2,
-		(APP_HEIGHT - mini_map_->GetHeight()) / 2);
+		zone_container_.GetPosition().x + MINIMAP_X,
+		zone_container_.GetPosition().y + MINIMAP_Y);
 	mini_map_->SetPlayerPosition(zone_container_.GetPlayerPosition());
-
 	#ifndef NO_START_MENU
 	SetMode(MAIN_MENU);
 	#else
@@ -194,17 +192,15 @@ int Game::Run()
 						break;
 				}
 			}
-			(this ->* on_event_meth_)(event, action);
+			(this->*on_event_meth_)(event, action);
 		}
 
 		// UPDATE
 		frametime = app_.GetFrameTime();
-		(this ->* update_meth_)(frametime);
-			// SON
-		SoundSystem::GetInstance().UpdateVolume(frametime);
+		(this->*update_meth_)(frametime);
 
 		// RENDER
-		(this ->* render_meth_)();
+		(this->*render_meth_)();
 		app_.Display();
 	}
 	return 0;
@@ -213,13 +209,13 @@ int Game::Run()
 
 void Game::TakeScreenshot(const char* directory)
 {
-	char currentTime[256];
+	char current_time[256];
 	std::string filename;
 	time_t t = time(NULL);
 
-	strftime(currentTime, sizeof(currentTime), "%d-%m-%Y-%M%S", localtime(&t));
+	strftime(current_time, sizeof current_time, "%d-%m-%Y-%M%S", localtime(&t));
 
-	filename = str_sprintf("%s/%s.png", directory, currentTime, t);
+	filename = str_sprintf("%s/%s.png", directory, current_time, t);
 
 	panel_.PrintInfoText("capture d'ecran prise");
 	app_.Capture().SaveToFile(filename);
@@ -257,8 +253,8 @@ void Game::ChangeZoneContainer(ZoneContainer::MapName map_name)
 	delete mini_map_;
 	mini_map_ = new MiniMap(zone_container_);
 	mini_map_->SetPosition(
-		(APP_WIDTH - mini_map_->GetWidth()) / 2,
-		(APP_HEIGHT - mini_map_->GetHeight()) / 2);
+		zone_container_.GetPosition().x + MINIMAP_X,
+		zone_container_.GetPosition().y + MINIMAP_Y);
 	mini_map_->SetPlayerPosition(zone_container_.GetPlayerPosition());
 }
 

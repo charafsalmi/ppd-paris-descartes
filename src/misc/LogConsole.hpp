@@ -4,7 +4,7 @@
 #include "../gui_system/Window.hpp"
 #include "Log.hpp"
 
-class LogConsole : public Log, public gui::Window
+class LogConsole: public Log, public gui::Window
 {
 public:
     LogConsole();

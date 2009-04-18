@@ -316,7 +316,7 @@ void Player::UseBowUpdate(float frametime)
 	float now = Game::GetInstance().GetElapsedTime();
 	if ((now - started_action_) > use_bow_duration_)
 	{
-		ThrowHit(LINEAR);
+		ThrowHit(Hit::ARROW);
 		Animated::Change(walk_anims_[GetDirection()], *this);
 		SetSubRect(subrects_not_moving_[GetDirection()]); // ?
 		strategy_callback_ = &Player::WalkUpdate;
@@ -333,7 +333,6 @@ void Player::UseSwordUpdate(float frametime)
 	float now = Game::GetInstance().GetElapsedTime();
 	if ((now - started_action_) > use_sword_duration_)
 	{
-		ThrowHit(CIRCULAR);
 		Animated::Change(walk_anims_[GetDirection()], *this);
 		SetSubRect(subrects_not_moving_[GetDirection()]); // ?
 		strategy_callback_ = &Player::WalkUpdate;
@@ -411,7 +410,7 @@ void Player::TakeDamage(int damage)
 }
 
 
-void Player::ThrowHit(HitType type)
+void Player::ThrowHit(Hit::Type type)
 {
 	float now = Game::GetInstance().GetElapsedTime();
 	if ((now - last_hit_) > FIRE_RATE)
@@ -451,6 +450,7 @@ void Player::UseItem(int code)
 			}
 			strategy_callback_ = &Player::UseSwordUpdate;
 			started_action_ = Game::GetInstance().GetElapsedTime();
+			ThrowHit(Hit::SWORD);
 			break;
 		case 11:
 			switch (GetDirection())

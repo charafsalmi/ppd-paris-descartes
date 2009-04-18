@@ -1,5 +1,4 @@
 icon.bmp
-inventory-cursor.png
 items.png
 decors.png
 hits.png
@@ -14,7 +13,6 @@ interface/controlpanel/panel-background.jpg
 interface/controlpanel/panel-gold.png
 interface/controlpanel/panel-hp.png
 interface/controlpanel/panel-frags.png
-interface/controlpanel/face.png
 interface/test/button1.png
 interface/test/button1_inv.png
 interface/test/button2.png
@@ -22,6 +20,7 @@ interface/test/button2_inv.png
 interface/test/button3.png
 interface/test/background.png
 interface/inventory/background.png
+interface/inventory/cursor.png
 interface/pause/background.png
 interface/pause/button.png
 interface/pause/button_o.png

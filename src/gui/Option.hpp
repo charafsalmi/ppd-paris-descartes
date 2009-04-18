@@ -3,7 +3,8 @@
 
 #include "../gui_system/Window.hpp"
 
-class Option : public gui::Window{
+class Option: public gui::Window
+{
 public:
     Option();
     ~Option();
@@ -15,13 +16,12 @@ public:
     };
 
 private:
-    /// Listing des fenêtres
-    enum Windows{
+    /// Listing des fenÃªtres
+    enum Windows
+    {
         ID_MUTE=7000, ID_PLUS, ID_MOINS
     };
 
-
-    float saved_volume_;
     float volume_;
 
     int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2);

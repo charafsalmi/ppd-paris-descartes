@@ -53,11 +53,6 @@ void Entity::SetFloor(int width, int height)
 }
 
 
-void Entity::ThrowHit()
-{
-}
-
-
 void Entity::SetID(int id)
 {
 	id_ = id;

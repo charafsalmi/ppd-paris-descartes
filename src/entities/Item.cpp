@@ -1,6 +1,7 @@
 #include "Item.hpp"
 #include "EntityFactory.hpp"
 #include "Player.hpp"
+#include "../core/SoundSystem.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../gui/ControlPanel.hpp"
 
@@ -29,8 +30,9 @@ void Item::OnCollide(Player& player)
 			break;
 	}
 	std::string message = "trouve : ";
-	message += EntityFactory::GetInstance().GetItemName(type_id_);
+	message += GetName();
 	panel.PrintInfoText(message);
+	SoundSystem::GetInstance().PlaySound("item-found");
 	Kill();
 }
 
@@ -38,4 +40,10 @@ void Item::OnCollide(Player& player)
 int Item::GetTypeID() const
 {
 	return type_id_;
+}
+
+
+const char* Item::GetName() const
+{
+	EntityFactory::GetInstance().GetItemName(type_id_);
 }

@@ -6,80 +6,81 @@
 
 class Equipment;
 
-class WinInventory : public gui::Window
+class WinInventory: public gui::Window
 {
 public:
-    WinInventory();
-    ~WinInventory();
+	WinInventory();
+	~WinInventory();
 
-    /** Retours de l'inventaire */
-    enum
-    {
-        _CLOSE=101
-    };
+	/** Retours de l'inventaire */
+	enum
+	{
+		_CLOSE=101
+	};
 
-    /**
-    Permet d'ajouter un item à l'inventaire
-    @return 1 Si l'inventaire est plein
-    */
-    int AddItem(Equipment* item);
+	/**
+	 * Ajouter un objet dans l'inventaire
+	 * @param item: objet à ajouter
+	 * @return true si ok, false si inventaire plein ou doublon
+	 */
+	bool AddItem(Equipment* item);
 
-    /**
-    * Permet de savoir si un item est deja présent dans l'inventaire
-    * @return: true si il y est
-    */
-    bool HasItem(int id);
+	/**
+	 * Savoir si un item est deja présent dans l'inventaire
+	 * @return true s'il y est
+	 */
+	bool HasItem(int id);
 
-    /**
-    * Gère les évenements claviers relatifs au curseur et à l'assignation des touches
-    * @param[in]event :l'évenement clavier
-    */
-    void OnEvent(input::Action action);
+	/**
+	 * Gère les évenements claviers relatifs au curseur et à l'assignation des touches
+	 * @param[in]event :l'évenement clavier
+	 */
+	void OnEvent(input::Action action);
 
-    /**
-    * Permet de connaitre l'ID du premier objet assignable
-    * @return: l'ID ou 0 si non assigné
-    */
-    int GetItem1ID() const;
+	/**
+	 * Permet de connaitre l'ID du premier objet assignable
+	 * @return l'ID ou 0 si non assigné
+	 */
+	int GetItem1ID() const;
 
-     /**
-    * Permet de connaitre l'ID du deuxième objet assignable
-    * @return: l'ID ou 0 si non assigné
-    */
-    int GetItem2ID() const;
+	 /**
+	 * Permet de connaitre l'ID du deuxième objet assignable
+	 * @return l'ID ou 0 si non assigné
+	 */
+	int GetItem2ID() const;
 
-    /**
-    * Permet de connaitre l'ID du troisième objet assignable
-    * @return: l'ID ou 0 si non assigné
-    */
-    int GetItem3ID() const;
-
-
+	/**
+	 * Permet de connaitre l'ID du troisième objet assignable
+	 * @return l'ID ou 0 si non assigné
+	 */
+	int GetItem3ID() const;
 
 private:
-    void Render(sf::RenderTarget&) const;
+	/// inherited
+	void Render(sf::RenderTarget&) const;
 
+	void PlaceItem(Equipment* item, int x, int y);
 
-    int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2);
+	int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2);
 
-    /** Identifiant du slot principale */
+	/** Identifiant du slot principale */
+	enum
+	{
+		COUNT_W = 5, COUNT_H = 3
+	};
 
-
-    enum{
-        ID_SLOT=9000, ITEM_N=15, WIDTH = 5, HEIGHT = 3, SLOT_SIZE = 60, OFFSET_X=20, OFFSET_Y=40, PADDX=15, PADDY=15
-    };
-    struct Cursor
+	struct Cursor
 	{
 		sf::Sprite sprite;
 		sf::Vector2i coords;
 	};
 	Cursor cursor_;
-    /** Liste des équipements */
-	Equipment** items_;
-    int last_item_;
-    int item1_;
-    int item2_;
-    int item3_;
+
+	Equipment* items_[COUNT_H][COUNT_W];
+
+	Equipment* item1_;
+	Equipment* item2_;
+	Equipment* item3_;
 };
 
 #endif

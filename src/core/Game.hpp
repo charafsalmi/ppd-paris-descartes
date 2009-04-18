@@ -18,6 +18,7 @@
 #include "../misc/LogConsole.hpp"
 #endif
 
+
 class MiniMap;
 class Player;
 
@@ -93,62 +94,56 @@ private:
 	// Prend une capture d'écran de la fenêtre
 	void TakeScreenshot(const char* directory);
 
-#ifdef DUMB_MUSIC
-	void SetMusic(int value);
-#endif
 
-	// callbacks
-
-	// méthodes InGame
-	void InGameOnEvent(const sf::Event& event, input::Action action);
-	void InGameShow();
-
-	// méthodes Inventory
-	void InventoryOnEvent(const sf::Event& event, input::Action action);
-	void InventoryShow();
-
-    /// Methode appelé lors d'un evenement dans le mode MAIN_MENU
-	/// @param[in] event Evenement a traiter
-	/// @param[in] action Action du joueur
-	void MainMenuOnEvent(const sf::Event& event, input::Action action);
-	void MainMenuUpdate(float frametime);
-	/// Methode appelé lors du rendu dans le mode MAIN_MENU
-	void MainMenuShow();
-
-    // méthodes Pause
-	void PauseOnEvent(const sf::Event& event, input::Action action);
-	void PauseUpdate(float frametime);
-	void PauseShow();
-
-    // méthodes Option
-	void OptionOnEvent(const sf::Event& event, input::Action action);
-	void OptionUpdate(float frametime);
-	void OptionShow();
-
-	// méthodes GameOver
-	void GameOverOnEvent(const sf::Event& event, input::Action action);
-	void GameOverUpdate(float frametime);
-	void GameOverShow();
-
-	/// Methode appelé lors d'un evenement dans le mode MINI_MAP
-	/// @param[in] event Evenement a traiter
-	/// @param[in] action Action du joueur
-	void MiniMapOnEvent(const sf::Event& event, input::Action action);
-	/// Methode appelé lors du rendu dans le mode MINI_MAP
-	void MiniMapShow();
-
-	/// Mise à jour générique
-	void DefaultUpdate(float frametime);
-
-    /// Differents etats possible du jeu
+	// les différents états possibles du jeu
 	enum Mode
 	{
 		MAIN_MENU, IN_GAME, GAME_OVER, INVENTORY, PAUSE, MINI_MAP, OPTION
 	};
 
-    /// Passe le jeu dans un mode différent
-    /// @param[in] mode Mode de jeu dans lequel passer
+    /**
+     * Passe le jeu dans un mode différent
+     * @param mode: mode de jeu dans lequel passer
+     */
 	void SetMode(Mode mode);
+
+	/*
+	callbacks du mode de jeu en cours
+	__OnEvent: méthode de la gestion des évènements
+	__Update: méthode de mise à jour de la scène
+	__Show: méthode de rendu (affichage)
+	*/
+
+	// mode InGame
+	void InGameOnEvent(const sf::Event& event, input::Action action);
+	void InGameShow();
+
+	// mode Inventory
+	void InventoryOnEvent(const sf::Event& event, input::Action action);
+	void InventoryShow();
+
+	// mode Inventory
+	void MainMenuOnEvent(const sf::Event& event, input::Action action);
+	void MainMenuShow();
+
+    // mode Pause
+	void PauseOnEvent(const sf::Event& event, input::Action action);
+	void PauseShow();
+
+    // mode Option
+	void OptionOnEvent(const sf::Event& event, input::Action action);
+	void OptionShow();
+
+	// mode GameOver
+	void GameOverOnEvent(const sf::Event& event, input::Action action);
+	void GameOverShow();
+
+	// mode MiniMap
+	void MiniMapShow();
+
+	// Mise à jour générique
+	void DefaultUpdate(float frametime);
+	void NoUpdate(float);
 
 	// pointeur de la méthode de gestion des évènements
 	void (Game::*on_event_meth_)(const sf::Event& event, input::Action action);
@@ -160,7 +155,6 @@ private:
 	struct Options
 	{
 		// Settings
-		bool enable_music;
 		bool panel_on_top;
 
 		// Engine
@@ -178,6 +172,8 @@ private:
 	ZoneContainer::MapName next_map_name_;
 	// coordonnées de la zone à activer si changement de conteneur
 	sf::Vector2i next_zone_cds_;
+
+	Mode mode_;
 
     MainMenu mmenu_;
     WinPause pause_;

@@ -9,7 +9,7 @@
 class PlayerHit: public Hit
 {
 public:
-	PlayerHit(const sf::Vector2f position, int damage, Direction dir, int emitter_id_, HitType type);
+	PlayerHit(const sf::Vector2f position, int damage, Direction dir, int emitter_id_, Hit::Type type);
 
 	/// inherited
 	void OnCollide(Entity& entity, const sf::FloatRect& overlap);

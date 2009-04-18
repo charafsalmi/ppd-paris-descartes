@@ -2,11 +2,9 @@
 
 #include "ControlPanel.hpp"
 #include "../misc/MediaManager.hpp"
-
 #include "../misc/Misc.hpp"
 
-
-#define INFOTEXT_ORIGIN  sf::Vector2f(422, 58)
+#define INFOTEXT_ORIGIN  sf::Vector2f(422, 24)
 
 #define HP_ICON_ORIGIN    sf::Vector2f(160, 16)
 #define HP_TEXT_ORIGIN    sf::Vector2f(200, 24)
@@ -15,22 +13,79 @@
 #define FRAGS_ICON_ORIGIN sf::Vector2f(340, 16)
 #define FRAGS_TEXT_ORIGIN sf::Vector2f(380, 24)
 
-#define ITEM_X         502
-#define ITEM_Y         20
-#define ITEM_SPACING   34
+#define ITEM_X          40 // offset du premier item
+#define ITEM_Y          24
+#define ITEM_SPACING    34 // espacement entre chaque item
+#define ITEM_SIZE       25 // taille du slot d'un item
+#define ITEM_BACKGROUND sf::Color(128, 64, 0)
 
-#define HEAD_X         20
-#define HEAD_Y         20
-
-#define INFOTEXT_DELAY 	 5.0f
-#define DRAW_OFFSET		 16	// Le même pour les sprites des vies et les chiffres
-
+#define INFOTEXT_DELAY 	 5.0f // temps pendant lequel le message reste à l'écran
 
 
 ControlPanel& ControlPanel::GetInstance()
 {
 	static ControlPanel self;
 	return self;
+}
+
+
+ControlPanel::ControlPanel()
+{
+	const MediaManager& media = MediaManager::GetInstance();
+
+	font_digits_ = &media.GetBitmapFont("digits");
+	// hp
+	icon_hp_.SetImage(media.GetImage("interface/controlpanel/panel-hp"));
+	icon_hp_.SetPosition(HP_ICON_ORIGIN);
+	digits_hp_.SetFont(*font_digits_);
+	digits_hp_.SetPosition(HP_TEXT_ORIGIN);
+
+	// gold
+	icon_gold_.SetImage(media.GetImage("interface/controlpanel/panel-gold"));
+	icon_gold_.SetPosition(GOLD_ICON_ORIGIN);
+	digits_gold_.SetFont(*font_digits_);
+	digits_gold_.SetPosition(GOLD_TEXT_ORIGIN);
+
+	// frags
+	icon_frags_.SetImage(media.GetImage("interface/controlpanel/panel-frags"));
+	icon_frags_.SetPosition(FRAGS_ICON_ORIGIN);
+	digits_frags_.SetFont(*font_digits_);
+	digits_frags_.SetPosition(FRAGS_TEXT_ORIGIN);
+
+	info_text_.SetFont(media.GetBitmapFont("mono12-white"));
+	info_text_.SetPosition(INFOTEXT_ORIGIN);
+
+	background_.SetImage(media.GetImage("interface/controlpanel/panel-background"));
+
+    sf::IntRect rect(0, 0, 1, 1);
+
+	item1_.SetImage(media.GetImage("items"));
+	item1_.SetPosition(ITEM_X, ITEM_Y);
+	item1_.SetSubRect(rect);
+	item1_cadre_ = sf::Shape::Rectangle(ITEM_X, ITEM_Y, ITEM_X + ITEM_SIZE, ITEM_Y + ITEM_SIZE,
+		ITEM_BACKGROUND, 1, sf::Color::Black);
+
+	item2_.SetImage(media.GetImage("items"));
+	item2_.SetPosition(ITEM_X + ITEM_SPACING, ITEM_Y);
+	item2_.SetSubRect(rect);
+	item2_cadre_ = sf::Shape::Rectangle(ITEM_X + ITEM_SPACING, ITEM_Y, ITEM_X + ITEM_SPACING + ITEM_SIZE, ITEM_Y + ITEM_SIZE,
+		ITEM_BACKGROUND, 1, sf::Color::Black);
+
+	item3_.SetImage(media.GetImage("items"));
+	item3_.SetPosition(ITEM_X + ITEM_SPACING * 2, ITEM_Y);
+	item3_.SetSubRect(rect);
+	item3_cadre_ = sf::Shape::Rectangle(ITEM_X + ITEM_SPACING * 2, ITEM_Y,ITEM_X + ITEM_SPACING * 2 + ITEM_SIZE, ITEM_Y + ITEM_SIZE,
+		ITEM_BACKGROUND, 1, sf::Color::Black);
+
+	inventory_ = new WinInventory();
+
+	timer_info_text_ = 0;
+}
+
+
+ControlPanel::~ControlPanel()
+{
+	delete inventory_;
 }
 
 
@@ -76,22 +131,6 @@ void ControlPanel::Update(float frametime)
 }
 
 
-void ControlPanel::OnTop(bool top)
-{
-	// quick & dirty bugfix
-	if (top)
-	{
-		info_text_.SetPosition(INFOTEXT_ORIGIN);
-		head_.SetPosition(HEAD_X, HEAD_Y);
-	}
-	else
-	{
-		info_text_.SetPosition(422, -20);
-		head_.SetPosition(HEAD_X, -(HEAD_Y + 20));
-	}
-}
-
-
 void ControlPanel::Render(sf::RenderTarget& app) const
 {
 	app.Draw(background_);
@@ -103,8 +142,6 @@ void ControlPanel::Render(sf::RenderTarget& app) const
 	app.Draw(item3_cadre_);
 	app.Draw(item3_);
 
-	app.Draw(head_);
-
 	app.Draw(info_text_);
 
 	app.Draw(icon_hp_);
@@ -113,66 +150,6 @@ void ControlPanel::Render(sf::RenderTarget& app) const
 	app.Draw(digits_gold_);
 	app.Draw(icon_frags_);
 	app.Draw(digits_frags_);
-}
-
-
-ControlPanel::ControlPanel()
-{
-	const MediaManager& media = MediaManager::GetInstance();
-
-	font_digits_ = &media.GetBitmapFont("digits");
-	// hp
-	icon_hp_.SetImage(media.GetImage("interface/controlpanel/panel-hp"));
-	icon_hp_.SetPosition(HP_ICON_ORIGIN);
-	digits_hp_.SetFont(*font_digits_);
-	digits_hp_.SetPosition(HP_TEXT_ORIGIN);
-
-	// gold
-	icon_gold_.SetImage(media.GetImage("interface/controlpanel/panel-gold"));
-	icon_gold_.SetPosition(GOLD_ICON_ORIGIN);
-	digits_gold_.SetFont(*font_digits_);
-	digits_gold_.SetPosition(GOLD_TEXT_ORIGIN);
-
-	// frags
-	icon_frags_.SetImage(media.GetImage("interface/controlpanel/panel-frags"));
-	icon_frags_.SetPosition(FRAGS_ICON_ORIGIN);
-	digits_frags_.SetFont(*font_digits_);
-	digits_frags_.SetPosition(FRAGS_TEXT_ORIGIN);
-
-	info_text_.SetFont(media.GetBitmapFont("mono12-white"));
-	info_text_.SetPosition(INFOTEXT_ORIGIN);
-
-	background_.SetImage(media.GetImage("interface/controlpanel/panel-background"));
-
-    sf::IntRect rect(0, 0, 1, 1);
-	item1_.SetImage(media.GetImage("items"));
-	item1_.SetPosition(ITEM_X, ITEM_Y);
-	item1_.SetSubRect(rect);
-	// TODO: Enlever les nombres magiques
-	item1_cadre_ = sf::Shape::Rectangle(ITEM_X, ITEM_Y,ITEM_X+25, ITEM_Y+25,sf::Color::Black, 1, sf::Color::Black);
-
-	item2_.SetImage(media.GetImage("items"));
-	item2_.SetPosition(ITEM_X + ITEM_SPACING, ITEM_Y);
-	item2_.SetSubRect(rect);
-	item2_cadre_ = sf::Shape::Rectangle(ITEM_X + ITEM_SPACING, ITEM_Y, ITEM_X+ ITEM_SPACING + 25, ITEM_Y+25,sf::Color::Black, 1, sf::Color::Black);
-
-	item3_.SetImage(media.GetImage("items"));
-	item3_.SetPosition(ITEM_X + ITEM_SPACING * 2, ITEM_Y);
-	item3_.SetSubRect(rect);
-	item3_cadre_ = sf::Shape::Rectangle(ITEM_X + ITEM_SPACING * 2, ITEM_Y,ITEM_X + ITEM_SPACING * 2 + 25, ITEM_Y+25, sf::Color::Black, 1, sf::Color::Black);
-
-	head_.SetImage(media.GetImage("interface/controlpanel/face"));
-	head_.SetPosition(HEAD_X, HEAD_Y);
-
-	inventory_ = new WinInventory();
-
-	timer_info_text_ = 0;
-}
-
-
-ControlPanel::~ControlPanel()
-{
-	delete inventory_;
 }
 
 
