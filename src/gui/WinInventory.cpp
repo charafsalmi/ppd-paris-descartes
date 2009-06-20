@@ -1,8 +1,11 @@
+#include <sstream>
+
 #include "WinInventory.hpp"
 #include "ControlPanel.hpp"
 #include "../misc/Log.hpp"
 #include "../misc/MediaManager.hpp"
-#include "../entities/Equipment.hpp"
+#include "../entities/Item.hpp"
+#include "../entities/EntityFactory.hpp"
 
 #define ID_BUTTON_CLOSE 6000
 #define SLOT_SIZE       60
@@ -16,8 +19,8 @@ using namespace gui;
 
 WinInventory::WinInventory()
 {
-    // Chargement du descriptif XML
-    Load("data/window/inventory.xml");
+	// Chargement du descriptif XML
+	Load("data/window/inventory.xml");
 
 	for (int i = 0; i < COUNT_H; ++i)
 	{
@@ -27,29 +30,48 @@ WinInventory::WinInventory()
 		}
 	}
 
-    cursor_.coords.x = 0;
+	cursor_.coords.x = 0;
 	cursor_.coords.y = 0;
-    cursor_.sprite.SetImage(GET_IMG("interface/inventory/cursor"));
-    cursor_.sprite.SetPosition(OFFSET_X, OFFSET_Y);
+	cursor_.sprite.SetImage(GET_IMG("interface/inventory/cursor"));
+	cursor_.sprite.SetPosition(OFFSET_X, OFFSET_Y);
 	cursor_.sprite.SetColor(sf::Color(255, 255, 255));
 
-    item1_ = NULL;
-    item2_ = NULL;
-    item3_ = NULL;
+	item1_ = NULL;
+	item2_ = NULL;
+	item3_ = NULL;
 }
 
 
 WinInventory::~WinInventory()
 {
-    UnLoad();
+	UnLoad();
+	Clear();
 }
 
 
-bool WinInventory::AddItem(Equipment* item)
+bool WinInventory::AddItem(Item* item)
 {
 	if (HasItem(item->GetTypeID()))
 	{
 		return false;
+	}
+	if (item1_ == NULL)
+	{
+		item1_ = item;
+		ControlPanel::GetInstance().SetItem1(item1_);
+		return true;
+	}
+	if (item2_ == NULL)
+	{
+		item2_ = item;
+		ControlPanel::GetInstance().SetItem2(item2_);
+		return true;
+	}
+	if (item3_ == NULL)
+	{
+		item3_ = item;
+		ControlPanel::GetInstance().SetItem3(item3_);
+		return true;
 	}
 	for (int i = 0; i < COUNT_H; ++i)
 	{
@@ -77,7 +99,7 @@ bool WinInventory::HasItem(int id)
 	{
 		for (int j = 0; j < COUNT_W; ++j)
 		{
-			const Equipment* item = items_[i][j];
+			const Item* item = items_[i][j];
 			if (item != NULL && item->GetTypeID() == id)
 			{
 				return true;
@@ -85,6 +107,21 @@ bool WinInventory::HasItem(int id)
 		}
 	}
 	return false;
+}
+
+
+void WinInventory::Clear()
+{
+	for (int i = 0; i < COUNT_H; ++i)
+	{
+		for (int j = 0; j < COUNT_W; ++j)
+		{
+			ClearItem(items_[i][j]);
+		}
+	}
+	ClearItem(item1_);
+	ClearItem(item2_);
+	ClearItem(item3_);
 }
 
 
@@ -117,7 +154,7 @@ void WinInventory::OnEvent(input::Action action)
 	int x = cursor_.coords.x;
 	int y = cursor_.coords.y;
 	bool valid = false;
-	Equipment* temp = NULL;
+	Item* temp = NULL;
 	switch (action)
 	{
 		case input::MOVE_UP:
@@ -134,19 +171,19 @@ void WinInventory::OnEvent(input::Action action)
 			break;
 		case input::USE_ITEM_1:
 			temp = item1_;
-			panel.SetItem1Rect(items_[y][x] != NULL ? items_[y][x]->GetSubRect() : sf::IntRect(0, 0, 1, 1));
+			panel.SetItem1(items_[y][x]);
 			item1_ = items_[y][x];
 			PlaceItem(temp, y, x);
 			break;
 		case input::USE_ITEM_2:
 			temp = item2_;
-			panel.SetItem2Rect(items_[y][x] != NULL ? items_[y][x]->GetSubRect() : sf::IntRect(0, 0, 1, 1));
+			panel.SetItem2(items_[y][x]);
 			item2_ = items_[y][x];
 			PlaceItem(temp, y, x);
 			break;
 		case input::USE_ITEM_3:
 			temp = item3_;
-			panel.SetItem3Rect(items_[y][x] != NULL ? items_[y][x]->GetSubRect() : sf::IntRect(0, 0, 1, 1));
+			panel.SetItem3(items_[y][x]);
 			item3_ = items_[y][x];
 			PlaceItem(temp, y, x);
 			break;
@@ -165,7 +202,7 @@ void WinInventory::OnEvent(input::Action action)
 }
 
 
-void WinInventory::PlaceItem(Equipment* item, int i, int j)
+void WinInventory::PlaceItem(Item* item, int i, int j)
 {
 	items_[i][j] = item;
 	if (item != NULL)
@@ -177,9 +214,23 @@ void WinInventory::PlaceItem(Equipment* item, int i, int j)
 }
 
 
+void WinInventory::SetItem1ID(int id)
+{
+	SetItem(item1_, id);
+	ControlPanel::GetInstance().SetItem1(item1_);
+}
+
+
 int WinInventory::GetItem1ID() const
 {
 	return item1_ == NULL ? -1 : item1_->GetTypeID();
+}
+
+
+void WinInventory::SetItem2ID(int id)
+{
+	SetItem(item2_, id);
+	ControlPanel::GetInstance().SetItem2(item2_);
 }
 
 
@@ -189,8 +240,71 @@ int WinInventory::GetItem2ID() const
 }
 
 
+void WinInventory::SetItem3ID(int id)
+{
+	SetItem(item3_, id);
+	ControlPanel::GetInstance().SetItem3(item3_);
+}
+
+
 int WinInventory::GetItem3ID() const
 {
 	return item3_ == NULL ? -1 : item3_->GetTypeID();
 }
 
+
+std::string WinInventory::StockToString() const
+{
+	std::ostringstream oss;
+	for (int i = 0; i < COUNT_H; ++i)
+	{
+		for (int j = 0; j < COUNT_W; ++j)
+		{
+			const Item* item = items_[i][j];
+			oss << (item == NULL ? -1 : item->GetTypeID());
+			oss << ' ';
+		}
+	}
+	return oss.str();
+}
+
+
+void WinInventory::StockFromString(const std::string& str)
+{
+	std::istringstream iss(str);
+	int id;
+	for (int i = 0; i < COUNT_H; ++i)
+	{
+		for (int j = 0; j < COUNT_W; ++j)
+		{
+			if (iss >> id)
+			{
+				SetItem(items_[i][j], id);
+				PlaceItem(items_[i][j], i, j);
+			}
+			else
+			{
+				return;
+			}
+		}
+	}
+}
+
+
+void WinInventory::ClearItem(Item*& item)
+{
+	if (item != NULL)
+	{
+		delete item;
+		item = NULL;
+	}
+}
+
+
+void WinInventory::SetItem(Item*& item, int id)
+{
+	if (item == NULL && id != -1)
+	{
+		item = EntityFactory::GetInstance().BuildItem(id, sf::Vector2f(0, 0));
+	}
+}

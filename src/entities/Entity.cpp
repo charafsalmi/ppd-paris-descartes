@@ -34,6 +34,12 @@ void Entity::SetActiveZone(Zone* zone)
 }
 
 
+Zone* Entity::GetActiveZone()
+{
+	return zone_;
+}
+
+
 void Entity::Kill()
 {
 	dead_ = true;

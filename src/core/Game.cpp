@@ -3,6 +3,7 @@
 #include "../misc/MediaManager.hpp"
 #include "../misc/ConfigParser.hpp"
 #include "../misc/Log.hpp"
+#include "../misc/Die.hpp"
 #include "../gui/Splash.hpp"
 #include "../gui/MiniMap.hpp"
 #include "../entities/Player.hpp"
@@ -23,11 +24,13 @@
 #define MINIMAP_X 30
 #define MINIMAP_Y 30
 
+
 Game& Game::GetInstance()
 {
 	static Game self;
 	return self;
 }
+
 
 Game::Game() :
 	panel_(ControlPanel::GetInstance()),
@@ -55,7 +58,7 @@ Game::Game() :
 
 	if (options_.panel_on_top)
 	{
-		zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
+		map_.SetPosition(0, ControlPanel::HEIGHT_PX);
 	}
     else
     {
@@ -76,6 +79,7 @@ Game::~Game()
 #ifdef CONSOLE_TEST
 	delete log_;
 #endif
+	map_.Unload();
 }
 
 
@@ -120,7 +124,7 @@ bool Game::LoadConfig(const std::string & str)
 }
 
 
-void Game::SaveConfig(const std::string & str)
+void Game::SaveConfig(const std::string& str) const
 {
     // writing options
 	ConfigParser config;
@@ -138,25 +142,110 @@ void Game::SaveConfig(const std::string & str)
 }
 
 
+void Game::SaveProgression(const char* filename) const
+{
+	ConfigParser parser;
+	parser.SeekSection("Location");
+	parser.WriteItem("map", map_.GetName());
+	parser.WriteItem("zone_x", map_.GetPlayerPosition().x);
+	parser.WriteItem("zone_y", map_.GetPlayerPosition().y);
+	parser.WriteItem("x", (int) player_->GetPosition().x);
+	parser.WriteItem("y", (int) player_->GetPosition().y);
+
+	parser.SeekSection("Status");
+	parser.WriteItem("hp", player_->GetHP());
+	parser.WriteItem("money", player_->GetMoney());
+	parser.WriteItem("frags", player_->GetFrags());
+
+	parser.SeekSection("Inventory");
+	const WinInventory& inventory = *panel_.GetInventory();
+	parser.WriteItem("item1", inventory.GetItem1ID());
+	parser.WriteItem("item2", inventory.GetItem2ID());
+	parser.WriteItem("item3", inventory.GetItem3ID());
+	parser.WriteItem("stock", inventory.StockToString());
+	// TODO sauver temps de jeu et minimap
+	parser.SaveToFile(filename);
+}
+
+
+bool Game::LoadProgression(const char* filename)
+{
+	ConfigParser parser;
+
+	if (parser.LoadFromFile(filename))
+	{
+		parser.SeekSection("Location");
+		bool ok = true;
+		std::string map_name;
+		ok &= parser.ReadItem("map", map_name);
+		int zx, zy;
+		ok &= parser.ReadItem("zone_x", zx);
+		ok &= parser.ReadItem("zone_y", zy);
+
+		int x, y;
+		ok &= parser.ReadItem("x", x);
+		ok &= parser.ReadItem("y", y);
+
+		parser.SeekSection("Status");
+		int hp, money, frags;
+		ok &= parser.ReadItem("frags", frags);
+		ok &= parser.ReadItem("money", money);
+		ok &= parser.ReadItem("hp", hp);
+
+		parser.SeekSection("Inventory");
+		int id1, id2, id3;
+		ok &= parser.ReadItem("item1", id1);
+		ok &= parser.ReadItem("item2", id2);
+		ok &= parser.ReadItem("item3", id3);
+
+		std::string stock;
+		ok &= parser.ReadItem("stock", stock);
+
+		if (ok)
+		{
+			map_.Load(map_name);
+			map_.SetActiveZone(zx, zy, false);
+
+			player_->SetPosition(x, y);
+			player_->SetHP(hp);
+			player_->AddGold(money);
+			player_->AddFrag(frags);
+
+			WinInventory& inventory = *panel_.GetInventory();
+			inventory.SetItem1ID(id1);
+			inventory.SetItem2ID(id2);
+			inventory.SetItem3ID(id3);
+			inventory.StockFromString(stock);
+			return true;
+		}
+		printf("fail at loading player save: %s\n", SAVE_FILE);
+	}
+	return false;
+}
+
+
 void Game::Init()
 {
 	clock_.Reset();
 	player_ = new Player(sf::Vector2f(300, 300));
+	panel_.GetInventory()->Clear();
 
-	// chargement du conteneur de zones
-	zone_container_.Load(ZoneContainer::WORLD);
-	// chargement de la première zone
-	zone_container_.SetActiveZone(0, 0, false);
-	zone_container_.GetActiveZone()->AddEntity(player_);
-
-	next_map_name_ = ZoneContainer::WORLD;
+	if (!LoadProgression(SAVE_FILE))
+	{
+		// carte "world" et position de zone (0, 0) par défaut
+		map_.Load("world");
+		map_.SetActiveZone(0, 0, false);
+	}
+	need_map_update_ = false;
+	map_name_ = "";
+	map_.GetActiveZone()->AddEntity(player_);
 
 	// initialisation de la mini map
-	mini_map_ = new MiniMap(zone_container_);
+	mini_map_ = new MiniMap(map_);
 	mini_map_->SetPosition(
-		zone_container_.GetPosition().x + MINIMAP_X,
-		zone_container_.GetPosition().y + MINIMAP_Y);
-	mini_map_->SetPlayerPosition(zone_container_.GetPlayerPosition());
+		map_.GetPosition().x + MINIMAP_X,
+		map_.GetPosition().y + MINIMAP_Y);
+	mini_map_->SetPlayerPosition(map_.GetPlayerPosition());
 	#ifndef NO_START_MENU
 	SetMode(MAIN_MENU);
 	#else
@@ -224,64 +313,61 @@ void Game::TakeScreenshot(const char* directory)
 
 void Game::ChangeZone(ZoneContainer::Direction direction)
 {
-	zone_container_.ChangeZone(direction);
-	mini_map_->SetPlayerPosition(zone_container_.GetPlayerPosition());
+	map_.ChangeZone(direction);
+	mini_map_->SetPlayerPosition(map_.GetPlayerPosition());
 }
 
 
-void Game::ChangeZoneContainer(ZoneContainer::MapName map_name)
+void Game::ChangeMap(const std::string& map_name)
 {
-	Output << GAME_S << "Changement de map" << lEnd;
-
-	// on retire le joueur de la zone de l'ancien conteneur
-	Zone* active = zone_container_.GetActiveZone();
+	// on retire le joueur de l'ancien carte
+	Zone* active = map_.GetActiveZone();
 	active->RemoveEntity(player_);
-	zone_container_.Unload();
-	zone_container_.Load(map_name);
-	if (!zone_container_.SetActiveZone(next_zone_cds_.x, next_zone_cds_.y, false))
+	map_.Unload();
+	map_.Load(map_name);
+	if (!map_.SetActiveZone(next_zone_cds_.x, next_zone_cds_.y, false))
 	{
-		OutputE << "Impossible d'activer la zone du conteneur cible" << lEnd;
-		abort();
+		DIE("mauvaises coordonnes pour la prochaine zone active (%d %d)",
+				next_zone_cds_.x, next_zone_cds_.y);
 	}
-	// insertion du joueur dans le nouveau conteneur
-	active = zone_container_.GetActiveZone();
+	// insertion du joueur dans la nouvelle carte
+	active = map_.GetActiveZone();
 	active->AddEntity(player_);
-
-	next_map_name_ = map_name;
 
 	// on réinitialise la minimap
 	delete mini_map_;
-	mini_map_ = new MiniMap(zone_container_);
+	mini_map_ = new MiniMap(map_);
 	mini_map_->SetPosition(
-		zone_container_.GetPosition().x + MINIMAP_X,
-		zone_container_.GetPosition().y + MINIMAP_Y);
-	mini_map_->SetPlayerPosition(zone_container_.GetPlayerPosition());
+		map_.GetPosition().x + MINIMAP_X,
+		map_.GetPosition().y + MINIMAP_Y);
+	mini_map_->SetPlayerPosition(map_.GetPlayerPosition());
 }
 
 
 void Game::Teleport(const Zone::Teleporter& tp)
 {
-	ZoneContainer::MapName map_name = (ZoneContainer::MapName) tp.zone_container;
-	if (map_name != zone_container_.GetName())
+	if (tp.map_name != map_.GetName())
 	{
 		Output << GAME_S << "Teleportation inter-conteneurs" << lEnd;
-		next_map_name_ = map_name;
+		map_name_ = tp.map_name;
+		need_map_update_ = true;
 		next_zone_cds_ = tp.zone_coords;
 	}
 	else
 	{
 		Output << GAME_S << "Teleportation intra-conteneur" << lEnd;
 		// on informe le conteneur que la zone active doit changer à la prochaine itération
-		if (!zone_container_.SetActiveZone(tp.zone_coords.x, tp.zone_coords.y))
+		if (!map_.SetActiveZone(tp.zone_coords.x, tp.zone_coords.y))
 		{
-			OutputE << GAME_S << "Mauvaise coordonnees pour SetActiveZone" << lEnd;
-			abort();
+			DIE("mauvaises coordonnes pour la zone de teleportation (%d %d)",
+				tp.zone_coords.x, tp.zone_coords.y);
 		}
 	}
 
 	int x = tp.tile_coords.x * Tile::SIZE;
 	int y = tp.tile_coords.y * Tile::SIZE;
 	player_->SetPosition(x, y);
+	mini_map_->SetPlayerPosition(map_.GetPlayerPosition());
 }
 
 

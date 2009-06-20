@@ -6,6 +6,7 @@
 #include "WinInventory.hpp"
 #include "../misc/BitmapString.hpp"
 
+class Item;
 
 class ControlPanel: public sf::Drawable
 {
@@ -38,11 +39,11 @@ public:
 	 */
 	void SetFragCount(int frag_count);
 
-	void SetItem1Rect(const sf::IntRect& rect);
+	void SetItem1(const Item* item);
 
-	void SetItem2Rect(const sf::IntRect& rect);
+	void SetItem2(const Item* item);
 
-	void SetItem3Rect(const sf::IntRect& rect);
+	void SetItem3(const Item* item);
 
 	inline WinInventory* GetInventory()
 	{
@@ -61,6 +62,8 @@ private:
 	 * Convertir un nombre en une chaîne exploitable par BitmapString
 	 */
 	static std::string ConvertToDigits(int value);
+
+	static void SetItemSubRect(const Item* item, sf::Sprite& slot);
 
 	WinInventory* inventory_;
 
@@ -86,5 +89,5 @@ private:
 	sf::Sprite item3_;
 };
 
-#endif /* CONTROLPANEL_HPP */
+#endif // CONTROLPANEL_HPP
 

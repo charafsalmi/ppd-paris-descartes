@@ -1,13 +1,11 @@
 #include <SFML/System.hpp>
 
 #include "Mob.hpp"
-#include "Hit.hpp"
 #include "Player.hpp"
-#include "../core/Zone.hpp"
+#include "Equipment.hpp"
 #include "../core/Game.hpp"
 #include "../core/SoundSystem.hpp"
 
-#define FIRE_RATE          (1.f / 0.8f) // tirs par seconde
 #define DROP_LUCK          33         // chance de dropper un item (en pourcent)
 #define WALK_MIN_DURATION  2.f
 #define WALK_MAX_DURATION  4.f
@@ -16,7 +14,13 @@
 Mob::Mob(const sf::Vector2f& pos, const sf::Image& image, int hp, int speed) :
 	Unit(pos, image, hp, speed)
 {
-	last_hit_ = 0;
+	equipment_ = NULL;
+}
+
+
+Mob::~Mob()
+{
+	RemoveEquipment();
 }
 
 
@@ -90,9 +94,9 @@ void Mob::AutoUpdate(float frametime)
 	Animated::Update(frametime, *this);
 	SetPosition(pos.x, pos.y);
 	// doit-on tirer ?
-	if (shot)
+	if (shot && equipment_ != NULL)
 	{
-		ThrowHit();
+		equipment_->Use();
 	}
 }
 
@@ -122,15 +126,14 @@ void Mob::TakeDamage(int damage)
 }
 
 
-void Mob::ThrowHit()
+void Mob::SetEquipment(Equipment* equipment)
 {
-	float now = Game::GetInstance().GetElapsedTime();
-	if ((now - last_hit_) > FIRE_RATE)
+	RemoveEquipment();
+	if (equipment != NULL)
 	{
-		sf::Vector2f pos(GetPosition().x + GetSize().x / 2, GetPosition().y - GetSize().y / 2);
-		zone_->AddEntity(new Hit(pos, 1, GetDirection(), GetID(), Hit::ARROW));
-		last_hit_ = now;
+		equipment->SetOwner(this);
 	}
+	equipment_ = equipment;
 }
 
 
@@ -140,3 +143,14 @@ void Mob::ChooseDirection()
 	walk_duration_ = sf::Randomizer::Random(WALK_MIN_DURATION, WALK_MAX_DURATION);
 	SetDirection((Direction) sf::Randomizer::Random(0, COUNT_DIRECTION - 1));
 }
+
+
+void Mob::RemoveEquipment()
+{
+	if (equipment_ != NULL)
+	{
+		delete equipment_;
+	}
+	equipment_ = NULL;
+}
+

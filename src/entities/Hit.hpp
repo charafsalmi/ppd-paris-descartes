@@ -54,5 +54,5 @@ private:
 };
 
 
-#endif /* HIT_HPP */
+#endif // HIT_HPP
 

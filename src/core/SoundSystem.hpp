@@ -27,7 +27,7 @@ public:
 	void StopMusic();
 
 	/**
-	 * Activer/Desactiver la musique
+	 * Activer/Désactiver la musique
 	 */
 	void EnableMusic(bool enabled);
 

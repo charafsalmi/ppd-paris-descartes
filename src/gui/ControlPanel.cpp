@@ -3,6 +3,7 @@
 #include "ControlPanel.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../misc/Misc.hpp"
+#include "../entities/Item.hpp"
 
 #define INFOTEXT_ORIGIN  sf::Vector2f(422, 24)
 
@@ -153,21 +154,21 @@ void ControlPanel::Render(sf::RenderTarget& app) const
 }
 
 
-void ControlPanel::SetItem1Rect(const sf::IntRect& rect)
+void ControlPanel::SetItem1(const Item* item)
 {
-    item1_.SetSubRect(rect);
+    SetItemSubRect(item, item1_);
 }
 
 
-void ControlPanel::SetItem2Rect(const sf::IntRect& rect)
+void ControlPanel::SetItem2(const Item* item)
 {
-    item2_.SetSubRect(rect);
+    SetItemSubRect(item, item2_);
 }
 
 
-void ControlPanel::SetItem3Rect(const sf::IntRect& rect)
+void ControlPanel::SetItem3(const Item* item)
 {
-    item3_.SetSubRect(rect);
+    SetItemSubRect(item, item3_);
 }
 
 
@@ -186,6 +187,19 @@ std::string ControlPanel::ConvertToDigits(int value)
 		string[i] = string[i] - diff;
 	}
 	return string;
+}
+
+
+void ControlPanel::SetItemSubRect(const Item* item, sf::Sprite& slot)
+{
+	if (item == NULL)
+	{
+		slot.SetSubRect(sf::IntRect(0, 0, 1, 1));
+	}
+	else
+	{
+		slot.SetSubRect(item->GetSubRect());
+	}
 }
 
 

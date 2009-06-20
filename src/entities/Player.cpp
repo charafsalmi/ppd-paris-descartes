@@ -4,6 +4,8 @@
 #include "Player.hpp"
 #include "PlayerHit.hpp"
 #include "Mob.hpp"
+#include "Equipment.hpp"
+
 #include "../core/Game.hpp"
 #include "../core/SoundSystem.hpp"
 #include "../misc/MediaManager.hpp"
@@ -72,6 +74,7 @@ Player::Player(const sf::Vector2f& pos) :
 	falling_duration_ = GET_ANIM("player_fall").GetDuration();
 
 	strategy_callback_ = &Player::WalkUpdate;
+	equipment_ = NULL;
 }
 
 
@@ -95,11 +98,11 @@ void Player::OnEvent(input::Action action)
 			}
 			break;
 		case input::USE_ITEM_3:
-            obj = panel_.GetInventory()->GetItem3ID();
-            if (obj != 0)
-            {
+			obj = panel_.GetInventory()->GetItem3ID();
+			if (obj != 0)
+			{
 				UseItem(obj);
-            }
+			}
 			break;
 		default:
 			break;
@@ -301,7 +304,7 @@ void Player::FallingUpdate(float frametime)
 		else
 		{
 			TakeDamage(1);
-			SetPosition(Tile::SIZE, 8 * Tile::SIZE);
+			SetPosition(Tile::SIZE, 8 * Tile::SIZE); // FIXME
 		}
 		Animated::Change(walk_anims_[GetDirection()], *this);
 		SetSubRect(subrects_not_moving_[GetDirection()]); // ?
@@ -366,6 +369,13 @@ void Player::Unlock()
 }
 
 
+void Player::SetHP(int hp)
+{
+	Unit::SetHP(hp);
+	panel_.SetHP(hp);
+}
+
+
 void Player::AddHP()
 {
 	int hp = GetHP();
@@ -385,10 +395,22 @@ void Player::AddGold(int amount)
 }
 
 
-void Player::AddFrag()
+int Player::GetMoney() const
 {
-	++frags_;
+	return money_;
+}
+
+
+void Player::AddFrag(int amount)
+{
+	frags_ += amount;
 	panel_.SetFragCount(frags_);
+}
+
+
+int Player::GetFrags() const
+{
+	return frags_;
 }
 
 
@@ -407,6 +429,13 @@ void Player::TakeDamage(int damage)
 		panel_.SetHP(GetHP());
 		SoundSystem::GetInstance().PlaySound("player-damage");
 	}
+}
+
+
+void Player::SetEquipment(Equipment* equipment)
+{
+	equipment->SetOwner(this);
+	panel_.GetInventory()->AddItem(equipment);
 }
 
 
@@ -484,3 +513,4 @@ void Player::GetTilePosition(int& i, int& j)
 	i = ((int) GetPosition().x + GetFloorWidth() / 2) / Tile::SIZE;;
 	j = ((int) GetPosition().y - GetFloorHeight() / 2) / Tile::SIZE;
 }
+

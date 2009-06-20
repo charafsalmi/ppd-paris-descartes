@@ -44,22 +44,19 @@ public:
 	 * @param[out] value: valeur de l'élément
 	 * @return true si l'élément existe, sinon false
 	 */
+	bool ReadItem(const char* item, std::string& value);
+
 	template <typename T>
 	bool ReadItem(const char* item, T& value)
 	{
-		assert(cursor_ != NULL);
-		Properties::const_iterator it = cursor_->find(item);
-		// l'élément est-il dans la section pointée ?
-		if (it == cursor_->end())
+		std::string strvalue;
+		if (ReadItem(item, strvalue))
 		{
-#ifdef DEBUG
-			std::cerr << item << " not found in current section" << std::endl;
-#endif
-			return false;
+			std::istringstream iss(strvalue);
+			iss >> value;
+			return true;
 		}
-		std::istringstream iss(it->second);
-		iss >> value;
-		return true;
+		return false;
 	}
 
 	/**
@@ -88,7 +85,7 @@ private:
 	/**
 	 * Parcourir les propriétés d'une section du document
 	 * @param[in] content: contenu de la section
-	 * @param[ou] props: propriétés de la section
+	 * @param[out] props: propriétés de la section
 	 */
 	void ParseProperties(const std::string& content, Properties& props);
 
@@ -98,5 +95,5 @@ private:
 	Properties* cursor_;
 };
 
-#endif /* CONFIGPARSER_HPP */
+#endif // CONFIGPARSER_HPP
 

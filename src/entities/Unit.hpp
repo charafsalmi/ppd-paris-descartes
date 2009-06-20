@@ -5,6 +5,8 @@
 #include "../core/Animated.hpp"
 
 
+class Equipment;
+
 class Unit: public Entity, public Animated
 {
 public:
@@ -16,17 +18,19 @@ public:
 	 */
 	Unit(const sf::Vector2f& pos, const sf::Image& image, int hp, float speed);
 
-	/// inherited
+	// inherited
 	void Update(float frametime) ;
 
-	/// inherited
+	// inherited
 	void TakeDamage(int damage);
 
-	/// inherited
+	// inherited
 	virtual void OnCollide(Entity& entity, const sf::FloatRect& overlap);
 
-	/// inherited
+	// inherited
 	bool IsDying() const;
+
+	virtual void SetEquipment(Equipment* equipment) = 0;
 
 	void SetAnimation(Direction dir, const Animation* anim);
 
@@ -38,14 +42,16 @@ public:
 	 */
 	void Move(Direction dir, int distance, int tiles);
 
-protected:
-	virtual void AutoUpdate(float frametime) = 0;
+	/**
+	 * Orientation courante de l'entité
+	 */
+	Direction GetDirection() const;
 
 	int GetHP() const;
+	virtual void SetHP(int hp);
 
-	void SetHP(int hp);
-
-	Direction GetDirection() const;
+protected:
+	virtual void AutoUpdate(float frametime) = 0;
 
 	void SetDirection(Direction dir);
 
@@ -80,6 +86,5 @@ private:
 	void (Unit::*update_callback_)(float frametime);
 };
 
-
-#endif /* UNIT_HPP */
+#endif // UNIT_HPP
 

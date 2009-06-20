@@ -4,6 +4,8 @@
 #include "Game.hpp"
 #include "SoundSystem.hpp"
 #include "../entities/Player.hpp"
+#include "../misc/Misc.hpp"
+#include "../misc/Die.hpp"
 #include "../misc/Log.hpp"
 
 // durée du scrolling lors d'un changement de zone
@@ -30,26 +32,18 @@ ZoneContainer::~ZoneContainer()
 }
 
 
-void ZoneContainer::Load(MapName name)
+void ZoneContainer::Load(const std::string& name)
 {
-	const char* filename = NULL;
 	name_ = name;
-	switch (name)
-	{
-		case WORLD:
-			filename = "data/map/world.xml";
-			break;
-		case CAVES:
-			filename = "data/map/caves.xml";
-			break;
-	}
-	Output << ZC_S << "Loading " << filename << "..." << lEnd;
+	std::string filename = str_sprintf("data/map/%s.xml", name.c_str());
+#ifdef DEBUG
+	printf("loading map %s ...\n", filename.c_str());
+#endif
 
 	// ouverture du fichier des zones du monde extérieur
-	if (!xml_doc_.LoadFile(filename))
+	if (!xml_doc_.LoadFile(filename.c_str()))
 	{
-	    OutputE << ZC_S << "Echec de l'ouverture du fichier " << filename << lEnd;
-		abort();
+		DIE("can't open map %s\n%s", filename, xml_doc_.ErrorDesc());
 	}
 
 	TiXmlHandle handle(&xml_doc_);
@@ -59,8 +53,6 @@ void ZoneContainer::Load(MapName name)
 	const TiXmlElement* map_element = handle.Element();
 	assert(map_element->QueryIntAttribute("width", &width_) == TIXML_SUCCESS);
 	assert(map_element->QueryIntAttribute("height", &height_) == TIXML_SUCCESS);
-
-	Output << ZC_S << "width = " << width_ << ", height = " << height_ << lEnd;
 
 	// allocation des zones
 	zones_ = new Zone* [height_];
@@ -73,11 +65,14 @@ void ZoneContainer::Load(MapName name)
 
 void ZoneContainer::Unload()
 {
-	for (int i = 0; i < height_; ++i)
+	if (zones_ != NULL)
 	{
-		delete [] zones_[i];
+		for (int i = 0; i < height_; ++i)
+		{
+			delete [] zones_[i];
+		}
+		delete [] zones_;
 	}
-	delete [] zones_;
 	zones_ = NULL;
 	active_zone_ = NULL;
 	next_zone_ = NULL;
@@ -145,8 +140,7 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 			handle = handle.FirstChildElement().Child(offset);
 			if (handle.Node() == NULL)
 			{
-			    OutputE << ZC_S << "Impossible de charger la zone [" << y << "][" << x << "]" << lEnd;
-				abort();
+				DIE("impossible de charger la zone [%d][%d]", y, x);
 			}
 			Output << ZC_S << "Chargement de la zone [" << y << "][" << x << "]" << lEnd;
 			next_zone_->Load(handle);
@@ -168,7 +162,7 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 }
 
 
-ZoneContainer::MapName ZoneContainer::GetName() const
+const std::string& ZoneContainer::GetName() const
 {
 	return name_;
 }

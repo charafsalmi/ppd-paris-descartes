@@ -106,7 +106,7 @@ public:
 	 */
 	struct Teleporter
 	{
-		int zone_container; // conteneur cible
+		std::string map_name; // carte cible
 		sf::Vector2i zone_coords; // position de la zone cible (en tiles)
 		sf::Vector2i tile_coords; // position cible dans la zone (en pixels)
 	};
@@ -162,5 +162,5 @@ private:
 	std::string music_name_;
 };
 
-#endif /* ZONE_HPP */
+#endif // ZONE_HPP
 

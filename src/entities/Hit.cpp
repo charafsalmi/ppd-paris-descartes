@@ -149,7 +149,7 @@ void Hit::MoveLinear(float frametime)
 
 void Hit::MoveCircular(float frametime)
 {
-    switch (direction_)
+	switch (direction_)
 	{
 	case UP:
 		Rotate(ANGLE_PER_SECOND * frametime);

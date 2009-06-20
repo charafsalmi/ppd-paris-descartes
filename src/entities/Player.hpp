@@ -15,12 +15,12 @@ public:
 	Player(const sf::Vector2f& pos);
 
 	/**
-	 * Gérer un évènement clavier
-	 * @param[in] key: touche pressée
+	 * Gérer un évènement
+	 * @param[in] action: action demandée
 	 */
 	void OnEvent(input::Action action);
 
-	/// inherited
+	// inherited
 	void OnCollide(Entity& entity, const sf::FloatRect& overlap);
 
 	/**
@@ -37,32 +37,40 @@ public:
 	 * Ajouter un point de vie
 	 */
 	void AddHP();
+	// inherited
+	void SetHP(int hp);
 
 	/**
 	 * Incrémenter le compteur de frags
 	 */
-	void AddFrag();
+	void AddFrag(int amount = 1);
+	int GetFrags() const;
 
 	/**
 	 * Augmenter l'or du joueur
 	 */
 	void AddGold(int amount = 1);
+	int GetMoney() const;
 
-	/// inherited
+	// inherited
 	void Kill();
 
-	/// inherited
+	// inherited
 	void TakeDamage(int damage);
 
-	/// inherited
+	// inherited
+	void SetEquipment(Equipment* equipment);
+
+	// inherited
 	void ThrowHit(Hit::Type type);
+
 private:
 	/**
 	 * Convertir la position en pixels en position de tile
 	 */
 	void GetTilePosition(int& i, int& j);
 
-	/// inherited
+	// inherited
 	void AutoUpdate(float frametime);
 
 	void WalkUpdate(float frametime);
@@ -77,7 +85,7 @@ private:
 
 	void HandleInput(float frametime);
 
-    void UseItem(int);
+	void UseItem(int);
 
 	// pointeur de la méthode de mise à jour
 	void (Player::*strategy_callback_)(float frametime);
@@ -98,6 +106,7 @@ private:
 	int money_;
 	int frags_;
 
+	Equipment* equipment_;
 	float started_action_;
 	float falling_duration_;
 	float use_bow_duration_;
@@ -105,5 +114,5 @@ private:
 	float last_hit_; // temps en secondes
 };
 
-#endif /* PLAYER_HPP */
+#endif // PLAYER_HPP
 

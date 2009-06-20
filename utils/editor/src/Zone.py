@@ -82,14 +82,14 @@ class Zone:
 		else:
 			print "parsing", len(xml_teleporters), "teleporters",
 			for node in xml_teleporters:
-				container = int(node.getAttribute("container"))
+				mapname = int(node.getAttribute("map"))
 				x = int(node.getAttribute("x"))
 				y = int(node.getAttribute("y"))
 				zone_x = int(node.getAttribute("zone_x"))
 				zone_y = int(node.getAttribute("zone_y"))
 				tile_x = int(node.getAttribute("tile_x"))
 				tile_y = int(node.getAttribute("tile_y"))
-				self.teleporters.append(Teleporter(container, x, y, zone_x, zone_y, tile_x, tile_y))
+				self.teleporters.append(Teleporter(mapname, x, y, zone_x, zone_y, tile_x, tile_y))
 		
 		print " ... done."
 		

@@ -135,8 +135,8 @@
 		<decor id="3" x="4" y="12" />
 	</decors>
 	<teleporters>
-		<tp x="9" y="12" container="0" zone_x="0" zone_y="1" tile_x="3" tile_y="2" />
-		<tp x="3" y="3" container="0" zone_x="0" zone_y="1" tile_x="9" tile_y="11" />
+		<tp x="9" y="12" map="world" zone_x="0" zone_y="1" tile_x="3" tile_y="2" />
+		<tp x="3" y="3" map="world" zone_x="0" zone_y="1" tile_x="9" tile_y="11" />
 	</teleporters>
 </zone>
 <zone>
@@ -198,7 +198,7 @@
 	</tiles>
 	<music>ingame</music>
 	<teleporters>
-		<tp x="9" y="1" container="1" zone_x="1" zone_y="0" tile_x="8" tile_y="4" />
+		<tp x="9" y="1" map="caves" zone_x="1" zone_y="0" tile_x="8" tile_y="4" />
 	</teleporters>
 </zone>
 <zone>
@@ -222,8 +222,8 @@
 	</tiles>
 	<music>ingame</music>
 	<teleporters>
-		<tp x="17" y="2" container="1" zone_x="2" zone_y="0" tile_x="17" tile_y="4" />
-		<tp x="10" y="6" container="1" zone_x="2" zone_y="0" tile_x="10" tile_y="11" />
+		<tp x="17" y="2" map="caves" zone_x="2" zone_y="0" tile_x="17" tile_y="4" />
+		<tp x="10" y="6" map="caves" zone_x="2" zone_y="0" tile_x="10" tile_y="11" />
 	</teleporters>
 </zone>
 <zone>
@@ -258,7 +258,7 @@
 		<item id="10" x="200" y="350" />
 	</items>
 	<teleporters>
-		<tp x="13" y="3" container="0" zone_x="2" zone_y="2" tile_x="11" tile_y="9" />
+		<tp x="13" y="3" map="world" zone_x="2" zone_y="2" tile_x="11" tile_y="9" />
 	</teleporters>
 </zone>
 <zone>
@@ -335,7 +335,7 @@
 		<decor id="1" x="10" y="3" />
 	</decors>
 	<teleporters>
-		<tp x="4" y="9" container="0" zone_x="3" zone_y="4" tile_x="16" tile_y="5" />
+		<tp x="4" y="9" map="world" zone_x="3" zone_y="4" tile_x="16" tile_y="5" />
 	</teleporters>
 </zone>
 <zone>
@@ -535,7 +535,7 @@
 	</tiles>
 	<music>waves</music>
 	<teleporters>
-		<tp x="16" y="7" container="0" zone_x="3" zone_y="2" tile_x="4" tile_y="12" />
+		<tp x="16" y="7" map="world" zone_x="3" zone_y="2" tile_x="4" tile_y="12" />
 	</teleporters>
 </zone>
 </map>

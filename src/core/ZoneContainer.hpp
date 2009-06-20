@@ -5,26 +5,20 @@
 #include "../xml/tinyxml.h"
 
 /**
- * Ensemble de zones
+ * Ensemble de zones (carte)
  */
 class ZoneContainer: public sf::Drawable
 {
 public:
-	enum MapName
-	{
-		// noms des conteneurs possibles
-		WORLD, CAVES
-	};
-
 	ZoneContainer();
 
 	~ZoneContainer();
 
 	/**
-	 * Charger les zones du conteneur
-	 * @param[in] name: identifiant du conteneur à charger
+	 * Charger les zones d'une carte
+	 * @param[in] name: nom de la carte à charger
 	 */
-	void Load(MapName name);
+	void Load(const std::string& name);
 
 	/**
 	 * Désallouer toutes les zones du conteneur
@@ -62,10 +56,10 @@ public:
 	bool SetActiveZone(int x, int y, bool wait=true);
 
 	/**
-	 * Nom du conteneur
+	 * Nom de la carte
 	 * @return nom-identifiant
 	 */
-	MapName GetName() const;
+	const std::string& GetName() const;
 
 	/**
 	 * Indique si le conteneur est en train de procéder à un scrolling
@@ -126,7 +120,7 @@ private:
 
 	Zone* next_zone_;
 
-	MapName name_;
+	std::string name_;
 	int width_; // largeur en nombre de zones
 	int height_; // hauteur en nombre de zones
 	Zone** zones_;
@@ -135,5 +129,5 @@ private:
 };
 
 
-#endif /* ZONECONTAINER_HPP */
+#endif // ZONECONTAINER_HPP
 

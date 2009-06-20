@@ -115,10 +115,18 @@ public:
 	static void SetActiveZone(Zone* zone);
 
 	/**
+	 * Récupérer la zone active
+	 */
+	static Zone* GetActiveZone();
+
+	/**
 	 * Tuer l'objet entité (sera supprimé à frame n + 1)
 	 */
 	virtual void Kill();
 
+	/**
+	 * Détermine si l'unité doit être retirée de la zone
+	 */
 	inline bool IsDead() const
 	{
 		return dead_;
@@ -157,5 +165,5 @@ private:
 	int floor_height_;
 };
 
-#endif /* ENTITY_HPP */
+#endif // ENTITY_HPP
 

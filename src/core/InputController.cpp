@@ -27,6 +27,7 @@ InputController::InputController()
 	keyboard_binds_[USE_ITEM_3] = sf::Key::Z;
 	keyboard_binds_[SHOW_MINIMAP] = sf::Key::C;
 	keyboard_binds_[SHOW_INVENTORY] = sf::Key::I;
+	keyboard_binds_[SAVE_PROGRESSION] = sf::Key::S;
 	keyboard_binds_[TAKE_SCREENSHOT] = sf::Key::F1;
 	keyboard_binds_[PAUSE] = sf::Key::P;
 	keyboard_binds_[PANEL_UP] = sf::Key::PageUp;

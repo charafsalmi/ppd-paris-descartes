@@ -45,7 +45,7 @@ public:
 	/**
 	 * Changer la carte courante
 	 */
-	void ChangeZoneContainer(ZoneContainer::MapName map_name);
+	void ChangeMap(const std::string& map_name);
 
 	/**
 	 * Téléporter le joueur
@@ -70,7 +70,7 @@ public:
 
 	inline Zone* GetZone()
 	{
-		return zone_container_.GetActiveZone();
+		return map_.GetActiveZone();
 	}
 
 	inline float GetElapsedTime() const
@@ -83,13 +83,29 @@ private:
 	Game(const Game&);
 	~Game();
 
-	/// Charge un fichier de configuration système
-	/// @param[in] str Nom du fichier de configuration
+#define SAVE_FILE   "config/save.txt"
+
+	/**
+	 * Charger un fichier de configuration
+	 * @param[in] str: nom du fichier de configuration
+	 */
 	bool LoadConfig(const std::string & str);
 
     /// Sauvegarde un fichier de configuration système
-	/// @param[in] str Nom du fichier de configuration
-	void SaveConfig(const std::string & str);
+	/// @param[in] str: Nom du fichier de configuration
+	void SaveConfig(const std::string & str) const;
+
+	/**
+	 * Enregistrer la progression du joueur
+	 * @param[in] filename: fichier de sauvegarde
+	 */
+	void SaveProgression(const char* filename) const;
+
+	/**
+	 * Charger la progression du joueur
+	 * @param[in] filename: fichier de sauvegarde
+	 */
+	bool LoadProgression(const char* filename);
 
 	// Prend une capture d'écran de la fenêtre
 	void TakeScreenshot(const char* directory);
@@ -167,9 +183,11 @@ private:
 
 	bool running_;
 	// un seul conteneur de zones est chargé à la fois
-	ZoneContainer zone_container_;
-	// nom du prochain conteneur à charger
-	ZoneContainer::MapName next_map_name_;
+	ZoneContainer map_;
+	// nom de la prochaine carte à charger
+	std::string map_name_;
+	bool need_map_update_;
+
 	// coordonnées de la zone à activer si changement de conteneur
 	sf::Vector2i next_zone_cds_;
 
@@ -195,5 +213,5 @@ private:
 	InputController& controller_;
 };
 
-#endif /* GAME_HPP */
+#endif // GAME_HPP
 

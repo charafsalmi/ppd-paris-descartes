@@ -11,10 +11,12 @@ class Mob: public Unit
 public:
 	Mob(const sf::Vector2f& pos, const sf::Image& image, int hp, int speed);
 
-	/// inherited
+	~Mob();
+
+	// inherited
 	void Kill();
 
-	/// inherited
+	// inherited
 	void TakeDamage(int damage);
 
 	/**
@@ -22,17 +24,23 @@ public:
 	 */
 	void ChooseDirection();
 
+	// inherited
+	void SetEquipment(Equipment* equipment);
+
 private:
-	/// inherited
+	// inherited
 	void AutoUpdate(float frametime);
 
-	/// inherited
-	void ThrowHit();
+	/**
+	 * Supprimer l'item courant
+	 */
+	void RemoveEquipment();
 
-	float last_hit_;
+	Equipment* equipment_;
+
 	float walk_duration_;
 	float started_at_;
 };
 
-#endif /* MOB_HPP */
+#endif // MOB_HPP
 

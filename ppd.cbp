@@ -133,6 +133,7 @@
 		<Unit filename="src/misc/BitmapString.hpp" />
 		<Unit filename="src/misc/ConfigParser.cpp" />
 		<Unit filename="src/misc/ConfigParser.hpp" />
+		<Unit filename="src/misc/Die.hpp" />
 		<Unit filename="src/misc/Log.cpp" />
 		<Unit filename="src/misc/Log.hpp" />
 		<Unit filename="src/misc/LogConsole.cpp" />
@@ -145,7 +146,6 @@
 		<Unit filename="src/misc/Misc.hpp" />
 		<Unit filename="src/misc/Music.cpp" />
 		<Unit filename="src/misc/Music.hpp" />
-		<Unit filename="src/misc/type_definitions.hpp" />
 		<Unit filename="src/xml/tinyxml.cpp" />
 		<Unit filename="src/xml/tinyxml.h" />
 		<Unit filename="src/xml/tinyxmlerror.cpp" />

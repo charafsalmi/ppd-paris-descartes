@@ -19,5 +19,5 @@ private:
 };
 
 
-#endif /* PLAYERHIT_HPP */
+#endif // PLAYERHIT_HPP
 

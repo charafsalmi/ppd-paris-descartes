@@ -3,9 +3,13 @@
 
 #include <map>
 
-#include "Unit.hpp"
-#include "Item.hpp"
-#include "Decor.hpp"
+#include "Entity.hpp"
+
+class Unit;
+class Item;
+class Decor;
+class Equipment;
+class Animation;
 
 /**
  * Construire des entités
@@ -25,7 +29,7 @@ public:
 	/**
 	 * Allouer un décor
 	 * @param[in] id: identifiant du type de décor
-	 * @param[in] position: emplacement en tiles
+	 * @param[in] position: emplacement en nombre de tiles
 	 */
 	Decor* BuildDecor(int id, const sf::Vector2i& position) const;
 
@@ -41,12 +45,18 @@ public:
 	const char* GetItemName(int id) const;
 
 private:
+	Equipment* BuildEquipment(const char* name) const;
+
 	EntityFactory();
 	EntityFactory(const EntityFactory& other);
 	EntityFactory& operator=(const EntityFactory& other);
 
 	void LoadUnits(const char* filename);
 	void LoadDecors(const char* filename);
+
+	/* TODO :
+	virer ce torcheballe et instancier un examplaire de chaque unité et le cloner
+	*/
 
 	/**
 	 * Profil d'une unité
@@ -57,6 +67,7 @@ private:
 		int speed; // vitesse (pixels/seconde)
 		const Animation* anim[Entity::COUNT_DIRECTION];
 		std::string name; // nom générique
+		std::string item;
 		const sf::Image* image;
 	};
 
@@ -81,6 +92,5 @@ private:
 	DecorDef decors_;
 };
 
-
-#endif /* ENTITYFACTORY_HPP */
+#endif // ENTITYFACTORY_HPP
 

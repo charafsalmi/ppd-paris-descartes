@@ -97,7 +97,7 @@
 		<item id="2" x="260" y="220" />
 	</items>
 	<teleporters>
-		<tp x="17" y="2" container="0" zone_x="3" zone_y="1" tile_x="17" tile_y="2" />
+		<tp x="17" y="2" map="world" zone_x="3" zone_y="1" tile_x="17" tile_y="2" />
 	</teleporters>
 </zone>
 </map>

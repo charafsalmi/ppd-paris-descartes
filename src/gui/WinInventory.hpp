@@ -4,7 +4,7 @@
 #include "../gui_system/Window.hpp"
 #include "../core/InputController.hpp"
 
-class Equipment;
+class Item;
 
 class WinInventory: public gui::Window
 {
@@ -23,7 +23,7 @@ public:
 	 * @param item: objet à ajouter
 	 * @return true si ok, false si inventaire plein ou doublon
 	 */
-	bool AddItem(Equipment* item);
+	bool AddItem(Item* item);
 
 	/**
 	 * Savoir si un item est deja présent dans l'inventaire
@@ -38,10 +38,19 @@ public:
 	void OnEvent(input::Action action);
 
 	/**
+	 * Vider l'inventaire
+	 */
+	void Clear();
+
+	void SetItem1ID(int id);
+
+	/**
 	 * Permet de connaitre l'ID du premier objet assignable
 	 * @return l'ID ou 0 si non assigné
 	 */
 	int GetItem1ID() const;
+
+	void SetItem2ID(int id);
 
 	 /**
 	 * Permet de connaitre l'ID du deuxième objet assignable
@@ -49,19 +58,35 @@ public:
 	 */
 	int GetItem2ID() const;
 
+	void SetItem3ID(int id);
+
 	/**
 	 * Permet de connaitre l'ID du troisième objet assignable
 	 * @return l'ID ou 0 si non assigné
 	 */
 	int GetItem3ID() const;
 
+	/**
+	 * Remplir le stock à partir d'une chaîne d'id
+	 */
+	void StockFromString(const std::string& str);
+
+	/**
+	 * Obtenir le contenu du stock sous forme d'une chaîne d'id
+	 */
+	std::string StockToString() const;
+
 private:
-	/// inherited
+	// inherited
 	void Render(sf::RenderTarget&) const;
 
-	void PlaceItem(Equipment* item, int x, int y);
+	void PlaceItem(Item* item, int x, int y);
 
 	int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2);
+
+	static void ClearItem(Item*& item);
+
+	static void SetItem(Item*& item, int id);
 
 	/** Identifiant du slot principale */
 	enum
@@ -76,11 +101,11 @@ private:
 	};
 	Cursor cursor_;
 
-	Equipment* items_[COUNT_H][COUNT_W];
+	Item* items_[COUNT_H][COUNT_W];
 
-	Equipment* item1_;
-	Equipment* item2_;
-	Equipment* item3_;
+	Item* item1_;
+	Item* item2_;
+	Item* item3_;
 };
 
-#endif
+#endif // WININVENTORY_HPP

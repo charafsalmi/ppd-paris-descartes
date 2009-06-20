@@ -39,5 +39,5 @@ private:
 	int type_id_; // id du type de l'item (!= id de l'item lui-même)
 };
 
-#endif /* ITEM_HPP */
+#endif // ITEM_HPP
 

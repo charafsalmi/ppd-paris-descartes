@@ -9,6 +9,8 @@
 #include "../entities/EntityFactory.hpp"
 #include "../entities/Player.hpp"
 #include "../entities/Hit.hpp"
+#include "../entities/Decor.hpp"
+#include "../entities/Item.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../misc/Log.hpp"
 
@@ -145,12 +147,14 @@ void Zone::Load(const TiXmlHandle& handle)
 	while (elem != NULL)
 	{
 		bool ok = true;
-		int x, y, zone_x, zone_y, tile_x, tile_y, zc_id;
+		int x, y, zone_x, zone_y, tile_x, tile_y;
 		// coordonnées tile du téléporteur
 		ok &= (elem->QueryIntAttribute("x", &x) == TIXML_SUCCESS);
 		ok &= (elem->QueryIntAttribute("y", &y) == TIXML_SUCCESS);
-		// zone container cible
-		ok &= (elem->QueryIntAttribute("container", &zc_id) == TIXML_SUCCESS);
+		// carte cible
+		const char* attr_map = elem->Attribute("map");
+		ok &= (attr_map != NULL);
+
 		// coordonnées de la zone cible
 		ok &= (elem->QueryIntAttribute("zone_x", &zone_x) == TIXML_SUCCESS);
 		ok &= (elem->QueryIntAttribute("zone_y", &zone_y) == TIXML_SUCCESS);
@@ -165,7 +169,7 @@ void Zone::Load(const TiXmlHandle& handle)
 		else
 		{
 			Teleporter tp;
-			tp.zone_container = zc_id;
+			tp.map_name = attr_map;
 			tp.zone_coords = sf::Vector2i(zone_x, zone_y);
 			tp.tile_coords = sf::Vector2i(tile_x, tile_y);
 			int key = y * WIDTH + x;

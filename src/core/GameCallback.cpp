@@ -5,19 +5,20 @@
 #include "../gui/MiniMap.hpp"
 #include "../entities/Player.hpp"
 
+
 void Game::SetMode(Mode mode)
 {
 	// initialisation des callbacks
 	switch (mode)
 	{
 	    case MAIN_MENU:
-            Output << "Passage en mode MAIN_MENU" << lEnd;
-            SoundSystem::GetInstance().PlayMusic("title");
+			Output << "Passage en mode MAIN_MENU" << lEnd;
+			SoundSystem::GetInstance().PlayMusic("title");
 
-            on_event_meth_ = &Game::MainMenuOnEvent;
+			on_event_meth_ = &Game::MainMenuOnEvent;
 			update_meth_ = &Game::NoUpdate;
 			render_meth_ = &Game::MainMenuShow;
-            break;
+			break;
 		case IN_GAME:
 			Output << "Passage en mode INGAME" << lEnd;
 			player_->Unlock();
@@ -48,10 +49,10 @@ void Game::SetMode(Mode mode)
 			update_meth_ = &Game::NoUpdate;
 			render_meth_ = &Game::PauseShow;
 			break;
-        case OPTION:
-            Output << "Passage en mode OPTION" << lEnd;
+		case OPTION:
+			Output << "Passage en mode OPTION" << lEnd;
 
-            on_event_meth_ = &Game::OptionOnEvent;
+			on_event_meth_ = &Game::OptionOnEvent;
 			update_meth_ = &Game::NoUpdate;
 			render_meth_ = &Game::OptionShow;
 			break;
@@ -71,7 +72,7 @@ void Game::SetMode(Mode mode)
 void Game::DefaultUpdate(float frametime)
 {
 	panel_.Update(frametime);
-	zone_container_.Update(frametime);
+	map_.Update(frametime);
 }
 
 
@@ -87,7 +88,7 @@ void Game::InGameOnEvent(const sf::Event& event, input::Action action)
 #ifdef WINDOW_TEST
 	fen_.ManageEvent(event);
 #endif
-	if (zone_container_.Scrolling())
+	if (map_.Scrolling())
 	{
 		return;
 	}
@@ -97,14 +98,18 @@ void Game::InGameOnEvent(const sf::Event& event, input::Action action)
 		case input::SHOW_INVENTORY:
 			SetMode(INVENTORY);
 			break;
+		case input::SAVE_PROGRESSION:
+			SaveProgression(SAVE_FILE);
+			panel_.PrintInfoText("Partie enregistree !");
+			break;
 		case input::PANEL_UP:
 			panel_.SetPosition(0, 0);
-			zone_container_.SetPosition(0, ControlPanel::HEIGHT_PX);
+			map_.SetPosition(0, ControlPanel::HEIGHT_PX);
 			options_.panel_on_top = true;
 			break;
 		case input::PANEL_DOWN:
 			panel_.SetPosition(0, Zone::HEIGHT_PX);
-			zone_container_.SetPosition(0, 0);
+			map_.SetPosition(0, 0);
 			options_.panel_on_top = false;
 			break;
 		case input::PAUSE:
@@ -122,12 +127,13 @@ void Game::InGameOnEvent(const sf::Event& event, input::Action action)
 
 void Game::InGameShow()
 {
-	app_.Draw(zone_container_);
+	app_.Draw(map_);
 	app_.Draw(panel_);
 
-	if (zone_container_.GetName() != next_map_name_)
+	if (need_map_update_)
 	{
-		ChangeZoneContainer(next_map_name_);
+		ChangeMap(map_name_);
+		need_map_update_ = false;
 	}
 #ifdef CONSOLE_TEST
 	app_.Draw(*log_);
@@ -157,7 +163,7 @@ void Game::InventoryOnEvent(const sf::Event& event, input::Action action)
 
 void Game::InventoryShow()
 {
-	app_.Draw(zone_container_);
+	app_.Draw(map_);
 	app_.Draw(panel_);
 	app_.Draw(*panel_.GetInventory());
 }
@@ -187,9 +193,8 @@ void Game::PauseOnEvent(const sf::Event& event, input::Action action)
 
 void Game::PauseShow()
 {
-    app_.Draw(zone_container_);
+	app_.Draw(map_);
 	app_.Draw(panel_);
-
 	app_.Draw(pause_);
 }
 
@@ -201,7 +206,7 @@ void Game::GameOverOnEvent(const sf::Event& event, input::Action action)
 	{
 		if (event.Key.Code == sf::Key::Return)
 		{
-			zone_container_.Unload();
+			map_.Unload();
 			Init();
 		}
 	}
@@ -232,7 +237,7 @@ void Game::MainMenuOnEvent(const sf::Event& event, input::Action action)
 			OutputD << "Lancement du jeu !" << lEnd;
 			SetMode(IN_GAME);
 
-			SoundSystem::GetInstance().PlayMusic(zone_container_.GetActiveZone()->GetMusicName());
+			SoundSystem::GetInstance().PlayMusic(map_.GetActiveZone()->GetMusicName());
 			break;
 		case MainMenu::EXIT_GAME:
 			OutputD << "On quitte le programme ..." << lEnd;
@@ -263,7 +268,7 @@ void Game::OptionOnEvent(const sf::Event& event, input::Action action)
 
 void Game::OptionShow()
 {
-    app_.Draw(zone_container_);
+	app_.Draw(map_);
 	app_.Draw(panel_);
 	app_.Draw(*option_win_);
 }

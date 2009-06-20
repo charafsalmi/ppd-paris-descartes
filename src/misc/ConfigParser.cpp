@@ -77,9 +77,9 @@ void ConfigParser::SeekSection(const char* section)
 
 
 void ConfigParser::Parse(const std::string& content)
-{   
+{
 	bool inside_section = false;
-	
+
 	const int length = content.size();
 	size_t token;
 	for (int i = 0; i < length; ++i)
@@ -128,7 +128,7 @@ void ConfigParser::ParseProperties(const std::string& content, Properties& props
 	const int length = content.size();
 	size_t token;
 	std::string current_prop;
-	
+
 	for (int i = 0; i < length; ++i)
 	{
 		if (at_end)
@@ -153,7 +153,6 @@ void ConfigParser::ParseProperties(const std::string& content, Properties& props
 				std::string prop_value = extract(content, i, token);
 				// nouvelle paire clef: valeur enregistrée
 				props[current_prop] = prop_value;
-				
 				at_end = true;
 				i = token;
 			}
@@ -163,5 +162,26 @@ void ConfigParser::ParseProperties(const std::string& content, Properties& props
 			}
 		}
 	}
+}
+
+
+bool ConfigParser::ReadItem(const char* item, std::string& value)
+{
+	if (cursor_ == NULL)
+	{
+		std::cerr << "ConfigParser: no section defined" << std::endl;
+		return false;
+	}
+	Properties::const_iterator it = cursor_->find(item);
+	// l'élément est-il dans la section pointée ?
+	if (it == cursor_->end())
+	{
+#ifdef DEBUG
+		std::cerr << item << " not found in current section" << std::endl;
+#endif
+		return false;
+	}
+	value = it->second;
+	return true;
 }
 
