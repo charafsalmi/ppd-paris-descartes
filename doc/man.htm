@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
 	<head>
-		<title></title>
+		<title>Lisez-moi</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<style type="text/css">
 body
@@ -34,9 +34,9 @@ table.infotab
 	</head>
 	<body>
 <h2>Comment jouer ?</h2>
-<p>Liste des touches :</p>
-
-<table class="infotab">
+<div>
+	<p>Liste des touches :</p>
+	<table class="infotab">
 	<tr>
 		<td>Flèches directionnelles</td>
 		<td>Déplacer le joueur, naviguer dans l'inventaire</td>
@@ -85,6 +85,47 @@ table.infotab
 		<td>Échap</td>
 		<td>Quitter</td>
 	</tr>
-</table>
+	</table>
+</div>
+
+<h2>Comment utiliser l'éditeur de cartes ?</h2>
+<div>
+	<p>Nécessite Python et PyQt4 (sous Linux Debian/Ubuntu, paquet <code>python-qt4</code>)</p>
+	<p>Cliquez sur <code>Editor.py</code> pour lancer l'éditeur, ou <code>./Editor.py</code> en console (le chemin de la carte à ouvrir peut être passé en argument de la ligne de commande)</p>
+	<p>Raccourcis clavier :</p>
+	<table class="infotab">
+		<tr>
+			<td>Ctrl+O</td>
+			<td>Ouvrir une carte</td>
+		</tr>
+		<tr>
+			<td>Ctrl+S</td>
+			<td>Enregistrer la carte</td>
+		</tr>
+		<tr>
+			<td>Ctrl+Shit+S</td>
+			<td>Enregistrer la carte sous un autre nom de fichier</td>
+		</tr>
+		<tr>
+			<td>Ctrl+Q</td>
+			<td>Quitter l'éditeur</td>
+		</tr>
+		<tr>
+			<td>U</td>
+			<td>Annuler le dernier placement de tile</td>
+		</tr>
+		<tr>
+			<td>Plus</td>
+			<td>Ajouter une unité</td>
+		</tr>
+		<tr>
+			<td>Moins</td>
+			<td>Supprimer une unité</td>
+		</tr>
+		<tr>
+			<td>Flèches directionnelles</td>
+			<td>Se déplacer dans les zones</td>
+		</tr>
+</div>
 	</body>
 </html>

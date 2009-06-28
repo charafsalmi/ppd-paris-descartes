@@ -36,6 +36,17 @@ public:
 	virtual void OnCollide(Entity& entity, const sf::FloatRect& overlap);
 
 	/**
+	 * Calculer la distance entre deux entités
+	 * @return distance en pixels
+	 */
+	float Distance(const Entity& entity) const;
+
+	/**
+	 * Déterminer si l'entité peut interragir avec le joueur
+	 */
+	virtual bool CanInteract() const;
+
+	/**
 	 * Déplacer l'entité selon un angle donné
 	 * @param[in] angle
 	 */

@@ -13,8 +13,8 @@
 #include "../core/Zone.hpp"
 #include "../misc/Log.hpp"
 
-#define WALK_SPEED  120
-#define SWIM_SPEED  60
+#define WALK_SPEED  130
+#define SWIM_SPEED  70
 #define DEFAULT_HP  10
 #define FIRE_RATE   (1 / 2.f)   // (1 / tirs par seconde)
 
@@ -319,7 +319,7 @@ void Player::UseBowUpdate(float frametime)
 	float now = Game::GetInstance().GetElapsedTime();
 	if ((now - started_action_) > use_bow_duration_)
 	{
-		ThrowHit(Hit::ARROW);
+		//ThrowHit(Hit::ARROW);
 		Animated::Change(walk_anims_[GetDirection()], *this);
 		SetSubRect(subrects_not_moving_[GetDirection()]); // ?
 		strategy_callback_ = &Player::WalkUpdate;
@@ -499,6 +499,7 @@ void Player::UseItem(int code)
 				default:
 					break;
 			}
+			ThrowHit(Hit::ARROW);
 			strategy_callback_ = &Player::UseBowUpdate;
 			started_action_ = Game::GetInstance().GetElapsedTime();
 			break;

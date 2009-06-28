@@ -120,6 +120,8 @@ public:
 	 */
 	bool GetTeleport(int x, int y, Teleporter& tp) const;
 
+	void Interact(Entity* player);
+
 private:
 	// inherited
 	void Render(sf::RenderTarget& target) const;

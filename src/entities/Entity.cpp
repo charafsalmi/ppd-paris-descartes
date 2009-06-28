@@ -1,3 +1,4 @@
+#include <cmath>
 #include <SFML/System.hpp>
 
 #include "Entity.hpp"
@@ -25,6 +26,21 @@ void Entity::Update(float)
 
 void Entity::OnCollide(Entity&, const sf::FloatRect&)
 {
+}
+
+
+float Entity::Distance(const Entity& entity) const
+{
+	float dx = GetPosition().x - entity.GetPosition().x;
+	float dy = GetPosition().y - entity.GetPosition().y;
+
+	return sqrt( (dx * dx) + (dy * dy) );
+}
+
+
+bool Entity::CanInteract() const
+{
+	return false;
 }
 
 

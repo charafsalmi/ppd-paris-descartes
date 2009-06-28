@@ -207,8 +207,7 @@ Unit* EntityFactory::BuildUnit(int id, const sf::Vector2f& position) const
 		mob->SetEquipment(item);
 		return mob;
 	}
-
-	OutputE << UF_S << "Impossible de faire apparaitre le mob, mauvais id:" << id << lEnd;
+	DIE("mob id %d is not implemented", id);
 	return NULL;
 }
 
@@ -235,7 +234,7 @@ Decor* EntityFactory::BuildDecor(int id, const sf::Vector2i& position) const
 		decor->SetFloor(subrect.GetWidth(), decor_p.block * Tile::SIZE);
 		return decor;
 	}
-	OutputE << UF_S << "Impossible de faire apparaitre le decor, mauvais id:" << id << lEnd;
+	DIE("decor id %d is not implemented", id);
 	return NULL;
 }
 
@@ -259,7 +258,7 @@ Item* EntityFactory::BuildItem(int id, const sf::Vector2f& position) const
 			subrect = sf::IntRect(35, 15, 35 + 32, 15 + 32);
 			return new Equipment(id, position, subrect);
 	}
-	DIE("item id %s is not implemented", id);
+	DIE("item id %d is not implemented", id);
 	return NULL;
 }
 

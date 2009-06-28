@@ -1,13 +1,4 @@
-Quelques touches pour utiliser le jeu :
+manuel d'utilisation : doc/man.htm
+diagramme des classes : doc/UML-DC.xml (nÃ©cessite Umbrello)
 
-Flèches directionnelles : Déplacer le joueur, naviguer dans l'inventaire
-Espace : Utiliser l'objet 1
-A : Utiliser l'objet 2
-Z : Utiliser l'objet 3
-
-F1 : Prendre une capture d'écran
-C : Ouvrir la mini-Carte
-P : Ouvrir le menu Pause
-I : Ouvrir l'Inventaire
-Escape : Quitter
 

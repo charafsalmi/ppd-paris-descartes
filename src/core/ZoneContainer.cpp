@@ -120,7 +120,7 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 	{
 		if (cds_zone_.x == x && cds_zone_.y == y)
 		{
-		    Output << ZC_S << "Deja en zone [" << y << "][" << x << "], rien a faire" << lEnd;
+		    Output << "Deja en zone [" << y << "][" << x << "], rien a faire" << lEnd;
 			return true;
 		}
 
@@ -132,7 +132,7 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 		cds_zone_.x = x;
 		cds_zone_.y = y;
 
-		// est-ce la prochaine zone est déjà chargée ?
+		// est-ce que la prochaine zone est déjà chargée ?
 		if (!next_zone_->IsLoaded())
 		{
 			int offset = y * width_ + x;
@@ -142,7 +142,7 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 			{
 				DIE("impossible de charger la zone [%d][%d]", y, x);
 			}
-			Output << ZC_S << "Chargement de la zone [" << y << "][" << x << "]" << lEnd;
+			Output << "Chargement de la zone [" << y << "][" << x << "]" << lEnd;
 			next_zone_->Load(handle);
 		}
 		SoundSystem::GetInstance().PlayMusic(next_zone_->GetMusicName());
@@ -153,11 +153,11 @@ bool ZoneContainer::SetActiveZone(int x, int y, bool wait)
 			scrolling_ = false;
 			active_zone_ = next_zone_;
 			Entity::SetActiveZone(active_zone_);
-			Output << ZC_S << "[" << y << "][" << x << "] est maintenant la zone active" << lEnd;
+			Output << "[" << y << "][" << x << "] est maintenant la zone active" << lEnd;
 		}
 		return true;
 	}
-	Output << ZC_S << "Coordonnees de la prochaine zone [" << y << "][" << x << "] invalides" << lEnd;
+	Output << "Coordonnees de la prochaine zone [" << y << "][" << x << "] invalides" << lEnd;
 	return false;
 }
 

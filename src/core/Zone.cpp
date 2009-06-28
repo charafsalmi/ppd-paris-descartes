@@ -417,3 +417,28 @@ void Zone::Purge()
 	animated_.clear();
 }
 
+
+void Zone::Interact(Entity* player)
+{
+#define MAX_DIST 50
+	EntityList::iterator it;
+	Entity* nearest = NULL;
+	float min_dist = MAX_DIST;
+	for (it = entities_.begin(); it != entities_.end(); ++it)
+	{
+		if ((**it).CanInteract() && *it != player)
+		{
+			float dist = player->Distance(**it);
+			if (dist < min_dist)
+			{
+				nearest = *it;
+				min_dist = dist;
+			}
+		}
+	}
+	if (nearest != NULL)
+	{
+		printf("nearest is at dist %.1f)\n", min_dist);
+	}
+}
+

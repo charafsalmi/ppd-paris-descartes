@@ -19,7 +19,7 @@
 #define APP_FPS    60
 
 #define DEFAULT_VERBOSITY 5
-#define CONFIG_FILE "config/config.css"
+#define CONFIG_FILE "config/config.txt"
 
 #define MINIMAP_X 30
 #define MINIMAP_Y 30
@@ -227,7 +227,7 @@ bool Game::LoadProgression(const char* filename)
 void Game::Init()
 {
 	clock_.Reset();
-	player_ = new Player(sf::Vector2f(300, 300));
+	player_ = new Player(sf::Vector2f(160, 256));
 	panel_.GetInventory()->Clear();
 
 	if (!LoadProgression(SAVE_FILE))
