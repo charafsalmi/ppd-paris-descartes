@@ -131,3 +131,5 @@ class AskMapSize(QDialog):
 	def get_height(self):
 		return self.txt_height.value()
 	
+
+

@@ -1,0 +1,5 @@
+map_path = ../bin/data/map
+tileset = ../bin/data/images/tileset.png
+units = ../bin/data/xml/units.xml
+musics = ../bin/data/music/music.txt
+

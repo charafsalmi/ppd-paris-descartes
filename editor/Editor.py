@@ -4,7 +4,7 @@
 # author: alexandre
 
 import sys
-import webbrowser
+import os
 
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
@@ -15,8 +15,7 @@ from Zone import Zone
 from FrameInfo import FrameInfo
 from EntityFactory import EntityFactory
 import Dialog
-
-DATA_PATH = "../bin/data/"
+from Config import Config
 
 
 class MainWindow(QMainWindow):
@@ -56,7 +55,6 @@ class MainWindow(QMainWindow):
 		about_qt = QAction(QIcon("icons/information.png"), u"À propos de Qt", self)
 		self.connect(about_qt, SIGNAL("triggered()"), qApp, SLOT("aboutQt()"))
 		
-		
 		# MENUBAR
 		
 		# menu Fichier
@@ -75,16 +73,18 @@ class MainWindow(QMainWindow):
 		paint.setStatusTip("Remplir toute la zone avec la tile courante")
 		self.connect(paint, SIGNAL("triggered()"), self.paint_all)
 		
-		act_undo = QAction(QIcon("icons/edit-undo.png"), "Annuler", self)
+		act_undo = QAction(QIcon("icons/edit-undo.png"), "Annuler tile", self)
 		act_undo.setShortcut("U")
 		act_undo.setStatusTip(u"Annuler le dernier placement de tile")
 		self.connect(act_undo, SIGNAL("triggered()"), self.undo)
 		
 		act_add_line = QAction(QIcon("icons/edit-add-line.png"), "Ajouter une ligne", self)
 		act_add_line.setStatusTip("Ajouter une ligne de zones dans la carte")
+		self.connect(act_add_line, SIGNAL("triggered()"), self.add_line)
 		
 		act_add_col = QAction(QIcon("icons/edit-add-col.png"), "Ajouter une colonne", self)
 		act_add_col.setStatusTip("Ajouter une colonne de zones dans la carte")
+		self.connect(act_add_col, SIGNAL("triggered()"), self.add_column)
 		
 		act_rem_line = QAction(QIcon("icons/edit-remove-line.png"), "Supprimer une ligne", self)
 		act_rem_line.setStatusTip("Supprimer une ligne de zones de le carte")
@@ -107,8 +107,8 @@ class MainWindow(QMainWindow):
 		edit.addSeparator()
 		edit.addAction(act_add_line)
 		edit.addAction(act_add_col)
-		edit.addAction(act_rem_line)
-		edit.addAction(act_rem_col)
+		#edit.addAction(act_rem_line)
+		#edit.addAction(act_rem_col)
 		
 		edit.addSeparator()
 		edit.addAction(act_add_unit)
@@ -144,10 +144,6 @@ class MainWindow(QMainWindow):
 		help.addAction(about)
 		help.addAction(about_qt)
 		
-		manual = QAction(QIcon("icons/help.png"), "Aide", self)
-		self.connect(manual, SIGNAL("triggered()"), lambda: webbrowser.open("google.com/search?q=rtfm"))
-		#help.addAction(manual)
-		
 		# TOOLBAR
 		toolbar = self.addToolBar("Toolbar")
 		toolbar.addAction(doc_open)
@@ -157,17 +153,25 @@ class MainWindow(QMainWindow):
 		toolbar.addAction(act_add_unit)
 		toolbar.addAction(act_del_unit)
 		
+		# LOADING CONFIG
+		config = Config()
+		config.load_from_file("config/config.txt")
+		self.default_map_path = config["map_path"]
+		
 		# WIDGETS
 		self.info = FrameInfo()
+		self.info.set_musics(config["musics"])
+		self.connect(self.info.combo_music, SIGNAL("activated(QString)"), self.music_selected)
 		
-		self.tileset = Tileset(DATA_PATH + "images/tileset.png", self.info)
+		self.tileset = Tileset(config["tileset"], self.info)
 		self.tileset.set_max_row(16)
 		self.tileset.set_max_line(20)
 		
-		self.map = Map(self.tileset, DATA_PATH + "images/tileset.png")
+		self.map = Map(self.tileset, config["tileset"])
 		self.map.set_max_row(Zone.WIDTH)
 		self.map.set_max_line(Zone.HEIGHT)
 		self.info.set_tile_images(self.map.get_tile_images())
+		self.connect(self.map, SIGNAL("music_changed(PyQt_PyObject)"), self.info.set_current_music)
 		
 		# LAYOUT
 		vbox = QVBoxLayout()		
@@ -184,13 +188,19 @@ class MainWindow(QMainWindow):
 		
 		self.factory = EntityFactory()
 		print "loading units definition ..."
-		self.factory.load(DATA_PATH + "xml/units.xml")
+		self.factory.load(config["units"])
 		
 		self.center()
 		
 		# STATUS BAR
 		self.statusBar().showMessage(u"Prêt")
 	
+	
+	def music_selected(self, music):
+		# QString to str, sans l'extension
+		music_name = os.path.splitext(str(music))[0]
+		self.map.get_current_zone().set_music(music_name)
+		self.statusBar().showMessage(u"Musique sélectionnée : " + music_name)
 	
 	def undo(self):
 		if self.map.undo_put_tile():
@@ -230,12 +240,10 @@ class MainWindow(QMainWindow):
 	
 	def ask_open_map(self):
 		# QString to str
-		map_name = str(QFileDialog.getOpenFileName(
-			self,
+		map_name = str(QFileDialog.getOpenFileName(self,
 			"Ouvrir",
-			DATA_PATH,
+			self.default_map_path,
 			"Cartes (*.xml);;Tous (*)"))
-		
 		if map_name != "":
 			self.open_map(map_name)
 	
@@ -252,25 +260,39 @@ class MainWindow(QMainWindow):
 				self,
 				"Erreur",
 				u"Impossible d'ouvrir la carte %s" % map_name)
-			
+	
 	
 	def create_map(self):
 		win = Dialog.AskMapSize(self)
 		win.exec_()
 		if win.valided():
-			print "nouvelle map :", win.get_width(), win.get_height()
-		
+			self.map.create(win.get_width(), win.get_height())
+			self.statusBar().showMessage(u"Nouvelle carte créée")
+			self.info.set_map_name("")
+			self.info.txt_width.setText(str(win.get_width()))
+			self.info.txt_height.setText(str(win.get_height()))
+			self.info.set_current_zone(*self.map.get_current_zone_pos())
+
 	
 	def save(self):
-		self.map.save()
-		self.statusBar().showMessage(u"carte %s enregistrée" % self.map.get_filename())
+		# si la carte possède déjà un nom de fichier, sinon on en demande un
+		filename = self.map.get_filename()
+		if filename:
+			self.map.save()
+			self.statusBar().showMessage(u"Carte %s enregistrée" % filename)
+		else:
+			self.save_as()
 	
 	
 	def save_as(self):
-		map_name = str(QFileDialog.getSaveFileName())
+		map_name = str(QFileDialog.getSaveFileName(self,
+			"Enregistrer sous ...",
+			self.default_map_path,
+			"Cartes (*.xml);;Tous (*)"))
 		if map_name != "":
 			self.map.save_as(map_name)
-			self.statusBar().showMessage(u"carte %s enregistrée" % map_name)
+			self.info.set_map_name(map_name)
+			self.statusBar().showMessage(u"Carte %s enregistrée" % map_name)
 	
 	
 	def change_zone(self, dx, dy):
@@ -279,6 +301,32 @@ class MainWindow(QMainWindow):
 		else:
 			QMessageBox.warning(self, "Stop", "Limites de la carte atteintes")
 	
+	
+	def add_line(self):
+	
+		value, ok = QInputDialog.getInteger(self, "Ajouter une ligne",
+			u"Indiquez la position à laquelle insérer une ligne de zones",
+			0, 0, self.map.get_height())
+		
+		if ok:
+			self.map.add_line(value, 0)
+			self.info.txt_height.setText(str(self.map.get_height()))
+			self.info.set_current_zone(*self.map.get_current_zone_pos())
+			self.statusBar().showMessage("Zones ajoutées à la ligne %d" % value)
+	
+	
+	def add_column(self):
+	
+		value, ok = QInputDialog.getInteger(self, "Ajouter une colonne",
+			u"Indiquez la position à laquelle insérer une colonne de zones",
+			0, 0, self.map.get_width())
+		
+		if ok:
+			self.map.add_column(value, 0)		
+			self.info.txt_width.setText(str(self.map.get_width()))
+			self.info.set_current_zone(*self.map.get_current_zone_pos())
+			self.statusBar().showMessage("Zones ajoutées à la colonne %d" % value)
+
 	
 	def center(self):
 		"Centrer la fenêtre à l'écran"
@@ -300,14 +348,14 @@ class MainWindow(QMainWindow):
 			event.accept()
 		else:
 			event.ignore()
-		
-	
 
-app = QApplication(sys.argv)
 
-editor = MainWindow()
-editor.show()
-if sys.argv[1:]:
-	editor.open_map(sys.argv[1])
-sys.exit(app.exec_())
+if __name__ == "__main__":
+	app = QApplication(sys.argv)
+
+	editor = MainWindow()
+	editor.show()
+	if sys.argv[1:]:
+		editor.open_map(sys.argv[1])
+	sys.exit(app.exec_())
 

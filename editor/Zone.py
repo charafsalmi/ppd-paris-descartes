@@ -76,49 +76,55 @@ class Zone:
 			parent.appendChild(node)
 		
 
-	def __init__(self, node, map_):
-		"Construction de la zone depuis un noeud XML"
+	def __init__(self, map_):
 		
 		self.map = map_
 		
-		# parsing tiles
+		self.tile_ids = None
+		# note : la zone n'a pas de tiles et ne peut pas être encore utilisée.
+		# soit on fournit les tiles depuis une carte XML (load_from_xml),
+		# soit on remplit la zone avec un type de tile (fill_with_tile)
+		
+		self.music = ""
+		self.units = []
+		self.items = []
+		self.decors = []		
+		self.teleporters = []
+		
+	
+	def load_from_xml(self, node):
+		"Construction de la zone depuis un noeud XML"
+		
+		# parsing tiles (stockées dans une liste d'entier)
 		self.tile_ids = map(
 			int,
 			node.getElementsByTagName("tiles")[0].firstChild.data.split())
 		found = len(self.tile_ids)
 		count = Zone.WIDTH * Zone.HEIGHT
 		if found != count:
-			print "warning: %s tile ids found, should be %d" % (found, count)
+			print "WARNING: %s tiles found, %d expected" % (found, count)
 			print "missing tiles will be set to 0"
 			for i in xrange(found, count):
 				self.tile_ids.append(0)
-		
+				
 		# parsing music
 		try:
 			self.music = node.getElementsByTagName("music")[0].firstChild.data.strip()
 		except IndexError:
-			print "warning: music is missing"
-			self.music = ""
+			print "WARNING: music is missing"
 		
 		# parsing units
-		self.units = []
 		self.build_entity_list(self.units, node, "entity")
-		
 		# parsing items
-		self.items = []
 		self.build_entity_list(self.items, node, "item")
-		
 		# parsing decors
-		self.decors = []
 		self.build_entity_list(self.decors, node, "decor")
 		
 		# parsing teleporters
-		self.teleporters = []
 		nodes_tp = node.getElementsByTagName("tp")
 		for tp in nodes_tp:
 			self.teleporters.append(Zone.Teleporter.from_xml(tp))
 		
-	
 	def build_entity_list(self, entities, node, tagname):
 		"Construire une liste d'entités depuis un noeud XML"
 		
@@ -127,11 +133,11 @@ class Zone:
 			entities.append(Zone.GenericEntity.from_xml(node))
 		
 	def draw(self):
-		"Afficher les tiles de la zone dans la carte"
+		"Afficher le contenu de la zone dans la carte"
 		
 		# rendering tiles
 		for index, id in enumerate(self.tile_ids):
-			self.map.set_tile(index, id)
+			self.map.draw_tile(index, id)
 		# rendering units
 		for unit in self.units:
 			self.map.add_unit(unit)
@@ -143,8 +149,15 @@ class Zone:
 		self.tile_ids[index] = id
 		return index
 	
+	def put_tile_index(self, index, id):
+		"Mettre une tile dans la zone (version index)"
+		
+		self.tile_ids[index] = id
+	
 	
 	def fill_with_tile(self, id):
+		"Remplir la zone avec une tile unique"
+		
 		self.tile_ids = [id] * (Zone.WIDTH * Zone.HEIGHT)
 	
 	
@@ -212,3 +225,11 @@ class Zone:
 	def count_units(self):
 		return len(self.units)
 	
+	
+	def get_music(self):
+		return self.music
+	
+	
+	def set_music(self, music):
+		self.music = music
+		

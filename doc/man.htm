@@ -1,42 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
 	<head>
 		<title>Lisez-moi</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<style type="text/css">
-body
-{
+body {
 	font-family: arial, serif;
 	margin: 0;
 	padding: 2em;
 }
-h2
-{
+h2 {
 	background-color: #36383D;
 	color: white;
 	padding: 2px;
 	text-indent: 1em;
 }
-div
-{
+div {
 	padding-left: 2em;
 }
-table.infotab td
-{
+table.infotab td, table.infotab th {
 	border: 1px solid black;
 	padding: 0.3em;
 }
-table.infotab
-{
+table.infotab th {
+	background-color: silver;
+}
+table.infotab {
 	border-collapse: collapse;
 }
-
 		</style>
 	</head>
 	<body>
-<h2>Comment jouer ?</h2>
+<h2>Sommaire</h2>
 <div>
-	<p>Liste des touches :</p>
+	<ul>
+		<li><a href="#how-to-play">Comment jouer ?</a></li>
+		<li><a href="#how-to-editor">Comment utiliser l'éditeur de cartes ?</a></li>
+	</ul>
+</div>
+
+<h2 id="how-to-play">Comment jouer ?</h2>
+<div>
+	<h3>Liste des touches :</h3>
 	<table class="infotab">
+	<tr>
+		<th>Touche</th>
+		<th>Action</th>
+	</tr>
 	<tr>
 		<td>Flèches directionnelles</td>
 		<td>Déplacer le joueur, naviguer dans l'inventaire</td>
@@ -55,27 +65,27 @@ table.infotab
 	</tr>
 	<tr>
 		<td>C</td>
-		<td>Ouvrir la mini-Carte</td>
+		<td>Ouvrir la mini-carte</td>
 	</tr>
 	<tr>
 		<td>P</td>
-		<td>Ouvrir/Fermer le menu pause</td>
+		<td>Ouvrir/fermer le menu pause</td>
 	</tr>
 	<tr>
 		<td>I</td>
-		<td>Ouvrir/Fermer l'inventaire</td>
+		<td>Ouvrir/fermer l'inventaire</td>
 	</tr>
 	<tr>
 		<td>Page Haut</td>
-		<td>Mettre le panneau de contrôle en haut</td>
+		<td>Positionner le panneau de contrôle en haut</td>
 	</tr>
 	<tr>
 		<td>Page Bas</td>
-		<td>Mettre le panneau de contrôle en bas</td>
+		<td>Positionner le panneau de contrôle en bas</td>
 	</tr>
 	<tr>
 		<td>F1</td>
-		<td>Prendre une capture d'écran (sauvée dans screenshot/)</td>
+		<td>Prendre une capture d'écran (sauvée dans le répertoire <code>screenshot/</code>)</td>
 	</tr>
 	<tr>
 		<td>S</td>
@@ -86,14 +96,32 @@ table.infotab
 		<td>Quitter</td>
 	</tr>
 	</table>
+	<h3>Configuration</h3>
+	<p>Deux fichiers de configuration sont utilisés :</p>
+	<ul>
+		<li><code>config/config.txt</code> : contient les préférences du jeu (emplacement du panel, musique, ...)<br />
+		Vous pouvez supprimer ce fichier si vous souhaitez retrouver la configuration par défaut
+		</li>
+		<li><code>config/save.txt</code> : contient la sauvegarde de la progression du joueur<br />
+		Vous pouvez supprimer ce fichier si vous souhaitez recommencer le jeu à zéro
+		</li>
+	</ul>
 </div>
 
-<h2>Comment utiliser l'éditeur de cartes ?</h2>
+<h2 id="how-to-editor">Comment utiliser l'éditeur de cartes ?</h2>
 <div>
-	<p>Nécessite Python et PyQt4 (sous Linux Debian/Ubuntu, paquet <code>python-qt4</code>)</p>
+	<p>L'éditeur nécessite Python et PyQt4 (sous Linux Debian/Ubuntu, installez le paquet <code>python-qt4</code>)</p>
 	<p>Cliquez sur <code>Editor.py</code> pour lancer l'éditeur, ou <code>./Editor.py</code> en console (le chemin de la carte à ouvrir peut être passé en argument de la ligne de commande)</p>
-	<p>Raccourcis clavier :</p>
+	<h3>Raccourcis clavier :</h3>
 	<table class="infotab">
+		<tr>
+			<th>Raccourci</th>
+			<th>Fonction</th>
+		</tr>
+		<tr>
+			<td>Ctrl+N</td>
+			<td>Créer une nouvelle carte</td>
+		</tr>
 		<tr>
 			<td>Ctrl+O</td>
 			<td>Ouvrir une carte</td>
@@ -115,17 +143,34 @@ table.infotab
 			<td>Annuler le dernier placement de tile</td>
 		</tr>
 		<tr>
-			<td>Plus</td>
+			<td>Plus (+)</td>
 			<td>Ajouter une unité</td>
 		</tr>
 		<tr>
-			<td>Moins</td>
+			<td>Moins (-)</td>
 			<td>Supprimer une unité</td>
 		</tr>
 		<tr>
 			<td>Flèches directionnelles</td>
 			<td>Se déplacer dans les zones</td>
 		</tr>
+	</table>
+	<p>
+		Choisissez une tile dans le tileset à gauche en cliquant dessus, puis cliquez dans la zone à droite pour positionner la tile.
+	</p>
+	<p>
+		<strong>Attention</strong>, ajouter des lignes ou des colonnes de zones dans une carte peut invalider les destinations des téléporteurs en raison d'un éventuel décalage de la position de la zone cible. Cela implique aussi bien les téléporteurs de la carte éditée, que les téléporteurs des autres cartes faisant référence à la carte éditée.
+	</p>
+	<h3>Fichier de configuration</h3>
+	<p>L'éditeur utilise le fichier de configuration <code>editor/config/config.txt</code> pour définir l'emplacement des fichiers ressources.</p>
+	<p>Les valeurs suivantes doivent s'y trouver (syntaxe <code>clef = valeur</code>) :</p>
+	<ul>
+		<li><code>map_path</code> : répertoire par défaut des fichiers cartes</li>
+		<li><code>units</code> : chemin du fichier XML des défintions des unités</li>
+		<li><code>tileset</code> : chemin de l'image du tileset</li>
+		<li><code>musics</code> : chemin de la liste des musiques du jeu</li>
+	</ul>
 </div>
 	</body>
 </html>
+

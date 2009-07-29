@@ -1,19 +1,19 @@
 * Core
-	- multijoueurs en mode client/serveur (report post-PPD)
-	- items utilisables dans l'inventaire
-	- système d'attaque (collision item / entité ?)
-	- collisions plus élaborées
-	- Ajouter un système de Log (pour sauvegarder les sorties) et ainsi uniformiser les informations de différents type (error, warning, information) (report post-PPD ?)
+	- touches configurables (d'abord fichier de config, puis la GUI)
+	- collisions plus élaborées (améliorer le système d'attaque, NPC, déplacer des objets)
+	- Clean-up pour le système de Log
+	- i18n
 
 * Tileset
 	- gérer les TileEffect (WATER, LAVA, HOLE, ...)
 
 * Audio
-	- moteur audio élémentaire, gérant N buffers pour les bruitages + musique d'ambiance
+	- moteur audio élémentaire, gérant N buffers pour les bruitages + musique d'ambiance (en cours)
 
-* Éditeur Python (report post-PPD)
-	- interface pour l'édition des entités dans editor
-	- visualisation des entités dans editor [WIP à l'arrache]
+* Éditeur de cartes
+	- support items
+	- support téléporteurs
+	- support décors
 
 * IA
 	- création de pattern
@@ -32,14 +32,10 @@
 	- Compléter le système de label (différents fonts)
 	- Compléter le système de textbox (done ?)
 
-* Réseau (report post-PPD)
+* Réseau
 	- architecture client/serveur
 	client : envoyer uniquement les évènements relatifs au joueur,
 	recevoir les données à afficher depuis le serveur
-	serveur : recevoir les actions des clients, effectuer les collisions,
-	envoyer les entités mises à jour aux clients
-	(le serveur ne fait aucun affichage, ce qui devrait laisser assez de ressources
-	pour calculer les collisions de plusieurs zones simultanément)
-
-
+	serveur : recevoir les actions des clients, calculer les collisions des
+	zones où se	trouvent les joueurs, puis envoyer les entités mises à jour aux clients
 

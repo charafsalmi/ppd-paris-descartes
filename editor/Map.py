@@ -69,7 +69,7 @@ class Map(TiledCanvas):
 		self.setEnabled(False)
 		self.set_cursor_visible(False)
 		
-		self.filename = ""
+		self.filename = None
 		
 		# on click callback method
 		self.on_click = self.put_current_tile
@@ -80,14 +80,14 @@ class Map(TiledCanvas):
 	
 	
 	def open(self, filename):
-		"charger une carte depuis un fichier"
+		"Charger une carte depuis un fichier"
 		
 		print "opening map", filename
 		doc = None
 		try:
 			doc = xml.parse(filename)
 		except Exception, what:
-			print "balh blahl", what
+			print "error while opening map:", what
 			return False
 		
 		# clean zone data
@@ -104,7 +104,6 @@ class Map(TiledCanvas):
 		
 		# build tile-items at first load
 		if not self.isEnabled():
-			print "map: first load"
 			self.build_tiles()
 			self.setEnabled(True)
 			self.set_cursor_visible(True)
@@ -112,25 +111,53 @@ class Map(TiledCanvas):
 		for count, node in enumerate(nodes_zone):
 			i = count / self.width
 			j = count % self.width
-			self.zones.append(Zone(node, self))
+			zone = Zone(self)
+			zone.load_from_xml(node)
+			self.zones.append(zone)
 			
 		self.filename = filename
-			
+		
 		# on affiche la zone courante
 		self.set_current_zone(0)
 		return True
 	
+	
+	def create(self, width, height):
+		"Créer une carte vierge"
+		
+		assert width >= 0
+		assert height >= 0
+		
+		# build tile-items at first load
+		if not self.isEnabled():
+			self.build_tiles()
+			self.setEnabled(True)
+			self.set_cursor_visible(True)
+		
+		self.width = width
+		self.height = height
+		del self.zones[:]
+		for i in xrange(width * height):
+			zone = Zone(self)
+			zone.fill_with_tile(0)
+			self.zones.append(zone)
+		
+		self.filename = None
+		self.set_current_zone(0)
+		
 	
 	def get_filename(self):
 		return self.filename
 	
 	
 	def set_current_zone(self, index):
+		"Changer la zone affichée à l'écran"
+		
 		del self.history[:]
 		self.clear_units()
 		self.current_zone_pos = index
 		self.zones[index].draw()
-
+		self.emit(SIGNAL("music_changed(PyQt_PyObject)"), self.zones[index].get_music())
 	
 	def get_current_zone(self):
 		return self.zones[self.current_zone_pos]
@@ -198,16 +225,18 @@ class Map(TiledCanvas):
 		if tile_id != -1:
 			x = event.pos().x() / TiledCanvas.TILESIZE
 			y = event.pos().y() / TiledCanvas.TILESIZE
-			index = self.get_current_zone().put_tile(x, y, tile_id)
 			
-			# placement de la nouvelle tile et sauvegarde de l'ancienne dans
-			# l'historique (si différente de la nouvelle)
-			old_tile_id = self.tiles[index].get_id()
-			if self.set_tile(index, tile_id):
-				self.history.append((index, old_tile_id))
-			
+			if 0 <= x < Zone.WIDTH and 0 <= y < Zone.HEIGHT:
+				index = self.get_current_zone().put_tile(x, y, tile_id)
+							
+				# placement de la nouvelle tile et sauvegarde de l'ancienne dans
+				# l'historique (si différente de la nouvelle)
+				old_tile_id = self.tiles[index].get_id()
+				if self.draw_tile(index, tile_id):
+					self.history.append((index, old_tile_id))
 	
-	def set_tile(self, index, id):
+	
+	def draw_tile(self, index, id):
 		if id != self.tiles[index].get_id():
 			self.tiles[index].change_image(self.img_tiles[id], id)
 			return True
@@ -216,7 +245,9 @@ class Map(TiledCanvas):
 	
 	def undo_put_tile(self):
 		if self.history:
-			self.set_tile(*self.history.pop())
+			index, id = self.history.pop()
+			self.draw_tile(index, id)
+			self.get_current_zone().put_tile_index(index, id)
 			return True
 		return False
 	
@@ -280,6 +311,7 @@ class Map(TiledCanvas):
 			self.scene.removeItem(unit)
 		del self.units[:]
 	
+	
 	def fill_with_tile(self, tile_id):
 		"Remplir la scène avec un type de tile"
 		
@@ -329,5 +361,28 @@ class Map(TiledCanvas):
 	
 	def get_height(self):
 		return self.height
+	
+	
+	def add_line(self, where, tile_id):
+	
+		assert where >= 0 and where <= self.height
+		for i in xrange(self.width):
+			zone = Zone(self)
+			zone.fill_with_tile(tile_id)
+			self.zones.insert(self.width * where, zone)
+		self.height += 1
+		self.set_current_zone(0)
+	
+	
+	def add_column(self, where, tile_id):
+		assert where >= 0 and where <= self.width
 		
+		for i in xrange(where, len(self.zones) + self.height, self.width + 1):
+			zone = Zone(self)
+			zone.fill_with_tile(tile_id)
+			self.zones.insert(i, zone)
+		self.width += 1
+		self.set_current_zone(0)
+	
+	
 

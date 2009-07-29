@@ -32,6 +32,9 @@ class FrameInfo(QFrame):
 		self.txt_id_tile = QLineEdit()
 		self.txt_id_tile.setReadOnly(True)
 		
+		lab_music = QLabel("Musique :")
+		self.combo_music = QComboBox()
+		
 		# layout en grille
 		grid = QGridLayout()
 		grid.addWidget(lab_map, 0, 0)
@@ -47,7 +50,8 @@ class FrameInfo(QFrame):
 		grid.addWidget(self.pix_current_tile, 0, 3)
 		grid.addWidget(lab_id_tile, 1, 2)
 		grid.addWidget(self.txt_id_tile, 1, 3)
-		
+		grid.addWidget(lab_music, 2, 2)
+		grid.addWidget(self.combo_music, 2, 3)
 		self.setLayout(grid)
 	
 	def set_tile_images(self, images):
@@ -62,4 +66,18 @@ class FrameInfo(QFrame):
 	
 	def set_current_zone(self, i, j):
 		self.lab_zone_val.setText("y: %d ; x: %d" % (i, j))
+	
+	def set_musics(self, music_file):
+		for line in open(music_file):
+			self.combo_music.addItem(line[:-1])
+	
+	def get_music_at(self, index):
+		return self.combo_music.itemText(index)
+	
+	def set_current_music(self, music_name):
+		for i in xrange(self.combo_music.count()):
+			item = os.path.splitext(str(self.combo_music.itemText(i)))[0]
+			if item == music_name:
+				self.combo_music.setCurrentIndex(i)
+				break
 	
