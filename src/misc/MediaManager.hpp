@@ -12,6 +12,7 @@
 #endif
 #include "../core/Animation.hpp"
 #include "BitmapFont.hpp"
+#include "LoadingWindow.hpp"
 
 /**
  * Gestionnaire de ressource (singleton)
@@ -87,6 +88,8 @@ private:
 	std::map<std::string, std::string> dumb_musics_;
 #endif
 	std::map<std::string, std::string> post_fx_;
+	
+	LoadingWindow &lw_;
 };
 
 

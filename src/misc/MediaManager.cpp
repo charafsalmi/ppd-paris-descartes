@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "MediaManager.hpp"
+#include "LoadingWindow.hpp"
 #include "Log.hpp"
 #include "../xml/tinyxml.h"
 
@@ -64,6 +65,8 @@ static void load_or_die(std::string& out_name, const char* filename)
 template <typename Ressource>
 static bool load_from_list(const char* filelist, std::map<std::string, Ressource>& table)
 {
+	LoadingWindow& lw_ = LoadingWindow::GetInstance();
+	bool err_level = false;
 	std::ifstream f(filelist);
 	if (f)
 	{
@@ -73,6 +76,7 @@ static bool load_from_list(const char* filelist, std::map<std::string, Ressource
 #ifdef DEBUG
 			std::cout << "loading: " << line << std::endl;
 #endif
+			lw_.SetMessageString(line.c_str());
 			// la clef de la ressource dans la map est le nom du fichier
 			// sans son extension
 			size_t found = line.find_last_of('.');
@@ -91,9 +95,10 @@ static bool load_from_list(const char* filelist, std::map<std::string, Ressource
 			}
 		}
 		f.close();
-		return true;
+		lw_.Render();
+		err_level = true;
 	}
-	return false;
+	return err_level;
 }
 
 
@@ -201,7 +206,7 @@ const Animation& MediaManager::GetAnimation(const char* key) const
 }
 
 
-MediaManager::MediaManager()
+MediaManager::MediaManager() : lw_(LoadingWindow::GetInstance())
 {
 	// chargement des images
 	if (!load_from_list(IMG_LIST, images_))
@@ -267,6 +272,9 @@ MediaManager::MediaManager()
 				p->AddFrame(x_offset + i * width, y_offset, width, height);
 			}
 			p->SetDelay(delay);
+			
+			// update LoadingWindow
+			lw_.SetMessageString(name);
 		}
 		else
 		{
