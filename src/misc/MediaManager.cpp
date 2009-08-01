@@ -95,7 +95,6 @@ static bool load_from_list(const char* filelist, std::map<std::string, Ressource
 			}
 		}
 		f.close();
-		lw_.Render();
 		err_level = true;
 	}
 	return err_level;
@@ -293,6 +292,7 @@ MediaManager::MediaManager() : lw_(LoadingWindow::GetInstance())
 	fonts_["bretro"] = new BitmapFont(images_["bitmap-font/retro_big"], 10, 10);
 	fonts_["gretro"] = new BitmapFont(images_["bitmap-font/retro_big_green"], 10, 10);
 	fonts_["digits"] = new BitmapFont(images_["bitmap-font/digits"], 10, 1);
+	lw_.Dismiss();
 }
 
 
