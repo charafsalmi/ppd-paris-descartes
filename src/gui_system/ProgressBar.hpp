@@ -7,9 +7,9 @@ namespace gui{
     class ProgressBar : public Control{
     public:
         ProgressBar(const ControlID id, const ControlPos& pos, const ControlPos& size);
-
-    private:
         void Update();
+    private:
+
         void Render(sf::RenderTarget& app) const;
 
         float width_, height_;

@@ -22,7 +22,7 @@ namespace gui{
         Control(const ControlID id, const ControlPos& pos, const std::string& s="");
         virtual ~Control();
 
-        /// RÈcupËre le texte du contrÙle
+        /// R√àcup√ãre le texte du contr√ôle
         /// @return Texte du control
         virtual std::string GetText() const{
             return text_;
@@ -33,56 +33,59 @@ namespace gui{
             text_ = s;
         }
 
-        /// Permet d'associÈ un int au control
+        /// Permet d'associ√à un int au control
         void LinkInt(int *);
 
-        /// Permet d'associÈ un char au control
+        /// Permet d'associ√à un char au control
         void LinkChar(char *);
+		
+		/// Permet d'associer un float au control
+		void LinkFloat(float*);
 
-        /// Changement d'Ètat du contrÙle
-        /// @param[in] s Etat du contrÙle
+        /// Changement d'√àtat du contr√ôle
+        /// @param[in] s Etat du contr√ôle
         inline void SetState(State s){
             curr_state_ = s;
         }
 
-        /// RÈcupËre la zone du widget
+        /// R√àcup√ãre la zone du widget
         inline const sf::IntRect& GetRect() const {
             return rect_;
         }
-        /// RÈcupËre son identifiant
+        /// R√àcup√ãre son identifiant
         inline ControlID GetID() const{
             return id_;
         }
 
-        /// Change le sprite du contrÙle qui le peu
+        /// Change le sprite du contr√ôle qui le peu
         virtual void ChangeSprite(const sf::Sprite& nimg);
 
-        /// Callback ÈvËnement texte saisi
-        /// @param[in] unicode: caractËre reÁu
+        /// Callback √àv√ãnement texte saisi
+        /// @param[in] unicode: caract√ãre re√Åu
         virtual void OnTextEntered(sf::Uint32 unicode);
 
-        /// Callback ÈvËnement touche pressÈe
-        /// @param[in] key: touche appuyÈe
+        /// Callback √àv√ãnement touche press√àe
+        /// @param[in] key: touche appuy√àe
 		virtual void OnKeyPressed(sf::Key::Code key);
 
-		/// Mise ‡ jour du control
+		/// Mise ‚Ä° jour du control
         virtual void Update(){}
     protected:
-        /// Identifiant du contrÙle
+        /// Identifiant du contr√ôle
         ControlID id_;
 
-        /// Zone du contrÙle
+        /// Zone du contr√ôle
         sf::IntRect rect_;
 
-        /// Etat courant du contrÙle
+        /// Etat courant du contr√ôle
         State curr_state_;
 
-        /// Etats rÈalisable par le contrÙle
+        /// Etats r√àalisable par le contr√ôle
         int accepted_states_;
 
         /// Mode du control
         enum Mode{
-            PLAIN, LINKED_INT, LINKED_CHAR
+            PLAIN, LINKED_INT, LINKED_CHAR, LINKED_FLOAT
         };
 
         /// Mode du label
@@ -91,7 +94,7 @@ namespace gui{
         /// Pointeur du mode linked
         void *ptr_;
 
-        /// Texture du contrÙle
+        /// Texture du contr√ôle
         mutable std::string text_;
 	private:
 		virtual void Render(sf::RenderTarget& app) const = 0;

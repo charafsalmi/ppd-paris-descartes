@@ -37,6 +37,13 @@ void Control::LinkChar(char *ptr)
     ptr_ = ptr;
 }
 
+void Control::LinkFloat(float* ptr)
+{
+	Log::W() << "LinkFloat" << id_ <<"\n";
+	mode_ = LINKED_FLOAT;
+	ptr_ = ptr;
+}
+
 void Control::ChangeSprite(const sf::Sprite& nming)
 {
 	(void) nming;

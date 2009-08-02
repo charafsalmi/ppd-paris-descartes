@@ -27,7 +27,7 @@ void ProgressBar::Update()
     if(ptr_ == NULL || mode_ == LINKED_CHAR)
         return;
 
-    float a = *((int *)ptr_);
+    float a = (mode_ == LINKED_INT)? *((int *)ptr_) : *((float *)ptr_);
     a /= 100;
 
     bar_.Resize((a*width_), height_);
