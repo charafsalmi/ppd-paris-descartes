@@ -128,5 +128,6 @@ inline const std::string& GET_FX(const char* key)
 	return MediaManager::GetInstance().GetPostFX(key);
 }
 
+int CountLines(std::istream& file);
 #endif /* MEDIAMANAGER_HPP */
 

@@ -20,6 +20,9 @@
 
 #define ANIMATION_FILE "data/xml/animations.xml"
 
+#ifndef DEBUG
+#define DEBUG
+#endif
 
 // charger une image
 static void load_or_die(sf::Image& image, const char* filename)
@@ -67,16 +70,33 @@ static bool load_from_list(const char* filelist, std::map<std::string, Ressource
 {
 	LoadingWindow& lw_ = LoadingWindow::GetInstance();
 	bool err_level = false;
+	int current_line, line_count;
+	static float completion_rate = 0.f;
+	line_count = current_line = 0;
 	std::ifstream f(filelist);
 	if (f)
 	{
+		line_count = CountLines(f);
+		f.close();		//HACK (Regarder la doc)
+		f.open(filelist);
+#ifdef DEBUG
+		std::cout << "there are " << line_count << " items to load of this media type\n";
+#endif
+		
 		std::string line;
 		while (getline(f, line))
 		{
 #ifdef DEBUG
 			std::cout << "loading: " << line << std::endl;
 #endif
+			++current_line;
+			completion_rate = (float)current_line / (float)line_count;
+			
 			lw_.SetMessageString(line.c_str());
+			lw_.SetProgress((int)(completion_rate * 100));
+			
+		
+
 			// la clef de la ressource dans la map est le nom du fichier
 			// sans son extension
 			size_t found = line.find_last_of('.');
@@ -311,4 +331,13 @@ MediaManager::~MediaManager()
 		delete it2->second;
 		it2->second = NULL;
 	}
+}
+
+int CountLines(std::istream& file)
+{
+	int i = 0;
+	std::string str;
+	while(getline(file, str))
+		++i;
+	return i;
 }
