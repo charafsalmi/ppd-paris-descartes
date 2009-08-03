@@ -77,8 +77,6 @@ static bool load_from_list(const char* filelist, std::map<std::string, Ressource
 	if (f)
 	{
 		line_count = CountLines(f);
-		f.close();		//HACK (Regarder la doc)
-		f.open(filelist);
 #ifdef DEBUG
 		std::cout << "there are " << line_count << " items to load of this media type\n";
 #endif
@@ -339,5 +337,8 @@ int CountLines(std::istream& file)
 	std::string str;
 	while(getline(file, str))
 		++i;
+	
+	file.clear();
+	file.seekg (0, std::ios::beg);
 	return i;
 }
