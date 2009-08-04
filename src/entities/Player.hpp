@@ -37,6 +37,7 @@ public:
 	 * Ajouter un point de vie
 	 */
 	void AddHP();
+
 	// inherited
 	void SetHP(int hp);
 

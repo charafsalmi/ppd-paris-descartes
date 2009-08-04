@@ -41,10 +41,16 @@ def main(filename_in, filename_out, ratio=2, tile_width=16, tile_height=16):
 	img_output.save(filename_out)
 	
 def show_usage():
-	print "usage: ./TileX.py tileset.png tileset_output.png [ratio=2] [tilewidth=16] [tileheight=16]"
+	print "usage: ./TileX.py input output [ratio=2] [tilewidth=16] [tileheight=16]"
+	print " - input : image du tileset d'origine"
+	print " - output : nom de l'image du tileset à créer"
+	print " - ratio : facteur appliqué au tileset d'origine"
+	print " - tilewidth : largeur d'une taille en px sur le tileset d'origine"
+	print " - tileheight : hauteur d'une taille en px sur le tileset d'origine"
+	print " /!\\ hq<ratio>x doit être dans le path"
 
 if __name__ == "__main__":
-	if len(sys.argv) < 2:
+	if len(sys.argv) < 3:
 		show_usage()
 	elif not os.path.isfile(sys.argv[1]):
 		print sys.argv[1], "is not a valid filename"

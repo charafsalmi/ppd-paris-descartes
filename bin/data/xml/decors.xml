@@ -4,5 +4,7 @@
 	<decor id="1" x="4" y="0" w="1" h="2" block="1" />
 	<decor id="2" x="4" y="2" w="1" h="3" block="1" />
 	<decor id="3" x="5" y="0" w="2" h="3" block="2" />
+	<decor id="4" x="5" y="3" w="1" h="1" block="1" movable="1" />
+	<decor id="5" x="6" y="3" w="1" h="1" block="1" movable="1" />
 </decors>
 

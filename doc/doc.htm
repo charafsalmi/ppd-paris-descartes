@@ -123,12 +123,8 @@ un effet de scrolling et change la zone courante.
 Le joueur est supprimé de l'ancienne zone et inséré dans la nouvelle, car chaque
 zone contient la liste de ses entités.</p>
 
-<p>Les groupes de zones d'un ZoneContainer sont déjà prédéfinis dans des fichiers
-XML (dans data/map/), et à chaque fichier XML correspond un identifiant
-(énumération ZoneContainer::MapName)</p>
+<p>Un ensemble de zones chargées par ZoneContainer est appelé "carte", les cartes étant des fichiers XML dans <code>data/map/</code>. ZoneContainer peut charger une carte avec la méthode <code>Load</code>, la carte est identifée par son nom de fichier (sans l'extension).</p>
 
-<p>ZoneContainer::Load permet de charger un de ces groupes de zones en passant une
-des valeurs MapName en paramètre.</p>
 
 <h3>Zone</h3>
 
@@ -233,7 +229,7 @@ Voici un exemple :</p>
 			...
 		</entities>
 		<teleporters>
-			<tp x="9" y="1" container="1" zone_x="0" zone_y="0" tile_x="8" tile_y="4" />
+			<tp x="9" y="1" map="world" zone_x="0" zone_y="0" tile_x="8" tile_y="4" />
 		</teleporters>
 	</zone>
 	<zone>
@@ -244,8 +240,8 @@ Voici un exemple :</p>
 
 <p>"map" est l'élément racine. Les attributs "width" et "height" indiquent combien
 il y a de zones en largeur et en hauteur.<br />
-Chaque zone correspond à une entrée "zone" (il doit y avoir width * height
-entrées "zone").<br />
+Chaque zone correspond à un élément"zone" (il doit donc y avoir width * height
+éléments "zone").<br />
 Dans chaque zone, on trouve :</p>
 
 <ul>
@@ -268,8 +264,7 @@ Dans chaque zone, on trouve :</p>
 		</ul>
 	La destination est localisée avec :
 		<ul>
-			<li>container: valeur énumérée ZoneContainer::MapName (identifie le conteneur
-	de zones cible)</li>
+			<li>map: le nom de la carte cible (nom de fichier sans l'extension)</li>
 			<li>zone_x: position x de la zone cible</li>
 			<li>zone_y: position y de la zone cible</li>
 			<li>tile_x: position x en tiles dans la zone cible</li>

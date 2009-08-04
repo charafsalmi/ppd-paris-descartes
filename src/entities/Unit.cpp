@@ -93,62 +93,57 @@ void Unit::OnCollide(Entity& entity, const sf::FloatRect& overlap)
 	{
 		return;
 	}
-	// repoussement
-	if (dynamic_cast<Unit*>(&entity) != NULL)
+	switch (entity.GetCollideEffect())
 	{
-		// horizontal ?
-		if (overlap.GetHeight() < overlap.GetWidth())
-		{
-			// vers le haut ou le bas
-			knocked_dir_ = entity.GetPosition().y > GetPosition().y ? UP : DOWN;
-		}
-		else // vertical
-		{
-			// vers la gauche ou la droite
-			knocked_dir_ = entity.GetPosition().x > GetPosition().x ? LEFT : RIGHT;
-		}
-		knocked_start_ = Game::GetInstance().GetElapsedTime();
-		knocked_speed_ = KNOCK_INITIAL_SPEED;
-		is_knocked_ = true;
+		case FX_REJECTION:
+			// repoussement horizontal ?
+			if (overlap.GetHeight() < overlap.GetWidth())
+			{
+				// vers le haut ou le bas
+				knocked_dir_ = entity.GetPosition().y > GetPosition().y ? UP : DOWN;
+			}
+			else // vertical
+			{
+				// vers la gauche ou la droite
+				knocked_dir_ = entity.GetPosition().x > GetPosition().x ? LEFT : RIGHT;
+			}
+			knocked_start_ = Game::GetInstance().GetElapsedTime();
+			knocked_speed_ = KNOCK_INITIAL_SPEED;
+			is_knocked_ = true;
+			break;
+
+		case FX_STOP:
+			{
+				Direction dir;
+				float dist;
+				if (overlap.GetHeight() < overlap.GetWidth())
+				{
+					dir = entity.GetPosition().y > GetPosition().y ? UP : DOWN;
+					dist = overlap.GetHeight();
+				}
+				else
+				{
+					dir = entity.GetPosition().x > GetPosition().x ? LEFT : RIGHT;
+					dist = overlap.GetWidth();
+				}
+				Move(dir, dist);
+			}
+			break;
+		case FX_NOTING:
+			break;
 	}
+}
+
+
+Entity::CollideEffect Unit::GetCollideEffect() const
+{
+	return FX_REJECTION;
 }
 
 
 bool Unit::IsDying() const
 {
 	return update_callback_ == &Unit::DyingUpdate;
-}
-
-
-void Unit::Move(Direction dir, int distance, int tiles)
-{
-	sf::FloatRect rect;
-	GetFloorRect(rect);
-	switch (dir)
-	{
-	case UP:
-		rect.Top -= distance;
-		rect.Bottom -= distance;
-		break;
-	case DOWN:
-		rect.Top += distance;
-		rect.Bottom += distance;
-		break;
-	case LEFT:
-		rect.Left -= distance;
-		rect.Right -= distance;
-		break;
-	case RIGHT:
-		rect.Left += distance;
-		rect.Right += distance;
-		break;
-	default:
-		break;
-	}
-	if (zone_->CanMove(rect, tiles))
-	{
-		SetPosition(rect.Left, rect.Bottom);
-	}
 }
 
 
@@ -197,3 +192,9 @@ void Unit::DyingUpdate(float frametime)
 	}
 }
 
+/*
+Entity::Direction Unit::GetKnockDirection(const Entity& e, const sf::FloatRect& overlap)
+{
+
+}
+*/

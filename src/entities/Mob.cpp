@@ -31,8 +31,8 @@ void Mob::AutoUpdate(float frametime)
 	int dx = 0, dy = 0;
 	sf::FloatRect player;
 	sf::FloatRect rect;
-	game.GetPlayer()->GetCollideRect(player);
-	GetCollideRect(rect);
+	game.GetPlayer()->GetGlobalRect(player);
+	GetGlobalRect(rect);
 	bool shot = false;
 	switch (GetDirection())
 	{
@@ -110,7 +110,6 @@ void Mob::Kill()
 		// TODO 2: pondérer certains items ayant plus de chances d'être droppés que d'autres
 		// TODO 3: définir ça dans Item, puis définir la liste des items droppables pour
 		// chaque mob dans son profil XML (?)
-		// -> post-PPD (?)
 		int item_id = sf::Randomizer::Random(1, 2); // coeur de vie ou argent
 
 		zone_->AddItem(item_id, GetPosition().x, GetPosition().y);

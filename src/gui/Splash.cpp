@@ -12,20 +12,20 @@ Splash::Splash(sf::RenderWindow& app) : app_(app)
 }
 
 
-void Splash::Run()
+bool Splash::Run()
 {
 	bool running = true;
 	if (!sf::PostFX::CanUsePostFX())
 	{
 	    OutputW << "Can't launch PostFX splash screen" << lEnd;
-		return;
+		return true;
 	}
 
 	if (!fx_.LoadFromFile(GET_FX("colorize")))
 	{
 	    OutputW << "Cant load postfx" << lEnd;
 		app_.Display();
-		return;
+		return true;
 	}
 	const sf::Image& splash = GET_IMG("splash-paris-descartes");
 	sprite_.SetImage(splash);
@@ -40,16 +40,21 @@ void Splash::Run()
 	{
 		while (app_.GetEvent(event))
 		{
-			if (event.Type == sf::Event::KeyPressed
-			&& event.Key.Code == sf::Key::Escape)
+			if (event.Type == sf::Event::Closed)
 			{
-				return;
+				return false;
+			}
+			if (event.Type == sf::Event::KeyPressed
+				&& event.Key.Code == sf::Key::Escape)
+			{
+				return true;
 			}
 		}
 		running = Update(app_.GetFrameTime());
 		Draw();
 		app_.Display();
 	}
+	return true;
 }
 
 

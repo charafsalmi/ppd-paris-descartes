@@ -44,6 +44,18 @@ bool Entity::CanInteract() const
 }
 
 
+Entity::CollideEffect Entity::GetCollideEffect() const
+{
+	return FX_NOTING;
+}
+
+
+bool Entity::CanFloorCollide() const
+{
+	return true;
+}
+
+
 void Entity::SetActiveZone(Zone* zone)
 {
 	zone_ = zone;
@@ -84,4 +96,39 @@ void Entity::SetID(int id)
 int Entity::GetID() const
 {
 	return id_;
+}
+
+
+bool Entity::Move(Direction direction, float distance, int tileflag)
+{
+	// construction du futur rectangle occupé
+	sf::FloatRect rect;
+	GetFloorRect(rect);
+	switch (direction)
+	{
+		case UP:
+			rect.Top -= distance;
+			rect.Bottom -= distance;
+			break;
+		case DOWN:
+			rect.Top += distance;
+			rect.Bottom += distance;
+			break;
+		case LEFT:
+			rect.Left -= distance;
+			rect.Right -= distance;
+			break;
+		case RIGHT:
+			rect.Left += distance;
+			rect.Right += distance;
+			break;
+		default:
+			break;
+	}
+	if (zone_->CanMove(rect, tileflag))
+	{
+		SetPosition(rect.Left, rect.Bottom);
+		return true;
+	}
+	return false;
 }

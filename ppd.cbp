@@ -47,9 +47,7 @@
 			<Add option="-lsfml-audio" />
 			<Add option="-lsfml-network" />
 		</Linker>
-		<Unit filename="bin/config/config.css" />
 		<Unit filename="bin/data/images/images.txt" />
-		<Unit filename="bin/data/scripts/test.xml" />
 		<Unit filename="bin/data/window/console.xml" />
 		<Unit filename="bin/data/window/dialog.xml" />
 		<Unit filename="bin/data/window/inventory.xml" />
@@ -134,6 +132,8 @@
 		<Unit filename="src/misc/ConfigParser.cpp" />
 		<Unit filename="src/misc/ConfigParser.hpp" />
 		<Unit filename="src/misc/Die.hpp" />
+		<Unit filename="src/misc/LoadingWindow.cpp" />
+		<Unit filename="src/misc/LoadingWindow.hpp" />
 		<Unit filename="src/misc/Log.cpp" />
 		<Unit filename="src/misc/Log.hpp" />
 		<Unit filename="src/misc/LogConsole.cpp" />

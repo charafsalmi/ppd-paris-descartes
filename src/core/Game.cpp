@@ -13,7 +13,7 @@
 
 #define APP_WIDTH  Zone::WIDTH_PX
 #define APP_HEIGHT (Zone::HEIGHT_PX + ControlPanel::HEIGHT_PX)
-#define APP_TITLE  "Epik"
+#define APP_TITLE  "PPD"
 #define APP_STYLE  (sf::Style::Titlebar | sf::Style::Close)
 #define APP_BPP    32
 #define APP_FPS    60
@@ -23,6 +23,12 @@
 
 #define MINIMAP_X 30
 #define MINIMAP_Y 30
+
+// emplacement par défaut si pas de sauvegarde
+#define DEFAULT_MAP        "world"
+#define DEFAULT_ZONE_X     0
+#define DEFAULT_ZONE_Y     0
+#define DEFAULT_PLAYER_POS sf::Vector2f(160, 256)
 
 
 Game& Game::GetInstance()
@@ -47,8 +53,11 @@ Game::Game() :
 	app_.SetIcon(icon.GetWidth(), icon.GetHeight(), icon.GetPixelsPtr());
 
 #ifndef NO_SPLASH
-	Splash s(app_);
-	s.Run();
+	Splash splash(app_);
+	if (!splash.Run())
+	{
+		exit(EXIT_SUCCESS);
+	}
 #endif
 
 #ifdef CONSOLE_TEST
@@ -227,14 +236,15 @@ bool Game::LoadProgression(const char* filename)
 void Game::Init()
 {
 	clock_.Reset();
-	player_ = new Player(sf::Vector2f(160, 256));
+	player_ = new Player(sf::Vector2f(0, 0));
 	panel_.GetInventory()->Clear();
 
 	if (!LoadProgression(SAVE_FILE))
 	{
-		// carte "world" et position de zone (0, 0) par défaut
-		map_.Load("world");
-		map_.SetActiveZone(0, 0, false);
+		// positionnement par défaut
+		map_.Load(DEFAULT_MAP);
+		map_.SetActiveZone(DEFAULT_ZONE_X, DEFAULT_ZONE_Y, false);
+		player_->SetPosition(DEFAULT_PLAYER_POS);
 	}
 	need_map_update_ = false;
 	map_name_ = "";

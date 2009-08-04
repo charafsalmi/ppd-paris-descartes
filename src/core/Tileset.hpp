@@ -106,6 +106,5 @@ private:
 	mutable float timer_;
 };
 
-
-#endif /* TILESET_HPP */
+#endif // TILESET_HPP
 

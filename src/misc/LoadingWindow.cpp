@@ -15,9 +15,9 @@ void LoadingWindow::Dismiss()
 
 LoadingWindow::LoadingWindow()
 {
-	progress_ = 0; 
+	progress_ = 0;
 	mutex_ = new sf::Mutex;
-	window_ = new sf::RenderWindow(sf::VideoMode (320, 200, 16), "Chargement");
+	window_ = new sf::RenderWindow(sf::VideoMode (320, 200, 16), "Chargement", 0);
 	title_ = new sf::String("Chargement en cours");
 	message_ = new sf::String();
 	title_->SetPosition(sf::Vector2f(1.2, 3.4));
@@ -27,7 +27,6 @@ LoadingWindow::LoadingWindow()
 	pbar_ = new gui::ProgressBar::ProgressBar(0,  sf::Vector2f(10.0f, 80.0f), sf::Vector2f(300.f, 36.f));
 
 	Launch();
-	
 }
 
 LoadingWindow::~LoadingWindow()
@@ -50,8 +49,36 @@ void LoadingWindow::SetMessageString(const char* msg)
 
 }
 
-void LoadingWindow::SetProgress(const float value)
+void LoadingWindow::SetProgress(float value)
 {
 	sf::Lock lock(*mutex_);
 	progress_ = value;
+}
+
+void LoadingWindow::Run()
+{
+	pbar_->LinkFloat(&progress_);
+	running_ = true;
+	while(running_)
+	{
+		window_->Clear();
+		/*
+		 *  Workaround de:
+		 *   An internal OpenGL call failed in Image.cpp (677) :
+		 *   GL_INVALID_OPERATION, the specified operation is not allowed in the current state
+		 *
+		 *   (OpenGL et le parallélisme, ça fait 0x10)
+		 */
+		sf::Sleep(0.01f);
+
+		pbar_->gui::ProgressBar::Update();
+
+		mutex_->Lock();
+		window_->Draw(*title_);
+		window_->Draw(*message_);
+		window_->Draw(*pbar_);
+
+		window_->Display();
+		mutex_->Unlock();
+	}
 }

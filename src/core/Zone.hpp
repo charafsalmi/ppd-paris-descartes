@@ -68,10 +68,10 @@ public:
 	/**
 	 * Détermine si un mouvement est possible
 	 * @param[in] rect: rectangle de la position issue du mouvement à tester
-	 * @param[in] accepted: masque de bits des types de tiles pouvant être franchis
+	 * @param[in] tileflag: masque de bits des types de tiles pouvant être franchis
 	 * @return true si le mouvement est possible, sinon false
 	 */
-	bool CanMove(const sf::FloatRect& rect, int accepted = Tile::DEFAULT) const;
+	bool CanMove(const sf::FloatRect& rect, int tileflag = Tile::DEFAULT) const;
 
 	/**
 	 * Ajouter un objet
@@ -139,11 +139,11 @@ private:
 	 */
 	void Purge();
 
-	// listes des entités
+	// liste des entités
 	typedef std::list<Entity*> EntityList;
 	mutable EntityList entities_;
 
-	// listes des items
+	// liste des items
 	typedef std::list<Item*> ItemList;
 	ItemList items_;
 

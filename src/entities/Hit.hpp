@@ -21,6 +21,9 @@ public:
 	virtual void OnCollide(Entity& entity, const sf::FloatRect& overlap);
 
 	// inherited
+	bool CanFloorCollide() const;
+
+	// inherited
 	void TakeDamage(int damage);
 
 	// inherited

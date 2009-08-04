@@ -50,7 +50,7 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id
 			subrect = sf::IntRect(50, 0, 120, 70);
 			SetColor(sf::Color(255, 255, 255, 128));
 			SetBlendMode(sf::Blend::Add);//debug
-			Move(GetSize().x / 2, -GetSize().y / 2);
+			sf::Sprite::Move(GetSize().x / 2, -GetSize().y / 2);
 			timed_ = true;
 			time_to_live_ = 1.0f;
 			break;
@@ -69,7 +69,7 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id
 void Hit::Update(float frametime)
 {
 	sf::FloatRect rect;
-	GetCollideRect(rect);
+	GetFloorRect(rect);
 	if (!zone_->CanMove(rect, ACCEPTED_TILES))
 	{
 		update_callback_ = &Hit::DyingUpdate;
@@ -107,6 +107,12 @@ void Hit::OnCollide(Entity& entity, const sf::FloatRect&)
 }
 
 
+bool Hit::CanFloorCollide() const
+{
+	return false;
+}
+
+
 bool Hit::IsDying() const
 {
 	return update_callback_ == &Hit::DyingUpdate;
@@ -130,16 +136,16 @@ void Hit::MoveLinear(float frametime)
 	switch (direction_)
 	{
 	case UP:
-		Move(0, -speed_ * frametime);
+		sf::Sprite::Move(0, -speed_ * frametime);
 		break;
 	case DOWN:
-		Move(0, speed_ * frametime);
+		sf::Sprite::Move(0, speed_ * frametime);
 		break;
 	case LEFT:
-		Move(-speed_ * frametime, 0);
+		sf::Sprite::Move(-speed_ * frametime, 0);
 		break;
 	case RIGHT:
-		Move(speed_ * frametime, 0);
+		sf::Sprite::Move(speed_ * frametime, 0);
 		break;
 	default:
 		break;
@@ -194,3 +200,4 @@ void Hit::DyingUpdate(float frametime)
 		}
 	}
 }
+

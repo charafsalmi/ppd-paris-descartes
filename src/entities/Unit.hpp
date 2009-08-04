@@ -28,19 +28,14 @@ public:
 	virtual void OnCollide(Entity& entity, const sf::FloatRect& overlap);
 
 	// inherited
+	CollideEffect GetCollideEffect() const;
+
+	// inherited
 	bool IsDying() const;
 
 	virtual void SetEquipment(Equipment* equipment) = 0;
 
 	void SetAnimation(Direction dir, const Animation* anim);
-
-	/**
-	 * Déplacer l'unité dans une direction (si possible)
-	 * @param[in] dir: direction souhaitée
-	 * @param[in] distance: distance en pixels
-	 * @param[in] tiles: types de tiles que l'on peut franchir
-	 */
-	void Move(Direction dir, int distance, int tiles);
 
 	/**
 	 * Orientation courante de l'entité
@@ -66,6 +61,7 @@ protected:
 	}
 
 	// Animations de déplacement
+	// TODO: private
 	const Animation* walk_anims_[COUNT_DIRECTION];
 private:
 	void DyingUpdate(float frametime);
@@ -79,11 +75,15 @@ private:
 	int hp_;
 	float speed_;
 	Direction current_dir_;
+
 	bool is_knocked_;
 	Direction knocked_dir_;
 	float knocked_speed_;
 	float knocked_start_;
+
 	void (Unit::*update_callback_)(float frametime);
+
+
 };
 
 #endif // UNIT_HPP

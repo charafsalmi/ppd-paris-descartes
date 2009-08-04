@@ -189,7 +189,6 @@
 		</music>
 		<entities>
 			<entity id="0" x="74" y="140"/>
-			<entity id="0" x="299" y="164"/>
 		</entities>
 		<decors>
 			<decor id="1" x="8" y="6"/>

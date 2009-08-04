@@ -231,11 +231,21 @@ void Zone::Update(float frametime)
 	for (it1 = entities_.begin(); it1 != it_end; ++it1)
 	{
 		(**it1).Update(frametime);
-		(**it1).GetCollideRect(rect1);
 		it2 = it1;
 		for (++it2; it2 != it_end; ++it2)
 		{
-			(**it2).GetCollideRect(rect2);
+			// récupération des surfaces de collision
+			if ((**it1).CanFloorCollide() && (**it2).CanFloorCollide())
+			{
+				(**it1).GetFloorRect(rect1);
+				(**it2).GetFloorRect(rect2);
+			}
+			else
+			{
+				(**it1).GetGlobalRect(rect1);
+				(**it2).GetGlobalRect(rect2);
+			}
+
 			if (rect1.Intersects(rect2, &overlap))
 			{
 				(**it1).OnCollide(**it2, overlap);
@@ -271,7 +281,7 @@ void Zone::Update(float frametime)
 }
 
 
-bool Zone::CanMove(const sf::FloatRect& rect, int accepted) const
+bool Zone::CanMove(const sf::FloatRect& rect, int tileflag) const
 {
 	// si hors de la zone
 	if (rect.Top < 0 || rect.Left < 0 || rect.Bottom > Tile::SIZE * HEIGHT
@@ -279,19 +289,18 @@ bool Zone::CanMove(const sf::FloatRect& rect, int accepted) const
 	{
 		return false;
 	}
-	// on regarde pour chaque coin du rectangle
-	// si la tile en dessous est walkable
+	// on calcule les indices de chaque coin, avec un décalage de 1px pour
+	// éviter une collision lorsque l'entité est simplement collé à la tile
 	int left = (int) rect.Left / Tile::SIZE;
 	int top = (int) rect.Top / Tile::SIZE;
-	int right = (int) rect.Right / Tile::SIZE;
-	int bottom = (int) rect.Bottom / Tile::SIZE;
-
+	int right = (int) (rect.Right - 1) / Tile::SIZE;
+	int bottom = (int) (rect.Bottom - 1) / Tile::SIZE;
 
 	// si collision avec une tile non accpetée
-	if (!(walkable_[top][left] & accepted)
-		|| !(walkable_[top][right] & accepted)
-		|| !(walkable_[bottom][left] & accepted)
-		|| !(walkable_[bottom][right] & accepted))
+	if (!(walkable_[top][left] & tileflag)
+		|| !(walkable_[top][right] & tileflag)
+		|| !(walkable_[bottom][left] & tileflag)
+		|| !(walkable_[bottom][right] & tileflag))
 	{
 		return false;
 	}
@@ -303,8 +312,11 @@ bool Zone::CanMove(const sf::FloatRect& rect, int accepted) const
 
 void Zone::AddDecor(Entity* decor, int x, int y)
 {
+	// indexation des décors désactivée sur la matrice walkable afin
+	// de gére les décors mobiles
+	// éventuellement, indexer seulement les décors fixes
 	// récupérer les dimensions en nombre de tiles
-	int right_x = x + decor->GetFloorWidth() / Tile::SIZE;
+	/*int right_x = x + decor->GetFloorWidth() / Tile::SIZE;
 	int top_y = y - decor->GetFloorHeight() / Tile::SIZE;
 	int xcopy = x;
 	for (--y; y >= top_y; --y)
@@ -313,7 +325,8 @@ void Zone::AddDecor(Entity* decor, int x, int y)
 		{
 			walkable_[y][x] = Tile::BLOCK;
 		}
-	}
+	}*/
+
 	AddEntity(decor);
 }
 

@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "../core/Tileset.hpp"
+
 class Zone;
 
 /**
@@ -11,9 +13,20 @@ class Zone;
 class Entity: public sf::Sprite
 {
 public:
+
 	enum Direction
 	{
 		UP, DOWN, LEFT, RIGHT, COUNT_DIRECTION
+	};
+
+	/**
+	 * Effet visuel lors de la collision de deux entités
+	 */
+	enum CollideEffect
+	{
+		FX_NOTING,
+		FX_REJECTION,
+		FX_STOP
 	};
 
 	/**
@@ -36,33 +49,32 @@ public:
 	virtual void OnCollide(Entity& entity, const sf::FloatRect& overlap);
 
 	/**
-	 * Calculer la distance entre deux entités
-	 * @return distance en pixels
-	 */
-	float Distance(const Entity& entity) const;
-
-	/**
 	 * Déterminer si l'entité peut interragir avec le joueur
 	 */
 	virtual bool CanInteract() const;
-
-	/**
-	 * Déplacer l'entité selon un angle donné
-	 * @param[in] angle
-	 */
-	//void MoveByAngle(float frametime, float speed, float angle);
-
-	/**
-	 * @brief Déplace l'entité au hasard, si possible
-	 * @return true si déplacement est effectué
-	 */
-	//bool MoveRandomly(float frametime, float speed);
 
 	/**
 	 * Encaisser des dommages
 	 * @param[in] damage: dommages infligés
 	 */
 	virtual void TakeDamage(int damage) = 0;
+
+	/**
+	 * @return effet visuel en cas de collision
+	 */
+	virtual CollideEffect GetCollideEffect() const;
+
+	/**
+	 * Copie polymorphique
+	 * @return entité clonée
+	 */
+	//virtual Entity* Clone() const = 0;
+
+	/**
+	 * Calculer la distance entre deux entités
+	 * @return distance en pixels
+	 */
+	float Distance(const Entity& entity) const;
 
 	/**
 	 * @brief Largeur du rectangle de contact avec le sol
@@ -81,7 +93,7 @@ public:
 	}
 
 	/**
-	 * Obtenir le rectangle à utiliser pour les déplacements
+	 * Obtenir le rectangle de la zone de contact avec le sol
 	 * @param[out] rect: rectangle à définir
 	 */
 	inline void GetFloorRect(sf::FloatRect& rect) const
@@ -94,15 +106,21 @@ public:
 	}
 
 	/**
-	 * Obtenir le rectangle à utiliser pour les collisions
+	 * Obtenir le rectangle englobant tout l'entité
 	 */
-	virtual inline void GetCollideRect(sf::FloatRect& rect) const
+	inline void GetGlobalRect(sf::FloatRect& rect) const
 	{
 		rect.Left = GetPosition().x;
 		rect.Bottom = GetPosition().y;
 		rect.Right = rect.Left + GetSize().x;
 		rect.Top = rect.Bottom - GetSize().y;
 	}
+
+	/**
+	 * @return true si l'entité peut effectuer une collision avec
+	 * le rectangle de contact au sol (floor)
+	 */
+	virtual bool CanFloorCollide() const;
 
 	/**
 	 * Comparer la profondeur de deux entités (axe y)
@@ -166,6 +184,15 @@ public:
 	int GetID() const;
 
 protected:
+	/**
+	 * Effectuer un déplacement orthogonal
+	 * @param direction: sens du déplacement
+	 * @param distance: distance en pixels
+	 * @param tileflag: bitmask des tiles autorisées à franchir
+	 * @return true si le déplacement a été effectué, sinon false
+	 */
+	bool Move(Direction direction, float distance, int tileflag = Tile::DEFAULT);
+
 	// pour accéder rapidement à la zone active
 	static Zone* zone_;
 
