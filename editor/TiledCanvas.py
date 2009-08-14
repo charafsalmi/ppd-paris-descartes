@@ -18,14 +18,10 @@ class TiledCanvas(QGraphicsView):
 		rect = QRectF(0, 0, self.TILESIZE, self.TILESIZE)
 		pen = QPen(Qt.red, 1, Qt.SolidLine)
 		brush = QBrush(QColor.fromRgb(255, 0, 0, 128))
+		
 		self.cursor = self.scene.addRect(rect, pen, brush)
-
-#		pen = QPen(QColor.fromRgb(255, 0, 0, 128))
-#		pen.setWidth(2)
-#		pen.setBrush(QBrush(Qt.SolidPattern))
-#		self.cursor = self.scene.addRect(0, 0, self.TILESIZE, self.TILESIZE, pen)
 		self.cursor.setVisible(True)
-		self.cursor.setZValue(99)
+		self.cursor.setZValue(9000)
 		#self.cursor.setPos(self.mapToScene(0, 0)) # WTF
 		
 		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -35,6 +31,8 @@ class TiledCanvas(QGraphicsView):
 		self.max_row = -1
 		self.current_tile_id = -1	
 	
+		self.setResizeAnchor(QGraphicsView.NoAnchor)
+		
 	def set_cursor_color(self, r, g, b, alpha=128):
 		brush = QBrush(QColor.fromRgb(r, g, b, alpha))
 		self.cursor.setBrush(brush)

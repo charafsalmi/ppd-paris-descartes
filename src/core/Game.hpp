@@ -6,7 +6,6 @@
 #include "ZoneContainer.hpp"
 #include "InputController.hpp"
 #include "../gui/ControlPanel.hpp"
-#include "../gui/MyWin.hpp"
 #include "../gui/WinPause.hpp"
 #include "../gui/MainMenu.hpp"
 #include "../gui/Option.hpp"
@@ -204,9 +203,6 @@ private:
 
 #ifdef CONSOLE_TEST
     LogConsole *log_;
-#endif
-#ifdef WINDOW_TEST
-	MyWin fen_;
 #endif
 	MiniMap* mini_map_;
 	sf::RenderWindow app_;

@@ -6,7 +6,7 @@
 #include "../core/InputController.hpp"
 
 #define PUSH_DELAY 1.0f
-#define MOVE_DELAY 2.0f
+#define MOVE_DELAY 1.0f
 
 
 Decor::Decor(const sf::Vector2f& pos, const sf::Image& image) :
@@ -123,12 +123,4 @@ void Decor::OnCollide(Entity& entity, const sf::FloatRect& overlap)
 		}
 		Entity::Move(dir, dist);
 	}
-}
-
-
-void Decor::GetCollideRect(sf::FloatRect& rect) const
-{
-	// un élément du décor utilise toujours la surface de contact
-	// avec le sol pour les collisions avec les entités
-	GetFloorRect(rect);
 }

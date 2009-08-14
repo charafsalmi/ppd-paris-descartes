@@ -4,101 +4,107 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
-namespace gui{
-    class Control: public sf::Drawable{
-    public:
-		enum { UNDEFINED = -1 };
+namespace gui
+{
 
-        typedef unsigned int ControlID;
-        typedef sf::Vector2f ControlPos;
+class Control: public sf::Drawable
+{
+public:
+	enum { UNDEFINED = -1 };
 
-        /// Etat du control
-        enum State{
-            NORMAL=0x100,
-            ON_FOCUS=0x010,
-            ON_HOVER=0x001
-        };
+	typedef unsigned int ControlID;
+	typedef sf::Vector2f ControlPos;
 
-        Control(const ControlID id, const ControlPos& pos, const std::string& s="");
-        virtual ~Control();
+	/// Etat du control
+	enum State
+	{
+		NORMAL = 0x100,
+		ON_FOCUS = 0x010,
+		ON_HOVER = 0x001
+	};
 
-        /// RÈcupËre le texte du contrÙle
-        /// @return Texte du control
-        virtual std::string GetText() const{
-            return text_;
-        }
+	Control(ControlID id, const ControlPos& pos, const std::string& s="");
+	virtual ~Control();
 
-        /// Place un texte
-        virtual void SetText(const std::string s){
-            text_ = s;
-        }
+	/// RÈcupËre le texte du contrÙle
+	/// @return Texte du control
+	virtual std::string GetText() const{
+		return text_;
+	}
 
-        /// Permet d'associÈ un int au control
-        void LinkInt(int *);
+	/// Place un texte
+	virtual void SetText(const std::string& s)
+	{
+		text_ = s;
+	}
 
-        /// Permet d'associÈ un char au control
-        void LinkChar(char *);
-		
-		/// Permet d'associer un float au control
-		void LinkFloat(float*);
+	/// Permet d'associÈ un int au control
+	void LinkInt(int *);
 
-        /// Changement d'Ètat du contrÙle
-        /// @param[in] s Etat du contrÙle
-        inline void SetState(State s){
-            curr_state_ = s;
-        }
+	/// Permet d'associÈ un char au control
+	void LinkChar(char *);
 
-        /// RÈcupËre la zone du widget
-        inline const sf::IntRect& GetRect() const {
-            return rect_;
-        }
-        /// RÈcupËre son identifiant
-        inline ControlID GetID() const{
-            return id_;
-        }
+	/// Permet d'associer un float au control
+	void LinkFloat(float*);
 
-        /// Change le sprite du contrÙle qui le peu
-        virtual void ChangeSprite(const sf::Sprite& nimg);
+	/// Changement d'Ètat du contrÙle
+	/// @param[in] s Etat du contrÙle
+	inline void SetState(State s){
+		curr_state_ = s;
+	}
 
-        /// Callback ÈvËnement texte saisi
-        /// @param[in] unicode: caractËre reÁu
-        virtual void OnTextEntered(sf::Uint32 unicode);
+	/// RÈcupËre la zone du widget
+	inline const sf::IntRect& GetRect() const {
+		return rect_;
+	}
+	/// RÈcupËre son identifiant
+	inline ControlID GetID() const{
+		return id_;
+	}
 
-        /// Callback ÈvËnement touche pressÈe
-        /// @param[in] key: touche appuyÈe
-		virtual void OnKeyPressed(sf::Key::Code key);
+	/// Change le sprite du contrÙle qui le peu
+	virtual void ChangeSprite(const sf::Sprite& nimg);
 
-		/// Mise ‡ jour du control
-        virtual void Update(){}
-    protected:
-        /// Identifiant du contrÙle
-        ControlID id_;
+	/// Callback ÈvËnement texte saisi
+	/// @param[in] unicode: caractËre reÁu
+	virtual void OnTextEntered(sf::Uint32 unicode);
 
-        /// Zone du contrÙle
-        sf::IntRect rect_;
+	/// Callback ÈvËnement touche pressÈe
+	/// @param[in] key: touche appuyÈe
+	virtual void OnKeyPressed(sf::Key::Code key);
 
-        /// Etat courant du contrÙle
-        State curr_state_;
+	/// Mise ‡ jour du control
+	virtual void Update(){}
+protected:
+	/// Identifiant du contrÙle
+	ControlID id_;
 
-        /// Etats rÈalisable par le contrÙle
-        int accepted_states_;
+	/// Zone du contrÙle
+	sf::IntRect rect_;
 
-        /// Mode du control
-        enum Mode{
-            PLAIN, LINKED_INT, LINKED_CHAR, LINKED_FLOAT
-        };
+	/// Etat courant du contrÙle
+	State curr_state_;
 
-        /// Mode du label
-        Mode mode_;
+	/// Etats rÈalisable par le contrÙle
+	int accepted_states_;
 
-        /// Pointeur du mode linked
-        void *ptr_;
+	/// Mode du control
+	enum Mode{
+		PLAIN, LINKED_INT, LINKED_CHAR, LINKED_FLOAT
+	};
 
-        /// Texture du contrÙle
-        mutable std::string text_;
-	private:
-		virtual void Render(sf::RenderTarget& app) const = 0;
-    };
+	/// Mode du label
+	Mode mode_;
+
+	/// Pointeur du mode linked
+	void *ptr_;
+
+	/// Texture du contrÙle
+	mutable std::string text_;
+private:
+	virtual void Render(sf::RenderTarget& app) const = 0;
+};
+
 }
 
 #endif

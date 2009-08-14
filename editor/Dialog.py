@@ -5,6 +5,8 @@ import xml.dom.minidom as xml
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
+from EntityFactory import EntityFactory
+
 class UnitListWindow(QDialog):
 	def __init__(self, parent=None):
 		QDialog.__init__(self, parent)
@@ -12,16 +14,13 @@ class UnitListWindow(QDialog):
 		
 		self.selected_id = -1;
 		
-		
 		vbox = QVBoxLayout()
-		
 		
 		self.label = QLabel()
 		self.label.setText("")
 		hbox = QHBoxLayout()
 		hbox.addWidget(QLabel(u"Sélection : "))
 		hbox.addWidget(self.label)
-		
 		
 		self.treeview = QTreeView()
 		
@@ -47,10 +46,10 @@ class UnitListWindow(QDialog):
 		
 	def fill(self, factory):
 		self.model = QStandardItemModel(0, 4, self)
-		self.model.setHeaderData(0, Qt.Horizontal, QVariant("id"))
-		self.model.setHeaderData(1, Qt.Horizontal, QVariant("name"))
-		self.model.setHeaderData(2, Qt.Horizontal, QVariant("hp"))
-		self.model.setHeaderData(3, Qt.Horizontal, QVariant("speed"))
+		self.model.setHeaderData(0, Qt.Horizontal, QVariant("ID"))
+		self.model.setHeaderData(1, Qt.Horizontal, QVariant("Nom"))
+		self.model.setHeaderData(2, Qt.Horizontal, QVariant("HP"))
+		self.model.setHeaderData(3, Qt.Horizontal, QVariant("Vitesse"))
 		
 		for id, unit in factory.get_units().iteritems():
 			self.model.insertRow(0)
@@ -70,6 +69,76 @@ class UnitListWindow(QDialog):
 		self.selected_id = id
 		self.label.setText("id %d (%s)" % (id, name))
 	
+	def get_selected_id(self):
+		return self.selected_id
+
+
+class WindowListDecor(QDialog):
+	def __init__(self, parent=None):
+		QDialog.__init__(self, parent)
+		self.setWindowTitle(u"Liste des décors")
+		
+		self.selected_id = -1;
+		
+		vbox = QVBoxLayout()
+		
+		self.label = QLabel()
+		self.label.setText("")
+		
+		self.preview = QLabel()
+		
+		hbox = QHBoxLayout()
+		hbox.addWidget(QLabel(u"Sélection : "))
+		hbox.addWidget(self.label)
+		hbox.addWidget(self.preview)
+		
+		self.treeview = QTreeView()
+		
+		but_cancel = QPushButton("Annuler")
+		self.connect(but_cancel, SIGNAL("clicked()"), self.discard)
+		
+		but_confirm = QPushButton("Valider")
+		self.connect(but_confirm, SIGNAL("clicked()"), SLOT("close()"))
+		
+		bbox = QHBoxLayout()
+		bbox.addWidget(but_cancel)
+		bbox.addWidget(but_confirm)
+		
+		vbox.addLayout(hbox)
+		vbox.addWidget(self.treeview)
+		vbox.addLayout(bbox)
+		self.setLayout(vbox)
+	
+	def discard(self, event=None):
+		self.selected_id = -1
+		self.close()
+		
+	def fill(self, factory):
+		self.model = QStandardItemModel(0, 4, self)
+		self.model.setHeaderData(0, Qt.Horizontal, QVariant("ID"))
+		self.model.setHeaderData(1, Qt.Horizontal, QVariant("Nom"))
+		self.model.setHeaderData(2, Qt.Horizontal, QVariant("Largeur"))
+		self.model.setHeaderData(3, Qt.Horizontal, QVariant("Hauteur"))
+		
+		for id, decor in factory.get_decors().iteritems():
+			self.model.insertRow(0)
+			self.model.setData(self.model.index(0, 0), QVariant(id))
+			self.model.setData(self.model.index(0, 1), QVariant(decor.name))
+			self.model.setData(self.model.index(0, 2), QVariant(decor.width))
+			self.model.setData(self.model.index(0, 3), QVariant(decor.height))
+		
+		self.treeview.setModel(self.model)
+		self.treeview.setSortingEnabled(True)
+		self.connect(self.treeview, SIGNAL("clicked(QModelIndex)"), self.what)
+		
+	def what(self, event):
+		id = int(self.model.item(event.row(), 0).text())
+		name = self.model.item(event.row(), 1).text()
+		self.selected_id = id
+		self.label.setText("id %d (%s)" % (id, name))
+	
+		self.preview.setPixmap(QPixmap.fromImage(EntityFactory().get_decor_by_id(id).sprite))
+		
 	def get_selected_id(self):
 		return self.selected_id
 

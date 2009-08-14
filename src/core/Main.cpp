@@ -1,7 +1,7 @@
 #include "Game.hpp"
 
 
-int main(int argc, char *argv[])
+int main()
 {
 	Game& game = Game::GetInstance();
 	game.Init();

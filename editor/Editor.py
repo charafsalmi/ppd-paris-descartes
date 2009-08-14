@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# author: alexandre
+# author: Alexandre Bodelot <alexandre.bodelot@gmail.com>
 
 import sys
 import os
@@ -92,13 +92,20 @@ class MainWindow(QMainWindow):
 		act_rem_col = QAction(QIcon("icons/edit-remove-col.png"), "Supprimer une colonne", self)
 		act_rem_col.setStatusTip("Supprimer une colonne de zones de le carte")
 		
-		act_add_unit = QAction(QIcon("icons/item-add.png"), u"Ajouter une unité", self)
+		act_add_unit = QAction(QIcon("icons/unit-add.png"), u"Ajouter une unité", self)
 		act_add_unit.setShortcut(Qt.Key_Plus)
 		self.connect(act_add_unit, SIGNAL("triggered()"), self.add_unit)
 		
-		act_del_unit = QAction(QIcon("icons/item-remove.png"), u"Supprimer une unité", self)
-		act_del_unit.setShortcut(Qt.Key_Minus)
-		self.connect(act_del_unit, SIGNAL("triggered()"), self.remove_unit)
+		act_add_decor = QAction(QIcon("icons/decor-add.png"), u"Ajouter un décor", self)
+		self.connect(act_add_decor, SIGNAL("triggered()"), self.add_decor)
+		
+		act_del_entity = QAction(QIcon("icons/entity-remove.png"), u"Supprimer une entité", self)
+		act_del_entity.setShortcut("S")
+		self.connect(act_del_entity, SIGNAL("triggered()"), self.delete_entity)
+		
+		act_move_entity = QAction(QIcon("icons/entity-move.png"), u"Déplacer une entité", self)
+		act_move_entity.setShortcut("D")
+		self.connect(act_move_entity, SIGNAL("triggered()"), self.move_entity)
 		
 		edit = menubar.addMenu(u"&Édition")
 		edit.addAction(act_undo)
@@ -112,7 +119,10 @@ class MainWindow(QMainWindow):
 		
 		edit.addSeparator()
 		edit.addAction(act_add_unit)
-		edit.addAction(act_del_unit)
+		edit.addAction(act_add_decor)
+		edit.addAction(act_move_entity)
+		edit.addAction(act_del_entity)
+
 		
 		# menu Navigation
 		# up
@@ -150,8 +160,14 @@ class MainWindow(QMainWindow):
 		toolbar.addAction(doc_save)
 		toolbar.addSeparator()
 		toolbar.addAction(act_undo)
+		
+		toolbar.addSeparator()
 		toolbar.addAction(act_add_unit)
-		toolbar.addAction(act_del_unit)
+		toolbar.addAction(act_add_decor)
+		toolbar.addSeparator()
+		toolbar.addAction(act_move_entity)
+		toolbar.addAction(act_del_entity)
+		
 		
 		# LOADING CONFIG
 		config = Config()
@@ -187,8 +203,8 @@ class MainWindow(QMainWindow):
 		self.setCentralWidget(root)
 		
 		self.factory = EntityFactory()
-		print "loading units definition ..."
-		self.factory.load(config["units"])
+		self.factory.load_units(config["units"])
+		self.factory.load_decors(config["decors"])
 		
 		self.center()
 		
@@ -216,7 +232,7 @@ class MainWindow(QMainWindow):
 	
 	
 	def about(self):
-		QMessageBox.about(self, u"À propos", u"Éditeur de cartes en Python\n\n" + sys.version)
+		QMessageBox.about(self, u"À propos", u"Éditeur de cartes XML en Python / Qt")
 	
 	
 	def add_unit(self):
@@ -230,14 +246,32 @@ class MainWindow(QMainWindow):
 				self.factory.get_unit_by_id(unit_id).name)
 	
 	
-	def remove_unit(self):
-		if self.map.get_current_zone().count_units() == 0:
-			QMessageBox.warning(self, "Action impossible", u"Il n'y a pas d'unité dans cette zone")
+	def add_decor(self):
+		win = Dialog.WindowListDecor(self)
+		win.fill(self.factory)
+		win.exec_()
+		decor_id = win.get_selected_id()
+		if decor_id != -1:
+			self.map.place_decor(decor_id)
+			self.statusBar().showMessage(u"Cliquez pour placer le décor \"%s\"" %
+				self.factory.get_decor_by_id(decor_id).name)
+	
+	
+	def delete_entity(self):
+		if self.map.get_current_zone().count_entities() == 0:
+			QMessageBox.warning(self, "Action impossible", u"Il n'y a pas d'entités à supprimer dans cette zone")
 		else:
 			self.statusBar().showMessage(u"Cliquez sur l'entité à supprimer")
-			self.map.remove_unit()
+			self.map.delete_entity()
 	
-	
+	def move_entity(self):
+		if self.map.get_current_zone().count_entities() == 0:
+			QMessageBox.warning(self, "Action impossible", u"Il n'y a pas d'entités à déplacer dans cette zone")
+		else:
+			self.statusBar().showMessage(u"Cliquez sur l'entité à déplacer")
+			self.map.move_entity()
+
+		
 	def ask_open_map(self):
 		# QString to str
 		map_name = str(QFileDialog.getOpenFileName(self,
@@ -297,6 +331,7 @@ class MainWindow(QMainWindow):
 	
 	def change_zone(self, dx, dy):
 		if self.map.change_zone(dx, dy):
+			self.map.mode_place_tile()
 			self.info.set_current_zone(*self.map.get_current_zone_pos())
 		else:
 			QMessageBox.warning(self, "Stop", "Limites de la carte atteintes")

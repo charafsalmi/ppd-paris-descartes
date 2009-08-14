@@ -9,14 +9,20 @@ from PyQt4.QtCore import *
 
 from TiledCanvas import TiledCanvas
 from Zone import Zone
+from EntityFactory import EntityFactory
+
 
 class Map(TiledCanvas):	
+	
+	Z_TILE = 1000
+	Z_DECOR = 2000
+	Z_UNIT = 3000
 	
 	class Tile(QGraphicsPixmapItem):
 		def __init__(self, qimage, id):
 			QGraphicsPixmapItem.__init__(self)
 			self.setPixmap(QPixmap.fromImage(qimage))
-			self.setZValue(10)
+			self.setZValue(Map.Z_TILE)
 			self.id = id
 			
 		def get_id(self):
@@ -27,23 +33,52 @@ class Map(TiledCanvas):
 			self.id = id
 	
 	
-	class Unit(QGraphicsPixmapItem):
-		def __init__(self, zone_unit):
+	class Entity(QGraphicsPixmapItem):
+		def __init__(self, zone_element):
 			QGraphicsPixmapItem.__init__(self)
-			self.setPixmap(QPixmap("images/entity.png"))
-			self.setZValue(20)
-			self.zone_unit = zone_unit
+			self.zone_element = zone_element
 		
-		def center_pos(self, x, y):
+		def get_zone_element(self):
+			return self.zone_element
+		
+		def update_zone_pos(self, x, y):
+			self.zone_element.x = x
+			self.zone_element.y = y
+	
+	
+	class Unit(Entity):
+		def __init__(self, zone_unit):
+			Map.Entity.__init__(self, zone_unit)
+			self.setPixmap(QPixmap("images/entity.png"))
+			self.setZValue(Map.Z_UNIT)
+		
+		def place(self, x, y):
 			pixmap = self.pixmap()
 			x -= pixmap.width() / 2
 			y -= pixmap.height() / 2
-			return x, y
+			self.setPos(x, y)
 		
-		def get_zone_unit(self):
-			return self.zone_unit
-			
-			
+	
+	class Decor(Entity):
+		def __init__(self, zone_decor):
+			Map.Entity.__init__(self, zone_decor)
+			self.setPixmap(QPixmap.fromImage(EntityFactory().get_decor_by_id(zone_decor.id).sprite))
+			self.setZValue(Map.Z_DECOR + zone_decor.y)
+			self.zone_decor = zone_decor
+		
+		def place(self, x, y):
+			y -= self.pixmap().height()
+			# force position on tile corner
+			x = x / TiledCanvas.TILESIZE * TiledCanvas.TILESIZE
+			y = y / TiledCanvas.TILESIZE * TiledCanvas.TILESIZE
+			self.setPos(x, y)
+			self.setZValue(Map.Z_DECOR + self.get_zone_element().y)
+	
+		def update_zone_pos(self, x, y):
+			self.zone_element.x = x / TiledCanvas.TILESIZE
+			self.zone_element.y = y / TiledCanvas.TILESIZE - 1
+	
+	
 	def __init__(self, tileset, tileset_path):
 		TiledCanvas.__init__(self)
 		self.tileset = tileset
@@ -52,14 +87,13 @@ class Map(TiledCanvas):
 		self.img_tiles = []
 		img_tileset = QImage(tileset_path)
 		for i in xrange(tileset.WIDTH * tileset.HEIGHT):
-			left = (i % tileset.WIDTH) * TiledCanvas.TILESIZE
-			top = (i / tileset.WIDTH) * TiledCanvas.TILESIZE
+			left = (i % tileset.WIDTH) * self.TILESIZE
+			top = (i / tileset.WIDTH) * self.TILESIZE
 			
-			tile = img_tileset.copy(left, top, TiledCanvas.TILESIZE, TiledCanvas.TILESIZE)
+			tile = img_tileset.copy(left, top, self.TILESIZE, self.TILESIZE)
 			self.img_tiles.append(tile)
 		
 		self.setFocusPolicy(Qt.NoFocus)
-		
 		self.width = 0 # nombre de zones en largeur
 		self.height = 0 # nombre de zones en hauteur
 		self.zones = []
@@ -75,9 +109,19 @@ class Map(TiledCanvas):
 		self.on_click = self.put_current_tile
 		self.mouse_button_down = False
 		
-		self.current_unit_id = -1
-		self.units = []
-	
+		self.selected_entity = None # pour les déplacements et les suppressions
+		self.entities = []
+		self.scene.setSceneRect(0, 0, Zone.WIDTH * self.TILESIZE, Zone.HEIGHT * self.TILESIZE)
+		
+		# hover cursor
+		rect = QRectF(0, 0, self.TILESIZE, self.TILESIZE)
+		pen = QPen(Qt.blue, 1, Qt.SolidLine)
+		brush = QBrush(QColor.fromRgb(0, 0, 255, 64))
+		
+		self.hover_cursor = self.scene.addRect(rect, pen, brush)
+		self.hover_cursor.setVisible(False)
+		self.hover_cursor.setZValue(Map.Z_UNIT + 1)
+		
 	
 	def open(self, filename):
 		"Charger une carte depuis un fichier"
@@ -96,7 +140,7 @@ class Map(TiledCanvas):
 		node_map = doc.getElementsByTagName("map")[0]
 		self.width = int(node_map.getAttribute("width"))
 		self.height = int(node_map.getAttribute("height"))
-			
+		
 		nodes_zone = doc.getElementsByTagName("zone")
 		if len(nodes_zone) != self.width * self.height:
 			print "error: zones manquantes"	
@@ -159,6 +203,7 @@ class Map(TiledCanvas):
 		self.zones[index].draw()
 		self.emit(SIGNAL("music_changed(PyQt_PyObject)"), self.zones[index].get_music())
 	
+	
 	def get_current_zone(self):
 		return self.zones[self.current_zone_pos]
 	
@@ -186,14 +231,9 @@ class Map(TiledCanvas):
 			tile = Map.Tile(self.img_tiles[0], 0) # 1st tile (id 0)
 			self.scene.addItem(tile)
 			x, y = self.pos_to_coords(i)
-			tile.setPos(self.mapToScene(x, y))
+			tile.setPos(x, y)
 			self.tiles.append(tile)
-		
-		# force reposition (wtf bugfix ? :/)
-		for index, tile in enumerate(self.tiles):
-			x, y = self.pos_to_coords(index)
-			tile.setPos(self.mapToScene(x, y))
-		
+
 	
 	def get_tile_images(self):
 		"Liste des images des tiles découpées"
@@ -210,9 +250,31 @@ class Map(TiledCanvas):
 	
 	def mouseMoveEvent(self, event):
 		TiledCanvas.mouseMoveEvent(self, event)
-		if self.mouse_button_down:
-			self.on_click(event)
-	
+		if self.on_click == self.put_current_tile:
+			if self.mouse_button_down:
+				self.on_click(event)
+		else:
+			if self.on_click == self.place_entity:
+				if self.selected_entity:
+					self.selected_entity.place(event.pos().x(), event.pos().y())
+					return
+			
+			entities = self.scene.items(self.mapToScene(event.pos().x(), event.pos().y()))
+			for entity in entities:
+				if self.selected_entity == entity:
+					return
+				
+				if isinstance(entity, Map.Entity):
+					self.selected_entity = entity
+					rect = entity.boundingRect()
+					rect.moveTo(entity.pos())
+					self.hover_cursor.setRect(rect)
+					self.hover_cursor.setVisible(True)
+					return
+			
+			self.hover_cursor.setVisible(False)
+			self.selected_entity = None
+			
 	
 	def mouseReleaseEvent(self, event):
 		if event.button() == Qt.LeftButton:
@@ -228,7 +290,7 @@ class Map(TiledCanvas):
 			
 			if 0 <= x < Zone.WIDTH and 0 <= y < Zone.HEIGHT:
 				index = self.get_current_zone().put_tile(x, y, tile_id)
-							
+				
 				# placement de la nouvelle tile et sauvegarde de l'ancienne dans
 				# l'historique (si différente de la nouvelle)
 				old_tile_id = self.tiles[index].get_id()
@@ -252,46 +314,87 @@ class Map(TiledCanvas):
 		return False
 	
 	
-	def put_current_unit(self, event):
-		assert self.current_unit_id != -1
-		x = event.pos().x()
-		y = event.pos().y()
-		zone_unit = self.get_current_zone().add_unit(self.current_unit_id, x, y)
-		self.add_unit(zone_unit)
-
-		# back to "put tile" mode on click
-		self.on_click = self.put_current_tile
-		self.set_cursor_visible(True)
-	
-	
 	def place_unit(self, id):
-		"Placer une unité au prochain clic"
-		
-		self.current_unit_id = id
-		# "put unit" mode on click
-		self.on_click = self.put_current_unit
+		"Place unit on next click"
+		zone_unit = self.get_current_zone().add_unit(id, 0, 0)
+		self.selected_entity = self.add_unit(zone_unit)
+		self.mode_place_entity()
+	
+	
+	def place_decor(self, id):
+		"Place decor on next click"
+		zone_decor = self.get_current_zone().add_decor(id, 0, 0)
+		self.selected_entity = self.add_decor(zone_decor)
+		self.mode_place_entity()
+	
+	
+	def mode_place_tile(self):
+		"Utilisation en mode placement de tile"
+		self.on_click = self.put_current_tile
+		self.setCursor(QCursor(Qt.ArrowCursor))
+		self.set_cursor_visible(True)
+		self.hover_cursor.setVisible(False)
+		self.selected_entity = None
+	
+	
+	def mode_place_entity(self):
+		"Utilisation en mode placement d'entité"
 		self.set_cursor_visible(False)
+		self.hover_cursor.setVisible(False)
+		self.setCursor(QCursor(Qt.ClosedHandCursor))
+		self.on_click = self.place_entity
 	
 	
-	def remove_unit(self, event=None):
+	def place_entity(self, event=None):
+		"Place the current selected entity (add or move)"
+		
+		assert self.selected_entity
+		x, y = event.pos().x(), event.pos().y()
+		self.selected_entity.place(x, y)
+		self.selected_entity.update_zone_pos(x, y)
+		self.mode_place_tile()
+	
+	
+	def move_entity(self, event=None):
+		"Move an entity on the scene"
+		
+		# first click = select entity, 2nd click = place entity
+		if self.on_click != self.move_entity:
+			self.on_click = self.move_entity
+			self.set_cursor_visible(False)
+			self.setCursor(QCursor(Qt.OpenHandCursor))
+		elif self.selected_entity:
+			self.mode_place_entity()
+	
+	
+	def delete_entity(self, event=None):
 		"Supprimer une unité au clic"
 		
-		if self.on_click != self.remove_unit:
+		if self.on_click != self.delete_entity:
 			# first call
-			self.on_click = self.remove_unit
+			self.on_click = self.delete_entity
 			self.set_cursor_visible(False)
+			self.setCursor(QCursor(Qt.PointingHandCursor))
 		else:
-			unit = self.scene.itemAt(self.mapToScene(event.pos().x(), event.pos().y()))
-			if isinstance(unit, Map.Unit):
+			if self.selected_entity:
+				entity = self.selected_entity
 				# remove from the zone (model)
-				self.get_current_zone().remove_unit(unit.get_zone_unit())
+				zone = self.get_current_zone()
+				if isinstance(entity, Map.Unit):
+					zone.remove_unit(entity.get_zone_element())
+					print "unit deleted"
+				elif isinstance(entity, Map.Decor):
+					zone.remove_decor(entity.get_zone_element())
+					print "decor deleted"
+				else:
+					raise Exception("Can't remove unknow entity")
+					
 				# remove from the scene (view)
-				self.scene.removeItem(unit)
-				self.units.remove(unit)
+				self.scene.removeItem(entity)
+				self.entities.remove(entity)
 			
 			# back to "put tile" mode on click
-			self.on_click = self.put_current_tile
-			self.set_cursor_visible(True)
+			self.mode_place_tile()
 	
 	
 	def add_unit(self, zone_unit):
@@ -299,17 +402,29 @@ class Map(TiledCanvas):
 		
 		unit = Map.Unit(zone_unit)
 		self.scene.addItem(unit)
-		x, y = unit.center_pos(zone_unit.x, zone_unit.y)
-		unit.setPos(self.mapToScene(x, y))
-		self.units.append(unit)
+		unit.place(zone_unit.x, zone_unit.y)
+		self.entities.append(unit)
+		return unit
+	
+	
+	def add_decor(self, zone_decor):
+		"Ajouter un décor dans la scène"
+		
+		decor = Map.Decor(zone_decor)
+		self.scene.addItem(decor)
+		decor.place(zone_decor.x * TiledCanvas.TILESIZE,
+			(zone_decor.y + 1) * TiledCanvas.TILESIZE)
+		self.entities.append(decor)
+		return decor
 	
 	
 	def clear_units(self):
-		"Supprimer les unités de la scène"
+		"Supprimer toutes les entités de la scène"
 		
-		for unit in self.units:
-			self.scene.removeItem(unit)
-		del self.units[:]
+		for entity in self.entities:
+			self.scene.removeItem(entity)
+		
+		del self.entities[:]
 	
 	
 	def fill_with_tile(self, tile_id):

@@ -3,20 +3,23 @@
 
 #include "Control.hpp"
 
-namespace gui{
-    class ProgressBar : public Control{
-    public:
-        ProgressBar(const ControlID id, const ControlPos& pos, const ControlPos& size);
-        void Update();
-    private:
+namespace gui
+{
 
-        void Render(sf::RenderTarget& app) const;
+class ProgressBar: public Control
+{
+public:
+	ProgressBar(ControlID id, const ControlPos& pos, const ControlPos& size);
+	void Update();
+private:
 
-        float width_, height_;
+	void Render(sf::RenderTarget& app) const;
 
-        sf::Shape background_;
-        sf::Sprite bar_;
-    };
+	float width_, height_;
+
+	sf::Shape background_;
+	sf::Sprite bar_;
+};
 }
 
 #endif

@@ -6,7 +6,7 @@
 using namespace gui;
 using namespace std;
 
-Label::Label(const ControlID id, const ControlPos& pos, const std::string& text, const std::string& font) :
+Label::Label(ControlID id, const ControlPos& pos, const std::string& text, const std::string& font) :
 	Control(id, pos, text),
 	BStext_(GET_BITMAP_FONT(font.c_str()))
 {
@@ -24,11 +24,13 @@ void Label::Update()
         case LINKED_CHAR:
             text_ = str_sprintf("%s", (char *)ptr_);
             break;
+		default:
+			break;
     }
     BStext_.SetText(text_);
 }
 
-void Label::SetText(const std::string s)
+void Label::SetText(const std::string& s)
 {
     text_ = s;
     BStext_.SetText(s);

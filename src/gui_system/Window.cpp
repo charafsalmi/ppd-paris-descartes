@@ -107,7 +107,7 @@ int Window::ManageEvent(const sf::Event& event)
 			// le contrôle cliqué est forcément sous la souris
 			if (hover_ != NULL)
 			{
-				return WindowCallback(hover_->GetID(), 0, NULL);
+				return WindowCallback(hover_->GetID());
 			}
 		}
 	}
@@ -257,19 +257,22 @@ void Window::Load(const std::string& xmlfile){
 	}
 }
 
-void Window::UnLoad(){
+void Window::UnLoad()
+{
     std::vector<Control*>::iterator it;
-    for(it=controls_.begin();it!=controls_.end();it++){
+    for(it = controls_.begin(); it != controls_.end(); ++it)
+    {
         delete (*it);
     }
     controls_.clear();
 }
 
-void Window::Render(sf::RenderTarget& app) const{
+void Window::Render(sf::RenderTarget& app) const
+{
     std::vector<Control*>::const_iterator it;
-
     app.Draw(background_);
-    for(it=controls_.begin();it!=controls_.end();it++){
+    for(it = controls_.begin(); it != controls_.end(); ++it)
+    {
         (*it)->Update();
         app.Draw(*(*it));
     }
@@ -294,7 +297,8 @@ Control* Window::GetUnderMouse(int x, int y)
 void Window::BindIntTo(Control::ControlID id, int *ptr)
 {
     Control *c = GetFromID(id);
-    if(c != NULL){
+    if(c != NULL)
+    {
         c->LinkInt(ptr);
     }
 }
@@ -302,20 +306,23 @@ void Window::BindIntTo(Control::ControlID id, int *ptr)
 void Window::BindCharTo(Control::ControlID id, char *ptr)
 {
     Control *c = GetFromID(id);
-    if(c != NULL){
+    if(c != NULL)
+    {
         c->LinkChar(ptr);
     }
 }
 
-void Window::SetControlText(Control::ControlID id, const string &s){
+void Window::SetControlText(Control::ControlID id, const string &s)
+{
     Control *c = GetFromID(id);
-    if(c != NULL){
+    if(c != NULL)
+    {
         c->SetText(s);
     }
 }
 
-std::string Window::GetControlText(Control::ControlID id){
+std::string Window::GetControlText(Control::ControlID id)
+{
     Control *c = GetFromID(id);
-
     return c != NULL ? c->GetText() : "";
 }

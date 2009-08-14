@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <decors>
-	<decor id="0" x="0" y="0" w="4" h="5" block="4" />
-	<decor id="1" x="4" y="0" w="1" h="2" block="1" />
-	<decor id="2" x="4" y="2" w="1" h="3" block="1" />
-	<decor id="3" x="5" y="0" w="2" h="3" block="2" />
-	<decor id="4" x="5" y="3" w="1" h="1" block="1" movable="1" />
-	<decor id="5" x="6" y="3" w="1" h="1" block="1" movable="1" />
+	<decor id="0" name="tree" x="0" y="0" w="4" h="5" block="4" />
+	<decor id="1" name="p1" x="4" y="0" w="1" h="2" block="1" />
+	<decor id="2" name="p2" x="4" y="2" w="1" h="3" block="1" />
+	<decor id="3" name="statue" x="5" y="0" w="2" h="3" block="2" />
+	<decor id="4" name="bloc1" x="5" y="3" w="1" h="1" block="1" movable="1" />
+	<decor id="5" name="bloc2" x="6" y="3" w="1" h="1" block="1" movable="1" />
 </decors>
 

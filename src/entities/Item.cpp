@@ -45,5 +45,5 @@ int Item::GetTypeID() const
 
 const char* Item::GetName() const
 {
-	EntityFactory::GetInstance().GetItemName(type_id_);
+	return EntityFactory::GetInstance().GetItemName(type_id_);
 }

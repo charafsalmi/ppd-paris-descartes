@@ -13,81 +13,83 @@ alors que la fenêtre s'affiche.
 */
 
 /* TODO: Passage en forme canonique */
-namespace gui{
-    enum ID
-    {
-        IDEXIT = 7771, IDCONFIRM
-    };
+namespace gui
+{
 
-    class Window: public sf::Drawable
-    {
-    public:
-        Window();
-        Window(const Window& other);
-        virtual ~Window();
+enum ID
+{
+	IDEXIT = 7771, IDCONFIRM
+};
 
-        /// Callback du gestionnaire de fenêtre
-        virtual int WindowCallback(const Control::ControlID id, const int p1, void *p2){return 0;};
+class Window: public sf::Drawable
+{
+public:
+	Window();
+	Window(const Window& other);
+	virtual ~Window();
 
-        /// Gestion des evenements concernant la fenêtre
-        int ManageEvent(const sf::Event& event);
+	/// Callback du gestionnaire de fenêtre
+	virtual int WindowCallback(Control::ControlID) {return 0;}
 
-        /// Détermine si un contrôle de la fenêtre a le focus
-        /// @return true si un contrôle a le focus, sinon false
-		bool HasFocus() const;
+	/// Gestion des evenements concernant la fenêtre
+	int ManageEvent(const sf::Event& event);
 
-    protected:
-        /// Récupère un contrôle à partir de son id
-        Control *GetFromID(Control::ControlID id);
+	/// Détermine si un contrôle de la fenêtre a le focus
+	/// @return true si un contrôle a le focus, sinon false
+	bool HasFocus() const;
 
-        /// Associe un entier à un control
-        void BindIntTo(Control::ControlID id, int *ptr);
+protected:
+	/// Récupère un contrôle à partir de son id
+	Control *GetFromID(Control::ControlID id);
 
-        /// Associe un char à un control
-        void BindCharTo(Control::ControlID id, char *ptr);
+	/// Associe un entier à un control
+	void BindIntTo(Control::ControlID id, int *ptr);
 
-        /// Récupère le contenu du composant selon son type
-        /// @param[in] id Identifiant du contrôle
-        /// @return Texte à récuperer
-        std::string GetControlText(Control::ControlID id);
+	/// Associe un char à un control
+	void BindCharTo(Control::ControlID id, char *ptr);
 
-        /// Change le contenu d'un composant
-        /// @param[in] id Identifiant du contrôle
-        /// @param[in] s Texte à placer
-        void SetControlText(Control::ControlID id, const std::string &s);
+	/// Récupère le contenu du composant selon son type
+	/// @param[in] id Identifiant du contrôle
+	/// @return Texte à récuperer
+	std::string GetControlText(Control::ControlID id);
 
-        /// Charge une fenêtre à partir d'un fichier xml
-        /// @param[in] xmlfile Nom du fichier XML à ouvrir
-        void Load(const std::string& xmlfile);
+	/// Change le contenu d'un composant
+	/// @param[in] id Identifiant du contrôle
+	/// @param[in] s Texte à placer
+	void SetControlText(Control::ControlID id, const std::string &s);
 
-        /// Déchargement de tout les composants
-        void UnLoad();
+	/// Charge une fenêtre à partir d'un fichier xml
+	/// @param[in] xmlfile Nom du fichier XML à ouvrir
+	void Load(const std::string& xmlfile);
 
-        /// Affichage de la fenêtre
-		virtual void Render(sf::RenderTarget& app) const;
+	/// Déchargement de tout les composants
+	void UnLoad();
 
-    private:
+	/// Affichage de la fenêtre
+	virtual void Render(sf::RenderTarget& app) const;
+
+private:
 
 
-        /// Récupérer le contrôle sous la souris
-        /// @param[in] x: position absolue x
-        /// @param[in] y: position absolue y
-        /// @return le contrôle sous la souris, NULL si aucun
-		Control* GetUnderMouse(int x, int y);
+	/// Récupérer le contrôle sous la souris
+	/// @param[in] x: position absolue x
+	/// @param[in] y: position absolue y
+	/// @return le contrôle sous la souris, NULL si aucun
+	Control* GetUnderMouse(int x, int y);
 
-        /// Image de fond de la fenêtre
-        sf::Sprite background_;
+	/// Image de fond de la fenêtre
+	sf::Sprite background_;
 
-        /// Position de la fenêtre
-        sf::IntRect rect_;
+	/// Position de la fenêtre
+	sf::IntRect rect_;
 
-        /// Composants de la fenêtre
-        std::vector<Control*> controls_;
-        /// contrôle qui a le focus
-        Control* active_;
-        /// contrôle sous la souris
-        Control* hover_;
-    };
+	/// Composants de la fenêtre
+	std::vector<Control*> controls_;
+	/// contrôle qui a le focus
+	Control* active_;
+	/// contrôle sous la souris
+	Control* hover_;
+};
 }
 
 #endif

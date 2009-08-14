@@ -7,7 +7,8 @@ WinPause::WinPause(){
     Load("data/window/pause.xml");
 }
 
-int WinPause::WindowCallback(const Control::ControlID id, const int p1, void *p2){
+int WinPause::WindowCallback(Control::ControlID id)
+{
     switch(id)
     {
         case IDEXIT:

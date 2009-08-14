@@ -9,22 +9,27 @@ Button::Button(ControlID id, const ControlPos& pos, const ControlPos& size, cons
     ControlPos s = size;
 
     // Mode avec image
-    if(!imagePath.empty()){
+    if (!imagePath.empty())
+    {
         img_ = GET_IMG(imagePath.c_str());
 
         // Si aucune largeur ou hauteur n'est définit,
         // on récupère celles de l'image
-        if(s.x == UNDEFINED || s.y == UNDEFINED){
+        if (s.x == UNDEFINED || s.y == UNDEFINED)
+        {
             s.x = img_.GetSize().x;
             s.y = img_.GetSize().y;
         }
         hidden_ = false;
-    }else{
+    }
+    else
+    {
         hidden_ = true;
     }
 
     // Système OnHover
-    if(!hoverPath.empty()){
+    if (!hoverPath.empty())
+    {
         img_hover_ = GET_IMG(hoverPath.c_str());
 
         accepted_states_ |= ON_HOVER;
@@ -42,11 +47,12 @@ Button::Button(ControlID id, const ControlPos& pos, const ControlPos& size, cons
 
 void Button::Render(sf::RenderTarget& app) const
 {
-    if((accepted_states_ & ON_HOVER)&&(curr_state_ == ON_HOVER)){
+    if ((accepted_states_ & ON_HOVER)&&(curr_state_ == ON_HOVER)){
         app.Draw(img_hover_);
-    }else{
-        if(!hidden_)
-            app.Draw(img_);
+    }
+    else if (!hidden_)
+    {
+		app.Draw(img_);
     }
 }
 

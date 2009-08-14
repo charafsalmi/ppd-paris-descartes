@@ -125,7 +125,7 @@ void WinInventory::Clear()
 }
 
 
-int WinInventory::WindowCallback(const Control::ControlID id, const int, void*)
+int WinInventory::WindowCallback(Control::ControlID id)
 {
 	return id == ID_BUTTON_CLOSE ? _CLOSE : 0;
 }

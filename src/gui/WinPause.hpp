@@ -20,7 +20,7 @@ private:
         ID_OPTION=7001
     };
 
-    int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2);
+    int WindowCallback(gui::Control::ControlID id);
 };
 
 #endif

@@ -43,7 +43,7 @@ void ZoneContainer::Load(const std::string& name)
 	// ouverture du fichier des zones du monde extérieur
 	if (!xml_doc_.LoadFile(filename.c_str()))
 	{
-		DIE("can't open map %s\n%s", filename, xml_doc_.ErrorDesc());
+		DIE("can't open map %s\n%s", filename.c_str(), xml_doc_.ErrorDesc());
 	}
 
 	TiXmlHandle handle(&xml_doc_);

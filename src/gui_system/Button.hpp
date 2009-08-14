@@ -3,22 +3,25 @@
 
 #include "Control.hpp"
 
-namespace gui{
-    class Button : public Control{
-    public:
-        Button(const ControlID id, const ControlPos& pos, const ControlPos& size, const std::string &imagePath, const std::string &hoverPath);
+namespace gui
+{
 
-        void ChangeSprite(const sf::Sprite& nimg);
+class Button: public Control
+{
+public:
+	Button(ControlID id, const ControlPos& pos, const ControlPos& size, const std::string& imagePath, const std::string& hoverPath);
 
-    private:
-		void Render(sf::RenderTarget& app) const;
+	void ChangeSprite(const sf::Sprite& nimg);
 
-        /** Medias */
-        sf::Sprite img_;
-        sf::Sprite img_hover_;
+private:
+	void Render(sf::RenderTarget& app) const;
 
-        bool hidden_;
-    };
+	/** Medias */
+	sf::Sprite img_;
+	sf::Sprite img_hover_;
+
+	bool hidden_;
+};
 }
 
 #endif

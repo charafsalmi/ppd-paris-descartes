@@ -19,7 +19,7 @@ Option::~Option()
 }
 
 
-int Option::WindowCallback(const Control::ControlID id, const int p1, void *p2)
+int Option::WindowCallback(Control::ControlID id)
 {
     OutputD << "Option ID : " << id << lEnd;
     SoundSystem& sound = SoundSystem::GetInstance();

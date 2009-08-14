@@ -33,7 +33,7 @@ class Zone:
 			node.setAttribute("x", str(self.x))
 			node.setAttribute("y", str(self.y))
 			parent.appendChild(node)
-		
+	
 	
 	class Teleporter:
 		def __init__(self, mapname, x, y, zone_x, zone_y, tile_x, tile_y):
@@ -138,6 +138,11 @@ class Zone:
 		# rendering tiles
 		for index, id in enumerate(self.tile_ids):
 			self.map.draw_tile(index, id)
+		
+		# rendering decors
+		for decor in self.decors:
+			self.map.add_decor(decor)
+		
 		# rendering units
 		for unit in self.units:
 			self.map.add_unit(unit)
@@ -167,9 +172,19 @@ class Zone:
 		return unit
 	
 	
+	def add_decor(self, id, x, y):
+		decor = Zone.GenericEntity(id, x, y)
+		self.decors.append(decor)
+		return decor
+	
+	
 	def remove_unit(self, unit):
 		self.units.remove(unit)
 	
+	
+	def remove_decor(self, decor):
+		self.decors.remove(decor)
+		
 	
 	def to_xml(self, parent):
 		"Encoder la zone en xml"
@@ -224,6 +239,10 @@ class Zone:
 	
 	def count_units(self):
 		return len(self.units)
+	
+	
+	def count_entities(self):
+		return len(self.units) + len(self.decors)
 	
 	
 	def get_music(self):

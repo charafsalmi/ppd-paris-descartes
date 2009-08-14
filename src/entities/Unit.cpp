@@ -192,9 +192,3 @@ void Unit::DyingUpdate(float frametime)
 	}
 }
 
-/*
-Entity::Direction Unit::GetKnockDirection(const Entity& e, const sf::FloatRect& overlap)
-{
-
-}
-*/

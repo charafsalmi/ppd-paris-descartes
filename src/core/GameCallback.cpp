@@ -82,12 +82,8 @@ void Game::NoUpdate(float)
 
 // IN_GAME /////////////////////////////////////////////////////////
 
-void Game::InGameOnEvent(const sf::Event& event, input::Action action)
+void Game::InGameOnEvent(const sf::Event&, input::Action action)
 {
-	sf::Key::Code key = event.Key.Code;
-#ifdef WINDOW_TEST
-	fen_.ManageEvent(event);
-#endif
 	if (map_.Scrolling())
 	{
 		return;
@@ -137,10 +133,6 @@ void Game::InGameShow()
 	}
 #ifdef CONSOLE_TEST
 	app_.Draw(*log_);
-#endif
-
-#ifdef WINDOW_TEST
-	app_.Draw(fen_);
 #endif
 }
 
@@ -200,7 +192,7 @@ void Game::PauseShow()
 
 // GAME_OVER /////////////////////////////////////////////////////////
 
-void Game::GameOverOnEvent(const sf::Event& event, input::Action action)
+void Game::GameOverOnEvent(const sf::Event& event, input::Action)
 {
 	if (event.Type == sf::Event::KeyPressed)
 	{
@@ -229,7 +221,7 @@ void Game::MiniMapShow()
 
 // MAIN_MENU /////////////////////////////////////////////////////////
 
-void Game::MainMenuOnEvent(const sf::Event& event, input::Action action)
+void Game::MainMenuOnEvent(const sf::Event& event, input::Action)
 {
 	switch (mmenu_.ManageEvent(event))
 	{
@@ -255,7 +247,7 @@ void Game::MainMenuShow()
 
 // OPTION /////////////////////////////////////////////////
 
-void Game::OptionOnEvent(const sf::Event& event, input::Action action)
+void Game::OptionOnEvent(const sf::Event& event, input::Action)
 {
 	switch (option_win_->ManageEvent(event))
 	{

@@ -7,9 +7,10 @@ MainMenu::MainMenu()
     Load("data/window/main_menu.xml");
 }
 
-int MainMenu::WindowCallback(const gui::Control::ControlID id, const int p1, void *p2)
+int MainMenu::WindowCallback(gui::Control::ControlID id)
 {
-    switch(id){
+    switch (id)
+    {
         case IDEXIT:
             return START_GAME;
         case IDCONFIRM:

@@ -44,19 +44,16 @@ void Control::LinkFloat(float* ptr)
 	ptr_ = ptr;
 }
 
-void Control::ChangeSprite(const sf::Sprite& nming)
+void Control::ChangeSprite(const sf::Sprite&)
 {
-	(void) nming;
 }
 
 
-void Control::OnTextEntered(sf::Uint32 unicode)
+void Control::OnTextEntered(sf::Uint32)
 {
-	(void) unicode;
 }
 
 
-void Control::OnKeyPressed(sf::Key::Code key)
+void Control::OnKeyPressed(sf::Key::Code)
 {
-	(void) key;
 }

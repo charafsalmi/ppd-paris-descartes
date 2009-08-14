@@ -68,7 +68,7 @@ void MiniMap::SetPlayerPosition(const sf::Vector2i& coords)
 }
 
 
-void MiniMap::Update(float frametime)
+void MiniMap::Update(float)
 {
 	// TODO
 }

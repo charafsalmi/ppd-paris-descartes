@@ -47,12 +47,13 @@ Hit::Hit(const sf::Vector2f& position, int damage, Direction dir, int emitter_id
 		case SWORD:
 			// hit invisible
 			update_callback_ = &Hit::MoveCircular;
-			subrect = sf::IntRect(50, 0, 120, 70);
+			subrect = sf::IntRect(50, 0, 130, 80);
+			SetCenter(40, 40);
 			SetColor(sf::Color(255, 255, 255, 128));
 			SetBlendMode(sf::Blend::Add);//debug
 			sf::Sprite::Move(GetSize().x / 2, -GetSize().y / 2);
 			timed_ = true;
-			time_to_live_ = 1.0f;
+			time_to_live_ = 0.5f;
 			break;
 	}
 	direction_ = dir;

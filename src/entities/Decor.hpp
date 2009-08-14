@@ -31,9 +31,6 @@ public:
 	// inherited
 	void OnCollide(Entity& entity, const sf::FloatRect& overlap);
 
-	// inherited
-	void GetCollideRect(sf::FloatRect& rect) const;
-
 private:
 	enum Status
 	{

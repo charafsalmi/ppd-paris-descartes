@@ -3,7 +3,8 @@
 
 #include "../gui_system/Window.hpp"
 
-class MainMenu : public gui::Window{
+class MainMenu: public gui::Window
+{
 public:
     MainMenu();
 
@@ -13,11 +14,12 @@ public:
     };
 private:
     /// Liste des composants de la fenêtre
-    enum Windows{
+    enum Windows
+    {
         ID_OPTION=7000
     };
 
-    int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2);
+    int WindowCallback(gui::Control::ControlID id);
 };
 
 #endif

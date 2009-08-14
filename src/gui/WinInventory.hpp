@@ -82,7 +82,7 @@ private:
 
 	void PlaceItem(Item* item, int x, int y);
 
-	int WindowCallback(const gui::Control::ControlID id, const int p1, void *p2);
+	int WindowCallback(gui::Control::ControlID id);
 
 	static void ClearItem(Item*& item);
 

@@ -6,7 +6,7 @@
 using namespace gui;
 using namespace std;
 
-ProgressBar::ProgressBar(const ControlID id, const ControlPos& pos, const ControlPos& size) :
+ProgressBar::ProgressBar(ControlID id, const ControlPos& pos, const ControlPos& size) :
 	Control(id, pos)
 {
 	rect_.Left = pos.x;
@@ -24,7 +24,7 @@ ProgressBar::ProgressBar(const ControlID id, const ControlPos& pos, const Contro
 
 void ProgressBar::Update()
 {
-    if(ptr_ == NULL || mode_ == LINKED_CHAR)
+    if (ptr_ == NULL || mode_ == LINKED_CHAR)
         return;
 
     float a = (mode_ == LINKED_INT)? *((int *)ptr_) : *((float *)ptr_);
