@@ -106,13 +106,15 @@ void Mob::Kill()
 	// roll the dice!
 	if (sf::Randomizer::Random(0, 100) < DROP_LUCK)
 	{
-		// TODO: définir quels sont les items dropables par un mob
-		// TODO 2: pondérer certains items ayant plus de chances d'être droppés que d'autres
-		// TODO 3: définir ça dans Item, puis définir la liste des items droppables pour
-		// chaque mob dans son profil XML (?)
-		int item_id = sf::Randomizer::Random(1, 2); // coeur de vie ou argent
+		// TODO: définir quels sont les items dropables par un mob plus proprement
+		static const Item::Type DROPABLES[] = {
+			Item::ITM_HEART,
+			Item::ITM_RUBY,
+		};
 
-		zone_->AddItem(item_id, GetPosition().x, GetPosition().y);
+		int item = sf::Randomizer::Random(0, (sizeof (DROPABLES) / sizeof (Item::Type)) - 1);
+
+		zone_->AddItem((Item::Type) item, GetPosition().x, GetPosition().y);
 	}
 	Entity::Kill();
 }

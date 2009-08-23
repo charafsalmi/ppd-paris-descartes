@@ -1,17 +1,20 @@
 #ifndef EQUIPMENT_HPP
 #define EQUIPMENT_HPP
 
-#include "Item.hpp"
 
+#include "Item.hpp"
 #include "Unit.hpp"
 
-
-class Equipment: public Item
+/**
+ * Objet utilisable associé à un Item pour la représentation visuelle
+ * Peut être utilisé par Unit, peut être stocké dans Inventory
+ */
+class Equipment: public sf::Sprite
 {
 public:
-	Equipment(int type_id, const sf::Vector2f& position, const sf::IntRect& subrect);
+	Equipment(Item::Type type);
 
-	void OnCollide(Player& player);
+	Item::Type GetType() const;
 
 	bool Use();
 
@@ -27,6 +30,7 @@ private:
 	void UseBow();
 	void UseSword();
 
+	Item::Type type_;
 	float fire_rate_;
 	float last_used_;
 	int ammo_;

@@ -15,14 +15,14 @@
 			<entity id="3" x="88" y="399"/>
 		</entities>
 		<items>
-			<item id="1" x="170" y="100"/>
-			<item id="1" x="200" y="100"/>
-			<item id="1" x="230" y="100"/>
-			<item id="1" x="260" y="100"/>
-			<item id="1" x="170" y="160"/>
-			<item id="1" x="200" y="160"/>
-			<item id="1" x="230" y="160"/>
-			<item id="1" x="260" y="160"/>
+			<item name="ITM_HEART" x="170" y="100"/>
+			<item name="ITM_RUBY" x="200" y="100"/>
+			<item name="ITM_HEART" x="230" y="100"/>
+			<item name="ITM_RUBY" x="260" y="100"/>
+			<item name="ITM_HEART" x="170" y="160"/>
+			<item name="ITM_RUBY" x="200" y="160"/>
+			<item name="ITM_HEART" x="230" y="160"/>
+			<item name="ITM_RUBY" x="260" y="160"/>
 		</items>
 	</zone>
 	<zone>
@@ -40,18 +40,18 @@
 			<entity id="1" x="151" y="397"/>
 		</entities>
 		<items>
-			<item id="1" x="170" y="100"/>
-			<item id="1" x="200" y="100"/>
-			<item id="1" x="230" y="100"/>
-			<item id="1" x="260" y="100"/>
-			<item id="1" x="170" y="160"/>
-			<item id="1" x="200" y="160"/>
-			<item id="1" x="230" y="160"/>
-			<item id="1" x="260" y="160"/>
-			<item id="1" x="170" y="220"/>
-			<item id="1" x="200" y="220"/>
-			<item id="1" x="230" y="220"/>
-			<item id="1" x="260" y="220"/>
+			<item name="ITM_RUBY" x="170" y="100"/>
+			<item name="ITM_RUBY" x="200" y="100"/>
+			<item name="ITM_RUBY" x="230" y="100"/>
+			<item name="ITM_RUBY" x="260" y="100"/>
+			<item name="ITM_RUBY" x="170" y="160"/>
+			<item name="ITM_RUBY" x="200" y="160"/>
+			<item name="ITM_RUBY" x="230" y="160"/>
+			<item name="ITM_RUBY" x="260" y="160"/>
+			<item name="ITM_RUBY" x="170" y="220"/>
+			<item name="ITM_RUBY" x="200" y="220"/>
+			<item name="ITM_RUBY" x="230" y="220"/>
+			<item name="ITM_RUBY" x="260" y="220"/>
 		</items>
 	</zone>
 	<zone>
@@ -65,14 +65,14 @@
 			<entity id="1" x="180" y="149"/>
 		</entities>
 		<items>
-			<item id="1" x="170" y="160"/>
-			<item id="1" x="200" y="160"/>
-			<item id="1" x="230" y="160"/>
-			<item id="1" x="260" y="160"/>
-			<item id="2" x="170" y="220"/>
-			<item id="2" x="200" y="220"/>
-			<item id="2" x="230" y="220"/>
-			<item id="2" x="260" y="220"/>
+			<item name="ITM_RUBY" x="170" y="160"/>
+			<item name="ITM_RUBY" x="200" y="160"/>
+			<item name="ITM_RUBY" x="230" y="160"/>
+			<item name="ITM_RUBY" x="260" y="160"/>
+			<item name="ITM_HEART" x="170" y="220"/>
+			<item name="ITM_HEART" x="200" y="220"/>
+			<item name="ITM_HEART" x="230" y="220"/>
+			<item name="ITM_HEART" x="260" y="220"/>
 		</items>
 		<teleporters>
 			<tp map="world" tile_x="17" tile_y="2" x="17" y="2" zone_x="3" zone_y="1"/>

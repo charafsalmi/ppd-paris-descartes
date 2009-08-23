@@ -97,6 +97,8 @@
 		<Unit filename="src/entities/Unit.hpp" />
 		<Unit filename="src/gui/ControlPanel.cpp" />
 		<Unit filename="src/gui/ControlPanel.hpp" />
+		<Unit filename="src/gui/Inventory.cpp" />
+		<Unit filename="src/gui/Inventory.hpp" />
 		<Unit filename="src/gui/MainMenu.cpp" />
 		<Unit filename="src/gui/MainMenu.hpp" />
 		<Unit filename="src/gui/MiniMap.cpp" />
@@ -105,8 +107,6 @@
 		<Unit filename="src/gui/Option.hpp" />
 		<Unit filename="src/gui/Splash.cpp" />
 		<Unit filename="src/gui/Splash.hpp" />
-		<Unit filename="src/gui/WinInventory.cpp" />
-		<Unit filename="src/gui/WinInventory.hpp" />
 		<Unit filename="src/gui/WinPause.cpp" />
 		<Unit filename="src/gui/WinPause.hpp" />
 		<Unit filename="src/gui_system/Button.cpp" />

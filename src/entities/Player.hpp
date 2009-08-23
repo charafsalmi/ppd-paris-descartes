@@ -4,6 +4,7 @@
 #include "Unit.hpp"
 #include "Hit.hpp"
 #include "../core/InputController.hpp"
+#include "../gui/Inventory.hpp"
 #include "../gui/ControlPanel.hpp"
 
 /**
@@ -59,12 +60,22 @@ public:
 	// inherited
 	void TakeDamage(int damage);
 
+	/**
+	 * Ajouter un objet dans l'inventaire du joueur
+	 * @return true si l'objet a été ajouté, sinon false
+	 */
+	bool AddEquipment(Item::Type type);
+
 	// inherited
 	void SetEquipment(Equipment* equipment);
 
 	// inherited
 	void ThrowHit(Hit::Type type);
 
+	inline Inventory& GetInventory()
+	{
+		return inventory_;
+	}
 private:
 	/**
 	 * Convertir la position en pixels en position de tile
@@ -86,7 +97,7 @@ private:
 
 	void HandleInput(float frametime);
 
-	void UseItem(int);
+	void UseItem(Item::Type type);
 
 	// pointeur de la méthode de mise à jour
 	void (Player::*strategy_callback_)(float frametime);
@@ -113,6 +124,8 @@ private:
 	float use_bow_duration_;
 	float use_sword_duration_;
 	float last_hit_; // temps en secondes
+
+	Inventory inventory_;
 };
 
 #endif // PLAYER_HPP

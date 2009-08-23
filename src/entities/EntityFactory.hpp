@@ -4,9 +4,9 @@
 #include <map>
 
 #include "Entity.hpp"
+#include "Item.hpp"
 
 class Unit;
-class Item;
 class Decor;
 class Equipment;
 class Animation;
@@ -37,12 +37,18 @@ public:
 	 * Allouer un objet
 	 * @param[in] id: identifiant du type d'objet
 	 */
-	Item* BuildItem(int id, const sf::Vector2f& position) const;
+	Item* BuildItem(Item::Type type, const sf::Vector2f& position) const;
 
 	/**
 	 * Obtenir le nom d'un item
 	 */
-	const char* GetItemName(int id) const;
+	const char* GetItemName(Item::Type type) const;
+
+	/**
+	 * Obtenir le sous rectangle d'un item dans sa feuille de sprite
+	 * @return true si l'item est défini, sinon false
+	 */
+	bool GetItemSubRect(Item::Type type, sf::IntRect& subrect);
 
 private:
 	Equipment* BuildEquipment(const char* name) const;
@@ -53,10 +59,8 @@ private:
 
 	void LoadUnits(const char* filename);
 	void LoadDecors(const char* filename);
+	void LoadItems(const char* filename);
 
-	/* TODO :
-	virer ce torcheballe et instancier un examplaire de chaque unité et le cloner
-	*/
 
 	/**
 	 * Profil d'une unité
@@ -90,6 +94,20 @@ private:
 
 	typedef std::map<int, DecorPattern> DecorDef;
 	DecorDef decors_;
+
+	/**
+	 * Définition d'un item
+	 */
+	struct ItemPattern
+	{
+		std::string label;
+		int x;
+		int y;
+		int w;
+		int h;
+	};
+	typedef std::map<Item::Type, ItemPattern> ItemDef;
+	ItemDef items_;
 };
 
 #endif // ENTITYFACTORY_HPP

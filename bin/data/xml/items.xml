@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<items>
+	<item name="ITM_HEART" label="Coeur de vie" x="0" y="0" w="16" h="16" />
+	<item name="ITM_RUBY" label="Rubis" x="0" y="16" w="16" h="28" />
+	<item name="ITM_BOW" label="Arc" x="35" y="15" w="32" h="32" />
+	<item name="ITM_SWORD" label="Epee" x="16" y="0" w="18" h="32" />
+</items>
+

@@ -13,7 +13,6 @@
 * Éditeur de cartes
 	- support items
 	- support téléporteurs
-	- support décors
 
 * IA
 	- création de pattern
@@ -28,7 +27,6 @@
 
 * Window
 	- Passer la classe en forme canonique
-    - Remplacer le controlpanel
 	- Compléter le système de label (différents fonts)
 	- Compléter le système de textbox (done ?)
 

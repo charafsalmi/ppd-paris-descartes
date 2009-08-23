@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<window x="10" y="550" w="270" h="181" background="interface/test/background">
-	<label id="7000" x="0" y="0" >Ligne 1</label>
-	<label id="7001" x="0" y="20">Ligne 2</label>
-</window>

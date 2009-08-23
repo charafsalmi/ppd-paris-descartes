@@ -57,18 +57,21 @@ Player::Player(const sf::Vector2f& pos) :
 	SetSubRect(subrects_not_moving_[DOWN]);
 
 	max_lives_ = DEFAULT_HP;
-	panel_.SetHP(DEFAULT_HP);
-
 	money_ = 0;
-	panel_.SetGold(money_);
-
 	frags_ = 0;
+
+	panel_.SetHP(max_lives_);
+	panel_.SetGold(money_);
 	panel_.SetFragCount(frags_);
+
+	panel_.SetItem1(NULL);
+	panel_.SetItem2(NULL);
+	panel_.SetItem3(NULL);
 
 	locked_ = false;
 	last_hit_ = 0;
 	can_use_item_ = true;
-	// on suppose que tirer une flèche prend autant de temps, quelque que soit la direction
+	// on suppose que toutes les directions d'une animation ont la même durée (FIX ME?)
 	use_bow_duration_ = GET_ANIM("player_bow_up").GetDuration();
 	use_sword_duration_ = GET_ANIM("player_sword_up").GetDuration();
 	falling_duration_ = GET_ANIM("player_fall").GetDuration();
@@ -80,32 +83,24 @@ Player::Player(const sf::Vector2f& pos) :
 
 void Player::OnEvent(input::Action action)
 {
-	int obj;
+	int item = Item::ITM_NONE;
 	switch (action)
 	{
 		case input::USE_ITEM_1:
-			obj = panel_.GetInventory()->GetItem1ID();
-			if (obj != 0)
-			{
-				UseItem(obj);
-			}
+			item = inventory_.GetItem1Type();
 			break;
 		case input::USE_ITEM_2:
-			obj = panel_.GetInventory()->GetItem2ID();
-			if (obj != 0)
-			{
-				UseItem(obj);
-			}
+			item = inventory_.GetItem2Type();
 			break;
 		case input::USE_ITEM_3:
-			obj = panel_.GetInventory()->GetItem3ID();
-			if (obj != 0)
-			{
-				UseItem(obj);
-			}
+			item = inventory_.GetItem3Type();
 			break;
 		default:
-			break;
+			return;
+	}
+	if (item != Item::ITM_NONE)
+	{
+		UseItem((Item::Type) item);
 	}
 }
 
@@ -432,10 +427,23 @@ void Player::TakeDamage(int damage)
 }
 
 
+bool Player::AddEquipment(Item::Type type)
+{
+	if (!inventory_.HasItem(type))
+	{
+		Equipment* equip = new Equipment(type);
+		equip->SetOwner(this);
+		inventory_.AddItem(equip);
+		return true;
+	}
+	return false;
+}
+
+
 void Player::SetEquipment(Equipment* equipment)
 {
 	equipment->SetOwner(this);
-	panel_.GetInventory()->AddItem(equipment);
+	inventory_.AddItem(equipment);
 }
 
 
@@ -451,15 +459,15 @@ void Player::ThrowHit(Hit::Type type)
 }
 
 
-void Player::UseItem(int code)
+void Player::UseItem(Item::Type type)
 {
 	if (!can_use_item_)
 	{
 		return;
 	}
-	switch (code)
+	switch (type)
 	{
-		case 10:
+		case Item::ITM_SWORD:
 			switch (GetDirection())
 			{
 				case UP:
@@ -481,7 +489,7 @@ void Player::UseItem(int code)
 			started_action_ = Game::GetInstance().GetElapsedTime();
 			ThrowHit(Hit::SWORD);
 			break;
-		case 11:
+		case Item::ITM_BOW:
 			switch (GetDirection())
 			{
 				case UP:

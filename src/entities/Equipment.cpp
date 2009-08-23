@@ -2,43 +2,46 @@
 #include "Unit.hpp"
 #include "Hit.hpp"
 
+#include "EntityFactory.hpp"
 #include "../core/Game.hpp"
 #include "../core/Zone.hpp"
 #include "../gui/ControlPanel.hpp"
+#include "../misc/MediaManager.hpp"
+#include "../misc/Die.hpp"
 
 
-Equipment::Equipment(int type_id, const sf::Vector2f& position,
-	const sf::IntRect& subrect) :
-	Item(type_id, position, subrect)
+Equipment::Equipment(Item::Type type)
 {
-	// TODO utiliser des strings pour identifier les objets utilisables
-	if (type_id == 11)
+	SetImage(GET_IMG("items"));
+	sf::IntRect rect;
+	EntityFactory::GetInstance().GetItemSubRect(type, rect);
+	SetSubRect(rect);
+
+	switch (type)
 	{
-		ammo_ = 10;
-		callback_ = &Equipment::UseBow;
-		fire_rate_ = 1.f / 0.8f; // tirs par seconde
+		case Item::ITM_BOW:
+			ammo_ = 10;
+			callback_ = &Equipment::UseBow;
+			fire_rate_ = 1.f / 0.8f; // tirs par seconde
+			break;
+		case Item::ITM_SWORD:
+			ammo_ = -1;
+			callback_ = &Equipment::UseSword;
+			fire_rate_ = 1.f / 0.5f;
+			break;
+		default:
+			DIE("equipment code '%d' is not implemented", type);
+			break;
 	}
-	else if (type_id == 10)
-	{
-		ammo_ = -1;
-		callback_ = &Equipment::UseSword;
-		fire_rate_ = 1.f / 0.5f;
-	}
+	type_ = type;
 	last_used_ = 0;
 	owner_ = NULL;
 }
 
 
-void Equipment::OnCollide(Player& player)
+Item::Type Equipment::GetType() const
 {
-	ControlPanel& panel = ControlPanel::GetInstance();
-
-	if (!panel.GetInventory()->HasItem(GetTypeID()))
-	{
-		Equipment* clone = new Equipment(*this);
-		panel.GetInventory()->AddItem(clone);
-		Item::OnCollide(player);
-	}
+	return type_;
 }
 
 

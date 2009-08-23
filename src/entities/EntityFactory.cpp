@@ -4,10 +4,8 @@
 #include "../core/Animation.hpp"
 #include "../core/Tileset.hpp"
 #include "../misc/MediaManager.hpp"
-#include "../misc/Log.hpp"
 #include "../misc/Die.hpp"
 #include "../xml/tinyxml.h"
-
 
 #include "Unit.hpp"
 #include "Item.hpp"
@@ -16,6 +14,7 @@
 
 #define UNIT_DEFINITION   "data/xml/units.xml"
 #define DECOR_DEFINITION  "data/xml/decors.xml"
+#define ITEM_DEFINITION   "data/xml/items.xml"
 
 // profil par défaut (si incomplet)
 #define DEFAULT_HP        3
@@ -35,6 +34,8 @@ EntityFactory::EntityFactory()
 {
 	LoadUnits(UNIT_DEFINITION);
 	LoadDecors(DECOR_DEFINITION);
+	Item::InitBehaviors();
+	LoadItems(ITEM_DEFINITION);
 }
 
 
@@ -65,7 +66,7 @@ void EntityFactory::LoadUnits(const char* filename)
 		p = elem->Attribute("name");
 		if (p == NULL)
 		{
-		    OutputD << UF_S << "L'unite " << id << " n'a pas d'attribut de nom" << lEnd;
+			printf("warning: unit '%d' doesn't have 'name' attribute\n", id);
 			p = DEFAULT_NAME;
 		}
 		unit->name = p;
@@ -74,7 +75,7 @@ void EntityFactory::LoadUnits(const char* filename)
 		int hp;
 		if (elem->QueryIntAttribute("hp", &hp) != TIXML_SUCCESS)
 		{
-			OutputD << UF_S << "L'unite " << id << " n'a pas d'attribut de hp" << lEnd;
+			printf("warning: unit '%d' doesn't have 'hp' attribute\n", id);
 			hp = DEFAULT_HP;
 		}
 		unit->hp = hp;
@@ -83,7 +84,7 @@ void EntityFactory::LoadUnits(const char* filename)
 		int speed;
 		if (elem->QueryIntAttribute("speed", &speed) != TIXML_SUCCESS)
 		{
-		    OutputD << UF_S << "L'unite " << id << " n'a pas d'attribut de vitesse" << lEnd;
+			printf("warning: unit '%d' doesn't have 'speed' attribute\n", id);
 			speed = DEFAULT_SPEED;
 		}
 		unit->speed = speed;
@@ -92,7 +93,7 @@ void EntityFactory::LoadUnits(const char* filename)
 		p = elem->Attribute("animation");
 		if (p == NULL)
 		{
-		    OutputD << UF_S << "L'unite " << id << " n'a pas d'attribut d'animation" << lEnd;
+			printf("warning: unit '%d' doesn't have 'animation' attribute\n", id);
 			p = DEFAULT_ANIMATION;
 		}
 		unit->image = &media.GetImage(p);
@@ -122,7 +123,7 @@ void EntityFactory::LoadUnits(const char* filename)
 		}
 		else
 		{
-			unit->item = "NULL";
+			unit->item.clear();
 		}
 
 		elem = elem->NextSiblingElement();
@@ -188,11 +189,64 @@ void EntityFactory::LoadDecors(const char* filename)
 	}
 }
 
+static void QueryInt(TiXmlElement* elem, const char* attribute, int& data)
+{
+	if (elem->QueryIntAttribute(attribute, &data) != TIXML_SUCCESS)
+	{
+		DIE("int attribute '%s' not found or invalid", attribute);
+	}
+}
+
+static void QueryPtr(TiXmlElement* elem, const char* attribute, const char*& data)
+{
+	data = elem->Attribute(attribute);
+	if (data == NULL)
+	{
+		DIE("string attribute '%s' not found", attribute);
+	}
+}
+
+static void QueryStr(TiXmlElement* elem, const char* attribute, std::string& data)
+{
+	const char* p = NULL;
+	QueryPtr(elem, attribute, p);
+	data = p;
+}
+
+
+
+void EntityFactory::LoadItems(const char* filename)
+{
+	TiXmlDocument doc;
+	if (!doc.LoadFile(filename))
+	{
+		DIE("can't open items definition %s\n%s", filename, doc.ErrorDesc());
+	}
+	TiXmlHandle handle(&doc);
+	TiXmlElement* elem = handle.FirstChildElement().FirstChildElement().Element();
+	const char* name;
+	while (elem != NULL)
+	{
+		QueryPtr(elem, "name", name);
+		Item::Type item_type = Item::StringToType(name);
+
+		ItemPattern item;
+
+		QueryStr(elem, "label", item.label);
+		QueryInt(elem, "x", item.x);
+		QueryInt(elem, "y", item.y);
+		QueryInt(elem, "w", item.w);
+		QueryInt(elem, "h", item.h);
+
+		items_[Item::StringToType(name)] = item;
+		elem = elem->NextSiblingElement();
+	}
+}
+
 
 Unit* EntityFactory::BuildUnit(int id, const sf::Vector2f& position) const
 {
-	UnitDef::const_iterator it;
-	it = units_.find(id);
+	UnitDef::const_iterator it = units_.find(id);
 	if (it != units_.end())
 	{
 		const UnitPattern& unit = it->second;
@@ -203,8 +257,11 @@ Unit* EntityFactory::BuildUnit(int id, const sf::Vector2f& position) const
 		}
 		mob->SetCenter(0, unit.anim[Entity::DOWN]->GetFrame(0).GetHeight());
 		mob->ChooseDirection();
-		Equipment* item = BuildEquipment(unit.item.c_str());
-		mob->SetEquipment(item);
+		if (!unit.item.empty())
+		{
+			Equipment* item = new Equipment(Item::StringToType(unit.item.c_str()));
+			mob->SetEquipment(item);
+		}
 		return mob;
 	}
 	DIE("mob id %d is not implemented", id);
@@ -214,8 +271,7 @@ Unit* EntityFactory::BuildUnit(int id, const sf::Vector2f& position) const
 
 Decor* EntityFactory::BuildDecor(int id, const sf::Vector2i& position) const
 {
-	DecorDef::const_iterator it;
-	it = decors_.find(id);
+	DecorDef::const_iterator it = decors_.find(id);
 	if (it != decors_.end())
 	{
 		const DecorPattern& decor_p = it->second;
@@ -239,61 +295,50 @@ Decor* EntityFactory::BuildDecor(int id, const sf::Vector2i& position) const
 }
 
 
-Item* EntityFactory::BuildItem(int id, const sf::Vector2f& position) const
+Item* EntityFactory::BuildItem(Item::Type type, const sf::Vector2f& position) const
 {
-	// TODO: définition en XML
-	sf::IntRect subrect;
-	switch (id)
+	ItemDef::const_iterator it = items_.find(type);
+	if (it != items_.end())
 	{
-		case 1:
-			subrect = sf::IntRect(0, 16, 0 + 16, 16 + 28);
-			return new Item(id, position, subrect);
-		case 2:
-			subrect = sf::IntRect(0, 0, 16, 16);
-			return new Item(id, position, subrect);
-		case 10:
-			subrect = sf::IntRect(16, 0, 16 + 18, 0 + 32);
-			return new Equipment(id, position, subrect);
-		case 11:
-			subrect = sf::IntRect(35, 15, 35 + 32, 15 + 32);
-			return new Equipment(id, position, subrect);
+		const ItemPattern& item = it->second;
+		sf::IntRect subrect;
+		subrect.Top = item.y;
+		subrect.Bottom = item.y + item.h;
+		subrect.Left = item.x;
+		subrect.Right = item.x + item.w;
+
+		return new Item(type, position, subrect);
 	}
-	DIE("item id %d is not implemented", id);
+	DIE("can't build item: item is not implemented");
 	return NULL;
 }
 
 
-Equipment* EntityFactory::BuildEquipment(const char* name) const
+bool EntityFactory::GetItemSubRect(Item::Type type, sf::IntRect& subrect)
 {
-	// TODO stocker les subrects dans une std::map<std::string, sf::IntRect>
-	Equipment* item = NULL;
-	if (strcmp(name, "bow") == 0)
+	ItemDef::const_iterator it = items_.find(type);
+	if (it != items_.end())
 	{
-		sf::IntRect subrect = sf::IntRect(35, 15, 35 + 32, 15 + 32);
-		item = new Equipment(11, sf::Vector2f(0, 0), subrect);
+		const ItemPattern& item = it->second;
+		subrect.Top = item.y;
+		subrect.Bottom = item.y + item.h;
+		subrect.Left = item.x;
+		subrect.Right = item.x + item.w;
+		return true;
 	}
-	else if (strcmp(name, "NULL") != 0)
-	{
-		DIE("equipement \"%s\" is not implemented", name);
-	}
-	return item;
+	puts("warning: can't get item subrect, item is not defined");
+	return false;
 }
 
 
-const char* EntityFactory::GetItemName(int id) const
+const char* EntityFactory::GetItemName(Item::Type type) const
 {
-	// TODO: définition en XML
-	switch (id)
+	ItemDef::const_iterator it = items_.find(type);
+	if (it != items_.end())
 	{
-		case 1:
-			return "rubis";
-		case 2:
-			return "coeur de vie";
-		case 10:
-			return "epee";
-		case 11:
-			return "arc";
+		return it->second.label.c_str();
 	}
-	return "<no name>";
+	puts("warning: can't get item name, item is not defined");
+	return "<undefined>";
 }
 

@@ -6,11 +6,11 @@
 #include <SFML/Graphics.hpp>
 
 #include "Tileset.hpp"
+#include "../entities/Item.hpp"
 #include "../xml/tinyxml.h"
 
 class Entity;
 class Decor;
-class Item;
 
 /**
  * Une zone de jeu, de la taille de l'écran
@@ -75,11 +75,11 @@ public:
 
 	/**
 	 * Ajouter un objet
-	 * @param[in] id: type de l'objet
+	 * @param[in] type: type de l'objet
 	 * @param[in] x: position x en pixels
 	 * @param[in] y: position y en pixels
 	 */
-	void AddItem(int id, int x, int y);
+	void AddItem(Item::Type type, int x, int y);
 
 	/**
 	 * Obtenir le type d'une tile

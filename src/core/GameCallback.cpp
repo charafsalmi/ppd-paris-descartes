@@ -140,16 +140,11 @@ void Game::InGameShow()
 
 void Game::InventoryOnEvent(const sf::Event& event, input::Action action)
 {
-	// TODO: Evenement à déporter dans le gestionnaire de fenêtre
 	if (action == input::SHOW_INVENTORY)
 	{
 		SetMode(IN_GAME);
 	}
-	if (panel_.GetInventory()->ManageEvent(event) == WinInventory::_CLOSE)
-	{
-		SetMode(IN_GAME);
-	}
-	panel_.GetInventory()->OnEvent(action);
+	player_->GetInventory().OnEvent(action);
 }
 
 
@@ -157,7 +152,7 @@ void Game::InventoryShow()
 {
 	app_.Draw(map_);
 	app_.Draw(panel_);
-	app_.Draw(*panel_.GetInventory());
+	app_.Draw(player_->GetInventory());
 }
 
 // PAUSE /////////////////////////////////////////////////////////

@@ -45,7 +45,12 @@ void Zone::Load(const TiXmlHandle& handle)
 	{
 		for (int j = 0; j < WIDTH; ++j)
 		{
-			assert(!all_tiles.eof()); // TODO: lecture robuste
+			if (all_tiles.eof())
+			{
+				i = HEIGHT;
+				j = WIDTH;
+				puts("warning: tiles are missing");
+			}
 
 			int tile_id;
 			all_tiles >> tile_id;
@@ -95,7 +100,7 @@ void Zone::Load(const TiXmlHandle& handle)
 		}
 		else
 		{
-		    OutputW << ZONE_S << "Entite invalide (ignore)" << lEnd;
+		    puts("warning: can't parse unit");
 		}
 		elem = elem->NextSiblingElement();
 	}
@@ -105,17 +110,19 @@ void Zone::Load(const TiXmlHandle& handle)
 	while (elem != NULL)
 	{
 		bool ok = true;
-		int id, x, y;
-		ok &= (elem->QueryIntAttribute("id", &id) == TIXML_SUCCESS);
+		int x, y;
+		const char* name;
+		ok &= ((name = elem->Attribute("name")) != NULL);
 		ok &= (elem->QueryIntAttribute("x", &x) == TIXML_SUCCESS);
 		ok &= (elem->QueryIntAttribute("y", &y) == TIXML_SUCCESS);
 		if (ok)
 		{
-			AddItem(id, x, y);
+			Item::Type type = Item::StringToType(name);
+			AddItem(type, x, y);
 		}
 		else
 		{
-		    OutputW << ZONE_S << "Item invalide (ignore)" << lEnd;
+		    puts("warning: can't parse item");
 		}
 		elem = elem->NextSiblingElement();
 	}
@@ -137,7 +144,7 @@ void Zone::Load(const TiXmlHandle& handle)
 		}
 		else
 		{
-		    OutputW << ZONE_S << "Decor invalide (ignore)" << lEnd;
+		    puts("warning: can't parse decor");
 		}
 		elem = elem->NextSiblingElement();
 	}
@@ -181,10 +188,10 @@ void Zone::Load(const TiXmlHandle& handle)
 	// création de l'image des tiles
 	if (!tiles_img_.CopyScreen(app, ZONE_SUBRECT))
 	{
-	    OutputW << ZONE_S << "Echec de creation image des tiles" << lEnd;
+		puts("warning: can't copy tiles image from screen");
 	}
 	tiles_sprite_.SetImage(tiles_img_);
-	tiles_sprite_.FlipY(true); // HACK BUGFIX SFML 1.4
+	tiles_sprite_.FlipY(true); // HACK BUGFIX SFML 1.4, 1.5
 	app.Clear();
 	loaded_ = true;
 }
@@ -361,9 +368,9 @@ void Zone::ClearHits()
 }
 
 
-void Zone::AddItem(int id, int x, int y)
+void Zone::AddItem(Item::Type type, int x, int y)
 {
-	Item* item = EntityFactory::GetInstance().BuildItem(id, sf::Vector2f(x, y));
+	Item* item = EntityFactory::GetInstance().BuildItem(type, sf::Vector2f(x, y));
 	item->SetID(last_id_++);
 	items_.push_front(item);
 }

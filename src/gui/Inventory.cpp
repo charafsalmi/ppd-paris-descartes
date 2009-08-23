@@ -1,10 +1,10 @@
 #include <sstream>
 
-#include "WinInventory.hpp"
+#include "Inventory.hpp"
 #include "ControlPanel.hpp"
-#include "../misc/Log.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../entities/Item.hpp"
+#include "../entities/Equipment.hpp"
 #include "../entities/EntityFactory.hpp"
 
 #define ID_BUTTON_CLOSE 6000
@@ -17,7 +17,7 @@
 using namespace gui;
 
 
-WinInventory::WinInventory()
+Inventory::Inventory()
 {
 	// Chargement du descriptif XML
 	Load("data/window/inventory.xml");
@@ -42,16 +42,16 @@ WinInventory::WinInventory()
 }
 
 
-WinInventory::~WinInventory()
+Inventory::~Inventory()
 {
 	UnLoad();
 	Clear();
 }
 
 
-bool WinInventory::AddItem(Item* item)
+bool Inventory::AddItem(Equipment* item)
 {
-	if (HasItem(item->GetTypeID()))
+	if (HasItem(item->GetType()))
 	{
 		return false;
 	}
@@ -84,14 +84,14 @@ bool WinInventory::AddItem(Item* item)
 			}
 		}
 	}
-	puts("inventaire plein");
+	ControlPanel::GetInstance().PrintInfoText("L'inventaire est plein");
 	return false;
 }
 
 
-bool WinInventory::HasItem(int id)
+bool Inventory::HasItem(Item::Type type)
 {
-	if (GetItem1ID() == id || GetItem2ID() == id || GetItem3ID() == id)
+	if (GetItem1Type() == type || GetItem2Type() == type || GetItem3Type() == type)
 	{
 		return true;
 	}
@@ -99,8 +99,7 @@ bool WinInventory::HasItem(int id)
 	{
 		for (int j = 0; j < COUNT_W; ++j)
 		{
-			const Item* item = items_[i][j];
-			if (item != NULL && item->GetTypeID() == id)
+			if (GetItemType(items_[i][j]) == type)
 			{
 				return true;
 			}
@@ -110,7 +109,7 @@ bool WinInventory::HasItem(int id)
 }
 
 
-void WinInventory::Clear()
+void Inventory::Clear()
 {
 	for (int i = 0; i < COUNT_H; ++i)
 	{
@@ -125,13 +124,13 @@ void WinInventory::Clear()
 }
 
 
-int WinInventory::WindowCallback(Control::ControlID id)
+int Inventory::WindowCallback(Control::ControlID id)
 {
 	return id == ID_BUTTON_CLOSE ? _CLOSE : 0;
 }
 
 
-void WinInventory::Render(sf::RenderTarget& app) const
+void Inventory::Render(sf::RenderTarget& app) const
 {
 	Window::Render(app);
 	app.Draw(cursor_.sprite);
@@ -148,13 +147,13 @@ void WinInventory::Render(sf::RenderTarget& app) const
 }
 
 
-void WinInventory::OnEvent(input::Action action)
+void Inventory::OnEvent(input::Action action)
 {
 	static ControlPanel& panel = ControlPanel::GetInstance();
 	int x = cursor_.coords.x;
 	int y = cursor_.coords.y;
 	bool valid = false;
-	Item* temp = NULL;
+	Equipment* temp = NULL;
 	switch (action)
 	{
 		case input::MOVE_UP:
@@ -202,66 +201,80 @@ void WinInventory::OnEvent(input::Action action)
 }
 
 
-void WinInventory::PlaceItem(Item* item, int i, int j)
+void Inventory::PlaceItem(Equipment* item, int i, int j)
 {
 	items_[i][j] = item;
 	if (item != NULL)
 	{
 		int x = (j * (SLOT_SIZE + PADDX)) + (SLOT_SIZE - item->GetSize().x) / 2;
-		int y = (i * (SLOT_SIZE + PADDY)) + (SLOT_SIZE - item->GetSize().y) / 2 + item->GetSize().y;
+		int y = (i * (SLOT_SIZE + PADDY)) + (SLOT_SIZE - item->GetSize().y) / 2;
 		item->SetPosition(OFFSET_X + x, OFFSET_Y + y);
 	}
 }
 
 
-void WinInventory::SetItem1ID(int id)
+void Inventory::SetItem1Type(int type)
 {
-	SetItem(item1_, id);
+	SetItem(item1_, type);
 	ControlPanel::GetInstance().SetItem1(item1_);
 }
 
 
-int WinInventory::GetItem1ID() const
+int Inventory::GetItem1Type() const
 {
-	return item1_ == NULL ? -1 : item1_->GetTypeID();
+	GetItemType(item1_);
 }
 
 
-void WinInventory::SetItem2ID(int id)
+void Inventory::SetItem2Type(int type)
 {
-	SetItem(item2_, id);
+	SetItem(item2_, type);
 	ControlPanel::GetInstance().SetItem2(item2_);
 }
 
 
-int WinInventory::GetItem2ID() const
+int Inventory::GetItem2Type() const
 {
-	return item2_ == NULL ? -1 : item2_->GetTypeID();
+	GetItemType(item2_);
 }
 
 
-void WinInventory::SetItem3ID(int id)
+void Inventory::SetItem3Type(int type)
 {
-	SetItem(item3_, id);
+	SetItem(item3_, type);
 	ControlPanel::GetInstance().SetItem3(item3_);
 }
 
 
-int WinInventory::GetItem3ID() const
+int Inventory::GetItem3Type() const
 {
-	return item3_ == NULL ? -1 : item3_->GetTypeID();
+	GetItemType(item3_);
 }
 
 
-std::string WinInventory::StockToString() const
+void Inventory::SetItem(Equipment*& item, int inttype)
+{
+	if (inttype >= 0 && inttype < Item::COUNT_ITM )
+	{
+		item = new Equipment((Item::Type) inttype);
+	}
+}
+
+
+int Inventory::GetItemType(const Equipment* item)
+{
+	return item == NULL ? Item::ITM_NONE : item->GetType();
+}
+
+
+std::string Inventory::StockToString() const
 {
 	std::ostringstream oss;
 	for (int i = 0; i < COUNT_H; ++i)
 	{
 		for (int j = 0; j < COUNT_W; ++j)
 		{
-			const Item* item = items_[i][j];
-			oss << (item == NULL ? -1 : item->GetTypeID());
+			oss << GetItemType(items_[i][j]);
 			oss << ' ';
 		}
 	}
@@ -269,18 +282,25 @@ std::string WinInventory::StockToString() const
 }
 
 
-void WinInventory::StockFromString(const std::string& str)
+void Inventory::StockFromString(const std::string& str)
 {
 	std::istringstream iss(str);
-	int id;
+	int type;
 	for (int i = 0; i < COUNT_H; ++i)
 	{
 		for (int j = 0; j < COUNT_W; ++j)
 		{
-			if (iss >> id)
+			if (iss >> type)
 			{
-				SetItem(items_[i][j], id);
-				PlaceItem(items_[i][j], i, j);
+				if (type < Item::COUNT_ITM)
+				{
+					SetItem(items_[i][j], (Item::Type) type);
+					PlaceItem(items_[i][j], i, j);
+				}
+				else
+				{
+					printf("warning: item type '%d' is not a valid type\n", type);
+				}
 			}
 			else
 			{
@@ -291,20 +311,11 @@ void WinInventory::StockFromString(const std::string& str)
 }
 
 
-void WinInventory::ClearItem(Item*& item)
+void Inventory::ClearItem(Equipment*& item)
 {
 	if (item != NULL)
 	{
 		delete item;
 		item = NULL;
-	}
-}
-
-
-void WinInventory::SetItem(Item*& item, int id)
-{
-	if (item == NULL && id != -1)
-	{
-		item = EntityFactory::GetInstance().BuildItem(id, sf::Vector2f(0, 0));
 	}
 }

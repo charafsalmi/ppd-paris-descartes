@@ -3,7 +3,6 @@
 #include "ControlPanel.hpp"
 #include "../misc/MediaManager.hpp"
 #include "../misc/Misc.hpp"
-#include "../entities/Item.hpp"
 
 #define INFOTEXT_ORIGIN  sf::Vector2f(422, 24)
 
@@ -78,15 +77,7 @@ ControlPanel::ControlPanel()
 	item3_cadre_ = sf::Shape::Rectangle(ITEM_X + ITEM_SPACING * 2, ITEM_Y,ITEM_X + ITEM_SPACING * 2 + ITEM_SIZE, ITEM_Y + ITEM_SIZE,
 		ITEM_BACKGROUND, 1, sf::Color::Black);
 
-	inventory_ = new WinInventory();
-
 	timer_info_text_ = 0;
-}
-
-
-ControlPanel::~ControlPanel()
-{
-	delete inventory_;
 }
 
 
@@ -154,19 +145,19 @@ void ControlPanel::Render(sf::RenderTarget& app) const
 }
 
 
-void ControlPanel::SetItem1(const Item* item)
+void ControlPanel::SetItem1(const sf::Sprite* item)
 {
     SetItemSubRect(item, item1_);
 }
 
 
-void ControlPanel::SetItem2(const Item* item)
+void ControlPanel::SetItem2(const sf::Sprite* item)
 {
     SetItemSubRect(item, item2_);
 }
 
 
-void ControlPanel::SetItem3(const Item* item)
+void ControlPanel::SetItem3(const sf::Sprite* item)
 {
     SetItemSubRect(item, item3_);
 }
@@ -190,7 +181,7 @@ std::string ControlPanel::ConvertToDigits(int value)
 }
 
 
-void ControlPanel::SetItemSubRect(const Item* item, sf::Sprite& slot)
+void ControlPanel::SetItemSubRect(const sf::Sprite* item, sf::Sprite& slot)
 {
 	if (item == NULL)
 	{

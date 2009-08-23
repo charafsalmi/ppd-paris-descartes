@@ -18,7 +18,7 @@ class Zone:
 			self.y = int(y)
 		
 		def __str__(self):
-			return "id %d (x: %d, y: %d)" % (self.id, self.x, self.y)
+			return "entity id %d at (x: %d, y: %d)" % (self.id, self.x, self.y)
 		
 		@staticmethod
 		def from_xml(node):
@@ -34,6 +34,28 @@ class Zone:
 			node.setAttribute("y", str(self.y))
 			parent.appendChild(node)
 	
+	class Item:
+		def __init__(self, name, x, y):
+			self.name = name
+			self.x = int(x)
+			self.y = int(y)
+		
+		def __str__(self):
+			return "item '%s' at (x: %d, y: %d)" % (self.name, self.x, self.y)
+		
+		@staticmethod
+		def from_xml(node):
+			name = node.getAttribute("name")
+			x = node.getAttribute("x")
+			y = node.getAttribute("y")
+			return Zone.Item(name, x, y)
+		
+		def to_xml(self, parent):
+			node = xml.Element("item")
+			node.setAttribute("name", self.name)
+			node.setAttribute("x", str(self.x))
+			node.setAttribute("y", str(self.y))
+			parent.appendChild(node)
 	
 	class Teleporter:
 		def __init__(self, mapname, x, y, zone_x, zone_y, tile_x, tile_y):
@@ -114,23 +136,21 @@ class Zone:
 			print "WARNING: music is missing"
 		
 		# parsing units
-		self.build_entity_list(self.units, node, "entity")
-		# parsing items
-		self.build_entity_list(self.items, node, "item")
+		for unit_node in node.getElementsByTagName("entity"):
+			self.units.append(Zone.GenericEntity.from_xml(unit_node))
+		
 		# parsing decors
-		self.build_entity_list(self.decors, node, "decor")
+		for decor_node in node.getElementsByTagName("decor"):
+			self.decors.append(Zone.GenericEntity.from_xml(decor_node))
+		
+		# parsing items
+		for itm_node in node.getElementsByTagName("item"):
+			self.items.append(Zone.Item.from_xml(itm_node))
 		
 		# parsing teleporters
-		nodes_tp = node.getElementsByTagName("tp")
-		for tp in nodes_tp:
-			self.teleporters.append(Zone.Teleporter.from_xml(tp))
-		
-	def build_entity_list(self, entities, node, tagname):
-		"Construire une liste d'entités depuis un noeud XML"
-		
-		nodes = node.getElementsByTagName(tagname)
-		for node in nodes:
-			entities.append(Zone.GenericEntity.from_xml(node))
+		for tp_node in node.getElementsByTagName("tp"):
+			self.teleporters.append(Zone.Teleporter.from_xml(tp_node))
+	
 		
 	def draw(self):
 		"Afficher le contenu de la zone dans la carte"
@@ -226,7 +246,7 @@ class Zone:
 		if self.items:
 			node = xml.Element("items")
 			for item in self.items:
-				item.to_xml(node, "item")
+				item.to_xml(node)
 			parent.appendChild(node)
 		
 		# encoding teleporters
@@ -236,11 +256,7 @@ class Zone:
 				tp.to_xml(node)
 			parent.appendChild(node)
 	
-	
-	def count_units(self):
-		return len(self.units)
-	
-	
+
 	def count_entities(self):
 		return len(self.units) + len(self.decors)
 	

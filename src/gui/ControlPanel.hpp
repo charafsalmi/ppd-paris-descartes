@@ -3,10 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "WinInventory.hpp"
 #include "../misc/BitmapString.hpp"
 
-class Item;
 
 class ControlPanel: public sf::Drawable
 {
@@ -39,21 +37,15 @@ public:
 	 */
 	void SetFragCount(int frag_count);
 
-	void SetItem1(const Item* item);
+	void SetItem1(const sf::Sprite* item);
 
-	void SetItem2(const Item* item);
+	void SetItem2(const sf::Sprite* item);
 
-	void SetItem3(const Item* item);
-
-	inline WinInventory* GetInventory()
-	{
-		return inventory_;
-	}
+	void SetItem3(const sf::Sprite* item);
 
 private:
 	ControlPanel();
 	ControlPanel(const ControlPanel& other);
-	~ControlPanel();
 
 	// inherited
 	void Render(sf::RenderTarget& app) const;
@@ -63,9 +55,7 @@ private:
 	 */
 	static std::string ConvertToDigits(int value);
 
-	static void SetItemSubRect(const Item* item, sf::Sprite& slot);
-
-	WinInventory* inventory_;
+	static void SetItemSubRect(const sf::Sprite* item, sf::Sprite& slot);
 
 	BitmapString info_text_;
 	float timer_info_text_;

@@ -167,10 +167,10 @@ void Game::SaveProgression(const char* filename) const
 	parser.WriteItem("frags", player_->GetFrags());
 
 	parser.SeekSection("Inventory");
-	const WinInventory& inventory = *panel_.GetInventory();
-	parser.WriteItem("item1", inventory.GetItem1ID());
-	parser.WriteItem("item2", inventory.GetItem2ID());
-	parser.WriteItem("item3", inventory.GetItem3ID());
+	const Inventory& inventory = player_->GetInventory();
+	parser.WriteItem("item1", inventory.GetItem1Type());
+	parser.WriteItem("item2", inventory.GetItem2Type());
+	parser.WriteItem("item3", inventory.GetItem3Type());
 	parser.WriteItem("stock", inventory.StockToString());
 	// TODO sauver temps de jeu et minimap
 	parser.SaveToFile(filename);
@@ -202,10 +202,10 @@ bool Game::LoadProgression(const char* filename)
 		ok &= parser.ReadItem("hp", hp);
 
 		parser.SeekSection("Inventory");
-		int id1, id2, id3;
-		ok &= parser.ReadItem("item1", id1);
-		ok &= parser.ReadItem("item2", id2);
-		ok &= parser.ReadItem("item3", id3);
+		int it1, it2, it3;
+		ok &= parser.ReadItem("item1", it1);
+		ok &= parser.ReadItem("item2", it2);
+		ok &= parser.ReadItem("item3", it3);
 
 		std::string stock;
 		ok &= parser.ReadItem("stock", stock);
@@ -220,10 +220,10 @@ bool Game::LoadProgression(const char* filename)
 			player_->AddGold(money);
 			player_->AddFrag(frags);
 
-			WinInventory& inventory = *panel_.GetInventory();
-			inventory.SetItem1ID(id1);
-			inventory.SetItem2ID(id2);
-			inventory.SetItem3ID(id3);
+			Inventory& inventory = player_->GetInventory();
+			inventory.SetItem1Type(it1);
+			inventory.SetItem2Type(it2);
+			inventory.SetItem3Type(it3);
 			inventory.StockFromString(stock);
 			return true;
 		}
@@ -237,7 +237,6 @@ void Game::Init()
 {
 	clock_.Reset();
 	player_ = new Player(sf::Vector2f(0, 0));
-	panel_.GetInventory()->Clear();
 
 	if (!LoadProgression(SAVE_FILE))
 	{

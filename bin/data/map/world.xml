@@ -11,7 +11,7 @@
 			<decor id="0" x="9" y="10"/>
 		</decors>
 		<items>
-			<item id="11" x="200" y="400"/>
+			<item name="ITM_BOW" x="200" y="400"/>
 		</items>
 	</zone>
 	<zone>
@@ -94,12 +94,12 @@
 			<decor id="1" x="14" y="9"/>
 		</decors>
 		<items>
-			<item id="1" x="120" y="360"/>
-			<item id="2" x="140" y="380"/>
-			<item id="2" x="160" y="400"/>
-			<item id="2" x="180" y="360"/>
-			<item id="2" x="200" y="380"/>
-			<item id="2" x="220" y="400"/>
+			<item name="ITM_RUBY" x="120" y="360"/>
+			<item name="ITM_HEART" x="140" y="380"/>
+			<item name="ITM_HEART" x="160" y="400"/>
+			<item name="ITM_HEART" x="180" y="360"/>
+			<item name="ITM_HEART" x="200" y="380"/>
+			<item name="ITM_HEART" x="220" y="400"/>
 		</items>
 	</zone>
 	<zone>
@@ -148,8 +148,8 @@
 			<decor id="2" x="5" y="10"/>
 		</decors>
 		<items>
-			<item id="1" x="192" y="480"/>
-			<item id="10" x="200" y="350"/>
+			<item name="ITM_RUBY" x="192" y="480"/>
+			<item name="ITM_SWORD" x="200" y="350"/>
 		</items>
 		<teleporters>
 			<tp map="world" tile_x="11" tile_y="9" x="13" y="3" zone_x="2" zone_y="2"/>
@@ -216,7 +216,7 @@
 			<entity id="1" x="84" y="252"/>
 		</entities>
 		<items>
-			<item id="2" x="200" y="350"/>
+			<item name="ITM_RUBY" x="200" y="350"/>
 		</items>
 	</zone>
 	<zone>

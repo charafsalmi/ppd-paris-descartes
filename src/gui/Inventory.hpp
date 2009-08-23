@@ -3,19 +3,19 @@
 
 #include "../gui_system/Window.hpp"
 #include "../core/InputController.hpp"
+#include "../entities/Equipment.hpp"
 
-class Item;
 
-class WinInventory: public gui::Window
+class Inventory: public gui::Window
 {
 public:
-	WinInventory();
-	~WinInventory();
+	Inventory();
+	~Inventory();
 
 	/** Retours de l'inventaire */
 	enum
 	{
-		_CLOSE=101
+		_CLOSE = 101
 	};
 
 	/**
@@ -23,13 +23,13 @@ public:
 	 * @param item: objet à ajouter
 	 * @return true si ok, false si inventaire plein ou doublon
 	 */
-	bool AddItem(Item* item);
+	bool AddItem(Equipment* item);
 
 	/**
 	 * Savoir si un item est deja présent dans l'inventaire
 	 * @return true s'il y est
 	 */
-	bool HasItem(int id);
+	bool HasItem(Item::Type type);
 
 	/**
 	 * Gère les évenements claviers relatifs au curseur et à l'assignation des touches
@@ -42,29 +42,35 @@ public:
 	 */
 	void Clear();
 
-	void SetItem1ID(int id);
+	/**
+	 * Assigner le premier objet
+	 */
+	void SetItem1Type(int type);
 
 	/**
-	 * Permet de connaitre l'ID du premier objet assignable
-	 * @return l'ID ou 0 si non assigné
+	 * Obtenir le type du premier objet assigné
 	 */
-	int GetItem1ID() const;
-
-	void SetItem2ID(int id);
-
-	 /**
-	 * Permet de connaitre l'ID du deuxième objet assignable
-	 * @return l'ID ou 0 si non assigné
-	 */
-	int GetItem2ID() const;
-
-	void SetItem3ID(int id);
+	int GetItem1Type() const;
 
 	/**
-	 * Permet de connaitre l'ID du troisième objet assignable
-	 * @return l'ID ou 0 si non assigné
+	 * Assigner le deuxième objet
 	 */
-	int GetItem3ID() const;
+	void SetItem2Type(int type);
+
+	/**
+	 * Obtenir le type du deuxième objet assigné
+	 */
+	int GetItem2Type() const;
+
+	/**
+	 * Assigner le troisième objet
+	 */
+	void SetItem3Type(int type);
+
+	/**
+	 * Obtenir le type du troisième objet assigné
+	 */
+	int GetItem3Type() const;
 
 	/**
 	 * Remplir le stock à partir d'une chaîne d'id
@@ -80,15 +86,18 @@ private:
 	// inherited
 	void Render(sf::RenderTarget&) const;
 
-	void PlaceItem(Item* item, int x, int y);
+	void PlaceItem(Equipment* item, int x, int y);
 
 	int WindowCallback(gui::Control::ControlID id);
 
-	static void ClearItem(Item*& item);
+	static void ClearItem(Equipment*& item);
 
-	static void SetItem(Item*& item, int id);
+	// setter générique
+	static void SetItem(Equipment*& item, int inttype);
 
-	/** Identifiant du slot principale */
+	// getter générique
+	static int GetItemType(const Equipment* item);
+
 	enum
 	{
 		COUNT_W = 5, COUNT_H = 3
@@ -101,11 +110,11 @@ private:
 	};
 	Cursor cursor_;
 
-	Item* items_[COUNT_H][COUNT_W];
+	Equipment* items_[COUNT_H][COUNT_W];
 
-	Item* item1_;
-	Item* item2_;
-	Item* item3_;
+	Equipment* item1_;
+	Equipment* item2_;
+	Equipment* item3_;
 };
 
 #endif // WININVENTORY_HPP

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<window x="121" y="149" w="400" h="280" background="interface/inventory/background">
-	<label x="100" y="10" font="bretro">Inventaire</label>
-	
-	<button id="6000" pic="interface/pause/button" OnHover="interface/pause/button_o" x="70" y="270" />
-	<label x="115" y="290" font="bretro">Fermer</label>
-</window>
-
