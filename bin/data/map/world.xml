@@ -150,6 +150,7 @@
 		<items>
 			<item name="ITM_RUBY" x="192" y="480"/>
 			<item name="ITM_SWORD" x="200" y="350"/>
+			<item name="ITM_RUBY" x="166" y="481"/>
 		</items>
 		<teleporters>
 			<tp map="world" tile_x="11" tile_y="9" x="13" y="3" zone_x="2" zone_y="2"/>
@@ -228,11 +229,15 @@
 		</music>
 		<entities>
 			<entity id="1" x="350" y="170"/>
-			<entity id="0" x="200" y="270"/>
-			<entity id="2" x="400" y="70"/>
-			<entity id="0" x="400" y="390"/>
-			<entity id="1" x="600" y="400"/>
+			<entity id="0" x="260" y="298"/>
+			<entity id="2" x="511" y="140"/>
+			<entity id="0" x="371" y="394"/>
+			<entity id="1" x="526" y="373"/>
 		</entities>
+		<items>
+			<item name="ITM_HEART" x="472" y="275"/>
+			<item name="ITM_HEART" x="507" y="311"/>
+		</items>
 	</zone>
 	<zone>
 		<tiles>
@@ -294,6 +299,9 @@
 		<entities>
 			<entity id="0" x="68" y="187"/>
 		</entities>
+		<items>
+			<item name="ITM_RUBY" x="361" y="133"/>
+		</items>
 	</zone>
 	<zone>
 		<tiles>

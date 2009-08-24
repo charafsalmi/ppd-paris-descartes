@@ -17,6 +17,7 @@ class Map(TiledCanvas):
 	Z_TILE = 1000
 	Z_DECOR = 2000
 	Z_UNIT = 3000
+	Z_ITEM = 4000
 	
 	class Tile(QGraphicsPixmapItem):
 		def __init__(self, qimage, id):
@@ -79,6 +80,19 @@ class Map(TiledCanvas):
 			self.zone_element.y = y / TiledCanvas.TILESIZE - 1
 	
 	
+	class Item(Entity):
+		def __init__(self, zone_item):
+			Map.Entity.__init__(self, zone_item)
+			self.setPixmap(QPixmap.fromImage(EntityFactory().get_item_by_name(zone_item.name).sprite))
+			self.setZValue(Map.Z_ITEM)
+			self.zone_item = zone_item
+		
+		def place(self, x, y):
+			pixmap = self.pixmap()
+			y -= pixmap.height()
+			self.setPos(x, y)
+		
+		
 	def __init__(self, tileset, tileset_path):
 		TiledCanvas.__init__(self)
 		self.tileset = tileset
@@ -328,6 +342,12 @@ class Map(TiledCanvas):
 		self.mode_place_entity()
 	
 	
+	def place_item(self, name):
+		zone_item = self.get_current_zone().add_item(name, 0, 0)
+		self.selected_entity = self.add_item(zone_item)
+		self.mode_place_entity()
+	
+	
 	def mode_place_tile(self):
 		"Utilisation en mode placement de tile"
 		self.on_click = self.put_current_tile
@@ -386,6 +406,9 @@ class Map(TiledCanvas):
 				elif isinstance(entity, Map.Decor):
 					zone.remove_decor(entity.get_zone_element())
 					print "decor deleted"
+				elif isinstance(entity, Map.Item):
+					zone.remove_item(entity.get_zone_element())
+					print "item deleted"
 				else:
 					raise Exception("Can't remove unknow entity")
 					
@@ -417,6 +440,13 @@ class Map(TiledCanvas):
 		self.entities.append(decor)
 		return decor
 	
+	def add_item(self, zone_item):
+		
+		item = Map.Item(zone_item)
+		self.scene.addItem(item)
+		item.place(zone_item.x, zone_item.y)
+		self.entities.append(item)
+		return item
 	
 	def clear_units(self):
 		"Supprimer toutes les entités de la scène"

@@ -30,6 +30,8 @@ private:
 	int width_;
 	int height_;
 	int square_size_;
+
+	float timer_;
 };
 
 

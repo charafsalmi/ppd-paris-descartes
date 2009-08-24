@@ -32,13 +32,13 @@
 		<music>
 			cave
 		</music>
-		<decors>
-			<decor id="5" x="12" y="5" />
-			<decor id="5" x="12" y="6" />
-		</decors>
 		<entities>
 			<entity id="1" x="151" y="397"/>
 		</entities>
+		<decors>
+			<decor id="5" x="12" y="5"/>
+			<decor id="5" x="12" y="6"/>
+		</decors>
 		<items>
 			<item name="ITM_RUBY" x="170" y="100"/>
 			<item name="ITM_RUBY" x="200" y="100"/>
@@ -62,7 +62,7 @@
 			cave
 		</music>
 		<entities>
-			<entity id="1" x="180" y="149"/>
+			<entity id="1" x="111" y="188"/>
 		</entities>
 		<items>
 			<item name="ITM_RUBY" x="170" y="160"/>

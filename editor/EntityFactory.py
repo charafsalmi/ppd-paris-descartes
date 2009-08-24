@@ -34,6 +34,17 @@ class EntityFactory(object):
 			h = self.height * TiledCanvas.TILESIZE
 			self.sprite = image.copy(x, y, w, h)
 	
+	class Item:
+		def __init__(self, label, x, y, w, h):
+			self.label = label
+			self.x = int(x)
+			self.y = int(y)
+			self.w = int(w)
+			self.h = int(h)
+			
+			image = QImage("../bin/data/images/items.png")
+			self.sprite = image.copy(self.x, self.y, self.w, self.h)
+			
 	instance = None
 	
 	def __new__(cls):
@@ -41,6 +52,7 @@ class EntityFactory(object):
 			cls.instance = object.__new__(cls)
 			cls.instance.units = {}
 			cls.instance.decors = {}
+			cls.instance.items = {}
 			
 		return cls.instance
 	
@@ -66,7 +78,7 @@ class EntityFactory(object):
 		try:
 			doc = xml.parse(filename)
 		except Exception, what:
-			print "couldn't load decors definition: ", what
+			print "couldn't load decors definition:", what
 			return False
 		
 		print "loading decors ..."
@@ -74,8 +86,8 @@ class EntityFactory(object):
 		for node in decor_nodes:
 			id = int(node.getAttribute("id"))
 			name = node.getAttribute("name")
-			x  = node.getAttribute("x")
-			y  = node.getAttribute("y")
+			x = node.getAttribute("x")
+			y = node.getAttribute("y")
 			width = node.getAttribute("w")
 			height = node.getAttribute("h")
 			block = node.getAttribute("block")
@@ -83,20 +95,42 @@ class EntityFactory(object):
 			
 			self.decors[id] = EntityFactory.Decor(name, x, y, width, height, block, movable)
 		return True
-
+	
+	def load_items(self, filename):
+		try:
+			doc = xml.parse(filename)
+		except Exception, what:
+			print "couldn't load items definition:", what
+			return False
+		
+		print "loading items ..."
+		item_nodes = doc.getElementsByTagName("item")
+		for node in item_nodes:
+			name = node.getAttribute("name")
+			label = node.getAttribute("label")
+			x = node.getAttribute("x")
+			y = node.getAttribute("y")
+			w = node.getAttribute("w")
+			h = node.getAttribute("h")
+			self.items[str(name)] = EntityFactory.Item(label, x, y, w, h)
+		
+		return True
+		
 	def get_unit_by_id(self, id):
-		if id in self.units:
-			return self.units[id]
-		return None
+		return self.units[id]
 	
 	def get_decor_by_id(self, id):
-		if id in self.decors:
-			return self.decors[id]
-		return None
+		return self.decors[id]
 	
+	def get_item_by_name(self, name):
+		return self.items[name]
+
 	def get_units(self):
 		return self.units
 	
 	def get_decors(self):
 		return self.decors
-		
+	
+	def get_items(self):
+		return self.items
+	

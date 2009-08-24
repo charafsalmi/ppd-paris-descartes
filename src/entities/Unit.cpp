@@ -4,7 +4,7 @@
 #include "../core/Zone.hpp"
 
 #define BLEED_DELAY         0.5f
-#define DYING_DELAY         3.0f
+#define DYING_DELAY         1.5f
 #define KNOCK_DELAY         0.8f
 #define KNOCK_INITIAL_SPEED 400
 #define KNOCK_SLOW_FACTOR   0.9

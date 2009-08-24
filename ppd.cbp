@@ -65,8 +65,6 @@
 		<Unit filename="src/core/InputController.cpp" />
 		<Unit filename="src/core/InputController.hpp" />
 		<Unit filename="src/core/Main.cpp" />
-		<Unit filename="src/core/Script.cpp" />
-		<Unit filename="src/core/Script.hpp" />
 		<Unit filename="src/core/SoundSystem.cpp" />
 		<Unit filename="src/core/SoundSystem.hpp" />
 		<Unit filename="src/core/Tileset.cpp" />

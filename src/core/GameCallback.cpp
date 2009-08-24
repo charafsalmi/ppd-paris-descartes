@@ -211,6 +211,7 @@ void Game::GameOverShow()
 void Game::MiniMapShow()
 {
 	InGameShow();
+	mini_map_->Update(app_.GetFrameTime());
 	app_.Draw(*mini_map_);
 }
 

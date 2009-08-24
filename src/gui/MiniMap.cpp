@@ -8,6 +8,8 @@
 #define WIDTH_PX   160
 #define HEIGHT_PX  160
 
+#define BLINK_DELAY 1.4f
+
 
 MiniMap::MiniMap(const ZoneContainer& zones)
 {
@@ -32,6 +34,7 @@ MiniMap::MiniMap(const ZoneContainer& zones)
 	}
 	player_pos_ = NULL;
 	square_size_ = square_size;
+	timer_ = 0;
 }
 
 
@@ -68,9 +71,18 @@ void MiniMap::SetPlayerPosition(const sf::Vector2i& coords)
 }
 
 
-void MiniMap::Update(float)
+void MiniMap::Update(float frametime)
 {
-	// TODO
+	timer_ -= frametime;
+	if (timer_ <= 0)
+	{
+		timer_ = BLINK_DELAY;
+	}
+	else
+	{
+		float rate = 127 + (127 * timer_ / BLINK_DELAY);
+		player_pos_->SetColor(sf::Color(0xFF, 0, 0, rate));
+	}
 }
 
 

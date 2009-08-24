@@ -93,17 +93,27 @@ class MainWindow(QMainWindow):
 		act_rem_col.setStatusTip("Supprimer une colonne de zones de le carte")
 		
 		act_add_unit = QAction(QIcon("icons/unit-add.png"), u"Ajouter une unité", self)
-		act_add_unit.setShortcut(Qt.Key_Plus)
+		act_add_unit.setStatusTip(u"Choisir et positionner une unité dans la zone courante")
+		act_add_unit.setShortcut(Qt.Key_1)
 		self.connect(act_add_unit, SIGNAL("triggered()"), self.add_unit)
 		
 		act_add_decor = QAction(QIcon("icons/decor-add.png"), u"Ajouter un décor", self)
+		act_add_decor.setStatusTip(u"Choisir et positionner un décor dans la zone courante")
+		act_add_decor.setShortcut(Qt.Key_2)
 		self.connect(act_add_decor, SIGNAL("triggered()"), self.add_decor)
 		
+		act_add_item = QAction(QIcon("icons/item-add.png"), u"Ajouter un objet", self)
+		act_add_item.setStatusTip(u"Choisir et positionner un objet dans la zone courante")
+		act_add_item.setShortcut(Qt.Key_3)
+		self.connect(act_add_item, SIGNAL("triggered()"), self.add_item)
+		
 		act_del_entity = QAction(QIcon("icons/entity-remove.png"), u"Supprimer une entité", self)
+		act_del_entity.setStatusTip(u"Supprimer n'importe quelle entité de la zone courante")
 		act_del_entity.setShortcut("S")
 		self.connect(act_del_entity, SIGNAL("triggered()"), self.delete_entity)
 		
 		act_move_entity = QAction(QIcon("icons/entity-move.png"), u"Déplacer une entité", self)
+		act_move_entity.setStatusTip(u"Déplacer n'importe quelle entité de la zone courante")
 		act_move_entity.setShortcut("D")
 		self.connect(act_move_entity, SIGNAL("triggered()"), self.move_entity)
 		
@@ -120,9 +130,9 @@ class MainWindow(QMainWindow):
 		edit.addSeparator()
 		edit.addAction(act_add_unit)
 		edit.addAction(act_add_decor)
+		edit.addAction(act_add_item)
 		edit.addAction(act_move_entity)
 		edit.addAction(act_del_entity)
-
 		
 		# menu Navigation
 		# up
@@ -164,6 +174,7 @@ class MainWindow(QMainWindow):
 		toolbar.addSeparator()
 		toolbar.addAction(act_add_unit)
 		toolbar.addAction(act_add_decor)
+		toolbar.addAction(act_add_item)
 		toolbar.addSeparator()
 		toolbar.addAction(act_move_entity)
 		toolbar.addAction(act_del_entity)
@@ -205,6 +216,7 @@ class MainWindow(QMainWindow):
 		self.factory = EntityFactory()
 		self.factory.load_units(config["units"])
 		self.factory.load_decors(config["decors"])
+		self.factory.load_items(config["items"])
 		
 		self.center()
 		
@@ -257,6 +269,16 @@ class MainWindow(QMainWindow):
 				self.factory.get_decor_by_id(decor_id).name)
 	
 	
+	def add_item(self):
+		win = Dialog.WindowListItem(self)
+		win.fill(self.factory)
+		win.exec_()
+		item_name = win.get_selected_id()
+		if item_name != -1:
+			self.map.place_item(item_name)
+			self.statusBar().showMessage(u"Cliquez pour placer l'objet \"%s\"" %
+				self.factory.get_item_by_name(item_name).label)
+		
 	def delete_entity(self):
 		if self.map.get_current_zone().count_entities() == 0:
 			QMessageBox.warning(self, "Action impossible", u"Il n'y a pas d'entités à supprimer dans cette zone")
@@ -377,7 +399,7 @@ class MainWindow(QMainWindow):
 	def closeEvent(self, event):
 		"Confirmation avant de quitter"
 		
-		reply = QMessageBox.question(self, "Quitter", "O RLY?",
+		reply = QMessageBox.question(self, "Quitter", "Quitter l'éditeur ?",
 			QMessageBox.Yes, QMessageBox.No)
 		if reply == QMessageBox.Yes:
 			event.accept()

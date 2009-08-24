@@ -166,7 +166,12 @@ class Zone:
 		# rendering units
 		for unit in self.units:
 			self.map.add_unit(unit)
-
+		
+		# rendering items
+		for item in self.items:
+			self.map.add_item(item)
+		
+		
 	def put_tile(self, x, y, id):
 		"Mettre une tile à une position dans la zone"
 		
@@ -198,6 +203,12 @@ class Zone:
 		return decor
 	
 	
+	def add_item(self, name, x, y):
+		item = Zone.Item(name, x, y)
+		self.items.append(item)
+		return item
+	
+	
 	def remove_unit(self, unit):
 		self.units.remove(unit)
 	
@@ -205,6 +216,10 @@ class Zone:
 	def remove_decor(self, decor):
 		self.decors.remove(decor)
 		
+	
+	def remove_item(self, item):
+		self.items.remove(item)
+	
 	
 	def to_xml(self, parent):
 		"Encoder la zone en xml"
@@ -258,7 +273,7 @@ class Zone:
 	
 
 	def count_entities(self):
-		return len(self.units) + len(self.decors)
+		return len(self.units) + len(self.decors) + len(self.items)
 	
 	
 	def get_music(self):
