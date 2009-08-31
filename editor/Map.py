@@ -95,28 +95,21 @@ class Map(TiledCanvas):
 		
 	def __init__(self, tileset, tileset_path):
 		TiledCanvas.__init__(self)
-		self.tileset = tileset
 		
-		# découpage de la feuille en une liste de tiles
-		self.img_tiles = []
-		img_tileset = QImage(tileset_path)
-		for i in xrange(tileset.WIDTH * tileset.HEIGHT):
-			left = (i % tileset.WIDTH) * self.TILESIZE
-			top = (i / tileset.WIDTH) * self.TILESIZE
-			
-			tile = img_tileset.copy(left, top, self.TILESIZE, self.TILESIZE)
-			self.img_tiles.append(tile)
+		self.tileset = tileset	
+		self.set_tileset_image(tileset_path)
 		
 		self.setFocusPolicy(Qt.NoFocus)
 		self.width = 0 # nombre de zones en largeur
 		self.height = 0 # nombre de zones en hauteur
 		self.zones = []
 		self.history = []
+		self.tiles = []
 		
 		# widget is disabled untill a map is loaded
 		self.setEnabled(False)
 		self.set_cursor_visible(False)
-		
+		self.tiles_builded = False
 		self.filename = None
 		
 		# on click callback method
@@ -136,6 +129,35 @@ class Map(TiledCanvas):
 		self.hover_cursor.setVisible(False)
 		self.hover_cursor.setZValue(Map.Z_UNIT + 1)
 		
+	
+	def set_tileset_image(self, tileset_path):
+	
+		# découpage de la feuille en une liste de tiles
+		self.img_tiles = []
+		img_tileset = QImage(tileset_path)
+		for i in xrange(self.tileset.WIDTH * self.tileset.HEIGHT):
+			left = (i % self.tileset.WIDTH) * self.TILESIZE
+			top = (i / self.tileset.WIDTH) * self.TILESIZE
+			
+			tile = img_tileset.copy(left, top, self.TILESIZE, self.TILESIZE)
+			self.img_tiles.append(tile)
+		self.tiles_builded = False
+		
+	
+	def build_tiles(self):
+		# suppression des éventuelles anciennes tiles 
+		for tile in self.tiles:
+			self.scene.removeItem(tile)
+		self.tiles = []
+		# création des objets tiles dans la scène
+		for i in xrange(Zone.WIDTH * Zone.HEIGHT):
+			tile = Map.Tile(self.img_tiles[0], 0) # 1st tile (id 0)
+			self.scene.addItem(tile)
+			x, y = self.pos_to_coords(i)
+			tile.setPos(x, y)
+			self.tiles.append(tile)
+		self.tiles_builded = True
+	
 	
 	def open(self, filename):
 		"Charger une carte depuis un fichier"
@@ -160,8 +182,8 @@ class Map(TiledCanvas):
 			print "error: zones manquantes"	
 			return
 		
-		# build tile-items at first load
-		if not self.isEnabled():
+		# build tile-items at first load (or after config updated)
+		if not self.tiles_builded:
 			self.build_tiles()
 			self.setEnabled(True)
 			self.set_cursor_visible(True)
@@ -179,6 +201,13 @@ class Map(TiledCanvas):
 		self.set_current_zone(0)
 		return True
 	
+	
+	def reload(self):
+		if self.filename:
+			index = self.current_zone_pos
+			self.open(self.filename)
+			self.set_current_zone(index)
+		
 	
 	def create(self, width, height):
 		"Créer une carte vierge"
@@ -236,18 +265,7 @@ class Map(TiledCanvas):
 			return True
 			
 		return False
-		
 	
-	def build_tiles(self):
-		# création des objets tiles dans la scène
-		self.tiles = []
-		for i in xrange(Zone.WIDTH * Zone.HEIGHT):
-			tile = Map.Tile(self.img_tiles[0], 0) # 1st tile (id 0)
-			self.scene.addItem(tile)
-			x, y = self.pos_to_coords(i)
-			tile.setPos(x, y)
-			self.tiles.append(tile)
-
 	
 	def get_tile_images(self):
 		"Liste des images des tiles découpées"
@@ -440,6 +458,7 @@ class Map(TiledCanvas):
 		self.entities.append(decor)
 		return decor
 	
+	
 	def add_item(self, zone_item):
 		
 		item = Map.Item(zone_item)
@@ -447,6 +466,7 @@ class Map(TiledCanvas):
 		item.place(zone_item.x, zone_item.y)
 		self.entities.append(item)
 		return item
+	
 	
 	def clear_units(self):
 		"Supprimer toutes les entités de la scène"

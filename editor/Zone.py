@@ -117,6 +117,11 @@ class Zone:
 	def load_from_xml(self, node):
 		"Construction de la zone depuis un noeud XML"
 		
+		# parsing music
+		self.music = node.getAttribute("music").strip()
+		if self.music == "":
+			print "WARNING: music is missing"
+		
 		# parsing tiles (stockées dans une liste d'entier)
 		self.tile_ids = map(
 			int,
@@ -128,15 +133,9 @@ class Zone:
 			print "missing tiles will be set to 0"
 			for i in xrange(found, count):
 				self.tile_ids.append(0)
-				
-		# parsing music
-		try:
-			self.music = node.getElementsByTagName("music")[0].firstChild.data.strip()
-		except IndexError:
-			print "WARNING: music is missing"
 		
 		# parsing units
-		for unit_node in node.getElementsByTagName("entity"):
+		for unit_node in node.getElementsByTagName("mob"):
 			self.units.append(Zone.GenericEntity.from_xml(unit_node))
 		
 		# parsing decors
@@ -224,6 +223,9 @@ class Zone:
 	def to_xml(self, parent):
 		"Encoder la zone en xml"
 		
+		# encoding music
+		parent.setAttribute("music", self.music)
+		
 		# encoding tiles
 		tiles = xml.Text()
 		tiles.data = ""
@@ -236,18 +238,11 @@ class Zone:
 		node.appendChild(tiles)
 		parent.appendChild(node)
 		
-		# encoding music
-		node = xml.Element("music")
-		music = xml.Text()
-		music.data = self.music
-		node.appendChild(music)
-		parent.appendChild(node)
-		
 		# encoding units
 		if self.units:
-			node = xml.Element("entities")
+			node = xml.Element("mobs")
 			for unit in self.units:
-				unit.to_xml(node, "entity")
+				unit.to_xml(node, "mob")
 			parent.appendChild(node)
 		
 		# encoding decors

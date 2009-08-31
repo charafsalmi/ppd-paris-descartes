@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<window x="121" y="149" w="400" h="280" background="interface/inventory/background">
+	<label x="100" y="10" font="bretro">Inventaire</label>
+</window>
+

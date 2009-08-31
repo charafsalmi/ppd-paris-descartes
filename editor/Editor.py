@@ -9,6 +9,7 @@ import os
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
+from TiledCanvas import TiledCanvas
 from Tileset import Tileset
 from Map import Map
 from Zone import Zone
@@ -20,6 +21,8 @@ from Config import Config
 
 class MainWindow(QMainWindow):
 
+	CONFIG_FILE = "config/config.txt"
+	
 	def __init__(self, parent=None):
 		QMainWindow.__init__(self, parent)
 		
@@ -158,6 +161,14 @@ class MainWindow(QMainWindow):
 		navigation.addAction(go_left)
 		navigation.addAction(go_right)
 		
+		# menu Outils
+		tools = menubar.addMenu("&Outils")
+		act_config = QAction(QIcon("icons/configuration.png"), u"Configuration", self)
+		self.connect(act_config, SIGNAL("triggered()"), self.show_config)
+		tools.addAction(act_config)
+
+		
+		# menu Aide
 		help = menubar.addMenu("&Aide")
 		about = QAction(QIcon("icons/information.png"), u"À propos", self)
 		self.connect(about, SIGNAL("triggered()"), self.about)
@@ -182,8 +193,10 @@ class MainWindow(QMainWindow):
 		
 		# LOADING CONFIG
 		config = Config()
-		config.load_from_file("config/config.txt")
+		config.load_from_file(self.CONFIG_FILE)
 		self.default_map_path = config["map_path"]
+		TiledCanvas.TILESIZE = int(config["tilesize"])
+		
 		
 		# WIDGETS
 		self.info = FrameInfo()
@@ -222,6 +235,8 @@ class MainWindow(QMainWindow):
 		
 		# STATUS BAR
 		self.statusBar().showMessage(u"Prêt")
+		
+		self.config = config
 	
 	
 	def music_selected(self, music):
@@ -229,6 +244,7 @@ class MainWindow(QMainWindow):
 		music_name = os.path.splitext(str(music))[0]
 		self.map.get_current_zone().set_music(music_name)
 		self.statusBar().showMessage(u"Musique sélectionnée : " + music_name)
+	
 	
 	def undo(self):
 		if self.map.undo_put_tile():
@@ -243,9 +259,30 @@ class MainWindow(QMainWindow):
 			self.map.fill_with_tile(tile_id)
 	
 	
+	def show_config(self):
+		win = Dialog.ConfigDialog(self)
+		win.load_config(self.config)
+		win.exec_()
+		if win.valided():
+			win.write_config(self.config)
+			self.config.save_to_file(self.CONFIG_FILE)
+			#updating application
+			self.info.set_musics(self.config["musics"])
+			TiledCanvas.TILESIZE = int(self.config["tilesize"])
+			self.tileset.set_tileset_image(self.config["tileset"])
+			self.tileset.make_cursor()
+			self.map.set_tileset_image(self.config["tileset"])
+			
+			self.factory.load_units(self.config["units"])
+			self.factory.load_decors(self.config["decors"])
+			self.factory.load_items(self.config["items"])
+			
+			self.map.reload()
+			
+		
 	def about(self):
 		QMessageBox.about(self, u"À propos", u"Éditeur de cartes XML en Python / Qt")
-	
+		
 	
 	def add_unit(self):
 		win = Dialog.UnitListWindow(self)
@@ -399,7 +436,7 @@ class MainWindow(QMainWindow):
 	def closeEvent(self, event):
 		"Confirmation avant de quitter"
 		
-		reply = QMessageBox.question(self, "Quitter", "Quitter l'éditeur ?",
+		reply = QMessageBox.question(self, "Quitter", u"Quitter l'éditeur ?",
 			QMessageBox.Yes, QMessageBox.No)
 		if reply == QMessageBox.Yes:
 			event.accept()

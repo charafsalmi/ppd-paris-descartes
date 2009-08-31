@@ -33,7 +33,15 @@ Zone::~Zone()
 void Zone::Load(const TiXmlHandle& handle)
 {
 	// chargement de la musique
-	music_name_ = handle.FirstChildElement("music").Element()->GetText();
+	const char* p = handle.ToElement()->Attribute("music");
+	if (p == NULL)
+	{
+		puts("warning: missiing 'music' attribute");
+	}
+	else
+	{
+		music_name_ = p;
+	}
 
 	// chargement des tiles
 	sf::RenderWindow& app = Game::GetInstance().GetApp();
@@ -80,9 +88,9 @@ void Zone::Load(const TiXmlHandle& handle)
 		}
 	}
 
-	// chargement des entités
+	// chargement des mobs
 	EntityFactory& factory = EntityFactory::GetInstance();
-	elem = handle.FirstChildElement("entities").FirstChildElement().Element();
+	elem = handle.FirstChildElement("mobs").FirstChildElement().Element();
 	while (elem != NULL)
 	{
 		bool ok = true;
@@ -100,7 +108,7 @@ void Zone::Load(const TiXmlHandle& handle)
 		}
 		else
 		{
-		    puts("warning: can't parse unit");
+		    puts("warning: can't parse mob");
 		}
 		elem = elem->NextSiblingElement();
 	}

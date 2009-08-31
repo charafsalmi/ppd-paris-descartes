@@ -68,6 +68,7 @@ class FrameInfo(QFrame):
 		self.lab_zone_val.setText("y: %d ; x: %d" % (i, j))
 	
 	def set_musics(self, music_file):
+		self.combo_music.clear()
 		for line in open(music_file):
 			self.combo_music.addItem(line[:-1])
 	

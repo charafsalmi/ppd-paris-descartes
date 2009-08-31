@@ -1,7 +1,7 @@
-map_path = ../bin/data/map
-tileset = ../bin/data/images/tileset.png
-units = ../bin/data/xml/units.xml
 decors = ../bin/data/xml/decors.xml
 items = ../bin/data/xml/items.xml
-musics = ../bin/data/music/music.txt
-
+map_path = ../bin/data/map
+musics = /home/alexandre/devel/ppd-paris-descartes/bin/data/music/music.txt
+tileset = ../bin/data/images/tileset.png
+tilesize = 32
+units = ../bin/data/xml/units.xml

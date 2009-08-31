@@ -12,7 +12,7 @@ class Config(dict):
 	
 	def save_to_file(self, filename):
 		file = open(filename, "w")
-		for key, value in self.iteritems():
+		for key, value in sorted(self.iteritems()):
 			file.write("%s = %s\n" % (key, value))
 		file.close()
 

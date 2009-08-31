@@ -6,23 +6,14 @@ from PyQt4.QtCore import *
 
 class TiledCanvas(QGraphicsView):
 	TILESIZE = 32
+	
 	def __init__(self):
 		self.scene = QGraphicsScene()
 		self.scene.setItemIndexMethod(QGraphicsScene.NoIndex)
-		
 		QGraphicsView.__init__(self, self.scene)
 		
-		#self.setCacheMode(QGraphicsView.CacheBackground)
-		#self.setRenderHint(QPainter.Antialiasing)
-
-		rect = QRectF(0, 0, self.TILESIZE, self.TILESIZE)
-		pen = QPen(Qt.red, 1, Qt.SolidLine)
-		brush = QBrush(QColor.fromRgb(255, 0, 0, 128))
-		
-		self.cursor = self.scene.addRect(rect, pen, brush)
-		self.cursor.setVisible(True)
-		self.cursor.setZValue(9000)
-		#self.cursor.setPos(self.mapToScene(0, 0)) # WTF
+		self.cursor = None
+		self.make_cursor()
 		
 		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -32,6 +23,18 @@ class TiledCanvas(QGraphicsView):
 		self.current_tile_id = -1	
 	
 		self.setResizeAnchor(QGraphicsView.NoAnchor)
+	
+	def make_cursor(self):
+		if self.cursor != None:
+			self.scene.removeItem(self.cursor)
+		
+		rect = QRectF(0, 0, self.TILESIZE, self.TILESIZE)
+		pen = QPen(Qt.red, 1, Qt.SolidLine)
+		brush = QBrush(QColor.fromRgb(255, 0, 0, 128))
+		
+		self.cursor = self.scene.addRect(rect, pen, brush)
+		self.cursor.setVisible(True)
+		self.cursor.setZValue(9000)
 		
 	def set_cursor_color(self, r, g, b, alpha=128):
 		brush = QBrush(QColor.fromRgb(r, g, b, alpha))

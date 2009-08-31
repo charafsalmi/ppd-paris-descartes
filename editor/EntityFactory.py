@@ -64,6 +64,7 @@ class EntityFactory(object):
 			return False
 		
 		print "loading units ..."
+		self.units = {}
 		unit_nodes = doc.getElementsByTagName("mob")
 		for node in unit_nodes:
 			id = int(node.getAttribute("id"))
@@ -82,6 +83,7 @@ class EntityFactory(object):
 			return False
 		
 		print "loading decors ..."
+		self.decors = {}
 		decor_nodes = doc.getElementsByTagName("decor")
 		for node in decor_nodes:
 			id = int(node.getAttribute("id"))
@@ -104,6 +106,7 @@ class EntityFactory(object):
 			return False
 		
 		print "loading items ..."
+		self.items = {}
 		item_nodes = doc.getElementsByTagName("item")
 		for node in item_nodes:
 			name = node.getAttribute("name")

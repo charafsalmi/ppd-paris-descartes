@@ -1,17 +1,16 @@
 * Core
 	- touches configurables (d'abord fichier de config, puis la GUI)
 	- collisions plus élaborées (améliorer le système d'attaque, NPC, déplacer des objets)
-	- Clean-up pour le système de Log
+	- Clean-up pour le système de Log (WIP)
 	- i18n
 
 * Tileset
-	- gérer les TileEffect (WATER, LAVA, HOLE, ...)
+	- gérer les TileEffect (WATER, LAVA, HOLE, ...) (WIP)
 
 * Audio
 	- moteur audio élémentaire, gérant N buffers pour les bruitages + musique d'ambiance (en cours)
 
 * Éditeur de cartes
-	- support items
 	- support téléporteurs
 
 * IA

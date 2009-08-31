@@ -6,6 +6,8 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
 from EntityFactory import EntityFactory
+from SelectFile import SelectFile
+
 
 class UnitListWindow(QDialog):
 	def __init__(self, parent=None):
@@ -142,8 +144,7 @@ class WindowListDecor(QDialog):
 	def get_selected_id(self):
 		return self.selected_id
 
-
-
+		
 class WindowListItem(QDialog):
 	def __init__(self, parent=None):
 		QDialog.__init__(self, parent)
@@ -209,6 +210,88 @@ class WindowListItem(QDialog):
 		return self.selected_id
 		
 
+class ConfigDialog(QDialog):
+	def __init__(self, parent=None):
+		QDialog.__init__(self, parent)
+		self.setWindowTitle(u"Configuration")
+		
+		vbox = QVBoxLayout()
+		self.setLayout(vbox)
+		
+		groupbox = QGroupBox(u"Paramètres", self)
+		
+		self.file_tileset = SelectFile()
+		self.file_units = SelectFile()
+		self.file_decors = SelectFile()
+		self.file_items = SelectFile()
+		self.file_music = SelectFile()
+		self.spin_tilesize = QSpinBox()
+		self.spin_tilesize.setRange(1, 100)
+		self.spin_tilesize.setFixedWidth(50)
+		
+		form = FormLayout()
+
+		form.add_row(u"Image du tileset :", self.file_tileset)
+		form.add_row(u"Définition des unités :", self.file_units)
+		form.add_row(u"Définition des décors :", self.file_decors)
+		form.add_row(u"Définition des items :", self.file_items)
+		form.add_row(u"Liste des musiques :", self.file_music)
+		form.add_row(u"Résolution tile (pixels) :", self.spin_tilesize)
+		
+		groupbox.setLayout(form)
+		vbox.addWidget(groupbox)
+		
+		# buttons
+		but_cancel = QPushButton("Annuler")
+		but_valid = QPushButton("Appliquer")
+		self.connect(but_valid, SIGNAL("clicked()"), self.apply)
+		self.connect(but_cancel, SIGNAL("clicked()"), SLOT("close()"))
+		
+		buttonbox = QHBoxLayout()
+		buttonbox.addWidget(but_cancel)
+		buttonbox.addWidget(but_valid)
+		vbox.addLayout(buttonbox)
+		self.valid = False
+	
+	def apply(self):
+		self.valid = True
+		self.close()
+	
+	def valided(self):
+		return self.valid
+	
+	def load_config(self, config):
+		self.file_tileset.set_text(config["tileset"])
+		self.file_units.set_text(config["units"])
+		self.file_decors.set_text(config["decors"])
+		self.file_items.set_text(config["items"])
+		self.file_music.set_text(config["musics"])
+		self.spin_tilesize.setValue(int(config["tilesize"]))
+
+	def write_config(self, config):
+		config["tileset"] = self.file_tileset.get_text()
+		config["units"] = self.file_units.get_text()
+		config["decors"] = self.file_decors.get_text()
+		config["items"] = self.file_items.get_text()
+		config["musics"] = self.file_music.get_text()
+		config["tilesize"] = self.spin_tilesize.value()
+		print "configuration updated"
+		self.close()
+		
+
+class FormLayout(QGridLayout):
+	
+	def __init__(self):
+		QGridLayout.__init__(self)
+		self.current_row = 0
+		self.setSpacing(0)
+		
+		
+	def add_row(self, text, widget):
+		self.addWidget(QLabel(text), self.current_row, 0)
+		self.addWidget(widget, self.current_row, 1, Qt.AlignRight)
+		self.current_row += 1
+
 
 class AskMapSize(QDialog):
 	"Demander les dimensions d'une nouvelle carte"
@@ -216,18 +299,16 @@ class AskMapSize(QDialog):
 	def __init__(self, parent=None):
 		QDialog.__init__(self, parent)
 		self.setWindowTitle(u"Nouvelle carte")
-	
+		
+		vbox = QVBoxLayout()
+		self.setLayout(vbox)
+		
 		# widgets
+		self.txt_width = QSpinBox()
+		self.txt_width.setRange(1, 100)
 		
-		lab_width = QLabel("Nombre de zones en largeur :")
-		txt_width = QSpinBox()
-		txt_width.setMinimum(1)
-		txt_width.setMaximum(100)
-		
-		lab_height = QLabel("Nombre de zones en hauteur :")
-		txt_height = QSpinBox()
-		txt_height.setMinimum(1)
-		txt_height.setMaximum(100)
+		self.txt_height = QSpinBox()
+		self.txt_height.setRange(1, 100)
 		
 		but_cancel = QPushButton("Annuler")
 		self.connect(but_cancel, SIGNAL("clicked()"), SLOT("close()"))
@@ -235,25 +316,24 @@ class AskMapSize(QDialog):
 		but_valid = QPushButton("Valider")
 		self.connect(but_valid, SIGNAL("clicked()"), self.apply)
 		
-		grid = QGridLayout()
-		grid.setSpacing(10)
+		# form
+		groupbox = QGroupBox(u"Dimensions de la carte", self)
 		
-		grid.addWidget(lab_width, 0, 0)
-		grid.addWidget(txt_width, 0, 1)
-		grid.addWidget(lab_height, 1, 0)
-		grid.addWidget(txt_height, 1, 1)
-		grid.addWidget(but_cancel, 2, 0)
-		grid.addWidget(but_valid, 2, 1)
+		form = FormLayout()
+		form.setSpacing(10)
+		form.add_row(u"Nombre de zones en largeur :", self.txt_width)
+		form.add_row(u"Nombre de zones en hauteur :", self.txt_height)
+		groupbox.setLayout(form)
+		vbox.addWidget(groupbox)
 		
-		grid.setColumnMinimumWidth(0, 100)
-		grid.setColumnMinimumWidth(1, 100)
-		self.setLayout(grid)
+		# buttons
+		buttonbox = QHBoxLayout()
+		buttonbox.addWidget(but_cancel)
+		buttonbox.addWidget(but_valid)
+		vbox.addLayout(buttonbox)
 		
 		self.valid = False
-
-		self.txt_width = txt_width
-		self.txt_height = txt_height
-				
+		
 	def valided(self):
 		return self.valid
 	
