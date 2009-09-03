@@ -19,7 +19,7 @@
 #define APP_FPS    60
 
 #define DEFAULT_VERBOSITY 5
-#define CONFIG_FILE "config/config.txt"
+#define CONFIG_FILE "config/config.cfg"
 
 #define MINIMAP_X 30
 #define MINIMAP_Y 30
@@ -46,7 +46,7 @@ Game::Game() :
 	Log::SetLogger(new LogDebug());
 	LoadConfig(CONFIG_FILE);
 
-	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, options_.bpp), APP_TITLE, APP_STYLE);
+	app_.Create(sf::VideoMode(APP_WIDTH, APP_HEIGHT, APP_BPP), APP_TITLE, APP_STYLE);
 	app_.SetFramerateLimit(options_.fps);
 
 	const sf::Image& icon = GET_IMG("icon");
@@ -92,28 +92,24 @@ Game::~Game()
 }
 
 
-bool Game::LoadConfig(const std::string & str)
+bool Game::LoadConfig(const std::string& str)
 {
 	// default options
-	options_.bpp = APP_BPP;
 	options_.fps = APP_FPS;
-	options_.style = 0;
 	options_.verbosity = DEFAULT_VERBOSITY;
 
 	options_.panel_on_top = 1;
 
 	ConfigParser config;
-	Output << "loading " << CONFIG_FILE << "..." << lEnd;
 	if (!config.LoadFromFile(str.c_str()))
 	{
-		OutputW << "utilisation de la configuration par défaut" << lEnd;
+		printf("info: config file '%s' not found, using default configuration\n", str.c_str());
 		return false;
 	}
+	printf("info: configuration '%s' loaded\n", str.c_str());
 
     // Engine options
     config.SeekSection("Engine");
-    config.ReadItem("bpp", options_.bpp);
-    config.ReadItem("style", options_.style);
     config.ReadItem("fps", options_.fps);
     config.ReadItem("verbosity", options_.verbosity);
     Log::SetVerboseLevel(options_.verbosity);
@@ -142,9 +138,7 @@ void Game::SaveConfig(const std::string& str) const
 	config.WriteItem("enable_music", SoundSystem::GetInstance().IsMusicEnabled() ? 1 : 0);
 
 	config.SeekSection("Engine");
-	config.WriteItem("style", options_.style);
 	config.WriteItem("fps", options_.fps);
-	config.WriteItem("bpp", options_.bpp);
 	config.WriteItem("verbosity", options_.verbosity);
 
 	config.SaveToFile(str.c_str());

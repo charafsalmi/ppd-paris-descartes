@@ -1,7 +1,7 @@
 #include <sstream>
 #include <cassert>
 
-#include "Misc.hpp"
+#include "StringUtils.hpp"
 
 #ifdef __MINGW32__
 #define vswprintf _vsnwprintf
@@ -12,14 +12,14 @@ std::string str_sprintf(const char format[], ...)
 {
 	va_list args;
 	va_start(args, format);
-	
+
 	int length = vsnprintf(NULL, 0, format, args);
 	char* p = new char [length + 1];
 	va_end(args);
 	va_start(args, format);
 	vsprintf(p, format, args);
-	va_end(args);	
-	
+	va_end(args);
+
 	std::string str(p);
 	delete [] p;
 	return str;
@@ -45,14 +45,14 @@ std::wstring str_sprintf(const wchar_t format[], ...)
 	va_start(args, format);
 	vswprintf(buffer, length - 1, format, args);
 	va_end(args);
-	
+
 	std::wstring str(buffer);
 	delete [] buffer;
 	return str;
 }
 
 
-int find_replace(std::string& target, const std::string& look_for,
+int str_replace(std::string& target, const std::string& look_for,
 	const std::string& replace_by)
 {
 	int cpt = 0;
@@ -61,7 +61,6 @@ int find_replace(std::string& target, const std::string& look_for,
 	size_t offset = look_for.size();
 
 	pos = target.find(look_for, pos);
-
 	while (pos != std::string::npos)
 	{
 		target.replace(pos, offset, replace_by);
@@ -72,23 +71,38 @@ int find_replace(std::string& target, const std::string& look_for,
 }
 
 
-void trim(std::string& str)
+int str_replace(std::string& target, char look_for, char replace_by)
+{
+	int count = 0;
+	size_t pos = 0;
+
+	pos = target.find(look_for, pos);
+	while (pos != std::string::npos)
+	{
+		target.replace(pos, 1, 1, replace_by);
+		pos = target.find(look_for, pos);
+		++count;
+	}
+	return count;
+}
+
+
+std::string str_trim(const std::string& str)
 {
 	const char* WHITESPACES = " \t\n\r\0xb";
 	std::string::size_type first = str.find_first_not_of(WHITESPACES);
 	if (first != std::string::npos)
 	{
 		std::string::size_type last = str.find_last_not_of(WHITESPACES);
-		str = str.substr(first, last - first + 1);
+		return str.substr(first, last - first + 1);
 	}
+	return str;
 }
 
 
-std::string extract(const std::string& str, int from, int to)
+std::string str_extract(const std::string& str, int from, int to)
 {
 	assert(from < to);
-	std::string extracted = str.substr(from, to - from);
-	trim(extracted);
-	return extracted;
+	return str.substr(from, to - from);
 }
 

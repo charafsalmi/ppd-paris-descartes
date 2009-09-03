@@ -2,8 +2,8 @@
 #define SOUNDSYSTEM_HPP
 
 #include <string>
-#include <iostream>
 #include <SFML/Audio.hpp>
+
 
 class SoundSystem
 {
@@ -12,11 +12,13 @@ public:
 
 	/**
 	 * Jouer un son
+	 * @param sound_name: identifiant du son dans le media manager
 	 */
 	void PlaySound(const char* sound_name);
 
 	/**
-	 * Jouer une musique (une musique à la fois)
+	 * Jouer une musique
+	 * @param music_name: identifiant de la musique dans le media manager
 	 */
 	void PlayMusic(const char* music_name);
 	void PlayMusic(const std::string& music_name);
@@ -31,49 +33,20 @@ public:
 	 */
 	void EnableMusic(bool enabled);
 
+	/**
+	 * @return true si la musique est activée, sinon false
+	 */
 	bool IsMusicEnabled() const;
 
 	/**
-	 * Changer le volume du son (de 0 à 100)
+	 * Changer le volume de la musique (de 0 à 100)
 	 */
-	inline void SetMusicVolume(float v)
-	{
-		volume_ = v;
-		music_->SetVolume(v);
-	}
-	/**
-	 * Obtenir le volume du son (de 0 à 100)
-	 */
-	inline float GetMusicVolume() const
-	{
-		return volume_;
-	}
+	void SetMusicVolume(float volume);
 
 	/**
-	 * Permet d'augmenter ou diminuer le volume
+	 * Obtenir le volume de la musique (de 0 à 100)
 	 */
-    inline void AddMusicVolume(float v)
-    {
-        volume_ += v;
-        music_->SetVolume(volume_);
-    }
-
-	/**
-	 * Changer le volume du son de facon douce (fondu)
-	 * @param[in] float nouveau volume
-	 * @param[in] float delay (en secondes)
-	 */
-	inline void FadeMusicVolumeTo(const float& to_volume, float delay)
-	{
-		timer_ = 0;
-		update_volume_to_ = to_volume;
-		fade_delay_ = delay;
-	}
-
-	/**
-	 * Mise a jour du volume
-	 */
-	void UpdateVolume(float frametime);
+	float GetMusicVolume() const;
 
 private:
 	SoundSystem();
@@ -86,11 +59,6 @@ private:
 	int last_used_;
 	sf::Music* music_;
 	bool enable_music_;
-	float timer_;
-	float volume_;
-	float update_volume_to_;
-	float fade_delay_;
 };
 
-
-#endif /* SOUNDSYSTEM_HPP */
+#endif // SOUNDSYSTEM_HPP

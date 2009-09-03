@@ -1,0 +1,367 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+	<head>
+		<title>PPD15 - Formats des fichiers</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<style type="text/css">
+body {
+	font-size: 10pt;
+	padding: 1.5em;
+}
+code {
+	background-color: #FFF0C0;
+}
+pre {
+	border: 1px solid silver;
+	padding: 5px;
+	background-color: #F0F0F0;
+	margin: 0 1em;
+	overflow: auto;
+}
+		</style>
+	</head>
+	<body>
+<h1>PPD15 - Documentation des formats de fichier</h1>
+
+<p>Tous les fichiers de paramétrage sont en plein texte et encodés en utf-8, afin de faciliter la maintenance et la portabilité de l'application.<br />
+Deux formats sont utilisés : XML, et un format inspiré de CSS pour les besoins plus légers.
+</p>
+
+<h2>Sommaire</h2>
+<ul>
+	<li><a href="#units-definition">Définition des unités</a></li>
+	<li><a href="#animations">Animations des unités</a></li>
+	<li><a href="#decors-definition">Définition des décors</a></li>
+	<li><a href="#items-definition">Définition des objets</a></li>
+	<li><a href="#map">Cartes</a></li>
+	<li><a href="#tiles-definition">Définition des tiles</a></li>
+	<li><a href="#game-config">Configuration du jeu</a></li>
+	<li><a href="#game-save">Sauvegardes du jeu</a></li>
+</ul>
+
+
+<h2 id="units-definition">Définition des unités</h2>
+<p><code>data/xml/units.xml</code> : ce fichier décrit la liste des unités du jeu.<br />
+Exemple :</p>
+<pre>
+﻿&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+&lt;mobs&gt;
+	&lt;mob id=&quot;0&quot; name=&quot;Squelette&quot; animation=&quot;squelette&quot; hp=&quot;3&quot; speed=&quot;60&quot; weapon=&quot;ITM_BOW&quot; /&gt;
+	&lt;mob id=&quot;1&quot; name=&quot;R&ocirc;deur&quot; animation=&quot;rodeur&quot; hp=&quot;5&quot; speed=&quot;80&quot; weapon=&quot;ITM_BOW&quot; /&gt;
+	&lt;mob id=&quot;2&quot; name=&quot;Mandarine g&eacute;ante&quot; animation=&quot;mandarine&quot; hp=&quot;8&quot; speed=&quot;90&quot; weapon=&quot;ITM_BOW&quot; /&gt;
+	&lt;mob id=&quot;3&quot; name=&quot;Blast&quot; animation=&quot;blast&quot; hp=&quot;1&quot; speed=&quot;20&quot; /&gt;
+	...
+&lt;/mobs&gt;
+</pre>
+<ul>
+	<li><b>mob</b>
+		<ul>
+			<li><i>id</i> : identifiant unique de l'unité</li>
+			<li><i>name</i> : nom du profil</li>
+			<li><i>animation</i> : nom des animations associées</li>
+			<li><i>hp</i> : nombre de points de vie (Health Point)</li>
+			<li><i>speed</i> : vitesse en pixels/seconde</li>
+			<li><i>weapon</i> (optionnel) : équipement de l'unité (se reporter aux <a href="#items-definition">définitions des items</a> pour les valeurs possibles de cet attribut)</li>
+		</ul>
+	</li>
+</ul>
+
+
+<h2 id="animations">Animations des entités</h2>
+<p><code>data/xml/animations.xml</code> : ce fichier décrit les animations associées à une unité.<br />
+Exemple :</p>
+<pre>
+﻿&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+&lt;animations&gt;
+	&lt;anim name=&quot;player_walk_up&quot; width=&quot;32&quot; height=&quot;48&quot; count=&quot;8&quot; delay=&quot;0.125&quot; x_offset=&quot;0&quot; y_offset=&quot;48&quot; /&gt;
+	&lt;anim name=&quot;player_walk_down&quot; width=&quot;32&quot; height=&quot;48&quot; count=&quot;8&quot; delay=&quot;0.125&quot; x_offset=&quot;0&quot; y_offset=&quot;96&quot; /&gt;
+	&lt;anim name=&quot;player_walk_left&quot; width=&quot;32&quot; height=&quot;48&quot; count=&quot;8&quot; delay=&quot;0.125&quot; x_offset=&quot;0&quot; y_offset=&quot;144&quot; /&gt;
+	&lt;anim name=&quot;player_walk_right&quot; width=&quot;32&quot; height=&quot;48&quot; count=&quot;8&quot; delay=&quot;0.125&quot; x_offset=&quot;0&quot; y_offset=&quot;192&quot; /&gt;
+	...
+&lt;/animations&gt;
+</pre>
+<ul>
+	<li><b>anim</b>
+		<ul>
+			<li><i>name</i> : nom unique de l'animation</li>
+			<li><i>width</i> : largeur d'une frame de l'animation</li>
+			<li><i>height</i> : hauteur d'une frame de l'animation</li>
+			<li><i>count</i> : nombre de frames de l'animation</li>
+			<li><i>delay</i> : temps d'attente entre chaque frame (en secondes)</li>
+			<li><i>x_offset</i> : origine x de la première frame sur l'image de l'animation</li>
+			<li><i>y_offset</i> : origine y de la première frame sur l'image de l'animation</li>
+		</ul>
+	</li>
+</ul>
+
+<h2 id="decors-definition">Définitions des décors</h2>
+<p><code>data/xml/decors.xml</code> : ce fichier contient la liste des types de décor du jeu.<br />
+Exemple :</p>
+<pre>
+﻿&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+&lt;decors&gt;
+	&lt;decor id=&quot;0&quot; name=&quot;tree&quot; x=&quot;0&quot; y=&quot;0&quot; w=&quot;4&quot; h=&quot;5&quot; block=&quot;4&quot; /&gt;
+	&lt;decor id=&quot;1&quot; name=&quot;p1&quot; x=&quot;4&quot; y=&quot;0&quot; w=&quot;1&quot; h=&quot;2&quot; block=&quot;1&quot; /&gt;
+	&lt;decor id=&quot;2&quot; name=&quot;p2&quot; x=&quot;4&quot; y=&quot;2&quot; w=&quot;1&quot; h=&quot;3&quot; block=&quot;1&quot; /&gt;
+	&lt;decor id=&quot;3&quot; name=&quot;statue&quot; x=&quot;5&quot; y=&quot;0&quot; w=&quot;2&quot; h=&quot;3&quot; block=&quot;2&quot; /&gt;
+	...
+&lt;/decors&gt;
+</pre>
+<ul>
+	<li><b>decor</b>
+		<ul>
+			<li><i>id</i> : identifiant numérique unique</li>
+			<li><i>name</i> : libellé du décor</li>
+			<li><i>x</i> : origine x du sprite</li>
+			<li><i>y</i> : origine y du sprite</li>
+			<li><i>w</i> : largeur du sprite, exprimée en nombre de tiles</li>
+			<li><i>h</i> : hauteur du sprite, exrpimée en nombre de tiles</li>
+			<li><i>block</i> : nombre de tiles occupées par la surface de contact avec le sol, en hauteur et à partir du bas. Les entités qui se trouvent au dela de la limite "block" sont considérées comment étant derrière le décor.</li>
+		</ul>
+	</li>
+</ul>
+
+
+<h2 id="items-definition">Définitions des items</h2>
+<p><code>data/xml/items.xml</code> : ce fichier décrit la liste des items du jeu.<br />
+Exemple :</p>
+<pre>
+﻿&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+&lt;items&gt;
+	&lt;item name=&quot;ITM_HEART&quot; label=&quot;Coeur de vie&quot; x=&quot;0&quot; y=&quot;0&quot; w=&quot;16&quot; h=&quot;16&quot; /&gt;
+	&lt;item name=&quot;ITM_RUBY&quot; label=&quot;Rubis&quot; x=&quot;0&quot; y=&quot;16&quot; w=&quot;16&quot; h=&quot;28&quot; /&gt;
+	&lt;item name=&quot;ITM_BOW&quot; label=&quot;Arc&quot; x=&quot;35&quot; y=&quot;15&quot; w=&quot;32&quot; h=&quot;32&quot; /&gt;
+	&lt;item name=&quot;ITM_SWORD&quot; label=&quot;Epee&quot; x=&quot;16&quot; y=&quot;0&quot; w=&quot;18&quot; h=&quot;32&quot; /&gt;
+	...
+&lt;/items&gt;
+</pre>
+<ul>
+	<li><b>item</b>
+		<ul>
+			<li><i>name</i> : identifiant de l'item. Ce nom doit correspondre à une valeur de type d'item, voir les types possibles dans l'énumération Item::Type du fichier <code>src/entities/Item.hpp</code></li>
+			<li><i>label</i> : représentation textuelle de l'objet</li>
+			<li><i>x</i> : origine x du sprite</li>
+			<li><i>y</i> : origine y du sprite</li>
+			<li><i>w</i> : largeur du sprite, exprimée en pixels</li>
+			<li><i>h</i> : hauteur du sprite, exrpimée en pixels</li>
+		</ul>
+	</li>
+</ul>
+
+
+<h2 id="map">Cartes</h2>
+<p>Les cartes se trouvent dans le dossier <code>data/map</code>.<br />
+Exemple :</p>
+<pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;map height=&quot;5&quot; width=&quot;4&quot;&gt;
+	&lt;zone music="ingame"&gt;
+		&lt;tiles&gt;
+			150  65  81  82  68  64  37  64  65  65  82 193 100 100 193 193  52  52  64  65 150  66 193  68 193  80  37  64  65  82  68  52 193 193 193  11 193 193  64  65 150  82 100 193  11  68  37  80  82  68  11 100 137 149 138  68 193 193  64  81 150  52 193 193 100 100  37 100 193 193 193 100 134  59 150 193  68  52  67 193 150 193 193  11 100  52  37  52 193 193  48  50 153 148 154 193  48  49  82 146 150 193 193 193 193 193  37 193 193 100  80  66  11  52  68  68  80  82 146 210 151 138 100 100 100 100  37  37  37  37  37  64  49  51  50 193 146 209 210 198  50 150  51  51  49  49  49  51  51  50  37  80  66  11  67 146 210 198 198 198  66 150 193  68  64  81  66 100  52  67  37  68  64  49  82 194 168 198 198 198  82 151 138 193  67  11  64  51  49  66  37  48  65  82 146 210 198 198 198 198 135 133 154 193  80  49  66 193  64  66  37  80  82 146 210 198 198 198 198 198 150  68 100 100 100  64  66  52  64  82  37 146 209 210 198 198 198 198 198 198 150  52  11  52 100  64  65  49  82 146  37 210 198 198 198 198 198 198 198 198 150 193 100  68  48  81  65  66 146 210 198 198 198 198 198 198 198 198 198 198 150 100 193  11  67 193  64  66 194 168 198 198 198 198 198 198 198 198 198 198 150 193 193 193  64  49  65  66 194 198 198 198 198 198 198 198 198 198 198 198 
+		&lt;/tiles&gt;
+		&lt;mobs&gt;
+			&lt;mob id=&quot;1&quot; x=&quot;192&quot; y=&quot;200&quot;/&gt;
+			&lt;mob id=&quot;1&quot; x=&quot;340&quot; y=&quot;310&quot;/&gt;
+		&lt;/mobs&gt;
+		&lt;decors&gt;
+			&lt;decor id=&quot;2&quot; x=&quot;5&quot; y=&quot;10&quot;/&gt;
+		&lt;/decors&gt;
+		&lt;items&gt;
+			&lt;item name=&quot;ITM_RUBY&quot; x=&quot;192&quot; y=&quot;480&quot;/&gt;
+			&lt;item name=&quot;ITM_SWORD&quot; x=&quot;200&quot; y=&quot;350&quot;/&gt;
+		&lt;/items&gt;
+		&lt;teleporters&gt;
+			&lt;tp map=&quot;world&quot; tile_x=&quot;11&quot; tile_y=&quot;9&quot; x=&quot;13&quot; y=&quot;3&quot; zone_x=&quot;2&quot; zone_y=&quot;2&quot;/&gt;
+		&lt;/teleporters&gt;
+	&lt;/zone&gt;
+	&lt;zone music="ingame"&gt;
+		...
+</pre>
+<ul>
+	<li>
+		<b>map</b> : Le tag <b>map</b> est l'élément racine.<br />
+		Attributs :
+		<ul>
+			<li><i>width</i> : nombre de zones en largeur</li>
+			<li><i>width</i> : nombre de zones en largeur</li>
+		</ul>
+		Éléments enfants :<br />
+		<ul>
+			<li>
+				<b>zone</b> : une zone du jeu (de la taille de l'écran). Cet élément doit être présent <i>width</i> * <i>height</i> fois dans son élément parent <b>map</b><br />
+				Attributs :
+				<ul>
+					<li><i>music</i> : nom de la musique associée à cette zone</li>
+				</ul>
+				Élements enfants :<br />
+				<ul>
+					<li>
+						<b>tiles</b> : les ids des tiles qui composent le fond de la zone, séparés par des espaces
+					</li>
+					<li>
+						<b>mobs</b> : liste des unités ennemies, définis dans les éléments enfants <b>mob</b><br />
+						S'il n'y a pas d'unités dans la zone, cet élément est optionnel.
+						<ul>
+							<li><b>mob</b> : unité ennemie
+								<ul>
+									<li>
+										<i>id</i> : identifiant numérique du type de mob (voir <a href="#units-definition">définition des unités</a>)
+									</li>
+									<li><i>x</i> : la position x, exprimée en pixels</li>
+									<li><i>y</i> : la position y, exprimée en pixels</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<b>decors</b> : liste des décors, définis dans les éléments enfants <b>decor</b><br />
+						S'il n'y a pas de décors dans la zone, cet élément est optionnel.
+						<ul>
+							<li><b>decor</b> : élément de décor
+								<ul>
+									<li>
+										<i>id</i> : identifiant numérique du type de décor (voir <a href="#decors-definition">définition des décors</a>)
+									</li>
+									<li><i>x</i> : la position x, exprimée en tiles</li>
+									<li><i>y</i> : la position y, exprimée en tiles</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<b>items</b> : liste des objets qui peuvent interragir avec le joueur, définis dans les éléments enfants <b>item</b><br />
+						S'il n'y a pas d'objet dans la zone, cet élément est optionnel.
+						<ul>
+							<li><b>item</b> : objet de la zone
+								<ul>
+									<li>
+										<i>name</i> : identifiant du type de l'objet (voir <a href="#items-definition">définition des items</a>)
+									</li>
+									<li><i>x</i> : la position x, exprimée en pixels</li>
+									<li><i>y</i> : la position y, exprimée en pixels</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<b>teleporters</b> : liste des téléporteurs, définis dans les éléments enfants <b>tp</b><br />
+						S'il n'y a pas de téléporteurs, ce tag est optionnel.<br />
+						<ul>
+							<li>
+								<b>tp</b> : téléporteur<br />
+								Attributs :
+								<ul>
+									<li><i>x</i> : position x dans la zone, exprimée en tiles</li>
+									<li><i>y</i> : position y dans la zone, exprimée en tiles</li>
+									<li><i>map</i> : le nom de la carte cible (nom de fichier sans l'extension)</li>
+									<li><i>zone_x</i> : position x de la zone cible</li>
+									<li><i>zone_y</i> : position y de la zone cible</li>
+									<li><i>tile_x</i> : position x en tiles dans la zone cible</li>
+									<li><i>tile_y</i> : position y en tiles dans la zone cible</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+</ul>
+
+
+<h2 id="tiles-definition">Définitions des tiles</h2>
+<p>Le fichier de définition des tiles se trouve dans <code>data/xml/tiles.xml</code>.<br />
+Il permet d'associer les ids de tiles à un effet (eau, block, etc.) et de définir les séquences de tiles animées.<br />
+Exemple :
+</p>
+<pre>
+﻿&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+&lt;tiles&gt;
+	&lt;definitions&gt;
+		&lt;tiles effect=&quot;block&quot;&gt;
+			8 9 10 21 22 24 25 26 40 41 56
+		&lt;/tiles&gt;
+		&lt;tiles effect=&quot;water&quot;&gt;
+			6 198 217 233
+		&lt;/tiles&gt;
+		&lt;tiles effect=&quot;hole&quot;&gt;
+			35 42 258 279 274 275
+		&lt;/tiles&gt;
+		&lt;tiles effect=&quot;teleport&quot;&gt;
+			59 310 294
+		&lt;/tiles&gt;
+	&lt;/definitions&gt;
+	&lt;animated&gt;
+		&lt;tile from=&quot;6&quot; to=&quot;7&quot; /&gt;
+		&lt;tile from=&quot;198&quot; to=&quot;201&quot; /&gt;
+		...
+	&lt;/animated&gt;
+&lt;/tiles&gt;
+</pre>
+<ul>
+	<li>
+		<b>definitions</b> : liste des effets des tiles
+		<ul>
+			<li>
+				<b>tiles</b> : contient un groupe d'ids de tiles, séparés par des espaces
+				<ul>
+					<li>
+						<i>effect</i> : nom de l'effet associé aux ids des tiles<br />
+						Les valeurs possibles pour cet attribut sont "block", "hole", "water" et "teleport"
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+	<li>
+		<b>animated</b> : liste des séquences de tiles animées
+		<ul>
+			<li>
+				<b>tile</b> : une séquence de tiles animées (note : les ids des tiles d'une même séquence doivent se suivre)
+				<ul>
+					<li><i>from</i> : id de la première tile de la séquence</li>
+					<li><i>to</i> : id de la dernière tile de la séquence</li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+</ul>
+
+<h2 id="game-config">Configuration</h2>
+<p>La configuration du jeu se trouve dans <code>config/config.cfg</code>, ce fichier n'est pas nécessaire au fonctionnement du jeu.<br />
+S'il n'existe pas, le jeu utilisera la configuration par défaut.<br />
+Exemple :
+</p>
+<pre>
+Engine
+{
+	fps: 60;
+}
+
+Settings
+{
+	enable_music: 0;
+	panel_on_top: 0;
+}
+</pre>
+<ul>
+	<li><b>Engine</b><br />
+		<ul>
+			<li>fps : images par secondes</li>
+		</ul>
+	</li>
+	<li><b>Settings</b><br />
+		<ul>
+			<li>enable_music : 1 pour activer la musique, 0 pour la désactiver</li>
+			<li>panel_on_top : 1 pour postionner le panel en haut de l'écran, 0 pour le postionner en bas</li>
+		</ul>
+	</li>
+</ul>
+
+
+<h2 id="game-save">Sauvegarde</h2>
+<p>La sauvegarde du joueur se trouve dans <code>config/save.cfg</code>, ce fichier n'est pas nécessaire au fonctionnement du jeu.<br />
+</p>
+	</body>
+</html>
+

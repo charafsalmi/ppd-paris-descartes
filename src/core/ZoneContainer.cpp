@@ -4,7 +4,7 @@
 #include "Game.hpp"
 #include "SoundSystem.hpp"
 #include "../entities/Player.hpp"
-#include "../misc/Misc.hpp"
+#include "../misc/StringUtils.hpp"
 #include "../misc/Die.hpp"
 #include "../misc/Log.hpp"
 

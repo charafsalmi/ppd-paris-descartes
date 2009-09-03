@@ -1,5 +1,5 @@
 #define DEBUG
-#include "../../src/misc/Misc.cpp"
+#include "../../src/misc/StringUtils.cpp"
 #include "../../src/misc/ConfigParser.hpp"
 #include "../../src/misc/ConfigParser.cpp"
 

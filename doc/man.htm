@@ -6,6 +6,7 @@
 		<style type="text/css">
 body {
 	font-family: arial, serif;
+	font-size: 11pt;
 	margin: 0;
 	padding: 2em;
 }
@@ -115,10 +116,10 @@ table.infotab th {
 	<h3>Configuration</h3>
 	<p>Deux fichiers de configuration sont utilisés :</p>
 	<ul>
-		<li><code>config/config.txt</code> : contient les préférences du jeu (emplacement du panel, musique, ...)<br />
+		<li><code>config/config.cfg</code> : contient les préférences du jeu (emplacement du panel, musique, ...)<br />
 		Vous pouvez supprimer ce fichier si vous souhaitez retrouver la configuration par défaut
 		</li>
-		<li><code>config/save.txt</code> : contient la sauvegarde de la progression du joueur<br />
+		<li><code>config/save.cfg</code> : contient la sauvegarde de la progression du joueur<br />
 		Vous pouvez supprimer ce fichier si vous souhaitez recommencer le jeu à zéro
 		</li>
 	</ul>
@@ -126,7 +127,7 @@ table.infotab th {
 
 <h2 id="how-to-editor">Comment utiliser l'éditeur de cartes ?</h2>
 <div>
-	<p>L'éditeur nécessite <strong>Python</strong> et <strong>PyQt4</strong> (sous Linux Debian/Ubuntu, installez le paquet <code>python-qt4</code>)</p>
+	<p>L'éditeur nécessite <strong>Python</strong> et <strong>PyQt4</strong> (sous Linux Debian ou Ubuntu, installez le paquet <code>python-qt4</code>)</p>
 	<p>Cliquez sur <code>Editor.py</code> pour lancer l'éditeur, ou lancez la commande <code>./Editor.py</code> en console (le chemin de la carte à ouvrir peut être passé en argument de la ligne de commande, par exemple : <code>./Editor.py ../bin/data/map/world.xml</code>)</p>
 	<h3>Raccourcis clavier :</h3>
 	<table class="infotab">
@@ -206,6 +207,7 @@ table.infotab th {
 		<li><code>decors</code> : chemin du fichier XML des définitions des décors</li>
 		<li><code>tileset</code> : chemin de l'image du tileset</li>
 		<li><code>musics</code> : chemin de la liste des musiques du jeu</li>
+		<li><code>tilesize</code> : taille du côté d'une tile (en pixels)</li>
 	</ul>
 </div>
 	</body>

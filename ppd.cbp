@@ -136,10 +136,10 @@
 		<Unit filename="src/misc/LogDebug.hpp" />
 		<Unit filename="src/misc/MediaManager.cpp" />
 		<Unit filename="src/misc/MediaManager.hpp" />
-		<Unit filename="src/misc/Misc.cpp" />
-		<Unit filename="src/misc/Misc.hpp" />
 		<Unit filename="src/misc/Music.cpp" />
 		<Unit filename="src/misc/Music.hpp" />
+		<Unit filename="src/misc/StringUtils.cpp" />
+		<Unit filename="src/misc/StringUtils.hpp" />
 		<Unit filename="src/xml/tinyxml.cpp" />
 		<Unit filename="src/xml/tinyxml.h" />
 		<Unit filename="src/xml/tinyxmlerror.cpp" />

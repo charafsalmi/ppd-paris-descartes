@@ -1,7 +1,7 @@
 #include <fstream>
 
 #include "ConfigParser.hpp"
-#include "Misc.hpp"
+#include "StringUtils.hpp"
 
 // éléments de la syntaxe
 #define TOKEN_OPEN       '{'
@@ -28,7 +28,7 @@ bool ConfigParser::LoadFromFile(const char* filename)
 		std::string content;
 		while (getline(file, line))
 		{
-			trim(line);
+			line = str_trim(line);
 			if (line.size() > 0 && line[0] != TOKEN_COMMENT)
 				content += line;
 		}
@@ -90,7 +90,7 @@ void ConfigParser::Parse(const std::string& content)
 			token = content.find(TOKEN_OPEN, i);
 			if (token != std::string::npos)
 			{
-				std::string section_name = extract(content, i, token);
+				std::string section_name = str_trim(str_extract(content, i, token));
 				cursor_ = &sections_[section_name];
 				inside_section = true;
 				i = token;
@@ -105,7 +105,7 @@ void ConfigParser::Parse(const std::string& content)
 			token = content.find(TOKEN_CLOSE, i);
 			if (token != std::string::npos)
 			{
-				ParseProperties(extract(content, i, token), *cursor_);
+				ParseProperties(str_trim(str_extract(content, i, token)), *cursor_);
 				i = token;
 			}
 			else
@@ -136,7 +136,7 @@ void ConfigParser::ParseProperties(const std::string& content, Properties& props
 			token = content.find(TOKEN_SEPARATOR, i);
 			if (token != std::string::npos)
 			{
-				current_prop = extract(content, i, token);
+				current_prop = str_trim(str_extract(content, i, token));
 				at_end = false;
 				i = token;
 			}
@@ -150,7 +150,7 @@ void ConfigParser::ParseProperties(const std::string& content, Properties& props
 			token = content.find(TOKEN_END, i);
 			if (token != std::string::npos)
 			{
-				std::string prop_value = extract(content, i, token);
+				std::string prop_value = str_trim(str_extract(content, i, token));
 				// nouvelle paire clef: valeur enregistrée
 				props[current_prop] = prop_value;
 				at_end = true;

@@ -78,6 +78,7 @@ Player::Player(const sf::Vector2f& pos) :
 
 	strategy_callback_ = &Player::WalkUpdate;
 	equipment_ = NULL;
+	last_good_position_ = pos;
 }
 
 
@@ -107,7 +108,10 @@ void Player::OnEvent(input::Action action)
 
 void Player::AutoUpdate(float frametime)
 {
-	(this->*strategy_callback_)(frametime);
+	if (!locked_)
+	{
+		(this->*strategy_callback_)(frametime);
+	}
 }
 
 
@@ -178,6 +182,7 @@ void Player::HandleInput(float frametime)
 
 			if (zone_->CanMove(rect, ACCEPTED_TILES))
 			{
+				last_good_position_ = GetPosition();
 				SetPosition(pos);
 			}
 		}
@@ -196,16 +201,12 @@ void Player::HandleInput(float frametime)
 	{
 		was_moving_ = false;
 		SetSubRect(subrects_not_moving_[GetDirection()]);
-		//Son : on s'arrete
 	}
 }
 
 
 void Player::WalkUpdate(float frametime)
 {
-	if (locked_)
-		return;
-
 	static int tile;
 	int i, j;
 	GetTilePosition(i, j);
@@ -299,7 +300,7 @@ void Player::FallingUpdate(float frametime)
 		else
 		{
 			TakeDamage(1);
-			SetPosition(Tile::SIZE, 8 * Tile::SIZE); // FIXME
+			SetPosition(last_good_position_);
 		}
 		Animated::Change(walk_anims_[GetDirection()], *this);
 		SetSubRect(subrects_not_moving_[GetDirection()]); // ?

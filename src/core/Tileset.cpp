@@ -1,9 +1,10 @@
 #include <cassert>
+#include <sstream>
 
 #include "Tileset.hpp"
 #include "../misc/MediaManager.hpp"
+#include "../misc/Die.hpp"
 #include "../xml/tinyxml.h"
-#include "../misc/Log.hpp"
 
 #define TILES_DEFINITION "data/xml/tiles.xml"
 #define ANIMATED_DELAY    0.25f
@@ -22,8 +23,7 @@ Tileset::Tileset()
 	// chargement des propriétés
 	if (!doc.LoadFile(TILES_DEFINITION))
 	{
-	    OutputE << TILE_S << "Erreur lors du chargement de " << TILES_DEFINITION << " (" << doc.ErrorDesc() << " )" << lEnd;
-		abort();
+		DIE("can't load tiles definition '%s' (tinyxml: %s)", TILES_DEFINITION, doc.ErrorDesc());
 	}
 
 	TiXmlHandle handle(&doc);
@@ -32,8 +32,8 @@ Tileset::Tileset()
 
 	while (node != NULL)
 	{
-		TiXmlElement* group = node->ToElement();
-		std::string effect_name = group->Attribute("effect");
+		TiXmlElement* elem = node->ToElement();
+		std::string effect_name = elem->Attribute("effect");
 		Tile::Effect effect = Tile::DEFAULT;
 		if (effect_name == "hole")
 		{
@@ -52,19 +52,13 @@ Tileset::Tileset()
 			effect = Tile::TELEPORT;
 		}
 
-		TiXmlElement* elem = node->FirstChildElement();
+		std::istringstream tiles(elem->GetText());
 		int tile_id;
-		while (elem != NULL)
+		while (tiles.good())
 		{
-			if (elem->QueryIntAttribute("id", &tile_id) == TIXML_SUCCESS)
-			{
-				specials_[tile_id] = effect;
-			}
-			else
-			{
-				OutputE << TILE_S << "Tile id manquant" << lEnd;
-			}
-			elem = elem->NextSiblingElement();
+			tiles >> tile_id;
+			specials_[tile_id] = effect;
+
 		}
 		node = node->NextSibling();
 	}
@@ -83,7 +77,7 @@ Tileset::Tileset()
 		}
 		else
 		{
-		    OutputW << TILE_S << "Animated invalide (ignore)" << lEnd;
+			puts("warning: invalid animated tiles (ignored)");
 		}
 		elem = elem->NextSiblingElement();
 	}

@@ -1,5 +1,5 @@
-#ifndef MISC_HPP
-#define MISC_HPP
+#ifndef STRINGUTILS_HPP
+#define STRINGUTILS_HPP
 
 #include <string>
 #include <cstdarg>
@@ -20,24 +20,24 @@ std::wstring str_sprintf(const wchar_t format[], ...);
  * @param[in] replace_by: sous-chaîne à caser
  * @return nombre d'occurences remplacées
  */
-int find_replace(std::string& target, const std::string& look_for,
-	const std::string& replace_by);
+int str_replace(std::string& target, const std::string& look_for, const std::string& replace_by);
+int str_replace(std::string& target, char look_for, char replace_by);
 
 /**
  * Supprimer les blancs en début et fin de chaîne
- * @param[in|out] str: chaînée à tronquer
+ * @param[in] str: chaînée à tronquer
+ * @return chaîne tronquée
  */
-void trim(std::string& str);
+std::string str_trim(const std::string& str);
 
 /**
- * Extraire une sous-chaîne (tronquée) d'une chaîne
+ * Extraire une sous-chaîne
  * @param[in] str: chaîne cible
- * @param[in] from: indice du début de l'extraction
- * @param[in] to: indice de la fin de l'extraction
+ * @param[in] from: indice de début d'extraction
+ * @param[in] to: indice de fin d'extraction
  * @return chaîne extraite
  * @pre from < to
  */
-std::string extract(const std::string& str, int from, int to);
+std::string str_extract(const std::string& str, int from, int to);
 
-#endif /* MISC_HPP */
-
+#endif // STRINGUTILS_HPP

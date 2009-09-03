@@ -113,6 +113,7 @@ private:
 	bool locked_;
 	bool can_use_item_;
 	ControlPanel& panel_;
+	sf::Vector2f last_good_position_;
 
 	int max_lives_;
 	int money_;

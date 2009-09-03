@@ -9,7 +9,7 @@
 #include "../gui/WinPause.hpp"
 #include "../gui/MainMenu.hpp"
 #include "../gui/Option.hpp"
-#include "../misc/Misc.hpp"
+#include "../misc/StringUtils.hpp"
 #include "../misc/BitmapString.hpp"
 #include "../misc/Log.hpp"
 
@@ -82,7 +82,7 @@ private:
 	Game(const Game&);
 	~Game();
 
-#define SAVE_FILE   "config/save.txt"
+#define SAVE_FILE   "config/save.cfg"
 
 	/**
 	 * Charger un fichier de configuration
@@ -173,9 +173,7 @@ private:
 		bool panel_on_top;
 
 		// Engine
-		int bpp;
 		int fps;
-		int style;
 		int verbosity;
 	};
 	Options options_;
