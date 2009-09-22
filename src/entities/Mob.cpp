@@ -96,7 +96,7 @@ void Mob::AutoUpdate(float frametime)
 	// doit-on tirer ?
 	if (shot && equipment_ != NULL)
 	{
-		equipment_->Use();
+		equipment_->Use<Hit>();
 	}
 }
 

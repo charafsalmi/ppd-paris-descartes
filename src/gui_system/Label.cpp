@@ -1,5 +1,5 @@
 #include "Label.hpp"
-#include "../misc/Misc.hpp"
+#include "../misc/StringUtils.hpp"
 #include "../misc/Log.hpp"
 #include "../misc/MediaManager.hpp"
 

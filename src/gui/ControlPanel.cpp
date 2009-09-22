@@ -2,7 +2,7 @@
 
 #include "ControlPanel.hpp"
 #include "../misc/MediaManager.hpp"
-#include "../misc/Misc.hpp"
+#include "../misc/StringUtils.hpp"
 
 #define INFOTEXT_ORIGIN  sf::Vector2f(422, 24)
 

@@ -4,6 +4,8 @@
 
 #include "Item.hpp"
 #include "Unit.hpp"
+#include "Hit.hpp"
+#include "../core/Game.hpp"
 
 /**
  * Objet utilisable associé à un Item pour la représentation visuelle
@@ -16,6 +18,10 @@ public:
 
 	Item::Type GetType() const;
 
+	/**
+	 * Utiliser l'équipement
+	 */
+	template <class T>
 	bool Use();
 
 	int GetAmmo() const;
@@ -37,6 +43,41 @@ private:
 	void (Equipment::*callback_)();
 	Unit* owner_;
 };
+
+template <class T>
+bool Equipment::Use()
+{
+	if (ammo_ != 0)
+	{
+		// délai minimum à respecter entre deux usages
+		float now = Game::GetInstance().GetElapsedTime();
+		if ((now - last_used_) > fire_rate_)
+		{
+			sf::Vector2f pos = owner_->GetPosition();
+			switch (type_)
+			{
+				case Item::ITM_BOW:
+					pos.x = pos.x + owner_->GetSize().x / 2;
+					pos.y = pos.y - owner_->GetSize().y / 2;
+					Entity::GetActiveZone()->AddEntity(new T(pos, 2, owner_->GetDirection(), owner_->GetID(), Hit::ARROW));
+					break;
+				case Item::ITM_SWORD:
+					puts("not implemented yet: sword");
+					break;
+				default:
+					puts("shit happens");
+					break;
+			}
+			if (ammo_ > 0)
+			{
+				--ammo_;
+			}
+			last_used_ = now;
+			return true;
+		}
+	}
+	return false;
+}
 
 #endif // EQUIPMENT_HPP
 

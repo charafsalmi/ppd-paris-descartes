@@ -6,7 +6,7 @@
 #include "TextBox.hpp"
 
 #include "../misc/MediaManager.hpp"
-#include "../misc/Misc.hpp"
+#include "../misc/StringUtils.hpp"
 #include "../misc/Log.hpp"
 
 #include "../xml/tinyxml.h"

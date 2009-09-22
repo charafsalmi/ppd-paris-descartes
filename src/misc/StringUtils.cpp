@@ -106,3 +106,21 @@ std::string str_extract(const std::string& str, int from, int to)
 	return str.substr(from, to - from);
 }
 
+
+void str_lower(std::string& str)
+{
+	for (size_t i = 0; i < str.length(); ++i)
+	{
+		str[i] = tolower(str[i]);
+	}
+}
+
+
+void str_upper(std::string& str)
+{
+	for (size_t i = 0; i < str.length(); ++i)
+	{
+		str[i] = toupper(str[i]);
+	}
+}
+
