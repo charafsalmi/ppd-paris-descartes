@@ -17,6 +17,7 @@ from FrameInfo import FrameInfo
 from EntityFactory import EntityFactory
 import Dialog
 from Config import Config
+from UnitTreeWidget import *
 
 
 class MainWindow(QMainWindow):
@@ -167,7 +168,6 @@ class MainWindow(QMainWindow):
 		self.connect(act_config, SIGNAL("triggered()"), self.show_config)
 		tools.addAction(act_config)
 
-		
 		# menu Aide
 		help = menubar.addMenu("&Aide")
 		about = QAction(QIcon("icons/information.png"), u"À propos", self)
@@ -197,6 +197,10 @@ class MainWindow(QMainWindow):
 		self.default_map_path = config["map_path"]
 		TiledCanvas.TILESIZE = int(config["tilesize"])
 		
+		self.factory = EntityFactory()
+		self.factory.load_units(config["units"])
+		self.factory.load_decors(config["decors"])
+		self.factory.load_items(config["items"])
 		
 		# WIDGETS
 		self.info = FrameInfo()
@@ -206,6 +210,17 @@ class MainWindow(QMainWindow):
 		self.tileset = Tileset(config["tileset"], self.info)
 		self.tileset.set_max_row(16)
 		self.tileset.set_max_line(20)
+		
+		self.tabs = QTabWidget(self)
+		self.tabs.setTabsClosable(False)
+		self.tabs.setMovable(False)
+		
+		index = self.tabs.addTab(self.tileset, "Terrain")
+		self.tabs.setCurrentIndex(index)
+		self.tabs.setTabToolTip(index, "Positionner les tiles")
+		
+		index = self.tabs.addTab(UnitTreeWidget(self), QIcon("icons/unit-add.png"), u"Unités")
+		self.tabs.setTabToolTip(index, u"Placer des unités")
 		
 		self.map = Map(self.tileset, config["tileset"])
 		self.map.set_max_row(Zone.WIDTH)
@@ -219,17 +234,12 @@ class MainWindow(QMainWindow):
 		vbox.addWidget(self.info)
 		
 		hbox = QHBoxLayout()
-		hbox.addWidget(self.tileset)
+		hbox.addWidget(self.tabs)
 		hbox.addLayout(vbox)
 		
 		root = QWidget()
 		root.setLayout(hbox)
 		self.setCentralWidget(root)
-		
-		self.factory = EntityFactory()
-		self.factory.load_units(config["units"])
-		self.factory.load_decors(config["decors"])
-		self.factory.load_items(config["items"])
 		
 		self.center()
 		
@@ -294,6 +304,12 @@ class MainWindow(QMainWindow):
 			self.statusBar().showMessage(u"Cliquez pour placer l'unité \"%s\"" %
 				self.factory.get_unit_by_id(unit_id).name)
 	
+	def add_unit_from_tree(self, unit_id):
+		print "add from tree"
+		if unit_id != -1:
+			self.map.place_unit(unit_id)
+			self.statusBar().showMessage(u"Cliquez pour placer l'unité \"%s\"" %
+				self.factory.get_unit_by_id(unit_id).name)
 	
 	def add_decor(self):
 		win = Dialog.WindowListDecor(self)
