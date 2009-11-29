@@ -3,7 +3,7 @@
 #define DISCOVERED_COLOR   sf::Color(0xC0, 0xC0, 0xFF, 128)
 #define UNDISCOVERED_COLOR sf::Color(0x40, 0x40, 0x40, 128)
 #define PLAYER_COLOR       sf::Color(0xFF, 0,    0,    128)
-#define OUTLINE 3
+#define OUTLINE 1
 
 #define WIDTH_PX   160
 #define HEIGHT_PX  160

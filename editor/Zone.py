@@ -98,6 +98,12 @@ class Zone:
 			parent.appendChild(node)
 		
 
+	@staticmethod
+	def set_zone_size(width, height):
+		Zone.WIDTH = width
+		Zone.HEIGHT = height
+	
+	
 	def __init__(self, map_):
 		
 		self.map = map_
@@ -129,7 +135,7 @@ class Zone:
 		found = len(self.tile_ids)
 		count = Zone.WIDTH * Zone.HEIGHT
 		if found != count:
-			print "WARNING: %s tiles found, %d expected" % (found, count)
+			print "WARNING: %s tiles found, expected %d" % (found, count)
 			print "missing tiles will be set to 0"
 			for i in xrange(found, count):
 				self.tile_ids.append(0)
@@ -230,9 +236,7 @@ class Zone:
 		tiles = xml.Text()
 		tiles.data = ""
 		for i, id in enumerate(self.tile_ids):
-			tiles.data += "%3d " % id
-			#if (i + 1) % Zone.WIDTH == 0:
-			#	tiles.data += "\n"
+			tiles.data += "%d " % id
 		
 		node = xml.Element("tiles")
 		node.appendChild(tiles)

@@ -38,6 +38,7 @@ class Map(TiledCanvas):
 		def __init__(self, zone_element):
 			QGraphicsPixmapItem.__init__(self)
 			self.zone_element = zone_element
+			#setAcceptsHoverEvents
 		
 		def get_zone_element(self):
 			return self.zone_element
@@ -118,7 +119,8 @@ class Map(TiledCanvas):
 		
 		self.selected_entity = None # pour les déplacements et les suppressions
 		self.entities = []
-		self.scene.setSceneRect(0, 0, Zone.WIDTH * self.TILESIZE, Zone.HEIGHT * self.TILESIZE)
+		
+		self.resize(Zone.WIDTH, Zone.HEIGHT)
 		
 		# hover cursor
 		rect = QRectF(0, 0, self.TILESIZE, self.TILESIZE)
@@ -128,8 +130,14 @@ class Map(TiledCanvas):
 		self.hover_cursor = self.scene.addRect(rect, pen, brush)
 		self.hover_cursor.setVisible(False)
 		self.hover_cursor.setZValue(Map.Z_UNIT + 1)
-		
 	
+	
+	def resize(self, width, height):
+		self.set_max_row(width)
+		self.set_max_line(height)
+		self.scene.setSceneRect(0, 0, width * self.TILESIZE, height * self.TILESIZE)
+		
+
 	def set_tileset_image(self, tileset_path):
 	
 		# découpage de la feuille en une liste de tiles
@@ -176,7 +184,11 @@ class Map(TiledCanvas):
 		node_map = doc.getElementsByTagName("map")[0]
 		self.width = int(node_map.getAttribute("width"))
 		self.height = int(node_map.getAttribute("height"))
+		Zone.WIDTH = int(node_map.getAttribute("zonewidth"))
+		Zone.HEIGHT = int(node_map.getAttribute("zoneheight"))
+		self.resize(Zone.WIDTH, Zone.HEIGHT)
 		
+
 		nodes_zone = doc.getElementsByTagName("zone")
 		if len(nodes_zone) != self.width * self.height:
 			print "error: zones manquantes"	
@@ -209,11 +221,18 @@ class Map(TiledCanvas):
 			self.set_current_zone(index)
 		
 	
-	def create(self, width, height):
+	def create(self, width, height, zonewidth, zoneheight):
 		"Créer une carte vierge"
 		
-		assert width >= 0
-		assert height >= 0
+		assert width > 0
+		assert height > 0
+		assert zonewidth > 0
+		assert zoneheight > 0
+		
+		# resize zones and the map widget
+		Zone.WIDTH = zonewidth
+		Zone.HEIGHT = zoneheight
+		self.resize(Zone.WIDTH, Zone.HEIGHT)
 		
 		# build tile-items at first load
 		if not self.isEnabled():
@@ -286,10 +305,9 @@ class Map(TiledCanvas):
 			if self.mouse_button_down:
 				self.on_click(event)
 		else:
-			if self.on_click == self.place_entity:
-				if self.selected_entity:
-					self.selected_entity.place(event.pos().x(), event.pos().y())
-					return
+			if self.on_click == self.place_selected_entity and self.selected_entity:
+				self.selected_entity.place(event.pos().x(), event.pos().y())
+				return
 			
 			entities = self.scene.items(self.mapToScene(event.pos().x(), event.pos().y()))
 			for entity in entities:
@@ -353,6 +371,16 @@ class Map(TiledCanvas):
 		self.mode_place_entity()
 	
 	
+	def add_unit(self, zone_unit):
+		"Ajouter une unité dans la scène"
+		
+		unit = Map.Unit(zone_unit)
+		self.scene.addItem(unit)
+		unit.place(zone_unit.x, zone_unit.y)
+		self.entities.append(unit)
+		return unit
+	
+	
 	def place_decor(self, id):
 		"Place decor on next click"
 		zone_decor = self.get_current_zone().add_decor(id, 0, 0)
@@ -360,11 +388,31 @@ class Map(TiledCanvas):
 		self.mode_place_entity()
 	
 	
+	def add_decor(self, zone_decor):
+		"Ajouter un décor dans la scène"
+		
+		decor = Map.Decor(zone_decor)
+		self.scene.addItem(decor)
+		decor.place(zone_decor.x * TiledCanvas.TILESIZE,
+			(zone_decor.y + 1) * TiledCanvas.TILESIZE)
+		self.entities.append(decor)
+		return decor
+	
+	
 	def place_item(self, name):
 		zone_item = self.get_current_zone().add_item(name, 0, 0)
 		self.selected_entity = self.add_item(zone_item)
 		self.mode_place_entity()
 	
+	
+	def add_item(self, zone_item):
+		
+		item = Map.Item(zone_item)
+		self.scene.addItem(item)
+		item.place(zone_item.x, zone_item.y)
+		self.entities.append(item)
+		return item
+		
 	
 	def mode_place_tile(self):
 		"Utilisation en mode placement de tile"
@@ -380,10 +428,10 @@ class Map(TiledCanvas):
 		self.set_cursor_visible(False)
 		self.hover_cursor.setVisible(False)
 		self.setCursor(QCursor(Qt.ClosedHandCursor))
-		self.on_click = self.place_entity
+		self.on_click = self.place_selected_entity
 	
 	
-	def place_entity(self, event=None):
+	def place_selected_entity(self, event=None):
 		"Place the current selected entity (add or move)"
 		
 		assert self.selected_entity
@@ -436,38 +484,8 @@ class Map(TiledCanvas):
 			
 			# back to "put tile" mode on click
 			self.mode_place_tile()
-	
-	
-	def add_unit(self, zone_unit):
-		"Ajouter une unité dans la scène"
-		
-		unit = Map.Unit(zone_unit)
-		self.scene.addItem(unit)
-		unit.place(zone_unit.x, zone_unit.y)
-		self.entities.append(unit)
-		return unit
-	
-	
-	def add_decor(self, zone_decor):
-		"Ajouter un décor dans la scène"
-		
-		decor = Map.Decor(zone_decor)
-		self.scene.addItem(decor)
-		decor.place(zone_decor.x * TiledCanvas.TILESIZE,
-			(zone_decor.y + 1) * TiledCanvas.TILESIZE)
-		self.entities.append(decor)
-		return decor
-	
-	
-	def add_item(self, zone_item):
-		
-		item = Map.Item(zone_item)
-		self.scene.addItem(item)
-		item.place(zone_item.x, zone_item.y)
-		self.entities.append(item)
-		return item
-	
-	
+
+
 	def clear_units(self):
 		"Supprimer toutes les entités de la scène"
 		
@@ -475,7 +493,7 @@ class Map(TiledCanvas):
 			self.scene.removeItem(entity)
 		
 		del self.entities[:]
-	
+
 	
 	def fill_with_tile(self, tile_id):
 		"Remplir la scène avec un type de tile"
@@ -509,6 +527,8 @@ class Map(TiledCanvas):
 		
 		root.setAttribute("width", str(self.width))
 		root.setAttribute("height", str(self.height))
+		root.setAttribute("zonewidth", str(Zone.WIDTH))
+		root.setAttribute("zoneheight", str(Zone.HEIGHT))
 		
 		for zone in self.zones:
 			node = xml.Element("zone")

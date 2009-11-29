@@ -12,12 +12,14 @@ from PyQt4.QtCore import *
 from TiledCanvas import TiledCanvas
 from Tileset import Tileset
 from Map import Map
-from Zone import Zone
 from FrameInfo import FrameInfo
 from EntityFactory import EntityFactory
 import Dialog
 from Config import Config
-from UnitTreeWidget import *
+
+from UnitSelectionPanel import *
+from ItemSelectionPanel import *
+from DecorSelectionPanel import *
 
 
 class MainWindow(QMainWindow):
@@ -39,6 +41,7 @@ class MainWindow(QMainWindow):
 
 		doc_new = QAction(QIcon("icons/document-new.png"), "Nouveau", self)
 		doc_new.setShortcut("Ctrl+N")
+		doc_new.setStatusTip(u"Créer une nouvelle carte")
 		self.connect(doc_new, SIGNAL("triggered()"), self.create_map)
 		
 		doc_open = QAction(QIcon("icons/document-open.png"), "Ouvrir", self)
@@ -96,21 +99,6 @@ class MainWindow(QMainWindow):
 		act_rem_col = QAction(QIcon("icons/edit-remove-col.png"), "Supprimer une colonne", self)
 		act_rem_col.setStatusTip("Supprimer une colonne de zones de le carte")
 		
-		act_add_unit = QAction(QIcon("icons/unit-add.png"), u"Ajouter une unité", self)
-		act_add_unit.setStatusTip(u"Choisir et positionner une unité dans la zone courante")
-		act_add_unit.setShortcut(Qt.Key_1)
-		self.connect(act_add_unit, SIGNAL("triggered()"), self.add_unit)
-		
-		act_add_decor = QAction(QIcon("icons/decor-add.png"), u"Ajouter un décor", self)
-		act_add_decor.setStatusTip(u"Choisir et positionner un décor dans la zone courante")
-		act_add_decor.setShortcut(Qt.Key_2)
-		self.connect(act_add_decor, SIGNAL("triggered()"), self.add_decor)
-		
-		act_add_item = QAction(QIcon("icons/item-add.png"), u"Ajouter un objet", self)
-		act_add_item.setStatusTip(u"Choisir et positionner un objet dans la zone courante")
-		act_add_item.setShortcut(Qt.Key_3)
-		self.connect(act_add_item, SIGNAL("triggered()"), self.add_item)
-		
 		act_del_entity = QAction(QIcon("icons/entity-remove.png"), u"Supprimer une entité", self)
 		act_del_entity.setStatusTip(u"Supprimer n'importe quelle entité de la zone courante")
 		act_del_entity.setShortcut("S")
@@ -132,9 +120,6 @@ class MainWindow(QMainWindow):
 		#edit.addAction(act_rem_col)
 		
 		edit.addSeparator()
-		edit.addAction(act_add_unit)
-		edit.addAction(act_add_decor)
-		edit.addAction(act_add_item)
 		edit.addAction(act_move_entity)
 		edit.addAction(act_del_entity)
 		
@@ -177,15 +162,12 @@ class MainWindow(QMainWindow):
 		
 		# TOOLBAR
 		toolbar = self.addToolBar("Toolbar")
+		toolbar.addAction(doc_new)
 		toolbar.addAction(doc_open)
 		toolbar.addAction(doc_save)
 		toolbar.addSeparator()
 		toolbar.addAction(act_undo)
 		
-		toolbar.addSeparator()
-		toolbar.addAction(act_add_unit)
-		toolbar.addAction(act_add_decor)
-		toolbar.addAction(act_add_item)
 		toolbar.addSeparator()
 		toolbar.addAction(act_move_entity)
 		toolbar.addAction(act_del_entity)
@@ -211,20 +193,22 @@ class MainWindow(QMainWindow):
 		self.tileset.set_max_row(16)
 		self.tileset.set_max_line(20)
 		
-		self.tabs = QTabWidget(self)
-		self.tabs.setTabsClosable(False)
-		self.tabs.setMovable(False)
+		tabs = QTabWidget(self)
 		
-		index = self.tabs.addTab(self.tileset, "Terrain")
-		self.tabs.setCurrentIndex(index)
-		self.tabs.setTabToolTip(index, "Positionner les tiles")
+		index = tabs.addTab(self.tileset, QIcon("icons/tab-map.png"), "Terrain")
+		tabs.setCurrentIndex(index)
+		tabs.setTabToolTip(index, "Positionner les tiles")
 		
-		index = self.tabs.addTab(UnitTreeWidget(self), QIcon("icons/unit-add.png"), u"Unités")
-		self.tabs.setTabToolTip(index, u"Placer des unités")
+		index = tabs.addTab(UnitSelectionPanel(self), QIcon("icons/tab-units.png"), u"Unités")
+		tabs.setTabToolTip(index, u"Choisir et positionner une unité dans la zone courante")
+		
+		index = tabs.addTab(DecorSelectionPanel(self), QIcon("icons/tab-decors.png"), u"Décors")
+		tabs.setTabToolTip(index, u"Choisir et positionner un décor dans la zone courante")
+		
+		index = tabs.addTab(ItemSelectionPanel(self), QIcon("icons/tab-items.png"), u"Objets")
+		tabs.setTabToolTip(index, u"Choisir et positionner un objet dans la zone courante")
 		
 		self.map = Map(self.tileset, config["tileset"])
-		self.map.set_max_row(Zone.WIDTH)
-		self.map.set_max_line(Zone.HEIGHT)
 		self.info.set_tile_images(self.map.get_tile_images())
 		self.connect(self.map, SIGNAL("music_changed(PyQt_PyObject)"), self.info.set_current_music)
 		
@@ -234,7 +218,7 @@ class MainWindow(QMainWindow):
 		vbox.addWidget(self.info)
 		
 		hbox = QHBoxLayout()
-		hbox.addWidget(self.tabs)
+		hbox.addWidget(tabs)
 		hbox.addLayout(vbox)
 		
 		root = QWidget()
@@ -289,49 +273,32 @@ class MainWindow(QMainWindow):
 			
 			self.map.reload()
 			
-		
+	
 	def about(self):
-		QMessageBox.about(self, u"À propos", u"Éditeur de cartes XML en Python / Qt")
-		
-	
-	def add_unit(self):
-		win = Dialog.UnitListWindow(self)
-		win.fill(self.factory)
-		win.exec_()
-		unit_id = win.get_selected_id()
-		if unit_id != -1:
-			self.map.place_unit(unit_id)
-			self.statusBar().showMessage(u"Cliquez pour placer l'unité \"%s\"" %
-				self.factory.get_unit_by_id(unit_id).name)
-	
-	def add_unit_from_tree(self, unit_id):
-		print "add from tree"
-		if unit_id != -1:
-			self.map.place_unit(unit_id)
-			self.statusBar().showMessage(u"Cliquez pour placer l'unité \"%s\"" %
-				self.factory.get_unit_by_id(unit_id).name)
-	
-	def add_decor(self):
-		win = Dialog.WindowListDecor(self)
-		win.fill(self.factory)
-		win.exec_()
-		decor_id = win.get_selected_id()
-		if decor_id != -1:
-			self.map.place_decor(decor_id)
-			self.statusBar().showMessage(u"Cliquez pour placer le décor \"%s\"" %
-				self.factory.get_decor_by_id(decor_id).name)
+		QMessageBox.about(self, u"À propos",
+			u"Éditeur de cartes XML en Python / Qt\n\n" +
+			"Python " + sys.version[:sys.version.find(" ")] + " / " +
+			"PyQt " + PYQT_VERSION_STR)
 	
 	
-	def add_item(self):
-		win = Dialog.WindowListItem(self)
-		win.fill(self.factory)
-		win.exec_()
-		item_name = win.get_selected_id()
-		if item_name != -1:
-			self.map.place_item(item_name)
-			self.statusBar().showMessage(u"Cliquez pour placer l'objet \"%s\"" %
-				self.factory.get_item_by_name(item_name).label)
-		
+	def add_unit(self, unit_id):
+		self.map.place_unit(unit_id)
+		self.statusBar().showMessage(u"Cliquez pour placer l'unité \"%s\"" %
+			self.factory.get_unit_by_id(unit_id).name)
+	
+	
+	def add_decor(self, decor_id):
+		self.map.place_decor(decor_id)
+		self.statusBar().showMessage(u"Cliquez pour placer le décor \"%s\"" %
+			self.factory.get_decor_by_id(decor_id).name)
+	
+	
+	def add_item(self, name_id):
+		self.map.place_item(name_id)
+		self.statusBar().showMessage(u"Cliquez pour placer l'unité \"%s\"" %
+			self.factory.get_item_by_name(name_id).label)
+
+				
 	def delete_entity(self):
 		if self.map.get_current_zone().count_entities() == 0:
 			QMessageBox.warning(self, "Action impossible", u"Il n'y a pas d'entités à supprimer dans cette zone")
@@ -339,14 +306,15 @@ class MainWindow(QMainWindow):
 			self.statusBar().showMessage(u"Cliquez sur l'entité à supprimer")
 			self.map.delete_entity()
 	
+	
 	def move_entity(self):
 		if self.map.get_current_zone().count_entities() == 0:
 			QMessageBox.warning(self, "Action impossible", u"Il n'y a pas d'entités à déplacer dans cette zone")
 		else:
 			self.statusBar().showMessage(u"Cliquez sur l'entité à déplacer")
 			self.map.move_entity()
-
-		
+	
+	
 	def ask_open_map(self):
 		# QString to str
 		map_name = str(QFileDialog.getOpenFileName(self,
@@ -375,7 +343,9 @@ class MainWindow(QMainWindow):
 		win = Dialog.AskMapSize(self)
 		win.exec_()
 		if win.valided():
-			self.map.create(win.get_width(), win.get_height())
+			self.map.create(win.get_width(), win.get_height(),
+				win.get_zone_width(), win.get_zone_height())
+			
 			self.statusBar().showMessage(u"Nouvelle carte créée")
 			self.info.set_map_name("")
 			self.info.txt_width.setText(str(win.get_width()))
@@ -462,7 +432,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
-
+	
 	editor = MainWindow()
 	editor.show()
 	if sys.argv[1:]:
