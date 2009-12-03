@@ -9,7 +9,7 @@ class TiledCanvas(QGraphicsView):
 	
 	def __init__(self):
 		self.scene = QGraphicsScene()
-		self.scene.setItemIndexMethod(QGraphicsScene.NoIndex)
+		self.scene.setItemIndexMethod(QGraphicsScene.BspTreeIndex)
 		QGraphicsView.__init__(self, self.scene)
 		
 		self.cursor = None

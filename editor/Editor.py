@@ -62,9 +62,10 @@ class MainWindow(QMainWindow):
 		about_qt = QAction(QIcon("icons/information.png"), u"À propos de Qt", self)
 		self.connect(about_qt, SIGNAL("triggered()"), qApp, SLOT("aboutQt()"))
 		
-		# MENUBAR
+		# MENUBAR ##############################################################
 		
-		# menu Fichier
+		# MENU Fichier
+		
 		menubar = self.menuBar()
 		file = menubar.addMenu('&Fichier')
 		file.addAction(doc_new)
@@ -74,36 +75,37 @@ class MainWindow(QMainWindow):
 		file.addSeparator()
 		file.addAction(exit)
 		
-		# menu Édition
+		# MENU Édition
+		
 		# paint
 		paint = QAction(QIcon("icons/paint.png"), "Peindre avec la tile courante", self)
 		paint.setStatusTip("Remplir toute la zone avec la tile courante")
 		self.connect(paint, SIGNAL("triggered()"), self.paint_all)
-		
+		# undo tile
 		act_undo = QAction(QIcon("icons/edit-undo.png"), "Annuler tile", self)
 		act_undo.setShortcut("U")
 		act_undo.setStatusTip(u"Annuler le dernier placement de tile")
 		self.connect(act_undo, SIGNAL("triggered()"), self.undo)
-		
+		# add line
 		act_add_line = QAction(QIcon("icons/edit-add-line.png"), "Ajouter une ligne", self)
 		act_add_line.setStatusTip("Ajouter une ligne de zones dans la carte")
 		self.connect(act_add_line, SIGNAL("triggered()"), self.add_line)
-		
+		# add column
 		act_add_col = QAction(QIcon("icons/edit-add-col.png"), "Ajouter une colonne", self)
 		act_add_col.setStatusTip("Ajouter une colonne de zones dans la carte")
 		self.connect(act_add_col, SIGNAL("triggered()"), self.add_column)
-		
+		# remove line
 		act_rem_line = QAction(QIcon("icons/edit-remove-line.png"), "Supprimer une ligne", self)
 		act_rem_line.setStatusTip("Supprimer une ligne de zones de le carte")
-		
+		# remove column
 		act_rem_col = QAction(QIcon("icons/edit-remove-col.png"), "Supprimer une colonne", self)
 		act_rem_col.setStatusTip("Supprimer une colonne de zones de le carte")
-		
+		# delete entity
 		act_del_entity = QAction(QIcon("icons/entity-remove.png"), u"Supprimer une entité", self)
 		act_del_entity.setStatusTip(u"Supprimer n'importe quelle entité de la zone courante")
 		act_del_entity.setShortcut("S")
 		self.connect(act_del_entity, SIGNAL("triggered()"), self.delete_entity)
-		
+		# move entity
 		act_move_entity = QAction(QIcon("icons/entity-move.png"), u"Déplacer une entité", self)
 		act_move_entity.setStatusTip(u"Déplacer n'importe quelle entité de la zone courante")
 		act_move_entity.setShortcut("D")
@@ -123,7 +125,40 @@ class MainWindow(QMainWindow):
 		edit.addAction(act_move_entity)
 		edit.addAction(act_del_entity)
 		
-		# menu Navigation
+		# MENU Affichage
+		
+		act_show_units = QAction(u"Afficher les unités", self)
+		act_show_units.setCheckable(True)
+		act_show_units.setChecked(True)
+		self.show_units = act_show_units
+		self.connect(act_show_units, SIGNAL("toggled(bool)"), lambda x: self.map.toggle_units(x))
+		
+		act_show_decors = QAction(u"Afficher les décors", self)
+		act_show_decors.setCheckable(True)
+		act_show_decors.setChecked(True)
+		self.show_decors = act_show_decors
+		self.connect(act_show_decors, SIGNAL("toggled(bool)"), lambda x: self.map.toggle_decors(x))
+		
+		act_show_items = QAction(u"Afficher les objets", self)
+		act_show_items.setCheckable(True)
+		act_show_items.setChecked(True)
+		self.show_items = act_show_items
+		self.connect(act_show_items, SIGNAL("toggled(bool)"), lambda x: self.map.toggle_items(x))
+		
+		act_show_grid = QAction(u"Afficher la grille", self)
+		act_show_grid.setCheckable(True)
+		act_show_grid.setShortcut("G")
+		self.connect(act_show_grid, SIGNAL("toggled(bool)"), lambda x: self.map.toggle_grid(x))
+		
+		menu_display = menubar.addMenu("&Affichage")
+		menu_display.addAction(act_show_units)
+		menu_display.addAction(act_show_decors)
+		menu_display.addAction(act_show_items)
+		menu_display.addSeparator()
+		menu_display.addAction(act_show_grid)
+		
+		# MENU Navigation
+		
 		# up
 		go_up = QAction(QIcon("icons/go-up.png"), u"Nord", self)
 		go_up.setShortcut(Qt.Key_Up)
@@ -147,13 +182,15 @@ class MainWindow(QMainWindow):
 		navigation.addAction(go_left)
 		navigation.addAction(go_right)
 		
-		# menu Outils
+		# MENU Outils
+		
 		tools = menubar.addMenu("&Outils")
 		act_config = QAction(QIcon("icons/configuration.png"), u"Configuration", self)
 		self.connect(act_config, SIGNAL("triggered()"), self.show_config)
 		tools.addAction(act_config)
 
-		# menu Aide
+		# MENU Aide
+		
 		help = menubar.addMenu("&Aide")
 		about = QAction(QIcon("icons/information.png"), u"À propos", self)
 		self.connect(about, SIGNAL("triggered()"), self.about)
@@ -171,7 +208,6 @@ class MainWindow(QMainWindow):
 		toolbar.addSeparator()
 		toolbar.addAction(act_move_entity)
 		toolbar.addAction(act_del_entity)
-		
 		
 		# LOADING CONFIG
 		config = Config()
@@ -377,6 +413,9 @@ class MainWindow(QMainWindow):
 	def change_zone(self, dx, dy):
 		if self.map.change_zone(dx, dy):
 			self.map.mode_place_tile()
+			self.map.toggle_units(self.show_units.isChecked())
+			self.map.toggle_decors(self.show_decors.isChecked())
+			self.map.toggle_items(self.show_items.isChecked())
 			self.info.set_current_zone(*self.map.get_current_zone_pos())
 		else:
 			QMessageBox.warning(self, "Stop", "Limites de la carte atteintes")

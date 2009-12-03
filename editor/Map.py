@@ -14,10 +14,11 @@ from EntityFactory import EntityFactory
 
 class Map(TiledCanvas):	
 	
-	Z_TILE = 1000
-	Z_DECOR = 2000
-	Z_UNIT = 3000
-	Z_ITEM = 4000
+	Z_TILE = 10
+	Z_DECOR = 20
+	Z_UNIT = 30
+	Z_ITEM = 40
+	Z_GRID = 50
 	
 	class Tile(QGraphicsPixmapItem):
 		def __init__(self, qimage, id):
@@ -121,7 +122,7 @@ class Map(TiledCanvas):
 		self.entities = []
 		
 		self.resize(Zone.WIDTH, Zone.HEIGHT)
-		
+		self.grid = [] # contains the grid lines (QGraphicsLineItem)
 		# hover cursor
 		rect = QRectF(0, 0, self.TILESIZE, self.TILESIZE)
 		pen = QPen(Qt.blue, 1, Qt.SolidLine)
@@ -137,7 +138,7 @@ class Map(TiledCanvas):
 		self.set_max_line(height)
 		self.scene.setSceneRect(0, 0, width * self.TILESIZE, height * self.TILESIZE)
 		
-
+	
 	def set_tileset_image(self, tileset_path):
 	
 		# découpage de la feuille en une liste de tiles
@@ -166,6 +167,26 @@ class Map(TiledCanvas):
 			self.tiles.append(tile)
 		self.tiles_builded = True
 	
+	
+	def build_grid(self):
+		# remove the old grid, if any
+		for line in self.grid:
+			self.scene.removeItem(line)
+		del self.grid[:]
+		# build vertical lines
+		for i in xrange(1, Zone.WIDTH ):
+			line = QGraphicsLineItem(i * self.TILESIZE, 0,
+				i * self.TILESIZE, Zone.HEIGHT * self.TILESIZE)
+			line.setZValue(50)
+			self.scene.addItem(line)
+			self.grid.append(line)
+		# build horizontal lines
+		for i in xrange(1, Zone.HEIGHT):
+			line = QGraphicsLineItem(0, i * self.TILESIZE,
+				Zone.WIDTH * self.TILESIZE, i * self.TILESIZE)
+			line.setZValue(50)
+			self.scene.addItem(line)
+			self.grid.append(line)
 	
 	def open(self, filename):
 		"Charger une carte depuis un fichier"
@@ -569,5 +590,30 @@ class Map(TiledCanvas):
 		self.width += 1
 		self.set_current_zone(0)
 	
+	
+	def toggle_units(self, visible):
+		self._toggle_any(Map.Unit, visible)
+		
+	
+	def toggle_decors(self, visible):
+		self._toggle_any(Map.Decor, visible)
+		
+		
+	def toggle_items(self, visible):
+		self._toggle_any(Map.Item, visible)
+	
+	
+	def _toggle_any(self, klass, visible):
+		"Afficher/Masquer un type d'élément"
+		for entity in self.entities:
+			if isinstance(entity, klass):
+				entity.setVisible(visible)
+		
+	def toggle_grid(self, visible):
+		# build the grid if not builded yet
+		if visible and not self.grid:
+			self.build_grid()
+		for line in self.grid:
+			line.setVisible(visible)
 	
 

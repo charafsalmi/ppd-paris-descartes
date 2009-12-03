@@ -12,6 +12,7 @@
 
 * Éditeur de cartes
 	- support téléporteurs
+	- ajouter nom auteur de la carte et date de dernière modif dans la carte
 
 * IA
 	- création de pattern
