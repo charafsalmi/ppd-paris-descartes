@@ -11,7 +11,7 @@ Button::Button(ControlID id, const ControlPos& pos, const ControlPos& size, cons
     // Mode avec image
     if (!imagePath.empty())
     {
-        img_ = GET_IMG(imagePath.c_str());
+        img_.SetImage(GET_IMG(imagePath.c_str()));
 
         // Si aucune largeur ou hauteur n'est définit,
         // on récupère celles de l'image
@@ -30,7 +30,7 @@ Button::Button(ControlID id, const ControlPos& pos, const ControlPos& size, cons
     // Système OnHover
     if (!hoverPath.empty())
     {
-        img_hover_ = GET_IMG(hoverPath.c_str());
+        img_hover_.SetImage(GET_IMG(hoverPath.c_str()));
 
         accepted_states_ |= ON_HOVER;
         // On applique la même position que l'image de base

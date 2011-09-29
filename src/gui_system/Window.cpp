@@ -165,7 +165,7 @@ void Window::Load(const std::string& xmlfile){
         p = elem->Attribute("background");
         if(p != NULL){
             SetPosition(x, y);
-            background_ = GET_IMG(p);
+            background_.SetImage(GET_IMG(p));
             background_.Resize(w, h);
 
             if(alpha != -1)
